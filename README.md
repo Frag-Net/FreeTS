@@ -7,7 +7,7 @@ If you know, you know.
 ## Building
 Clone the repository into the Nuclide-SDK, alongside FreeHL:
 
-> git clone https://github.com/Frag-Net/FreeTS
+> git clone https://github.com/Frag-Net/FreeTS ts
 
 then either run Nuclide's ./build_game.sh shell script, or issue 'make' inside
 ./ts/src!
