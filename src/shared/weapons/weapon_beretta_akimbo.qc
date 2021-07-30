@@ -242,16 +242,16 @@ BOOLEAN weapon_Beretta_akimbo_attack(player localPlayer, weapondynamic_t arg_thi
 	
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_LEFT){
 		if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-			TS_Weapons_PlaySoundDirect(pl, "weapons/beretta/fire.wav");
+			SoundPitched_Send(pl, SNDP_BERETTA);
 		} else {
-			TS_Weapons_PlaySoundDirect(pl, "weapons/beretta/fire-sil.wav");
+			SoundPitched_Send(pl, SNDP_BERETTA_SIL);
 		}
 	}
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_RIGHT){
 		if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-			TS_Weapons_PlaySoundDirect(pl, "weapons/beretta/fire.wav");
+			SoundPitched_Send(pl, SNDP_BERETTA);
 		} else {
-			TS_Weapons_PlaySoundDirect(pl, "weapons/beretta/fire-sil.wav");
+			SoundPitched_Send(pl, SNDP_BERETTA_SIL);
 		}
 	}
 	

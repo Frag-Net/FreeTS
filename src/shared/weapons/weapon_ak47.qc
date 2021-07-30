@@ -180,8 +180,8 @@ w_ak47_primary(void)
 		PLAY_CLICK_SOUND
 		return;
 	}
-	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/ak47/fire.wav");
+
+	SoundPitched_Send(pl, SNDP_AK47); /* get around protocol limits */
 	
 	if(!arg_thisWeapon.iIronSight){
 		TS_Weapons_ViewAnimation(weaponseq_ak47::shoot, 31.0f/30.0f);

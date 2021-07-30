@@ -216,13 +216,16 @@ BOOLEAN weapon_AkimboColts_akimbo_attack(player localPlayer, weapondynamic_t arg
 	
 	weapon_base_onAttack(localPlayer, ary_weaponData[WEAPON_ID::AkimboColts], arg_thisWeapon, effectiveAkimboChoice);
 	
-	
+#if 0
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_LEFT){
 		TS_Weapons_PlaySoundDirect(pl, "weapons/gold/gold-fire.wav");
 	}
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_RIGHT){
 		TS_Weapons_PlaySoundDirect(pl, "weapons/gold/gold-fire.wav");
 	}
+#else
+	SoundPitched_Send(pl, SNDP_AKIMBOCOLTS);
+#endif
 	
 	
 	if(pl.akimboTest == 0 && !(finalAkimboChoice == BITS_AKIMBOCHOICE_BOTH)){

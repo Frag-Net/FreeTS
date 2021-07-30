@@ -62,6 +62,7 @@ effects.qc
 //TAGGG - NEW
 util.qc
 precache.qc
+sound_pitched.qc
 //fx_impact.h
 //pmove.c
 //animations.c

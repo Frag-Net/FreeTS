@@ -14,6 +14,7 @@ enum EVENT_TS{
 	//TAGGG - NEW.  Like EV_IMPACT but to paint a decal only.
 	EV_PLACEDECAL,
 	EV_IMPACT_MELEE,
+	SOUNDPITCHED,
 	TEST,
 };
 

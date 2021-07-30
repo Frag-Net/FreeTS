@@ -183,9 +183,9 @@ w_beretta_primary(void)
 	
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/beretta/fire.wav");
+		SoundPitched_Send(pl, SNDP_BERETTA);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/beretta/fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_BERETTA_SIL);
 	}
 	
 	

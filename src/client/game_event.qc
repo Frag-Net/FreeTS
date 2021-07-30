@@ -198,6 +198,9 @@ ClientGame_EventParse(float fHeader)
 		//printfline("EVENT_TS::TEST HAPPENED");
 		//clearscene();
 		break;
+	case EVENT_TS::SOUNDPITCHED:
+		SoundPitched_Receive();
+		break;
 	/*
 	//can this even happen ...?
 	case EVENT_TS::DROP_WEAPON:

@@ -193,7 +193,7 @@ w_benellim3_primary(void)
 			// pump instead!
 			pl.shotgunWaitingForPump = FALSE;
 			
-			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/m3/m3-pump.wav", CHAN_AUTO);
+ 			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/m3/m3-pump.wav", CHAN_AUTO);
 			
 			// these pumps eject shells
 			#ifdef CLIENT
@@ -220,7 +220,8 @@ w_benellim3_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/m3/m3-fire.wav");
+// 	TS_Weapons_PlaySoundDirect(pl, "weapons/m3/m3-fire.wav");
+	SoundPitched_Send(pl, SNDP_M3_FIRE);
 
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		TS_Weapons_ViewAnimation(weaponseq_benellim3::shootpump, (31.0f/35.0f) );

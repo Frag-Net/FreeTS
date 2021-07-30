@@ -167,9 +167,9 @@ w_barrett_m82_primary(void)
 		PLAY_CLICK_SOUND
 		return;
 	}
-	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/barrett/fire.wav");
-	
+
+	SoundPitched_Send(pl, SNDP_BARRETTM82);
+
 	if(randomChoice < 0.5){
 		TS_Weapons_ViewAnimation(weaponseq_barrett_m82::shoot, 31.0f/30.0f);
 	}else{
