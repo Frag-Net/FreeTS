@@ -1,4 +1,4 @@
-# FreeHL
+# FreeTS
 Clean-room reimplementation of The Specialists on top of Nuclide and FreeHL.
 If you know, you know.
 
