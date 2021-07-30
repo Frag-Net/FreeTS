@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2016-2021 Marco Hladik <marco@icculus.org>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF MIND, USE, DATA OR PROFITS, WHETHER
+ * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+ * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+#include "obituary.h"
+#include "particles.h"
+
+
+//TAGGG - VERY LITTLE USES "hud_color" RIGHT NOW!
+// See inventory_logic_draw.qc for places that benefit from involving it, compare to behavior
+// in original TS to see what it affects.
+vector g_hud_color;
+vector g_hudmins;
+vector g_hudres;
+
+
+/*
+// Do we need these?  Note the similarly named "g_hud_color" already above!
+// Going to keep the latter two for compatability.
+// Yes using old VGUI is kinda crappy but good for now.
+vector vHUDColor; // Defined in HUD_Draw (HUD.c)
+*/
+vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
+vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
+
+//TAGGG INCLUSION - new. Global var to store the current screen size. If it changes, the font should be re-loaded to fit it.
+var vector Recorded_video_res;
+
+//TAGGG - INCLUSION. eplaces several cases of FONT_CON to be able to draw larger text (well).
+var float FONT_ARIAL;
+var float FONT_ARIAL_TITLE;
+var float FONT_ARIAL_STD;  //stands for "standard" ya hooligans.
+var float FONT_ARIAL_NUMSLASH;
+var float FONT_ARIAL_SCOPEMAG;
+
+// Be sure to keep this up to date with the font FONT_ARIAL_STD as it's loaded in _base/client/entry.c,
+// notice this is always one less than the actual expected corresponding font.
+const vector vButtonFontSize = [13, 13, 0];
+const vector vFontSizeNumSlash = [15, 15, 0];
+const vector vFontArialScopeMag = [16, 16, 0];
+
+const vector vButtonSizStandard = [127, 19, 0];
+
+const vector clrBtnDefault = [0, 0, 0];
+const vector clrPaleBluePurple = [174.0f/255.0f, 152.0f/255.0f, 255.0f/255.0f];
+
+//const vector clrFailedSlotbarColor = [240.0f/255.0f, 116.0f/255.0f, 0/255.0f];
+const vector clrFailedSlotbarColor = [255.0f/255.0f, 90.0f/255.0f, 100.0f/255.0f];
+
+const vector clrHUDWeaponEmpty = [255.0f/255.0f, 75f/255.0f, 75f/255.0f];
+
+
+// wait, for the default way the GUI colors work (hud_r, hud_g, hud_b) be 150, 150, 255 then?
+// TODO - test that later.
+const vector clrPaleBlue = [180.0f/255.0f, 195.0f/255.0f, 255.0f/255.0f];
+const vector clrMedRed = [255.0f/255.0f, 56.0f/255.0f, 56.0f/255.0f];
+
+const vector clrGreen = [0f/255.0f, 255.0f/255.0f, 0f/255.0f];
+const vector clrRed = [255.0f/255.0f, 0f/255.0f, 0f/255.0f];
+
+const vector clrLaserHUDDot = [255.0f/255.0f, 35.0f/255.0f, 35.0f/255.0f];
+
+
+// !!!
+// g_seatslocal AND pSeatLocal definition moved to seatlocal.h
+
+void HUD_WeaponPickupNotify(int);
+
+
+// CRITICAL:
+// Should these be per pSeat instead?  Unsure if that makes sense.
+var float TS_keyRefTapped = 0;
+var float TS_keyRefUp = 0;
+var float TS_keyRefUpASCII = 0;
+var float TS_keyRefDown = 0;
+var float TS_mouseClickRef = 0;
+
+
+
+//TAGGG - NEW.
+// The "fov" CVar is set to this at startup.  This must be changed to be persistent
+// bewteen games.
+var float autocvar_fov_default =  80.0f;
+
+//TAGGG - TODO.  Is this even used yet?
+var int autocvar_cl_autoweaponswitch = TRUE;
+
+
+

@@ -1,0 +1,104 @@
+#pragma target fte
+#pragma progs_dat  "../../csprogs.dat"
+
+#define CSQC
+#define CLIENT
+#define TS
+//TAGGG - do we want this?  FreeHL had it I think, FreeCS definitely does
+#define CLASSIC_VGUI
+#define GS_RENDERFX
+
+
+// NEW.  When present, the origin is exactly at the center of the player, no further offsets.
+// Keeps the view identical on the player dying and becoming spectator in place.
+//#define DEBUG_FORCE_NO_VIEW_OFFSET
+
+
+#includelist
+../../../src/shared/fteextensions.qc
+../../../src/shared/defs.h
+../../../src/client/defs.h
+
+//TAGGG - NEW
+../shared/util.h
+util.h
+../shared/defs.h
+defs.h
+
+../shared/ammo.h
+../shared/weapons.h
+../shared/player.h
+../shared/powerup.h
+
+clientinfo.h
+seatlocal.h
+input.h
+
+//TAGGG - NEW
+precache.h
+vgui.h
+ui_eventgrabber.h
+vgui_buysidemenu.h
+hud_weaponselect.h
+inventory_logic_draw.h
+view.h
+hud.h
+// Yes, really, server/entity... We have a clientside rendering component to this.
+../server/entity/ts_powerup.h
+
+
+../../../src/vgui/include.src
+
+../../../src/gs-entbase/client.src
+../../../src/gs-entbase/shared.src
+../shared/include.src
+
+../server/entity/ts_powerup.qc
+
+../shared/player.qc
+../shared/inventory_logic.qc
+
+//TAGGG - NEW
+input.qc
+vguiobjects.qc
+vgui_motd.qc
+vgui_buysidemenu.qc
+//vgui_spectator.c   ????
+vgui.qc
+
+hud_crosshair.qc
+hud_scope.qc
+
+draw.qc
+init.qc
+seatlocal.qc
+player.qc
+clientinfo.qc
+entities.qc
+cmds.qc
+game_event.qc
+view.qc
+obituary.qc
+hud.qc
+hud_weaponselect.qc
+inventory_logic_draw.qc
+scoreboard.qc
+../../../base/src/client/modelevent.qc
+
+
+//TAGGG - NEW
+util.qc
+precache.qc
+//../_base/client/voice.c
+//../_base/client/sound.c
+//../_base/client/music.c
+//../_base/client/prints.c
+//../_base/client/util.c
+
+
+../../../src/client/include.src
+../../../src/shared/include.src
+
+ui_eventgrabber.qc
+
+#endlist

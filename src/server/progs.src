@@ -1,0 +1,132 @@
+#pragma target fte
+#pragma progs_dat  "../../progs.dat"
+
+#define QWSSQC
+#define SERVER
+#define TS
+
+//TAGGG - NEW.  TS definitely has penetration, and so should this then.
+#define BULLETPENETRATION
+//TAGGG - NEW.  FreeCS also has this.  Do we want/need it?  Keeping for now.
+// NEVERMIND, requires a new var "cs_shotmultiplier" and any other prediction-related tie-ins as seen
+// in freeCS's shared/player.qc.
+// Would like to know what BULLETPATTERNS even does to see if FreeTS had anything like that.
+//#define BULLETPATTERNS
+
+#define GS_RENDERFX
+
+
+
+// FORCE A SPAWN LOC.  Sometimes easier for testing to have a constant set of spawn coords/angle.
+// Use with the right start params to jump into the map at debug.
+
+//#define TS_CUSTOM_SPAWN_ORIGIN '21 -1291 -380'
+//#define TS_CUSTOM_SPAWN_ORIGIN '-754 569 -380'
+
+// THE POOL
+#define TS_CUSTOM_SPAWN_ORIGIN '-458.5 957.7 -380.0'
+#define TS_CUSTOM_SPAWN_VANGLE [0.0, 45.0, 0.0]
+
+// in the house
+//#define TS_CUSTOM_SPAWN_ORIGIN [93.1, -80.0, -380.0]
+//#define TS_CUSTOM_SPAWN_VANGLE [0.0, 90.0, 0.0]
+
+
+// ts_awaken: the ledge thingy.
+//#define TS_CUSTOM_SPAWN_ORIGIN [12.4, -1350.6, -292.0]
+//#define TS_CUSTOM_SPAWN_VANGLE [-12.5, 0.5, 0.0]
+
+
+
+
+#includelist
+../../../src/shared/fteextensions.qc
+../../../src/gs-entbase/server/defs.h
+../../../src/shared/defs.h
+../../../src/server/defs.h
+
+
+../../../src/gs-entbase/server.src
+../../../src/gs-entbase/shared.src
+
+//TAGGG - NEW
+../shared/util.h
+../shared/defs.h
+defs.h
+
+../shared/ammo.h
+../shared/weapons.h
+../shared/player.h
+../shared/powerup.h
+
+
+precache.h
+entity/ts_powerup.h
+//player.c
+
+entity/TSWorldGun.h
+entity/TSThrownProjectile.h
+
+
+../shared/include.src
+
+// <HL monster includes were here>
+
+//TAGGG - NEW
+entity/ts_bomb.qc
+entity/ts_dmhill.qc
+entity/ts_groundweapon.qc
+entity/ts_hack.qc
+entity/ts_mapglobals.qc
+entity/ts_model.qc
+entity/ts_objective_manager.qc
+entity/ts_objective_ptr.qc
+entity/ts_powerup.qc
+entity/ts_slowmotion.qc
+entity/ts_slowmotionpoint.qc
+entity/ts_teamescape.qc
+entity/ts_trigger.qc
+entity/ts_wingiver.qc
+entity/TSWorldGun.qc
+entity/TSThrownProjectile.qc
+entity/TSAmmoPack.qc
+
+../shared/player.qc
+../shared/inventory_logic.qc
+
+player.qc
+spectator.qc
+items.qc
+world_items.qc
+
+../../../src/botlib/include.src
+
+gamerules.qc
+gamerules_singleplayer.qc
+gamerules_multiplayer.qc
+client.qc
+init.qc
+
+// NOPE! Using our own copy now
+//../../../base/src/server/damage.qc
+damage.qc
+
+rules.qc
+../../../base/src/server/modelevent.qc
+
+spawn.qc
+
+
+
+//TAGGG - NEW
+// no server util.h/.qc, yet?
+//util.qc
+precache.qc
+//money.qc
+//spectator.qc
+
+
+
+../../../src/server/include.src
+../../../src/shared/include.src
+#endlist

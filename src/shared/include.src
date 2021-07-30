@@ -1,0 +1,127 @@
+ #includelist
+
+
+//TAGGG - NEW
+init.h
+
+entities.h
+flags.h
+// old player.h location
+//TAGGG - weapon_common REMOVAL.
+../../../base/src/shared/weapon_common.h
+
+
+//TAGGG - NEW
+//gamerules.h
+precache.h
+
+// Be included in your respective client/server progs early on instead for
+// less compile-order pickiness
+//ammo.h
+//weapons.h
+//player.h
+//powerup.h
+
+
+
+
+
+//TAGGG - NEW
+//player.h
+//animations.h
+inventory_logic.h
+event_enum.h
+event_custom.h
+//init.h
+effects.h
+
+
+// Nope!  Leave this one up to per-project.
+//player.qc
+
+init.qc
+animations.h
+animations.qc
+pmove.qc
+pmove_water.qc
+
+fx_blood.qc
+fx_breakmodel.qc
+fx_explosion.qc
+fx_gibhuman.qc
+../../../base/src/shared/fx_spark.qc
+fx_impact.qc
+
+// Nope!  Leave this one up to per-project.
+//inventory_logic.qc
+event_custom.qc
+effects.qc
+
+
+
+//TAGGG - NEW
+util.qc
+precache.qc
+//fx_impact.h
+//pmove.c
+//animations.c
+
+
+
+//items.h
+//weapons.h
+// <half life weapons files were here>
+
+weapons/weapon_karate.qc
+weapons/weapon_glock18.qc
+weapons/weapon_socom_mk23.qc
+weapons/weapon_socom_mk23_akimbo.qc
+weapons/weapon_deserteagle.qc
+weapons/weapon_fiveseven.qc
+weapons/weapon_fiveseven_akimbo.qc
+weapons/weapon_beretta.qc
+weapons/weapon_beretta_akimbo.qc
+weapons/weapon_akimbocolts.qc
+weapons/weapon_glock20.qc
+weapons/weapon_rugermk1.qc
+weapons/weapon_ragingbull.qc
+weapons/weapon_contenderg2.qc
+
+weapons/weapon_miniuzi.qc
+weapons/weapon_miniuzi_akimbo.qc
+weapons/weapon_mp5sd.qc
+weapons/weapon_mp5k.qc
+weapons/weapon_steyr_tmp.qc
+weapons/weapon_hk_pdw.qc
+weapons/weapon_ump.qc
+weapons/weapon_skorpion.qc
+weapons/weapon_skorpion_akimbo.qc
+weapons/weapon_mac10.qc
+
+weapons/weapon_m4a1.qc
+weapons/weapon_ak47.qc
+weapons/weapon_steyr_aug.qc
+weapons/weapon_m16a4.qc
+weapons/weapon_barrett_m82.qc
+
+weapons/weapon_benellim3.qc
+weapons/weapon_usas12.qc
+weapons/weapon_spas12.qc
+weapons/weapon_mossberg500.qc
+weapons/weapon_sawedoff.qc
+
+weapons/weapon_m61grenade.qc
+weapons/weapon_combatknife.qc
+weapons/weapon_m60.qc
+weapons/weapon_katana.qc
+weapons/weapon_sealknife.qc
+
+
+ammo.qc
+weapons.qc
+powerup.qc
+//TAGGG - weapon_common REMOVAL.
+../../../base/src/shared/weapon_common.qc
+input.qc
+
+#endlist
