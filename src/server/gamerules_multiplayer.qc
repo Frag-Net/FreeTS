@@ -1071,6 +1071,9 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	// for player/spectator entity-change reasons?
 	setPlayerMoneyDefault(pl);
 
+	// I guess this state counts as "dead"?
+	forceinfokey(pl, "*dead", "1");
+	
 	// we don't belong to any team
 	forceinfokey(pl, "*team", "0"); 
 	forceinfokey(pl, "*deaths", "0"); //ftos(pl.deaths));

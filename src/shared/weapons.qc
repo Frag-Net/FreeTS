@@ -39,8 +39,8 @@ void weapon_base_setWholeAttackDelay(player localPlayer, float amount){
 	// I think this is a good idea, right?
 	// or, is only for the client better?  Turned out to be the case somewhere else...
 	//#ifdef SERVER
-	//SAVE_STATE(localPlayer.w_attack_next);
-	//SAVE_STATE(localPlayer.w_attack_akimbo_next);
+	SAVE_STATE(localPlayer.w_attack_next);
+	SAVE_STATE(localPlayer.w_attack_akimbo_next);
 	//#endif
 }//END OF weapon_base_setWholeAttackDelay
 
@@ -50,7 +50,7 @@ void weapon_base_setLeftAttackDelay(player localPlayer, float amount){
 	
 	localPlayer.w_attack_next = amount;
 	// ???
-	//SAVE_STATE(localPlayer.w_attack_next);
+	SAVE_STATE(localPlayer.w_attack_next);
 }
 
 // akimbo secondary delay only?
@@ -58,7 +58,7 @@ void weapon_base_setRightAttackDelay(player localPlayer, float amount){
 	
 	localPlayer.w_attack_akimbo_next = amount;
 	
-	//SAVE_STATE(localPlayer.w_attack_akimbo_next);
+	SAVE_STATE(localPlayer.w_attack_akimbo_next);
 }
 
 
@@ -71,7 +71,7 @@ void weapon_base_setLeftAttackDelay_AtLeast(player localPlayer, float amount){
 	if(localPlayer.w_attack_next <= amount){
 		localPlayer.w_attack_next = amount;
 		
-		//SAVE_STATE(localPlayer.w_attack_next);
+		SAVE_STATE(localPlayer.w_attack_next);
 	}
 }
 
@@ -81,7 +81,7 @@ void weapon_base_setRightAttackDelay_AtLeast(player localPlayer, float amount){
 	if(localPlayer.w_attack_akimbo_next <= amount){
 		localPlayer.w_attack_akimbo_next = amount;
 		
-		//SAVE_STATE(localPlayer.w_attack_akimbo_next);
+		SAVE_STATE(localPlayer.w_attack_akimbo_next);
 	}
 }
 

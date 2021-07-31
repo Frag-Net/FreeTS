@@ -75,14 +75,9 @@ player::ReceiveEntity(float new, float fl)
 	}
 
 	float temp_flViewModelFrame;
-	float temp_nextViewModelAnimationTime;
 	
 	temp_flViewModelFrame = readfloat();
-	temp_nextViewModelAnimationTime = readfloat();
 	
-	
-	// If all of below is commented out, just keep this I guess?
-	nextViewModelAnimationTime = temp_nextViewModelAnimationTime;
 	
 	// TODO - any more sophistication needed?  laser-lock versions?  custom idle delays?  etc.?
 	
@@ -101,13 +96,14 @@ player::ReceiveEntity(float new, float fl)
 		// (Bad to assume that the plain variant was always the one called)
 		
 		printfline("***VIEWMODEL FRAME SYNC ISSUE CORRECTED: was:%d suggested:%d", pSeat->m_eViewModel.frame, temp_flViewModelFrame);
-		if(temp_nextViewModelAnimationTime <= 0 || temp_nextViewModelAnimationTime == 255){
-			temp_nextViewModelAnimationTime = 1;  // ???
-		}else{
-			temp_nextViewModelAnimationTime = temp_nextViewModelAnimationTime + time;
-		}
+		// NOTE - this var has been abandoned, Nuclide's w_idle_next is used instead.
+		//if(temp_nextViewModelAnimationTime <= 0 || temp_nextViewModelAnimationTime == 255){
+		//	temp_nextViewModelAnimationTime = 1;  // ???
+		//}else{
+		//	temp_nextViewModelAnimationTime = temp_nextViewModelAnimationTime + time;
+		//}
 		
-		TS_Weapons_ViewAnimation(temp_flViewModelFrame, temp_nextViewModelAnimationTime);
+		TS_Weapons_ViewAnimation(temp_flViewModelFrame, w_idle_next);
 	}
 	*/
 
@@ -535,11 +531,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	}
 	
 	WriteFloat(MSG_ENTITY, flViewModelFrame);
-	if(nextViewModelAnimationTime == -1 || nextViewModelAnimationTime == 0 || nextViewModelAnimationTime < time){
-		WriteFloat(MSG_ENTITY, -1);
-	}else{
-		WriteFloat(MSG_ENTITY, nextViewModelAnimationTime - time);
-	}
 	
 	
 
@@ -781,8 +772,7 @@ player::reset(BOOLEAN resetInventory){
 		// doing this in reset too to avoid a little glitch.
 		weaponSelectHighlightID = -1;
 		
-		nextViewModelAnimationTime = -1;
-		nextViewModelFreezeIdleTime = -1;
+		w_freeze_idle_next = -1;
 		
 		flOldZoom = 1;
 		flCurrentZoom = 1;
@@ -1217,19 +1207,12 @@ player::preThink(void){
 	// maybe rename this to "viewModelAnimationDuration"
 	// and let "nextViewModelAnimationTime" be re-used if we ever support idle animations like HL does?
 	// doubt that really though.
-	/*
-	if(nextViewModelAnimationTime != -1){
-		printfline("nextViewModelAnimationTime?? %.2f", (nextViewModelAnimationTime - time));
-	}
-	*/
-	if(nextViewModelAnimationTime != -1 && time >= nextViewModelAnimationTime){
-		nextViewModelAnimationTime = -1;
-		lasersightUnlockTime = FALSE; //forget me.
-	}
 	
-	// When a viewmodel's nextViewModelFreezeIdleTime has expired, force to the frozen idle frame.
-	if(nextViewModelFreezeIdleTime != -1 && time >= nextViewModelFreezeIdleTime){
-		nextViewModelFreezeIdleTime = -1;
+	// When a viewmodel's w_freeze_idle_next has expired, force to the frozen idle frame.
+	if(w_freeze_idle_next == 0){
+		w_freeze_idle_next = -1;
+		
+		
 		
 		if(inventoryEquippedIndex != -1){
 			dynaRef = ary_myWeapons[inventoryEquippedIndex];
@@ -1273,7 +1256,7 @@ player::preThink(void){
 			}
 			
 		}//END OF inventoryEquippedIndex
-	}//END OF nextViewModelFreezeIdleTime check
+	}//END OF w_freeze_idle_next check
 	
 }//preThink
 
@@ -1295,6 +1278,15 @@ player::postThink(void){
 	w_attack_next_nonet -= cltime_delta;
 	if(w_attack_next_nonet < 0)w_attack_next_nonet = 0;
 	*/
+	
+	// client-only, so it uses this.
+	// Why does this decrease way too fast if it uses input_timelength instead?
+	// Vars that are networked (see w_attack_akimbo_next in ts/src/shared/input.qc)
+	// don't appear to have that problem.
+	if(w_freeze_idle_next != -1){
+		w_freeze_idle_next = max(0, w_freeze_idle_next - cltime_delta);
+	}
+	
 }//postThink
 #endif
 

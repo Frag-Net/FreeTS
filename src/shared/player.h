@@ -24,6 +24,11 @@ class player:base_player
 	
 	//TAGGG - TODO! Put the PREDICTED_INT/FLOAT/whatever stuff on what needs it.
 	
+	// Determines if this player should be a fake-spectator with MoTD and buymenu (FALSE)
+	// or be a physical player that can equip weapons and interact with the world (TRUE).
+	// Jumping to fake-spectator on death will force this to FALSE too.
+	// Yet to be implemented.
+	BOOL spawned;
 	
 	#ifdef SSQC
 	
@@ -76,8 +81,6 @@ class player:base_player
 	vector recentLaserHitPos2;
 	
 	int recentLaserDistanceDisplay;
-	
-	BOOL lasersightUnlockTime;
 	
 	BOOL forceViewModelUpdate;
 	// NOTICE - individual dynamic weapons have "forceBodygroup1Submodel".  "prev_forceBodygroup1Submodel" is player-wide
@@ -157,12 +160,7 @@ class player:base_player
 
 
 
-	// !!! shared for now, WAS clientside only!
-	//When can the viewmodel pick an idle animaition? Interrupted by anything else of course.  Server need not apply.
-	float nextViewModelAnimationTime;
 	
-
-
 	//TODO - see how to handle saving / loadig these on the client's end.
 	//Server probably dosen't need to store config stuff at all.
 #ifdef CSQC
@@ -173,9 +171,13 @@ class player:base_player
 	// Come to think of it this might bring up a lot of other questions.
 	float clientTime_prev;
 	
-	// When should the viewmodel anim switch to the frozen idle anim?
-	float nextViewModelFreezeIdleTime;
 	
+	// IDEA: should lasersightUnlockTime be networked?  No idea,
+	// same for w_freeze_idle_next.
+	BOOL lasersightUnlockTime;
+	// When should the viewmodel anim switch to the frozen idle anim?
+	float w_freeze_idle_next;
+
 	//In the weapon select menu, what is currently being highlighted & picked if fire is pressed?
 	//Also used as a base for finding the "previous" or "next" weapon while mouse wheeling through
 	int weaponSelectHighlightID;

@@ -29,13 +29,6 @@ ClientGame_EventParse(float fHeader)
 	
 	switch (fHeader) {
 		
-	case EVENT_TS::PLAYER_DEATH:
-		// Require a tiny amount of time and a mouse release before a respawn, so that dying
-		// with the mouse held down isn't enough to trigger a respawn request.
-		pSeatLocal->m_bNeedPrimaryRelease = TRUE;
-		pSeatLocal->m_flReleaseTime = time + 0.15;
-	break;
-		
 	case EV_OBITUARY:
 		Obituary_Parse();
 		break;
@@ -127,7 +120,6 @@ ClientGame_EventParse(float fHeader)
 
 		FX_Impact_Melee(iType3, vOrigin3, vNormal3);
 		break;
-		
 	case EV_CHAT:
 		float fSender = readbyte();
 		float fTeam = readbyte();
@@ -167,7 +159,7 @@ ClientGame_EventParse(float fHeader)
 		HUD_WeaponPickupNotify(w);
 		break;
 	case EVENT_TS::SPAWN:
-		//time to read the config to send in the weapons one-by-one.
+		// time to read the config to send in the weapons one-by-one.
 		deployConfig();
 		
 		// so that any choice of weapon, same as before or even nothing, will still
@@ -180,6 +172,9 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::RESET_PLAYER:
 		int resetInventory = readbyte();
 		EV_TS_resetPlayer(pl, resetInventory);
+		break;
+	case EVENT_TS::PLAYER_DEATH:
+		EV_PlayerDeath();
 		break;
 	//case EVENT_TS::PLAY_INSERT_SHELL_SND:
 	//	EV_TS_PlayInsertShellSound(pl);
@@ -202,7 +197,9 @@ ClientGame_EventParse(float fHeader)
 		SoundPitched_Receive();
 		break;
 	/*
-	//can this even happen ...?
+	// can this even happen anymore?
+	// If a drop-weapon call can be signaled by the server, not shared with the client & server
+	// reaching a drop call independently, then yes.
 	case EVENT_TS::DROP_WEAPON:
 		EV_TS_playerDropWeapon(pl);
 		break;

@@ -78,7 +78,6 @@ Scores_DrawTeam(player pl, vector pos)
 			temp = getplayerkeyvalue(i, "ping");
 			l = stringwidth(temp, FALSE, [20,20]);
 
-
 //TAGGG - IMPORTANT!
 // I don't know if TS does this too, but its scoreboard screen looks a lot like Half-Life's
 // so keeping this for now?

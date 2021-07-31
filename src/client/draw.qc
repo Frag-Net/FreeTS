@@ -128,7 +128,11 @@ drawPainFlash(void)
 void
 ClientGame_DamageDraw(void){
 	
-	if (pSeat->m_flDamageAlpha <= 0.0) {
+	// No alpha, or dead?  No pain drawing
+	if(
+		pSeat->m_flDamageAlpha <= 0.0 ||
+		getplayerkeyfloat(pSeat->m_ePlayer.entnum - 1, "*dead") == 1
+	){
 		return;
 	}
 

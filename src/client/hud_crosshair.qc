@@ -95,15 +95,23 @@ void HUD_DrawCrosshair(void) {
 					drawLaserDots = 2;
 				}
 				
-				// Is this a condition that forbids drawing hte laser dot on the screen?
+				// Is this a condition that forbids drawing the laser dot on the screen?
 				if(
+				  /*
 				  !pl.isReloading &&
-				  !(pSeat->m_eViewModel.frame == gunRef.iAnim_Deploy_Index && pl.w_attack_next > 0) &&
+				  !(
+				    pSeat->m_eViewModel.frame == gunRef.iAnim_Deploy_Index &&
+				    pl.w_attack_next > 0
+				   ) &&
 				  !pl.lasersightUnlockTime
+				  */
+				  
+				  !(pl.isReloading || (pl.lasersightUnlockTime && pl.w_idle_next <= 0))
+				  
 				){
 					trackLaserDots = FALSE;  // force them to the center on the screen.
 				}else{
-					// Track their positions on the ingame world.   Weird, I know.
+					// Track their positions on the ingame world. Weird, I know.
 					trackLaserDots = TRUE;
 				}
 			}//END OF lasersight check

@@ -48,6 +48,9 @@ void TS_resetPlayer(player localPlayer, BOOLEAN resetInventory)
 void EV_TS_resetPlayer(player localPlayer, BOOLEAN resetInventory)
 #endif
 
+#ifdef CLIENT
+void EV_PlayerDeath(void)
+#endif
 
 
 #ifdef CSQC

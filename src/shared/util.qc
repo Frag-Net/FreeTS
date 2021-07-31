@@ -352,14 +352,13 @@ void
 TS_Weapons_ViewAnimation(int i, float fDuration)
 {
 	//printfline("TS_Weapons_ViewAnimation: %i %.2f", i, fDuration);
-	
 	player pl = (player)self;
+	
+	pl.w_idle_next = fDuration;
 #ifdef CLIENT
 	TS_View_PlayAnimation(i, fDuration);
 #else
 	pl.flViewModelFrame = i;
-// NOT AN AMAZING IDEA.  Quick for testing
-	pl.nextViewModelAnimationTime = time + fDuration;
 #endif
 	pl.weapontime = 0.0f;
 }
@@ -369,12 +368,12 @@ TS_Weapons_ViewAnimation_noLaserLock(int i, float fDuration)
 {
 	//printfline("TS_Weapons_ViewAnimation_noLaserLock: %i %.2f", i, fDuration);
 	player pl = (player)self;
+	
+	pl.w_idle_next = fDuration;
 #ifdef CLIENT
 	TS_View_PlayAnimation_noLaserLock(i, fDuration);
 #else
 	pl.flViewModelFrame = i;
-// NOT AN AMAZING IDEA.  Quick for testing
-	pl.nextViewModelAnimationTime = time + fDuration;
 #endif
 	pl.weapontime = 0.0f;
 }
@@ -385,12 +384,12 @@ TS_Weapons_ViewAnimation_EndIdle(int i, float fDuration)
 {
 	//printfline("TS_Weapons_ViewAnimation_EndIdle: %i %.2f", i, fDuration);
 	player pl = (player)self;
+	
+	pl.w_idle_next = fDuration;
 #ifdef CLIENT
 	TS_View_PlayAnimation_EndIdle(i, fDuration);
 #else
 	pl.flViewModelFrame = i;
-// NOT AN AMAZING IDEA.  Quick for testing
-	pl.nextViewModelAnimationTime = time + fDuration;
 #endif
 	pl.weapontime = 0.0f;
 }
@@ -400,12 +399,12 @@ TS_Weapons_ViewAnimation_EndIdle_custom(int i, float fDuration, float fIdleEndOf
 {
 	//printfline("TS_Weapons_ViewAnimation_EndIdle_custom: %i %.2f %.2f", i, fDuration, fIdleEndOffset);
 	player pl = (player)self;
+	
+	pl.w_idle_next = fDuration;
 #ifdef CLIENT
 	TS_View_PlayAnimation_EndIdle_custom(i, fDuration, fIdleEndOffset);
 #else
 	pl.flViewModelFrame = i;
-// NOT AN AMAZING IDEA.  Quick for testing
-	pl.nextViewModelAnimationTime = time + fDuration;
 #endif
 	pl.weapontime = 0.0f;
 }
@@ -439,9 +438,8 @@ TS_View_PlayAnimation(int iSequence, float fDuration){
 	//MODDD
 	//viewModelFrameChangedRecently = 1;
 	
-	pl.nextViewModelFreezeIdleTime = -1;  //assume this?
+	pl.w_freeze_idle_next = -1;  //assume this?
 	pl.lasersightUnlockTime = FALSE;
-	pl.nextViewModelAnimationTime = time + fDuration;
 }
 
 void
@@ -451,9 +449,8 @@ TS_View_PlayAnimation_noLaserLock(int iSequence, float fDuration){
 	pl.weapontime = 0.0f;
 	SAVE_STATE(pl.weapontime);
 	
-	pl.nextViewModelFreezeIdleTime = -1;  //assume this?
+	pl.w_freeze_idle_next = -1;  //assume this?
 	pl.lasersightUnlockTime = TRUE;
-	pl.nextViewModelAnimationTime = time + fDuration;
 }
 
 
@@ -466,9 +463,8 @@ TS_View_PlayAnimation_EndIdle(int iSequence, float fDuration){
 	
 	// ?? Do we want to do this or not then
 	pl.lasersightUnlockTime = FALSE;  //reset
-	pl.nextViewModelAnimationTime = time + fDuration;
 	// unspecified fIdleEndOffset time?  default to 0 (exactly at animation end)
-	pl.nextViewModelFreezeIdleTime = pl.nextViewModelAnimationTime + 0 + getViewModelAnimExtraDuration();
+	pl.w_freeze_idle_next = fDuration + 0 + getViewModelAnimExtraDuration();
 }
 
 
@@ -480,8 +476,7 @@ TS_View_PlayAnimation_EndIdle_custom(int iSequence, float fDuration, float fIdle
 	SAVE_STATE(pl.weapontime);
 
 	pl.lasersightUnlockTime = FALSE;  //reset
-	pl.nextViewModelAnimationTime = time + fDuration;
-	pl.nextViewModelFreezeIdleTime = pl.nextViewModelAnimationTime + fIdleEndOffset + getViewModelAnimExtraDuration();
+	pl.w_freeze_idle_next = fDuration + fIdleEndOffset + getViewModelAnimExtraDuration();
 }
 
 #endif

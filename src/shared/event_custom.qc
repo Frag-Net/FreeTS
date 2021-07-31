@@ -119,8 +119,8 @@ void TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOLEAN useAkimbo ) 
 
 
 
-//This will be serverside only.  Clientside should never call this.
-//TAGGG - TODO.  Would making this shared be OK?  Seems to have worked for grenades and throwing knives
+// This will be serverside only.  Clientside should never call this.
+// TODO.  Would making this shared be OK?  Seems to have worked for grenades and throwing knives
 // on removing themselves on running out of ammo.
 // Just remember that spawning the actual entitiy won't be happening clientside in any form.
 #ifdef SSQC
@@ -135,7 +135,7 @@ void TS_Weapon_Drop() {
 	// in case vOnUnEquip alters the weapon equipped, like a grenade switching out.
 	int currentWeaponMem = pl.inventoryEquippedIndex;
 	
-	//TAGGG - like equipping a new weapon, we have to let the existing equipped
+	// like equipping a new weapon, we have to let the existing equipped
 	// weapon know that it's about to be unequipped.
 	if(currentWeaponMem != -1){
 		pl.dropWeapon(currentWeaponMem, FALSE);
@@ -151,7 +151,7 @@ void TS_Weapon_Drop() {
 
 
 
-//TAGGG - CRITICAL!  TS_playerEquippedWeapon methods dummied out to stop conflicts with
+// CRITICAL!  TS_playerEquippedWeapon methods dummied out to stop conflicts with
 // the new Nuclide way
 
 void TS_playerEquippedWeapon_Shared(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo){
@@ -213,7 +213,7 @@ void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN 
 
 #endif
 #ifdef SSQC
-//that's it really serverside.
+// that's it really serverside.
 int _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo){
 	player pl = localPlayer;
 	
@@ -233,11 +233,11 @@ void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN 
 	
 }
 
-//This is a received call from the client.
-//We do need to let the server update first, which then tells the client
-//of the updated state.  Even though the client initiated the call in this case.
-//The server can initiate the call too.
-//Either side can call "TS_playerEquippedWeapon" to get the orders right.
+// This is a received call from the client.
+// We do need to let the server update first, which then tells the client
+// of the updated state.  Even though the client initiated the call in this case.
+// The server can initiate the call too.
+// Either side can call "TS_playerEquippedWeapon" to get the orders right.
 void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOLEAN useAkimbo){
 	player pl = (player)self;
 	
@@ -246,8 +246,6 @@ void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOLEAN useAkimbo){
 
 
 #endif
-
-
 
 
 
@@ -279,6 +277,7 @@ void EV_TS_PlayInsertShellSound(player localPlayer){
 
 
 
+
 // The server may want to tell the client to reset its viewmodel.
 // DUMMIED - nevermind that for now, assuming the logic is called from server/client
 // individually like a lot of weapon's logic.
@@ -292,15 +291,20 @@ void TS_resetViewModel(player localPlayer){
 	msg_entity = localPlayer;
 	multicast( [0,0,0], MULTICAST_ONE );
 	*/
+	
+	// IDEA:
+	// I don't think resetting w_idle_next and w_next_attack here would be very
+	// helpful.  Same for in EV_TS_resetViewModel.
 }
 #else
 //CLIENT
 void TS_resetViewModel(player localPlayer){
-	localPlayer.lasersightUnlockTime = FALSE;  //reset
 	EV_TS_resetViewModel();
 }
 void EV_TS_resetViewModel(void){
-	pSeat->m_iLastWeapon = -1;  //any weapon slot choice will refresh the view model.
+	player pl = (player)self;
+	pSeat->m_iLastWeapon = -1;  // any weapon slot choice will refresh the view model.
+	pl.lasersightUnlockTime = FALSE;
 	resetViewModel();
 }
 #endif
@@ -345,6 +349,24 @@ void EV_TS_resetPlayer(player localPlayer, BOOLEAN resetInventory){
 #endif
 
 
+#ifdef CLIENT
+// Called by the GameRules, PlayerDeath, for the client to do something as soon as possible.
+void EV_PlayerDeath(void){
+	printfline("EV_PlayerDeath");
+	// Require a tiny amount of time and a mouse release before a respawn, so that dying
+	// with the mouse held down isn't enough to trigger a respawn request.
+	pSeatLocal->m_bNeedPrimaryRelease = TRUE;
+	pSeatLocal->m_flReleaseTime = time + 0.15;
+	
+	// Unfortunately not as effective as it may look. 
+	// On the player using "kill" in console, a CSQC_Parse_Damage call happens shortly after
+	// this PlayerDeath one, somehow.  Stopping damage-drawing on the "*dead" key being 1 works.
+	pSeat->m_flDamageAlpha = 0;
+}
+#endif
+
+
+
 
 
 
@@ -360,7 +382,7 @@ void _TS_playerDropWeapon(player localPlayer){
 	
 }
 */
-//TAGGG - TODO.  Do anything clientside here too, maybe?  Unsure.
+// TODO.  Do anything clientside here too, maybe?  Unsure.
 void TS_playerDropWeapon(void){
 	sendevent("TS_playerDropWeapon", "");
 }//END OF TS_playerDropWeapon
@@ -446,9 +468,9 @@ void _TS_playerChangeFiremode(void ) {
 		weapondata_gun_t* basicPointer = (weapondata_gun_t*) pl.getEquippedWeaponData();
 		weapondata_gun_t basicRef = *(basicPointer);
 		
-		// If the bitmask for available firemodes for this weapon is just a flat "0" (none specified?)
-		// OR our bitmask matches the current firemode exactly (only one bit present), there is no point
-		// in trying to switch firemodes.
+		// If the bitmask for available firemodes for this weapon is just a flat "0" (none
+		// specified?) OR our bitmask matches the current firemode exactly (only one bit present),
+		// there is no point in trying to switch firemodes.
 		if(basicRef.iBitsFireModes == 0){
 			return;
 		}
@@ -605,7 +627,6 @@ void _TS_playerUseItems(void){
 				//sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_PLAYER_SHARED, 0);
 				
 				/*
-				//TAGGG
 				// unicast demo .  Why does the sound play clientside the first few times anyway?
 				// It shouldn't ever, with the clientside-call here disabled.
 				#ifdef CLIENT
@@ -653,7 +674,7 @@ void TS_playerUsePowerup(void){
 }
 
 
-//TAGGG - TODO.
+// TODO.
 // Applies the currently equipped player powerup if there is one.
 void _TS_playerUsePowerup(void){
 	player pl = (player)self;
@@ -691,7 +712,8 @@ void TS_playerCallAlt1(void){
 }
 
 
-// middle mouse wheel?  Use for some stunts, at least ones that don't necessarily involve being mid-air.
+// middle mouse wheel?  Use for some stunts, at least ones that don't necessarily involve being
+// mid-air.
 // double-tapping space does that.  I think?
 void _TS_playerCallAlt1( void ) {
 	player pl = (player)self;
@@ -747,7 +769,7 @@ void _TS_playerCallAlt2(void){
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 //!!!! SERVER EVENTS ONLY BELOW HERE
 #ifdef SSQC
 
@@ -781,8 +803,8 @@ void CSEv_TS_Debug_getAngle_(void ) {
 
 //NOTICE - these event methods are server-side only.
 // anything in the "#ifdef S..." something. I dunno.
-// The client sends a variety of messages at one time to the server to see if the player can really afford what they are
-// requesting.  Secure... probably.
+// The client sends a variety of messages at one time to the server to see if the player can really
+// afford what they are requesting.  Secure... probably.
 
 
 //TODO - PROTOTYPE THIS OR SET IT UP. whatever.
@@ -799,7 +821,8 @@ void CSEv_PlayerBuyAmmo_TS_i( int iAmmoTypeID, int iAmmoAmount ) {
 	if(iAmmoTypeID != -1){
 		ammodata_t ammoRef = *ary_ammoData[iAmmoTypeID];
 		
-		//iActualAmmoAmount must be between 0 and ammoRef.iMax, inclusive on both. If the player had 0 ammo to begin with.
+		// iActualAmmoAmount must be between 0 and ammoRef.iMax, inclusive on both. If the player had
+		// 0 ammo to begin with.
 		if(pl.ary_ammoTotal[iAmmoTypeID] + iActualAmmoAmount > ammoRef.iMax){
 			iActualAmmoAmount = ammoRef.iMax - pl.ary_ammoTotal[iAmmoTypeID];
 		}
@@ -858,9 +881,10 @@ void CSEv_PlayerBuyAmmo_TS_i( int iAmmoTypeID, int iAmmoAmount ) {
 
 
 
-//This is used to signify that we're done sending weapon config over and want to pick a weapon to start equipped with.
-//Order appears to be the highest slot number first, unless there is a weapon in slot 3 (small machine guns).
-//Then it gets equipped instead.
+// This is used to signify that we're done sending weapon config over and want to pick a weapon to
+// start equipped with.
+// Order appears to be the highest slot number first, unless there is a weapon in slot 3 (small
+// machine guns). Then it gets equipped instead.
 void CSEv_PlayerBuyWeapon_TS_end_( void ) {
 	player pl = (player)self;
 	
@@ -868,8 +892,9 @@ void CSEv_PlayerBuyWeapon_TS_end_( void ) {
 	playerEquipIdeal(pl);
 }
 
-//Support upgrades, akimbo, etc. Include ammo if necessary!
-//ACTUALLY... ammo will be signaled for purchase separately. The client still determines how much ammo to buy though.
+// Support upgrades, akimbo, etc. Include ammo if necessary!
+// ACTUALLY... ammo will be signaled for purchase separately. The client still determines how much 
+// ammo to buy though.
 void CSEv_PlayerBuyWeapon_TS_ii( int iWeaponTypeID, int iBuyOpts ) {
 	player pl = (player)self;
 	printf("Buying weaponTypeID:%i\n", iWeaponTypeID);
@@ -895,14 +920,18 @@ void CSEv_PlayerBuyWeaponThw_TS_iii( int iWeaponTypeID, int iBuyOpts, int iCount
 
 
 
-//Goes through the available weapons and picks what would make sense to equip.
-//TAGGG TODO - SUGGESTION. Don't equip a weapon automatically if it's out of ammo,
+
+
+// Goes through the available weapons and picks what would make sense to equip.
+// SUGGESTION. Don't equip a weapon automatically if it's out of ammo,
 // assuming we have an option that isn't out of ammo.
-//TAGGG TODO MAJOR - check to see what place was previously selected, and then look to see where we can grab a new weapon if that changes things.
-//That is, we have a few cases with special circumstances.
-//If a singular version of an akimbo weapon was dropped, equip it's now singular version (1 of the two weapons left in inventory).
-//I think that's it actually.
-//nah, just check for that special case when dropping a weapon
+// MAJOR - check to see what place was previously selected, and then look to see where we can grab
+// a new weapon if that changes things.
+// That is, we have a few cases with special circumstances.
+// If a singular version of an akimbo weapon was dropped, equip it's now singular version (1 of the
+// two weapons left in inventory).
+// I think that's it actually.
+// nah, just check for that special case when dropping a weapon
 void playerEquipIdeal(player localPlayer){
 
 	//go through all the players weapons. whichever has the highest slot number, except for 5, gets picked
@@ -954,7 +983,7 @@ void playerEquipIdeal(player localPlayer){
 	// Throwing knives can use either version here though, but everything works with _shared.
 	// Plus changes to what's serverside are sent to the client soon enough anyway, doing so here
 	// seems unnecessary.
-	//TAGGG - TODO, CRITICAL.  Check other places.
+	// TODO, CRITICAL.  Check other places.
 	// Could anywhere else benefit from TS_playerEquippedWeapon being changed to TS_playerEquippedWeapon_Shared ?
 	
 	TS_playerEquippedWeapon_Shared(pl, weaponDynamicID_toEquip, TRUE);
