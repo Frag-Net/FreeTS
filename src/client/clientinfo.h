@@ -8,7 +8,7 @@
 // WARNING: included before the gamemod's client defs.h file.  Beware if anything
 // important is missing from here (context) because of that.
 
-// abc def
+// abc
 
 typedef struct ClientInfo_s{
 	
