@@ -94,6 +94,8 @@ ClientGame_ConsoleCommand(void)
 		
 		//If we're in spectator mode we can do this
 		//  no-screen check, not necessary probably:  pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE && 
+		
+		printfline("WOO HOO YEA BOY %s", getplayerkeyvalue( player_localnum, "*spec" ));
 		if(getplayerkeyvalue( player_localnum, "*spec" ) != "0"){
 			//we can show it!
 			VGUI_ChangeScreen(VGUI_SCREEN::BUYSIDEMENU);

@@ -14,22 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-vector g_vecHUDNums[6] =
-{
-	[168 / 256, 72 / 128],
-	[188 / 256, 72 / 128],
-	[208 / 256, 72 / 128],
-	[168 / 256, 92 / 128],
-	[188 / 256, 92 / 128],
-	[208 / 256, 92 / 128]
-};
-
-
-
-
 var float fHUDWeaponLast;
-
-
 
 typedef struct {
 	string sSprite;
@@ -61,7 +46,6 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 {
 	player pl = (player)pSeat->m_ePlayer;
 	
-	
 	// set to TRUE if we start at an invalid range, so that we may include the first valid of any sort.
 	BOOLEAN canAcceptSame = FALSE;
 	
@@ -81,8 +65,6 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 	
 	int currentSlot = -1;
 	
-	
-	
 	if(weaponID_toStartFrom != -1){
 		// Get what slot the currently equipped weapon is on.
 		// If it doesn't match the forcedSlot (if applicable: 1-5 keys forcing one),
@@ -92,8 +74,6 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 		// Being in akimbo and requesting a lost other than 5 is also enough to force a reset of weaponID
 		// to start from.
 		dynaRef = pl.ary_myWeapons[weaponID_toStartFrom];
-		
-		
 		
 		if(!freeSlotMovement ){
 			
@@ -113,7 +93,6 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 				//notice: picking an akimbo weapon choice while a non-akimbo weapon is selected
 				// will trigger this too, since the forcedSlot will be 5. non-akimbo weapons never have that.
 				
-				
 				if(currentSlot != forcedSlot){
 					weaponID_toStartFrom = -1; //hack to start at #0 instead
 					canAcceptSame = FALSE;
@@ -123,9 +102,7 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 			pl.weaponSelectHighlightAkimbo = (forcedSlot == 5);
 			currentSlot = forcedSlot;
 		}else{
-		
-		
-		
+			
 			if(!pl.weaponSelectHighlightAkimbo){
 			
 				//So we have a place to start looking from. Off we go, find the next weapon that belongs to this same slot.
@@ -171,7 +148,6 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 	if(canAcceptSame && weaponID_toStartFromThisSlot != -1){
 		weaponID_toStartFromThisSlot -= 1;
 	}
-	
 	
 	BOOLEAN scheduleTermination = FALSE;
 	//int lastWeaponToCheck = 0;
@@ -229,9 +205,7 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 					}
 					return i;
 				}
-				
 			}
-			
 		}
 		
 		//Moving on to check a different slot?  Reset weaponID_toStartFromThisSlot then
@@ -270,7 +244,6 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 		return pl.ary_myWeapons_softMax-1;
 	}
 	
-	
 	weapondynamic_t dynaRef;
 		
 	weapondata_basic_t* weaponBasicP;
@@ -278,9 +251,7 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 	
 	int currentSlot = -1;
 	
-	
 	//printfline("HUD_DrawWeaponSelect_NextItem weaponID_toStartFrom:%i", weaponID_toStartFrom);
-	
 	
 	if(weaponID_toStartFrom != -1){
 		dynaRef = pl.ary_myWeapons[weaponID_toStartFrom];
@@ -309,7 +280,6 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 				}
 			}
 			
-			
 			if(pl.weaponSelectHighlightAkimbo != (forcedSlot==5) ){
 				weaponID_toStartFrom = 1; //hack to start at #max instead
 				canAcceptSame = FALSE;
@@ -321,7 +291,6 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 			pl.weaponSelectHighlightAkimbo = (forcedSlot == 5);
 			currentSlot = forcedSlot;
 		}else{
-		
 			
 			if(!pl.weaponSelectHighlightAkimbo){
 			
@@ -366,8 +335,6 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 		currentSlot = forcedSlot;
 	}
 	
-	
-	
 	//we only use the toStartFrom offset for finding the next/previous weapon in the same slot.
 	//After that we start from the beginning/end of the next/previous slot accordingly for searching.
 	int weaponID_toStartFromThisSlot = weaponID_toStartFrom;
@@ -377,7 +344,6 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 	
 	BOOLEAN scheduleTermination = FALSE;
 	//int lastWeaponToCheck = 0;
-	
 	
 	//printfline("weaponID_toStartFromThisSlot:%i, canAcceptSame:%d", weaponID_toStartFromThisSlot, canAcceptSame);
 	
@@ -439,12 +405,8 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 					}
 					return i;
 				}
-				
-				
 			}
-			
 		}
-		
 		
 		//Moving on to check a different slot?  Reset weaponID_toStartFromThisSlot then
 		//	hack to make it start at ary_myWeapons_softMax.  That is not having "- 1".
@@ -459,7 +421,6 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 			
 		}else{
 			slotOffset -= 1;  //keep the slot exactly the same
-			
 			scheduleTermination = TRUE;
 		}
 	}//END OF LOOP THROUGH SLOTS
@@ -471,12 +432,13 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 }//HUD_DrawWeaponSelect_NextItem
 
 
-
-
 void
 HUD_DrawWeaponSelect_Forward(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
+	if(pl.iState != PLAYER_STATE::SPAWNED){
+		return;
+	}
 	
 	if(pl.weaponSelectHighlightID == -1){
 		//pick the weapon after then
@@ -510,6 +472,9 @@ void
 HUD_DrawWeaponSelect_Back(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
+	if(pl.iState != PLAYER_STATE::SPAWNED){
+		return;
+	}
 	
 	if(pl.weaponSelectHighlightID == -1){
 		//pick the weapon after then
@@ -548,6 +513,11 @@ HUD_DrawWeaponSelect_Back(void)
 void
 HUD_DrawWeaponSelect_Trigger(void)
 {
+	player pl = (player)pSeat->m_ePlayer;
+	if(pl.iState != PLAYER_STATE::SPAWNED){
+		return;
+	}
+	
 	//TAGGG - TODO - was commented out in old FreeTS, doing so here too.
 	// But figure out what it needs to do, this likely wasn't pointless
 	/*
@@ -578,7 +548,7 @@ HUD_DrawWeaponSelect_Trigger(void)
 
 
 
-//Cheap way to instantly close the weapon select area
+// Cheap way to instantly close the weapon select area
 BOOLEAN
 HUD_CloseWeaponSelect(BOOL playOffSound)
 {
@@ -638,59 +608,7 @@ HUD_DrawWeaponSelect(void)
 	
 	drawPlayerInventory_TopBar(-1, FALSE);
 	
-	// FreeHL WAY!
-	/*
-	player pl = (player)pSeat->m_ePlayer;
-	if (!pl.inventoryEquippedIndex) {
-		return;
-	}
-	if (pSeat->m_flHUDWeaponSelectTime < time) {
-		if (pSeat->m_iHUDWeaponSelected) {
-			sound(pSeat->m_ePlayer, CHAN_ITEM, "common/wpn_hudoff.wav", 0.5, ATTN_NONE);
-			pSeat->m_iHUDWeaponSelected = 0;
-		}
-		return;
-	}
-
-	vector vecPos = g_hudmins + [16,16];
-
-	int b;
-	int wantslot = g_weapons[pSeat->m_iHUDWeaponSelected].slot;
-	int wantpos = g_weapons[pSeat->m_iHUDWeaponSelected].slot_pos;
-	for (int i = 0; i < 5; i++) {
-		int slot_selected = 0;
-		vecPos[1] = g_hudmins[1] + 16;
-		HUD_DrawWeaponSelect_Num(vecPos, i);
-		vecPos[1] += 20;
-		for (int x = 0; x < 32; x++) {
-			if (i == wantslot) {
-				slot_selected = TRUE;
-				if (x == wantpos) {
-					// Selected Sprite
-					Weapons_HUDPic(pSeat->m_iHUDWeaponSelected, 1, vecPos, 1.0f);
-					drawsubpic(vecPos, [170,45], g_hud3_spr, 
-								[0,180/256], [170/256,45/256], g_hud_color, 1, DRAWFLAG_ADDITIVE);
-					vecPos[1] += 50;
-				} else if ((b=HUD_InSlotPos(i, x)) != -1) {
-					// Unselected Sprite
-					Weapons_HUDPic(b, 0, vecPos, 1.0f);
-					vecPos[1] += 50;
-				}
-			} else if (HUD_InSlotPos(i, x) != -1) {
-				HUD_DrawWeaponSelect_Num(vecPos, 5);
-				vecPos[1] += 25;
-			}
-		}
-
-		if (slot_selected == TRUE) {
-			vecPos[0] += 175;
-		} else {
-			vecPos[0] += 25;
-		}
-	}
-	*/
-	
-}//END OF HUD_DrawWeaponSelect
+}//HUD_DrawWeaponSelect
 
 
 
@@ -700,9 +618,8 @@ HUD_DrawWeaponSelect(void)
 BOOLEAN
 HUD_DrawWeaponSelect_CheckClick(void)
 {
-	if(getplayerkeyvalue(player_localnum, "*spec") != "0"){
-		//some form of spectator?  NOT ALLOWED.
-		//printfline("HEY there closing my weapon select 2");
+	player pl = (player)pSeat->m_ePlayer;
+	if(pl.iState != PLAYER_STATE::SPAWNED){
 		HUD_CloseWeaponSelect(FALSE);
 		return FALSE;
 	}
@@ -745,45 +662,23 @@ HUD_DrawWeaponSelect_Last(void)
 	*/
 }
 
-/*
-void
-HUD_DrawWeaponSelect_Num(vector vecPos, float fValue)
-{
-	drawsubpic(vecPos, [20,20], g_hud7_spr, g_vecHUDNums[fValue], [20/256, 20/128], g_hud_color, 1, DRAWFLAG_ADDITIVE);
-}
-*/
 
-/*
-int
-HUD_InSlotPos(int slot, int pos)
+
+void
+HUD_SlotSelect(int slot)
 {
 	player pl = (player)pSeat->m_ePlayer;
-	for (int i = 1; i < g_weapons.length; i++) {
-		if (g_weapons[i].slot == slot && g_weapons[i].slot_pos == pos) {
-			if (pl.g_items & g_weapons[i].id) {
-				return i;
-			} else {
-				return (-1);
-			}
-		}
+	if(pl.iState != PLAYER_STATE::SPAWNED){
+		return;
 	}
-	return (-1);
-}
-*/
-
-
-
-
-
-void
-TS_SelectSlot(int slotPicked)
-{
-	player pl = (player)pSeat->m_ePlayer;
 	
+	int slotPicked = slot+1;
+	
+		
 	// Keep track of the currently open slot. Navigate through it...
-	// move to another slot if needed...
+	// move to another slot if needed
 	
-	
+	//printlinef("HUD_SlotSelect: %i maxweap:%i classname:%s\n", slot, pl.ary_myWeapons_softMax, pl.classname);
 	//printfline("weapon slot currently highlighted: %i", pl.weaponSelectHighlightID);
 	
 	if(pl.weaponSelectHighlightID == -1){
@@ -810,75 +705,5 @@ TS_SelectSlot(int slotPicked)
 		}
 	}
 	
-}//TS_SelectSlot
-
-
-void
-HUD_SlotSelect(int slot)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	
-	//printlinef("HUD_SlotSelect: %i maxweap:%i classname:%s\n", slot, pl.ary_myWeapons_softMax, pl.classname);
-	
-	if(getplayerkeyvalue(player_localnum, "*spec") != "0"){
-		// A spectator?  Stop.
-		return;
-	}
-	
-	//TAGGG - redirect.
-	TS_SelectSlot(slot + 1);
-	
-	
-	/*
-	player pl = (player)pSeat->m_ePlayer;
-	int curslot = g_weapons[pSeat->m_iHUDWeaponSelected].slot;
-	int i;
-
-	if (g_textmenu != "") {
-		Textmenu_Input(slot);
-		return;
-	}
-
-	// hack to see if we have ANY weapons at all.
-	if (!pl.inventoryEquippedIndex) {
-		return;
-	}
-
-	if (pSeat->m_flHUDWeaponSelectTime < time) {
-		sound(pSeat->m_ePlayer, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
-	} else {
-		sound(pSeat->m_ePlayer, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
-	}
-
-	// weren't in that slot? select the first one then
-	if (curslot != slot) {
-		for (i = 1; i < g_weapons.length; i++) {
-			if (g_weapons[i].slot == slot && pl.g_items & g_weapons[i].id) {
-				pSeat->m_iHUDWeaponSelected = i;
-				pSeat->m_flHUDWeaponSelectTime = time + 3;
-				break;
-			}
-		}
-	} else {
-		int first = -1;
-		for (i = 1; i < g_weapons.length; i++) {
-			if (g_weapons[i].slot == slot && pl.g_items & g_weapons[i].id) {
-				if (i < pSeat->m_iHUDWeaponSelected && first == -1) {
-					first = i;
-				} else if (i > pSeat->m_iHUDWeaponSelected) {
-					first = -1;
-					pSeat->m_iHUDWeaponSelected = i;
-					pSeat->m_flHUDWeaponSelectTime = time + 3;
-					break;
-				}
-			}
-		}
-
-		if (first > 0) {
-			pSeat->m_iHUDWeaponSelected = first;
-			pSeat->m_flHUDWeaponSelectTime = time + 3;
-		}
-	}
-	*/
 }
 

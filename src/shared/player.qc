@@ -149,6 +149,9 @@ player::ReceiveEntity(float new, float fl)
 	
 	
 	/////////////////////////////////////////////////////
+	
+	iState = readfloat();
+	
 	int inventoryEquippedIndex_temp = readbyte();
 	
 	// Overflow can do funny things. -1 comes as 255 because thats how bits work
@@ -291,7 +294,8 @@ player::PredictPreFrame(void)
 	SAVE_STATE(ammo_rpg_state);
 	SAVE_STATE(mode_tempstate);
 	*/
-
+	
+	SAVE_STATE(iState);
 	SAVE_STATE(inventoryEquippedIndex);
 	SAVE_STATE(weaponEquippedAkimbo);
 	SAVE_STATE(w_attack_akimbo_next);
@@ -356,6 +360,7 @@ player::PredictPostFrame(void)
 	ROLL_BACK(mode_tempstate);
 	*/
 	
+	ROLL_BACK(iState);
 	ROLL_BACK(inventoryEquippedIndex);
 	ROLL_BACK(weaponEquippedAkimbo);
 	ROLL_BACK(w_attack_akimbo_next);
@@ -465,6 +470,7 @@ player::EvaluateEntity(void)
 	SAVE_STATE(anim_bottom);
 	SAVE_STATE(anim_bottom_time);
 	
+	SAVE_STATE(iState);
 	SAVE_STATE(inventoryEquippedIndex);
 	SAVE_STATE(weaponEquippedAkimbo);
 	SAVE_STATE(w_attack_akimbo_next);
@@ -574,6 +580,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	// OR if a particular weapon states to update its features, perhaps sending itself
 	// through
 	
+	WriteFloat(MSG_ENTITY, iState);
 	WriteByte(MSG_ENTITY, inventoryEquippedIndex );
 	WriteByte(MSG_ENTITY, weaponEquippedAkimbo );
 	WriteFloat(MSG_ENTITY, w_attack_akimbo_next );
@@ -657,6 +664,8 @@ void player::player(void){
 	// just in case?
 	this.classname = "player";
 	
+	// reasonable default?
+	iState = PLAYER_STATE::NOCLIP;
 	
 #ifdef SSQC
 	money = 0;  //safety?
@@ -688,8 +697,11 @@ void player::player(void){
 	
 	flKarateBlockCooldown = 0;
 	
-	setInventoryEquippedIndex(-1);
+	
+	// Should we?
+	//setInventoryEquippedIndex(-1);
 	inventoryEquippedIndex_previous = -1;
+	
 	weaponEquippedAkimbo = FALSE;
 	
 	//safe default.
@@ -753,6 +765,10 @@ void
 player::reset(BOOLEAN resetInventory){
 	
 	INPUT_TAP_RESET(this)
+	
+	// should this even make any assumptions about this?
+	//iState = ?;
+	
 	
 	#ifdef CSQC
 	
@@ -1399,7 +1415,7 @@ player::dropWeapon(int arg_weaponID, BOOLEAN completeDrop){
 	// It sees the "drop" command called and so sends an event to the server that got to this "dropWeapon" method
 	// here in player.  okay.
 	
-	printfline("playerDrop:  Anything?");
+	printfline("playerDrop. weaponID:%i completeDrop:%d", arg_weaponID, completeDrop);
 	
 	weapondynamic_t dynaRefPRE = ary_myWeapons[arg_weaponID];
 	weapondata_basic_t* basicP = getInventoryWeaponData(arg_weaponID, TRUE);
@@ -1410,9 +1426,11 @@ player::dropWeapon(int arg_weaponID, BOOLEAN completeDrop){
 	// WARNING!  This is still checking the possibly akimbo variant for having a
 	// worldmodel.  The drops are still the singular variant in any case, but verify that.
 	if((*basicP).sWorldModelPath == ""){
-		//if the world model path is empty, we can't be dropped.
-		// Safe assumption.
-		printfline("...no world model?");
+		// if the world model path is empty, we can't be dropped.
+		if(completeDrop){
+			// But if this is a completeDrop (dead player), delete it anyway.
+			removeWeaponFromInventory(this, arg_weaponID);
+		}
 		return;
 	}
 	
@@ -1426,7 +1444,7 @@ player::dropWeapon(int arg_weaponID, BOOLEAN completeDrop){
 		}else{
 			// don't bother with the equip-ideal call that equippedWeaponDeleteCheck does.
 			deletedCurrentWeapon = inventoryWeaponDeleteCheck(arg_weaponID);
-			setInventoryEquippedIndex(-1);
+			//setInventoryEquippedIndex(-1);
 		}
 	}else{
 		// Still, see if this weapon would prefer to disappear rather than
@@ -1442,7 +1460,7 @@ player::dropWeapon(int arg_weaponID, BOOLEAN completeDrop){
 	// No, just use basicPS for below.
 	//basicP = getEquippedWeaponData_Singular();
 	
-	printfline("playerDrop:  deletedCurrentWeapon? %d", deletedCurrentWeapon);
+	printfline("-deletedCurrentWeapon? %d", deletedCurrentWeapon);
 	
 	if(deletedCurrentWeapon){
 		// STOP.  Apparently the player deleted this weapon in the holster call above,

@@ -96,14 +96,6 @@ drawPainArrows(void)
 
 
 
-
-
-
-
-
-
-
-
 // and now for the screen-wide pain flash.
 void
 drawPainFlash(void)
@@ -142,9 +134,5 @@ ClientGame_DamageDraw(void){
 	// Nuclide's default had no modifier on clframetime ( * 1).
 	pSeat->m_flDamageAlpha -= clframetime * 1.7;
 }
-
-
-
-
 
 

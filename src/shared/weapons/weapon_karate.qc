@@ -2,6 +2,9 @@
 //TAGGG - TODO - some kicks should disarm the player hit, I forget if it's all kicks
 // or just crouch-kicks.
 
+// ALSO, weapons that lack world-models will never drop, safe assumption.
+// That is why karate never drops.
+
 
 enum weaponseq_karate{
 	//nothing = 0

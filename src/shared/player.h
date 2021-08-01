@@ -3,9 +3,43 @@
 class TSWorldGun;
 
 
+// NOTE-
+// even on the "Press Fire To Play!" text, that shows up after the spawn countdown
+// finishes (shown on trying to spawn too early), there is actually 1 second left
+// until clicking to spawn does anything.  Kindof odd, probably an oversight.
+
+// State of the player for whether they're ingame, thirdperson recently on death,
+// or in fake-spectator (buy menu).
+// Players enter the server in the NOCLIP state.
+enum PLAYER_STATE{
+	// Nothing special. Collision, gravity, equips things.
+	SPAWNED = 0,
+	// Like a third-person view of the player's most recent position, unsure
+	// if it follows the corpse, try dying while moving in TS to see.
+	// Slowly zooms out to a point.
+	// Changes to DEAD_NOCLIP (aka "Fake Spectator") on clicking between 1
+	// and 2.5 seconds, or waiting out the 2.5 seconds (happens anyway)
+	DEAD_RECENT,
+	// Starts at the exact point where the dead player was.
+	// Would probably be better to just leave the camera where it is insead of
+	// jumping to the player's old point, unnecessary to do that and kinda jarring.
+	NOCLIP
+};
+
+
+#define PREDICTED_CUSTOM(arg_t, x) arg_t x; arg_t x ##_net
+
+
 noref int input_sequence;
 class player:base_player
 {
+	
+	// On death, the player cannot change the camera to fake-specator until at least 1 second
+	// has passed.
+	// On death, set this to 2.5.  If it is less than 1.5,
+	float deathCameraChangeTime;
+	
+	
 	//TAGGG - I'm not messing around with that memory issue from last time.
 	// But try again with this removed whenever it turns out ok, see if this is needed anymore.
 	//virtual void (void)dummyBufferMethod;
@@ -24,11 +58,8 @@ class player:base_player
 	
 	//TAGGG - TODO! Put the PREDICTED_INT/FLOAT/whatever stuff on what needs it.
 	
-	// Determines if this player should be a fake-spectator with MoTD and buymenu (FALSE)
-	// or be a physical player that can equip weapons and interact with the world (TRUE).
-	// Jumping to fake-spectator on death will force this to FALSE too.
-	// Yet to be implemented.
-	BOOL spawned;
+	PREDICTED_CUSTOM(PLAYER_STATE, iState);
+	
 	
 	#ifdef SSQC
 	

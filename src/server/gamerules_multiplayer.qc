@@ -320,9 +320,8 @@ TSMultiplayerRules::PlayerDeath(base_player pp)
 	TS_resetViewModel(pl);
 	pl.setInventoryEquippedIndex(-1);
 
-	printfline("How many weapons do you have mr player??? %i", pl.ary_myWeapons_softMax);
+	printfline("How many weapons do you have, dead player? %i", pl.ary_myWeapons_softMax);
 	for(int i = pl.ary_myWeapons_softMax-1; i >= 0; i--){
-		printfline("Dropping this weapon my boy", i);
 		pl.dropWeapon(i, TRUE);
 	}
 	
@@ -583,6 +582,11 @@ TSMultiplayerRules::RestartRound(int iWipe)
 		for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
 			//self = eFind;
 			player pl = (player)eFind;
+			
+			// only affect players ingame!
+			if(pl.iState != PLAYER_STATE::SPAWNED){
+				continue;
+			}
 
 			//printfline("PLAYER MONEY 1: %i", pl.money);
 
@@ -592,7 +596,9 @@ TSMultiplayerRules::RestartRound(int iWipe)
 				
 				// Something about this resets the player money..?  Is it changing to Spectator
 				// right before Player that did it here?
-				PlayerMakeSpectator(pl);
+				//PlayerMakeSpectator(pl);
+				// just let PlayerMakePlayable work.
+				pl.iState = PLAYER_STATE::NOCLIP;
 				PlayerMakePlayable(pl);
 			}
 			
@@ -704,6 +710,7 @@ TSMultiplayerRules::CountPlayers(void)
 		}
 	}
 	
+	// These would be authentic spectators, or those that can't even open the buy menu.
 	for (entity eFind = world; (eFind = find(eFind, ::classname, "spectator"));) {
 		g_ts_player_spectator++;
 	}
@@ -940,9 +947,6 @@ void TSMultiplayerRules::MakePlayerInvisible(player pl){
 	pl.SetMovetype(MOVETYPE_NONE);
 	pl.SetSolid(SOLID_NOT);
 	pl.takedamage = DAMAGE_NO;
-	// Don't know what these have to do with being invisible.
-	pl.armor = pl.activeweapon = pl.g_items = 0;
-	pl.health = 0;
 }
 
 
@@ -983,8 +987,17 @@ void
 TSMultiplayerRules::PlayerMakePlayable(base_player pp)
 {
 	player pl = (player)pp;
+	if(pl.iState == PLAYER_STATE::SPAWNED){
+		// no need to do this again.
+		// Set pl.iState to something else first if this was an intentional re-spawn
+		// for an ingame player
+		return;
+	}
 	
-	MakePlayable(pp);
+	pl.iState = PLAYER_STATE::SPAWNED;
+	printfline("HERE I AM MAKING IT SPAWNED!!!");
+	// Nope!
+	//MakePlayable(pp);
 
 	forceinfokey(pl, "*team", ftos(pl.team)); 
 	PlayerRespawn(pl, pl.team);
@@ -1002,14 +1015,43 @@ TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
 {
 	player pl = (player)pp;
 	
-	if(pl.classname != "spectator" && pl.modelindex != 0){
+	if(pl.iState == PLAYER_STATE::NOCLIP){
+		// Already in fake spectator!  Stop.
+		return;
+	}
+
+	
+	//if(pl.classname != "spectator" && pl.modelindex != 0){
+	if(pl.modelindex != 0){
 		// assume this is necessary
 		MakePlayerInvisible(pl);
 	}
 	
 	// is that necessary still?
 	//TS_resetPlayer(pl, TRUE);
-	MakeSpectator(pl);
+	// And don't do this!  Just change iState
+	//MakeSpectator(pl);
+	pl.iState = PLAYER_STATE::NOCLIP;
+	
+	printfline("WELL??? %d", pl.iState), 
+	
+	// And do the rest of the lines to finish that
+	// (copied from the Nuclide spectator's constructor)
+	// Lines already handled by MakePlayerInvisible not here. 
+	pl.flags = FL_CLIENT;
+	pl.think = NULL;
+	pl.nextthink = 0.0f;
+	pl.maxspeed = 250;
+	//pl.spec_ent = 0;
+	//pl.spec_mode = 0;
+
+	//#ifdef SERVER
+		forceinfokey(pl, "*spec", "1");
+	//#endif
+	
+	pl.armor = pl.activeweapon = pl.g_items = 0;
+	pl.health = 0;
+	pl.SetMovetype(MOVETYPE_NOCLIP);
 }
 
 
@@ -1019,6 +1061,15 @@ TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
 void
 TSMultiplayerRules::PlayerMakeSpectatorDelayed(base_player pp)
 {
+	// Nevermind, this has no significance anymore with the client entity change no longer
+	// happening.  Redirect to the normal version
+	
+	player pl = (player)pp;
+	printfline("SO WHAT %d", pl.iState), 
+	PlayerMakeSpectator(pp);
+	
+	
+	/*
 	player pl = (player)pp;
 	
 	if(pl.classname != "spectator" && pl.modelindex != 0){
@@ -1039,6 +1090,7 @@ TSMultiplayerRules::PlayerMakeSpectatorDelayed(base_player pp)
 	// "dead" should already be set.
 	//forceinfokey(pl, "*dead", "1"); 
 	//forceinfokey(pl, "*team", ftos(pl.team));
+	*/
 }
 
 /*
@@ -1054,6 +1106,19 @@ void
 TSMultiplayerRules::PlayerSpawn(base_player pp)
 {
 	player pl = (player)pp;
+	
+	//printfline("PlayerSpawn, what is classname before anything has been done? %s %s", self.classname, pp.classname);
+	
+	// Apparently the player already arrives as a "player", a Nuclide-implemented event called
+	// ClientConnect makes the client entity a "player" by using spawnfunc.
+	// Having the "player" class available that early makes me wonder why "base_player" is used so
+	// often in implemented methods, but not an issue.
+	// ClientConnect is called before PutClientInServer (the one that leads to the gamerules
+	// PlayerSpawn, right here), just for info.
+	
+	// What this means is, no need for spawnfunc_player here.
+	
+	
 	
 	// should "Frags" be an infokey to be better preserved through player/spectator changes?
 	// No clue.  And setting these only that way further down by forceinfokey too.
