@@ -77,8 +77,17 @@ clientinfo.qc
 entities.qc
 cmds.qc
 game_event.qc
-../../../valve/src/client/camera.qc
-../../../valve/src/client/viewmodel.qc
+
+
+//TAGGG - ViewBobNEW.
+// Include these instead of using clones here in TS if that turns out to be do-able.
+//../../../valve/src/client/camera.qc
+//../../../valve/src/client/viewmodel.qc
+//------------
+camera.qc
+viewmodel.qc
+
+
 view.qc
 obituary.qc
 hud.qc

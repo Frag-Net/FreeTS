@@ -43,6 +43,18 @@ struct
 	
 } g_seatslocal[4], *pSeatLocal;
 
-
-
 void pSeatLocal_init(void);
+
+
+//TAGGG - BobNEW.  ViewBob struct array/var moved here
+struct
+{
+	float m_flBobTime;
+	float m_flBob;
+	float m_flBobCycle;
+	float m_flSpeed;
+	// NEW
+	vector m_vCam;
+} g_viewBobVars[4], *pViewBob;
+
+

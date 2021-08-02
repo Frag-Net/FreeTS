@@ -83,7 +83,7 @@ player::ReceiveEntity(float new, float fl)
 	
 	// do we need to do this here, I: forget, I don't think so
 	/*
-	int s = (int)getproperty(VF_ACTIVESEAT);
+	int s = (float)getproperty(VF_ACTIVESEAT);
 	pSeat = &g_seats[s];
 	*/
 	/*
@@ -777,7 +777,7 @@ player::reset(BOOLEAN resetInventory){
 		// properly before the call to here, (whatever event-method in base files leads
 		// to here most likely), this is not necessary.
 		// Also, no need for pSeatLocal yet, but add in if that changes.
-		int s = (int)getproperty(VF_ACTIVESEAT);
+		int s = (float)getproperty(VF_ACTIVESEAT);
 		pSeat = &g_seats[s];
 		pSeat->m_flHUDWeaponSelectTime = -1;
 		// we don't want damage related to the death / between spawns carrying over
@@ -794,16 +794,18 @@ player::reset(BOOLEAN resetInventory){
 		flCurrentZoom = 1;
 		flZoomLevel = 1;
 		
-		fBobOnGroundMem = FALSE;
-		flBobStart = '0 0 0';
-		flBobTarget = '0 0 0';
-		flBobLerp = 1;  //jump straight to the target at first.
-		vBob = '0 0 0';
 		
 		flRecentGroundTime = 0;
 		
-		bTouchingGround = FALSE;
-		flBobTime = 0;
+		//TAGGG - BobNEW.
+		// Reset the vars here? Or only on an inventory wipe?
+		pViewBob = &g_viewBobVars[s];
+		pViewBob->m_flBobTime = 0;
+		pViewBob->m_flBob = 0;
+		pViewBob->m_flBobCycle = 0;
+		pViewBob->m_flSpeed = 0;
+		pViewBob->m_vCam = [0,0,0];
+		/////////////////////////////////////////////////////
 		
 		
 		flViewShake = 0;
@@ -814,7 +816,6 @@ player::reset(BOOLEAN resetInventory){
 		forceViewModelUpdate = FALSE;
 		prev_forceBodygroup1Submodel = 0;
 		
-		vCameraBobOriginOffset = [0,0,0];
 	#endif
 	
 	#ifdef SSQC
@@ -956,9 +957,7 @@ player::View_approachAngleOffsetTarget(vector vecInputAngles)
 	// do we have an offset at all?
 	if( vlen(vViewAngleOffsetTarget) != 0){
 		
-		//shift our view to get closer to looking in the direction suggested by it.
-		//Math_Lerp(flBobStart[0], flBobTarget[0], flBobLerp)
-		
+		//shift our view to get closer to looking in the direction suggested by it.		
 		vector vecToMove;
 		
 		vecToMove = vViewAngleOffsetTarget * 0.22;

@@ -93,19 +93,9 @@ class player:base_player
 	float flZoomLerp;
 	float flZoomLevel;
 	
-	BOOLEAN fBobOnGroundMem;
-	vector flBobStart;
-	vector flBobTarget;
-	float flBobLerp;
-	vector vBob;  //the actual bob offset to be applied. A full vector.
-	
 	// For telling how long it's been since I've been on the ground.
 	// Don't oscillate the view model bob on going down short steps.
 	float flRecentGroundTime;
-	
-	BOOLEAN bTouchingGround;
-	
-	float flBobTime;
 	
 	BOOL recentLaserHitPosSet;
 	vector recentLaserHitPos;
@@ -118,8 +108,6 @@ class player:base_player
 	// (here) instead because we only need to keep track of changes in a weapon's forceBodygroup1Submodel while that weapon
 	// is equipped.  Not that it could ever change while not equipped anyway.
 	int prev_forceBodygroup1Submodel;
-	
-	vector vCameraBobOriginOffset;
 	
 	
 	// WEAPON KICKBACK STUFF.

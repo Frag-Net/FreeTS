@@ -68,7 +68,6 @@ HUD_Draw(void)
 		Obituary_Draw();
 		Textmenu_Draw();
 		
-		
 	//TAGGG - NEw
 	//////////////////////////////////////////////////////////////
 		//View_HandleZoom();
@@ -115,9 +114,7 @@ HUD_Draw(void)
 		
 		
 	}else{
-		// Fake spectator really.
-		
-		//printfline("I AM FAKE");
+		// Fake spectator, or the temporary forced third-person on death (not yet implemented).
 		
 		drawfont = FONT_20;
 		// TAGGG - could have some message from server-to-client on changing from player to spectator

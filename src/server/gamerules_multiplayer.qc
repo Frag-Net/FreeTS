@@ -320,7 +320,6 @@ TSMultiplayerRules::PlayerDeath(base_player pp)
 	TS_resetViewModel(pl);
 	pl.setInventoryEquippedIndex(-1);
 
-	printfline("How many weapons do you have, dead player? %i", pl.ary_myWeapons_softMax);
 	for(int i = pl.ary_myWeapons_softMax-1; i >= 0; i--){
 		pl.dropWeapon(i, TRUE);
 	}
@@ -995,7 +994,6 @@ TSMultiplayerRules::PlayerMakePlayable(base_player pp)
 	}
 	
 	pl.iState = PLAYER_STATE::SPAWNED;
-	printfline("HERE I AM MAKING IT SPAWNED!!!");
 	// Nope!
 	//MakePlayable(pp);
 
@@ -1033,8 +1031,6 @@ TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
 	//MakeSpectator(pl);
 	pl.iState = PLAYER_STATE::NOCLIP;
 	
-	printfline("WELL??? %d", pl.iState), 
-	
 	// And do the rest of the lines to finish that
 	// (copied from the Nuclide spectator's constructor)
 	// Lines already handled by MakePlayerInvisible not here. 
@@ -1065,9 +1061,7 @@ TSMultiplayerRules::PlayerMakeSpectatorDelayed(base_player pp)
 	// happening.  Redirect to the normal version
 	
 	player pl = (player)pp;
-	printfline("SO WHAT %d", pl.iState), 
 	PlayerMakeSpectator(pp);
-	
 	
 	/*
 	player pl = (player)pp;
@@ -1117,7 +1111,6 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	// PlayerSpawn, right here), just for info.
 	
 	// What this means is, no need for spawnfunc_player here.
-	
 	
 	
 	// should "Frags" be an infokey to be better preserved through player/spectator changes?
