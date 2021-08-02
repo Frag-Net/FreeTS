@@ -104,7 +104,6 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	// using the new VGUI approach.
 	// That also includes mentions of fonts in ts/src/client/vgui.qc
 	
-	//TAGGG - INCLUSION.
 	// Also see ts/src/client/vgui.qc where CSQC_VGUI_Draw checks to see if the screen
 	// size has been changed or this is the first time drawing (some FONTs having ID -1).
 	// In either case, they're loaded and sized per screen height over there.

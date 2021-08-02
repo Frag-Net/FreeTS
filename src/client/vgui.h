@@ -5,11 +5,8 @@
 #define VGUI_WINDOW_BGALPHA 0.76
 #define VGUI_WINDOW_FGALPHA 1.0
 
-//var int iVGUIKey;
-
 vector vVGUIWindowPos;
 vector vVGUIWindowSiz;
-//vector vVGUIButtonPos;
 
 string sMOTDString[25];
 string sMapString[35];

@@ -46,16 +46,6 @@ struct
 void
 Camera_RunBob(__inout vector camera_angle)
 {
-	
-	//TAGGG - NEW.  TS viewbob also shifts the player camera up/down a tiny bit.
-	// We'll do that here, why not.
-	// AND IMPORTANT - used to refer to vPlayerOrigin here,
-	// now using vPlayerOrigin.
-	// See if anywhere else called here neds to do that!
-	// namely View_DetermineBobOffset.
-
-	//setproperty(VF_ORIGIN, pSeat->vPlayerOrigin + pl.view_ofs + pViewBob->m_vCam);
-	
 	player pl = (player)pSeat->m_ePlayer;
 	
 	makevectors(view_angles);

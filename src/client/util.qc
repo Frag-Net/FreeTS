@@ -1,22 +1,19 @@
 
 
-
-//err. what?
-//Then how do I supply a list of things to draw from?
-//use another struct that itself has the array? well ok.
-// OR make it a pointer and assume its length (or send it separately if needed... in this case
-// we know it has to have 10 images: 1 for each of the digits, 0 - 9)
-//../ts/client/vgui_buysidemenu.c:1745: error: Array arguments are not supported
-// TODO - make this a more general utility for any UI, not just the inventory-related stuff.
-//Now supports returning the number of pixels of width of the string it drew for nearby UI to see too.
+// Use a set of sprites representing digits to draw a number.
+// Has bits for other options like handling drawing leading 0's
+// (like if 16 is drawn with 3 digits expected: 016).
 int
-drawSpriteNumber(imageCropBounds_t* arg_ary_spriteSet, int arg_draw_x, int arg_draw_y, int arg_quantityToDraw, int arg_digits, int arg_bits, vector arg_clr, float arg_opac){
-	
-	//The "arg_bits" can give extra options about drawing. "0" means straight defaults.
-	//NONE SUPPORTED YET.  If so, give enum like 
+drawSpriteNumber(
+	imageCropBounds_t* arg_ary_spriteSet, int arg_draw_x, int arg_draw_y,
+	int arg_quantityToDraw, int arg_digits, int arg_bits, vector arg_clr, float arg_opac
+)
+{
+	// The "arg_bits" can give extra options about drawing. "0" means straight defaults.
+	// NONE SUPPORTED YET.  If so, give enum like 
 	
 	//currently looking at leading 0's (whether they are drawn or not). The first non-zero digit stops this.
-	BOOLEAN leadingZeros = TRUE;
+	BOOL leadingZeros = TRUE;
 	
 	int spriteWidth = arg_ary_spriteSet[0].vSize.x;
 	int sprigeHeight = arg_ary_spriteSet[0].vSize.y;
@@ -26,9 +23,9 @@ drawSpriteNumber(imageCropBounds_t* arg_ary_spriteSet, int arg_draw_x, int arg_d
 		int maxPossible = pow(10, arg_digits) - 1;  //...9999, 999, 99, 9
 		
 		if(quantityYet < 0){
-			//negatives not allowed, no need seen yet.
-			//To support negatives, we could draw a negative sign left of the highest digit place possible or 
-			//of the drawn digit (subjective) and force "quantityYet" positive to draw it as expected.
+			// negatives not allowed, no need seen yet.
+			// To support negatives, we could draw a negative sign left of the highest digit place possible or 
+			// of the drawn digit (subjective) and force "quantityYet" positive to draw it as expected.
 			quantityYet = 0;
 		}else if(quantityYet > maxPossible){
 			// force it to the max, that's all we can display
@@ -92,9 +89,9 @@ drawSpriteNumber(imageCropBounds_t* arg_ary_spriteSet, int arg_draw_x, int arg_d
 			}
 			
 		}else{
-			//First non-zero digit makes leadingZeros FALSE for the first time.
-			//Also, the very first digit must be drawn unconditionally. Even if 0.
-			//All digits after this will be drawn.
+			// First non-zero digit makes leadingZeros FALSE for the first time.
+			// Also, the very first digit must be drawn unconditionally. Even if 0.
+			// All digits after this will be drawn.
 			leadingZeros = FALSE;
 			//draw digitAtPlace.
 			DRAW_IMAGE_CROPPED_ADDITIVE(arg_ary_spriteSet[digitAtPlace], vDrawPosYet, arg_clr, arg_opac)
@@ -107,14 +104,11 @@ drawSpriteNumber(imageCropBounds_t* arg_ary_spriteSet, int arg_draw_x, int arg_d
 	//Not functional, but "quantityYet" should end up as "0" all the time.
 	
 	return totalDrawWidth;
-}//END OF drawSpriteNumber
+}// drawSpriteNumber
 
 
 
-
-
-
-//TAGGG - BOTH NEW.  Convenience methods for drawing without any font-related struct, just some font's load ID.
+// Convenience methods for drawing without any font-related struct, just some font's load ID.
 // Otherwise close to the engine-provided drawstring and drawtextfield methods.
 // "drawfont" is a global provided by the engine (fteextensions.qc)
 // Compare with vgui/font.cpp's "Font_DrawText" and "Font_DrawField" which take a font struct.
@@ -133,7 +127,7 @@ Gfx_TextLineWrap( vector vPos, vector vSize, float fAlignFlags, string sText, fl
 }
 
 
-//TAGGG - "Gfx_RotScalePic" was made from a blend of methods found in The Wastes.
+// Made from a blend of methods found in The Wastes.
 void
 Gfx_RotScalePic( string sImage, vector arg_vDrawPos, vector arg_vDrawPivot, vector vSize, float flAngle, vector vScale, vector vRGB, float flOpac )
 {
@@ -155,11 +149,7 @@ Gfx_RotScalePic( string sImage, vector arg_vDrawPos, vector arg_vDrawPivot, vect
 	//Gfx_Pic( vPos + vScalePos, sImage, vScaleSize, vRGB, flAlpha, 0 );
 	drawrotpic(arg_vDrawPos + [arg_vDrawPivot[0]*vScale[0], arg_vDrawPivot[1]*vScale[1]], mins, maxs, sImage, vRGB, flOpac, flAngle);
 	// (time * 40) % 360
-	
 }
-
-
-
 
 
 void

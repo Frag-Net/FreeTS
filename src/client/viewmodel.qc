@@ -25,6 +25,14 @@ var float autocvar_v_bobup = 0.5;
 // visibility. Remove from there on using the Valve file instead.
 
 
+//TAGGG - helper method.
+void setVCam(void){
+	pViewBob->m_vCam[0] = 0;
+	pViewBob->m_vCam[1] = 0;
+	pViewBob->m_vCam[2] = pViewBob->m_flBob * 1.2 * sin(pViewBob->m_flBobCycle*2 + MATH_PI/2 );
+}
+
+
 /* bob vars are calculated separately from application, so that if there's
  * more than one viewmodel we won't affect the speed of the bob by running
  * the math too many times */
@@ -89,10 +97,6 @@ Viewmodel_CalcBob(void)
 	}
 	
 	
-	
-	
-	
-	
 	if(!bOnGround){
 		float timeTol;
 		vector vSource = pl.origin;
@@ -107,9 +111,7 @@ Viewmodel_CalcBob(void)
 			timeTol = 0.17;
 		}
 		
-		
 		if((time-pl.flRecentGroundTime) > timeTol*(1/autocvar_movemodmulti) ){
-			
 			float reducerMulti;
 
 			//if(inputLen <= 0.1){
@@ -123,6 +125,8 @@ Viewmodel_CalcBob(void)
 			}else{
 				pViewBob->m_flBob = 0;
 			}
+			// adjust this per new m_flBob and frozen BobCycle.
+			setVCam();
 			return;
 		}
 	}else{
@@ -158,10 +162,7 @@ Viewmodel_CalcBob(void)
 	// And the r_viewmodelscale from Valve.  I think this is safe.
 	pViewBob->m_flBob *= autocvar_r_viewmodelscale;
 	
-	//////////////
-	pViewBob->m_vCam[0] = 0;
-	pViewBob->m_vCam[1] = 0;
-	pViewBob->m_vCam[2] = pViewBob->m_flBob * 1.2 * sin(pViewBob->m_flBobCycle*2 + MATH_PI/2 );
+	setVCam();
 }
 
 //TAGGG - BobNEW. REPLACED.

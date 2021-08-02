@@ -26,15 +26,13 @@
 
 
 //default if unspecified.
-//TODO - hook a bunch of this stuff up to console.
+// TODO - hook a bunch of this stuff up to console.
 
-//Including a "changeteam" command if we implement teams.
+// Including a "changeteam" command if we implement teams.
 var TS_GameMode currentGameMode = TS_GameMode::DEATHMATCH;
 
 
-//TAGGG - INCLUSION - YOU BETTER NOT FORGET ABOUT THESE VARS.
-
-//TAGGG TODO - there isn't one var / CVar to tell what gamemode this is? uhhh ok.
+// TODO - There isn't one var / CVar to tell what gamemode this is? uhhh ok.
 //until something deeper is made like a gamemode struct or CVar, this will have to do.
 
 //defaults.  The "81" max weight slots rule is from The Specialists as-is.
@@ -61,14 +59,14 @@ TSGameRules::PlayerDeath(base_player pp)
 void
 TSGameRules::PlayerPain(base_player pp)
 {
-	//TAGGG - why was this using "self" instead of the "pp"?  haha.. the pp.
+	// Why was this using "self" instead of the "pp"?  haha.. the pp.
 	// Also this is completely new to FreeCS and probably FreeHL.  ?
 	sound(pp, CHAN_VOICE, sprintf("player/pain%i.wav", randomInRange_i(1, 3)), 1, ATTN_IDLE);
 }
 
 
 
-//TAGGG - CRITICAL.  Do any new player vars need to be copied too,
+// CRITICAL. Do any new player vars need to be copied too,
 // same for LevelChangeParams further down?
 void
 TSGameRules::LevelDecodeParms(base_player pp)
@@ -87,7 +85,7 @@ TSGameRules::LevelDecodeParms(base_player pp)
 	pl.activeweapon = parm11;
 	pl.flags = parm64;
 
-	//TAGGG - why was this one missing from FreeHL?  Present in FreeCS.
+	// Why was this one missing from FreeHL?  Present in FreeCS.
 	pl.gflags = parm63;
 	
 /*
@@ -135,7 +133,7 @@ TSGameRules::LevelChangeParms(base_player pp)
 	parm8 = pl.velocity[1];
 	parm9 = pl.velocity[2];
 	
-	//TAGGG - why was this one missing from FreeHL?  Present in FreeCS.
+	// Why was this one missing from FreeHL?  Present in FreeCS.
 	parm63 = pl.gflags;
 	
 	parm64 = pl.flags;
@@ -169,7 +167,7 @@ TSGameRules::LevelChangeParms(base_player pp)
 void
 TSGameRules::LevelNewParms(void)
 {
-	//TAGGG - parm63 added, absent in FreeHL.
+	// !  parm63 added, absent in FreeHL.
 	parm1 = parm2 = parm3 = parm4 = parm5 = parm6 = parm7 =
 	parm8 = parm9 = parm10 = parm11 = parm12 = parm13 = parm14 =
 	parm15 = parm16 = parm17 = parm18 = parm19 = parm20 = parm21 =
@@ -183,11 +181,10 @@ TSGameRules::LevelNewParms(void)
 
 
 
-//TAGGG - NEW.  Need PlayerPreFrame as well.
+// NEW.  Need PlayerPreFrame as well.
 void
 TSGameRules::PlayerPreFrame(base_player pp)
 {
-	//TAGGG - NEW
 	// Is this null check redundant?
 	if(pp != NULL){
 		player pl = (player)pp;
@@ -196,8 +193,6 @@ TSGameRules::PlayerPreFrame(base_player pp)
 	
 }
 
-/* we check what fields have changed over the course of the frame and network
- * only the ones that have actually changed */
 void
 TSGameRules::PlayerPostFrame(base_player pp)
 {
@@ -246,7 +241,6 @@ TSGameRules::PlayerKill(base_player pl)
 	//Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);
 	Damage_Apply(pl, pl, pl.health, WEAPON_ID::NONE, DMG_SKIP_ARMOR);
 } 
-
 
 
 

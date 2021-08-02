@@ -59,6 +59,13 @@ var int g_ts_player_spectator;   //do we even need this one?
 var int g_ts_player_all;
 
 
+
+// Very situational, not all debug printouts, nowhere near.
+var float autocvar_sv_printoutspam = 0;
+
+
+
+
 void initSpawnMem(void);
 
 //TAGGG - restored?

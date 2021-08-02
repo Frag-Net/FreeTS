@@ -1,6 +1,4 @@
 
-#ifndef TS_CLIENT_UTIL_H
-#define TS_CLIENT_UTIL_H
 
 
 #define BITS_DIGITOPT_NONE 0
@@ -100,10 +98,6 @@ typedef struct{
 
 
 
-
-//easy ref.
-extern const vector vecZero;
-
 int drawSpriteNumber(imageCropBounds_t* arg_ary_spriteSet, int arg_draw_x, int arg_draw_y, int arg_quantityToDraw, int arg_digits, int arg_bits, vector arg_clr, float arg_opac);
 void Gfx_Text(vector vPos, string sText, vector vSize, vector vRGB, float flAlpha, float flDrawFlag, float flFont);
 void Gfx_TextLineWrap( vector vPos, vector vSize, float fAlignFlags, string sText, float flFont );
@@ -111,4 +105,3 @@ void Gfx_RotScalePic( string sImage, vector arg_vDrawPos, vector arg_vDrawPivot,
 void Gfx_ScalePicPreserveBounds(string sImage, vector arg_vDrawPos, vector vSize, vector vScale, vector vInset, vector vRGB, float flOpac);
 
 
-#endif // TS_CLIENT_UTIL_H

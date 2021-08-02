@@ -103,8 +103,7 @@ enum {
 	STAT_WON_CT,
 	*/
 
-	//TAGGG - NEW
-	//TAGGG - INCLUSION.  just to show up in searches, new stuff though
+	// NEW.
 	STAT_RULE_MONEYALLOWED,
 	STAT_RULE_MAXWEIGHTSLOTS
 

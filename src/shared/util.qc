@@ -1,9 +1,7 @@
 
 
 //easy ref.
-const vector vecZero = [0,0,0];
-
-
+const vector g_vZero = [0,0,0];
 
 
 
@@ -14,6 +12,8 @@ centerprintToAll(string strSend){
 	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
 		centerprint(eFind, strSend);
 	}
+	// NOTE!  These would be real spectators now, not just players that can use
+	// the buy menu.  Is that ok?
 	for (entity eFind = world; (eFind = find(eFind, classname, "spectator"));) {
 		centerprint(eFind, strSend);
 	}
@@ -22,20 +22,18 @@ centerprintToAll(string strSend){
 
 
 
-
-
-
-//NOTICE - there already is a "floor" method, but it might be considered
-//incorrect for negative numbers. We have a fix!
+// NOTICE - there already is a "floor" method, but it might be considered
+// incorrect for negative numbers. We have a fix!
 int
 floor_proper(float arg){
 	if(arg >= 0){
 		//no change needed
 		return (int)(floor(arg));
 	}else{
-		//aha!  Do a little shifting around.
-		//In short, this is the same as though arg were positive, and we took the opposite direction operation instead... and make the result negative.
-		//So yes, floor_proper(-42.7) would be -43, not -42.
+		// aha!  Do a little shifting around.
+		// In short, this is the same as though arg were positive, and we took the opposite
+		// direction operation instead... and make the result negative.
+		// So yes, floor_proper(-42.7) would be -43, not -42.
 		return (int)(-ceil(-arg));
 	}
 }
@@ -51,9 +49,8 @@ int ceil_proper(float arg){
 
 
 
-
-//New utility method.
-//I don't know if QuakeC has its own "round"-like method, but I tried.
+// New utility method.
+// I don't know if QuakeC has its own "round"-like method, but I tried.
 int round(float arg){
 
 	// WHOOPS.  There is one.
@@ -87,23 +84,17 @@ int round(float arg){
 
 
 
-
-
-// Includes the possibility in some engines that a solid "1" is returned
-// by the built-in random method. Sometimes we may not care about this,
-// like a number between 2 and 5 for seconds. Do we really care if we hit
-// exactly 5 seconds?
-// BUT this is bad for arrays. If there are 10 elements in an array (elements
-// 0 through 9 available), hitting exactly element #10 would be bad.
-// See below for a remedy to that.
 float randomInRange_raw_f(float min, float max){
 	return min + ((max - min) * random());
+}//randomInRange
 
-}//END OF randomInRange
 
-//This is the fixed version to ensure random() does not hit an invalid range.
-//Although this is much more important for the int one in most cases.
+// This is the fixed version to ensure random() does not hit an invalid range.
+// Although this is much more important for the int one in most cases.
+// NOTE! Turns it it is already impossible for random() to return exactly 1, so
+// removing the bound check.  No different from _raw above.
 float randomInRange_f(float min, float max){
+	/*
 	float r = random();
 	if(r >= 1.0f){
 		//r = 0.999f;  //should be fine
@@ -113,19 +104,17 @@ float randomInRange_f(float min, float max){
 		//to 3-4 places, judging from printouts trying to use more digits.
 		return max - 0.001f;
 	}
-
+	*/
 	return min + ((max - min) * random());
-
-}//END OF randomInRange
+}//zrandomInRange
 
 
 
 int randomInRange_raw_i(int min, int max){
 	return min + floor_proper((max - min + 1) * random());
+}// randomInRange
 
-}//END OF randomInRange
-
-//This is the fixed version to ensure random() does not hit an invalid range.
+// This is the fixed version to ensure random() does not hit an invalid range.
 int randomInRange_i(int min, int max){
 	float r = random();
 	if(r >= 1.0f){
@@ -135,7 +124,7 @@ int randomInRange_i(int min, int max){
 
 	return min + floor_proper((max - min + 1) * random());
 
-}//END OF randomInRange
+}//randomInRange
 
 //And just an isolated version of what goes on to make sure the random value isn't >= 1.
 float safeRandom(void){

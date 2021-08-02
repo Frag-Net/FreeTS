@@ -34,6 +34,12 @@ struct
 	// Keeping for now, remove later
 	float fVGUI_Display;
 	
+	// CRITICAL:
+	// Should these be per pSeat instead?  Unsure if that makes sense.
+	float m_inputKeyTapped;
+	float m_inputKeyDown;
+	float m_inputMouseClicked;
+
 	// like pSeat->ePlayer, but already casted to the gamemod's custom "player" class.
 	// WARNING: Not yet set, find some place around the start of each frame where it 
 	// makes sense to set this.

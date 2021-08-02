@@ -101,7 +101,7 @@ HUD_Draw(void)
 		pSeat->m_iHUDWeaponSelected = (pl.weaponSelectHighlightID != -1);
 		
 		
-		TS_keyRefTapped = 0;  //reset.
+		pSeatLocal->m_inputKeyTapped = 0;  //reset.
 		
 		HUD_DrawNotify();
 		// Nuclide provided method, draws the HL pain arrows

@@ -18,7 +18,7 @@
 #include "particles.h"
 
 
-//TAGGG - VERY LITTLE USES "hud_color" RIGHT NOW!
+// VERY LITTLE USES "hud_color" RIGHT NOW!
 // See inventory_logic_draw.qc for places that benefit from involving it, compare to behavior
 // in original TS to see what it affects.
 vector g_hud_color;
@@ -35,10 +35,11 @@ vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
 vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
 
-//TAGGG INCLUSION - new. Global var to store the current screen size. If it changes, the font should be re-loaded to fit it.
-var vector Recorded_video_res;
+// Global var to store the current screen size. If it changes, the font should be re-loaded to fit it.
+var vector g_videoResPrev;
 
-//TAGGG - INCLUSION. eplaces several cases of FONT_CON to be able to draw larger text (well).
+
+// Replaces several cases of FONT_CON to be able to draw larger text (well).
 var float FONT_ARIAL;
 var float FONT_ARIAL_TITLE;
 var float FONT_ARIAL_STD;  //stands for "standard" ya hooligans.
@@ -73,29 +74,24 @@ const vector clrRed = [255.0f/255.0f, 0f/255.0f, 0f/255.0f];
 const vector clrLaserHUDDot = [255.0f/255.0f, 35.0f/255.0f, 35.0f/255.0f];
 
 
-// !!!
-// g_seatslocal AND pSeatLocal definition moved to seatlocal.h
 
-void HUD_WeaponPickupNotify(int);
-
-
-// CRITICAL:
-// Should these be per pSeat instead?  Unsure if that makes sense.
-var float TS_keyRefTapped = 0;
-var float TS_keyRefUp = 0;
-var float TS_keyRefUpASCII = 0;
-var float TS_keyRefDown = 0;
-var float TS_mouseClickRef = 0;
-
-
-
-//TAGGG - NEW.
+// NEW.
 // The "fov" CVar is set to this at startup.  This must be changed to be persistent
 // bewteen games.
 var float autocvar_fov_default =  80.0f;
 
-//TAGGG - TODO.  Is this even used yet?
-var int autocvar_cl_autoweaponswitch = TRUE;
+// TODO.  Is this even used yet?
+var int autocvar_sv_autoweaponswitch = TRUE;
+
+// Very situational, not all debug printouts, nowhere near.
+var float autocvar_cl_printoutspam = 0;
+
+
+void HUD_WeaponPickupNotify(int);
+
+// !!!
+// g_seatslocal AND pSeatLocal definition moved to seatlocal.h
+
 
 
 

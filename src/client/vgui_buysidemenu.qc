@@ -15,22 +15,18 @@
 
 
 
-#define INITIALIZE_BASICBUTTON(arg_varName, arg_sName, arg_iHotkey, arg_clr, arg_vOnClick_Custom) buysidemenu_btn_##arg_varName = spawn(CBuySideMenu_BasicButton);\
+#define INITIALIZE_BASICBUTTON(arg_varName, arg_sName, arg_sHotkeyDisplay, arg_clr, arg_vOnClick_Custom) buysidemenu_btn_##arg_varName = spawn(CBuySideMenu_BasicButton);\
+	flDeterminedHotkey = determineHotkeyFromChar(arg_sHotkeyDisplay);\
 	buysidemenu_btn_##arg_varName.setThisPointer(&buysidemenu_btn_##arg_varName);\
-	buysidemenu_btn_##arg_varName.create(arg_sName, arg_iHotkey, arg_clr, arg_vOnClick_Custom);\
-	buysidemenu_addbuttonToTotal(&buysidemenu_btn_##arg_varName);
-
-#define INITIALIZE_WEAPONBUTTON(arg_varName, arg_sName, arg_iHotkey, arg_clr, arg_vOnClick_Custom, arg_sWeaponImagePath, arg_iWeaponPrice, arg_iWeaponSlots, arg_iBitsWeaponOpt) buysidemenu_btn_##arg_varName = spawn(CBuySideMenu_WeaponButton);\
-	buysidemenu_btn_##arg_varName.setThisPointer(&buysidemenu_btn_##arg_varName);\
-	buysidemenu_btn_##arg_varName.create_WeaponButton(arg_sName, arg_iHotkey, arg_clr, arg_vOnClick_Custom, arg_sWeaponImagePath, arg_iWeaponPrice, arg_iWeaponSlots, arg_iBitsWeaponOpt);\
+	buysidemenu_btn_##arg_varName.create(sprintf("%s %s", arg_sHotkeyDisplay, arg_sName), flDeterminedHotkey, arg_clr, arg_vOnClick_Custom);\
 	buysidemenu_addbuttonToTotal(&buysidemenu_btn_##arg_varName);
 
 
-
-#define INITIALIZE_WEAPONBUTTON_ADV(arg_varName, arg_sHotkeyDisplay, arg_iHotkey, arg_clr, arg_vOnClick_Custom, arg_parentName) buysidemenu_btn_Buy_##arg_varName = spawn(CBuySideMenu_WeaponButton);\
+#define INITIALIZE_WEAPONBUTTON(arg_varName, arg_sHotkeyDisplay, arg_clr, arg_vOnClick_Custom, arg_parentName) buysidemenu_btn_Buy_##arg_varName = spawn(CBuySideMenu_WeaponButton);\
+	flDeterminedHotkey = determineHotkeyFromChar(arg_sHotkeyDisplay);\
 	buysidemenu_btn_Buy_##arg_varName.setThisPointer(&buysidemenu_btn_Buy_##arg_varName);\
 	tempWeapRef = *ary_weaponData[WEAPON_ID::##arg_varName];\
-	buysidemenu_btn_Buy_##arg_varName.create_WeaponButton(sprintf("%s %s", arg_sHotkeyDisplay, tempWeapRef.sDisplayName ), arg_iHotkey, arg_clr, arg_vOnClick_Custom, tempWeapRef.sIconFilePath, tempWeapRef.iPrice, tempWeapRef.iSlots, tempWeapRef.iBitsUpgrade & ~tempWeapRef.iBitsUpgradeAuto);\
+	buysidemenu_btn_Buy_##arg_varName.create_WeaponButton(sprintf("%s %s", arg_sHotkeyDisplay, tempWeapRef.sDisplayName), flDeterminedHotkey, arg_clr, arg_vOnClick_Custom, tempWeapRef.sIconFilePath, tempWeapRef.iPrice, tempWeapRef.iSlots, tempWeapRef.iBitsUpgrade & ~tempWeapRef.iBitsUpgradeAuto);\
 	buysidemenu_addbuttonToTotal(&buysidemenu_btn_Buy_##arg_varName);\
 	buysidemenu_btn_Buy_##arg_varName.iWeaponPurchaseID = WEAPON_ID::##arg_varName;\
 	buysidemenu_addbutton(&buysidemenu_btn_Buy_##arg_parentName, &buysidemenu_btn_Buy_##arg_varName);
@@ -42,7 +38,7 @@ class CBuySideMenu_BasicButton;
 
 
 // set to TRUE if this screen has ever been brought up before.
-var BOOL VGUI_BuySideMenu_InitBefore = FALSE;
+var BOOL VGUI_BuySideMenu_InitDone = FALSE;
 
 var int iWeaponTempID = -1;
 
@@ -60,18 +56,24 @@ var int iActiveLayer = 0;
 class CBuySideMenu_BasicButton;
 class CBuySideMenu_WeaponButton;
 class CBuySideMenu_WeaponButton;
+class CBuySideMenu_RemoveWeaponButton;
 
 void buysidemenu_closeBuyMenu(void);
 void refreshButtons(void);
 void setupRemoveButtonList(void);
+void buysidemenu_btn_removeButton_clicked(CBuySideMenu_BasicButton* arg_this);
+void buysidemenu_btn_RemoveItem_clicked(CBuySideMenu_BasicButton* arg_this);
 
-void buysidemenu_backOneLayer();
-void buysidemenu_btn_Back_updateText();
+
+void buysidemenu_backOneLayer(void);
+void buysidemenu_btn_Back_updateText(void);
 void buysidemenu_btn_Back_clicked(CBuySideMenu_BasicButton* arg_this);
 
-
-
 void(CBuySideMenu_BasicButton* arg_someButton) setActiveLayerButton;
+
+float determineHotkeyFromChar(string arg_sHotkeyDisplay);
+
+
 
 //Each button ever created must be added to this list. Can be one automatically...
 //struct's don't have constructors though.  Call for this at startup I suppose.
@@ -84,6 +86,12 @@ var CBuySideMenu_BasicButton* ary_layerButtonChoice[16];  //16 layers max.  Not 
 //Any buttons in the first layer must be recorded here.
 var CBuySideMenu_BasicButton* ary_layerFirstButton[16];
 var int ary_layerFirstButton_softLength = 0;
+
+
+// One button expected for each weapon in ary_myWeapons of the tempconfig at most.
+// (so up to "ary_myWeapons_length" in count).
+CBuySideMenu_RemoveWeaponButton ary_btn_removeButton[ary_myWeapons_length];
+
 
 
 var CBuySideMenu_BasicButton buysidemenu_btn_WeaponOpt_Buy;
@@ -180,7 +188,7 @@ class CBuySideMenu_BasicButton{
 	string sName;
 	
 	// -1 is the signal for "no hotkey". Numbers actually start at 48 for 0 (49 for 1... or 48+1 for clarity).
-	int iHotkey;
+	float flHotkey;
 	
 	vector clr; // stored; natural color.
 	vector clr_render; // for actual use.
@@ -204,13 +212,13 @@ class CBuySideMenu_BasicButton{
 	
 	virtual void(CBuySideMenu_BasicButton* arg_this) setThisPointer;
 	
-	virtual void(string arg_sName, int arg_iHotkey, vector arg_clr, void(CBuySideMenu_BasicButton* arg_this)* arg_vOnClick_Custom ) create;
+	virtual void(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuySideMenu_BasicButton* arg_this)* arg_vOnClick_Custom ) create;
 	
 	virtual void(vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow, BOOL arg_fIsSelected) vOnRender_Base;
-	virtual void() vOnClick_Base;
+	virtual void(void) vOnClick_Base;
 	
 	
-	virtual void() vOnShow_Base;
+	virtual void(void) vOnShow_Base;
 	
 	// This is set separately from any "create" methods or constructors since it is rarely used.
 	// If set, this method will run anytime this button is shown. This lets it do a quick calculation
@@ -237,13 +245,13 @@ class CBuySideMenu_WeaponButton : CBuySideMenu_BasicButton{
 	void(void) CBuySideMenu_WeaponButton;
 	
 	// after arg_clr: int arg_ary_btn_index[16]
-	virtual void(string arg_sName, int arg_iHotkey, vector arg_clr, void(CBuySideMenu_BasicButton* arg_this)* arg_vOnClick_Custom, string arg_sWeaponImagePath, int arg_iWeaponPrice, int arg_iWeaponSlots, int arg_iBitsWeaponOpt ) create_WeaponButton;
+	virtual void(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuySideMenu_BasicButton* arg_this)* arg_vOnClick_Custom, string arg_sWeaponImagePath, int arg_iWeaponPrice, int arg_iWeaponSlots, int arg_iBitsWeaponOpt ) create_WeaponButton;
 	
 	virtual void(vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow, BOOL arg_fIsSelected) vOnRender_Base;
-	virtual void() vOnClick_Base;
+	virtual void(void) vOnClick_Base;
 	
 	
-	virtual void() vOnShow_Base;
+	virtual void(void) vOnShow_Base;
 	//virtual void(CBuySideMenu_BasicButton* arg_this) vOnShow_Custom = NULL;
 	
 };
@@ -268,7 +276,6 @@ CBuySideMenu_RemoveWeaponButton::CBuySideMenu_RemoveWeaponButton(void)
 }
 
 
-
 BOOL
 checkBuySideMenuButtonClicked(
 	CBuySideMenu_BasicButton* arg_someBtn, vector vPosition,
@@ -277,32 +284,106 @@ checkBuySideMenuButtonClicked(
 {
 	CBuySideMenu_BasicButton deref = *arg_someBtn;
 	
-	
-	//Check for the button's hotkey.
-	if(deref.iHotkey != -1 && TS_keyRefUp == deref.iHotkey){
+	// Check for the button's hotkey.
+	if(deref.flHotkey != -1 && pSeatLocal->m_inputKeyDown == deref.flHotkey){
 		(*arg_someBtn).vOnClick_Base();
-		TS_keyRefUp = 0;
+		pSeatLocal->m_inputKeyDown = 0;
 		return TRUE;
 	}
 	
-	if ( TS_mouseClickRef == TRUE ) {
+	if ( pSeatLocal->m_inputMouseClicked == TRUE ) {
 		if(VGUI_CheckMouse( vPosition, vSize )){
-			//What button is being hovered over?
+			// What button is being hovered over?
 			iHoveredButtonIndex = deref.iGlobalIndex;
 
-				(*arg_someBtn).vOnClick_Base();
-				
-				//ya already call this ya half-wit
-				//if(arg_someBtn.vOnClick_Custom != NULL){arg_someBtn.vOnClick_Custom();}
-				
-				//You are allowed to do this.
-				TS_mouseClickRef = FALSE;
-				return TRUE;
+			(*arg_someBtn).vOnClick_Base();
+			
+			pSeatLocal->m_inputMouseClicked = FALSE;
+			return TRUE;
 		}
 	}
 	
 	return FALSE;
-}//END OF checkBuySideMenuButtonClicked
+}// checkBuySideMenuButtonClicked
+
+
+
+// Called by ui_eventgrabber on detecting input from a keypress or mouse.
+// TODO - still a little sloppy to check for both the recently pressed key
+// matching the hotkey and a mouse-click for coords when each event can only be
+// either of these things, not both.
+// But that would mean cloning this method with the only difference being 
+// checkBuySideMenuButtonClicked for "checkBuySideMenuButtonHotKey" insetad,
+// and Clicked loses the hotkey check.
+void BuySideMenu_onInputEvent(void){
+	if(!VGUI_BuySideMenu_InitDone){
+		// Not allowed yet!
+		return;
+	}
+	
+	vector vButtonPos = [video_mins[0] + 5, video_mins[1] + video_res[1]/2, 0];
+	vector vBtnPos = [0,0,0];
+	int currentLayerSelectedIndex;
+	int btnToRender_index_global;
+	CBuySideMenu_BasicButton someThing;
+	CBuySideMenu_BasicButton previousLayerButton;
+	BOOL fIsSelected;
+	
+	if(iActiveLayer == 0){
+		vBtnPos.x = (int)vButtonPos.x; //default pos.
+		vBtnPos.y = (int)vButtonPos.y;
+		
+		
+		for(int i2 = 0i; i2 < ary_layerFirstButton_softLength; i2++){
+			CBuySideMenu_BasicButton tempButton = *ary_layerFirstButton[i2];
+			
+			checkBuySideMenuButtonClicked(ary_layerFirstButton[i2], vBtnPos, vButtonSizStandard);
+			vBtnPos.y += (vButtonSizStandard.y + 1);
+		}
+		
+	}else{
+		vBtnPos.x = (int)vButtonPos.x + (vButtonSizStandard.x + 1) * iActiveLayer;
+		vBtnPos.y = (int)vButtonPos.y;
+		// All other layers only render buttons that the previous layer (selected button there) tells them to.
+		
+		previousLayerButton = *ary_layerButtonChoice[iActiveLayer - 1i];
+		
+			
+		for(int i2 = 0i; i2 < previousLayerButton.ary_btn_softLength; i2 = i2+1i){
+			
+			// CONCLUSION... maybe.
+			// So much as this local var, "btnCheck", being set to a dereferenced ary_btnTotal element,
+			// and this btnCheck being used in checkBuySideMenubuttonClicked instead of just that ary_btnTotal element (a pointer already)
+			// is enough to trigger this odd error, where the next frame (or if this for loop gets so much as an extra iteration
+			// that resets btnCheck... test with the "if(theThingHappened)continue;" bit above moved to after these lines below too...
+			// Anyways, this makes the difference between whether the real thing the ary_btnTotal element links to stays
+			// consistent between at least loop iterations or not even those.  Staying consistent between frames is definitely out.
+			// When this method ends, or really this scope (?), that thing the ary_btnTotal element is pointing at blanks out.
+			
+			btnToRender_index_global = previousLayerButton.ary_btn_index[i2];
+			
+			CBuySideMenu_BasicButton tempButton2 = *ary_btnTotal[btnToRender_index_global];
+			if(tempButton2.bActive == FALSE){
+				// let the next button be tried instead.
+				continue;
+			}
+			
+			// NOT THIS WAY (causes the odd problem):
+			//if(checkBuySideMenuButtonClicked(&btnCheck, vBtnPos, vButtonSizStandard)){
+			if(checkBuySideMenuButtonClicked(ary_btnTotal[btnToRender_index_global], vBtnPos, vButtonSizStandard)){
+				// nothing special happens if so, checkBuySideMenuButtonClicked handles this fine.
+			}
+			
+			vBtnPos.y += (vButtonSizStandard.y + 1);
+		}// for i2 in this layer's buttons.
+	}
+	
+	// Check the "0. Cancel" button.
+	checkBuySideMenuButtonClicked(&buysidemenu_btn_Back, vBtnPos, vButtonSizStandard);
+	vBtnPos.y += (vButtonSizStandard.y + 1);
+}// BuySideMenu_onInputEvent
+
+
 
 // For "_this" button, add "arg_other" to its list of buttons (ary_btn) to be shown when this button
 // is clicked.
@@ -344,13 +425,13 @@ buysidemenu_addbuttonToTotal(CBuySideMenu_BasicButton* _this)
 	
 	if(ary_btnTotal_softLength >= ary_btnTotal.length){
 		//ERROR!
-		print(sprintf("!!! CRITICAL CLIENT ERROR. Button max of %i reached, button not added! Report this!\n", ary_btnTotal.length) );
+		print(sprintf("!!! CLIENT ERROR. Button max of %i reached, button not added! Report this!\n", ary_btnTotal.length) );
 		return;
 	}
 	
 	CBuySideMenu_BasicButton _this_deref = *_this;
 	
-	//localcmd(sprintf("echo HEY ya IM %s AND MY ID IS %i\n", _this.sName, ary_btnTotal_softLength));
+	//localcmd(sprintf("echo addButtonToTotal: IM %s AND MY ID IS %i\n", _this.sName, ary_btnTotal_softLength));
 	
 	_this_deref.iGlobalIndex = ary_btnTotal_softLength;
 	ary_btnTotal[ary_btnTotal_softLength] = _this;
@@ -364,11 +445,9 @@ buysidemenu_addbuttonToFirstLayer(CBuySideMenu_BasicButton* _this)
 	
 	if(ary_layerFirstButton_softLength >= ary_layerFirstButton.length){
 		//ERROR!
-		print(sprintf("!!! CRITICAL CLIENT ERROR. First layer button max of %i reached, button not added! Report this!\n", ary_layerFirstButton.length) );
+		print(sprintf("!!! CLIENT ERROR. First layer button max of %i reached, button not added! Report this!\n", ary_layerFirstButton.length) );
 		return;
 	}
-	
-	//CBuySideMenu_BasicButton _this_deref = *_this;
 	
 	ary_layerFirstButton[ary_layerFirstButton_softLength] = _this;
 	ary_layerFirstButton_softLength = ary_layerFirstButton_softLength + 1i;
@@ -377,7 +456,7 @@ buysidemenu_addbuttonToFirstLayer(CBuySideMenu_BasicButton* _this)
 
 
 
-//!!! SEND THE iGlobalIndex APPARENTLY.
+//!!! SEND THE iGlobalIndex.
 // Method that actually draws the button.
 // Made separate from button's onRender methods so that this can be called with a different color conveniently
 // (red for "can't afford this" at a glance)
@@ -432,7 +511,7 @@ drawBuyButton(
 		Gfx_Text( vLabelPos, arg_text, vButtonFontSize, arg_clr * 0.94f, (1.0f-(1.0f - arg_opac)*0.88) - 0.06f, DRAWFLAG_NORMAL, FONT_ARIAL_STD );
 	}
 	
-}//END OF drawBuyButton
+}// drawBuyButton
 
 
 
@@ -456,11 +535,11 @@ CBuySideMenu_BasicButton::setThisPointer(CBuySideMenu_BasicButton* arg_this)
 	_this = arg_this;
 }
 void
-CBuySideMenu_BasicButton::create(string arg_sName, int arg_iHotkey, vector arg_clr, void(CBuySideMenu_BasicButton* arg_this)* arg_vOnClick_Custom )
+CBuySideMenu_BasicButton::create(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuySideMenu_BasicButton* arg_this)* arg_vOnClick_Custom )
 {
 	sName = arg_sName;
 	
-	iHotkey = arg_iHotkey;
+	flHotkey = arg_flHotkey;
 	clr = arg_clr;
 	clr_render = arg_clr; //good default.
 	
@@ -481,7 +560,7 @@ CBuySideMenu_BasicButton::vOnRender_Base
 
 
 void
-CBuySideMenu_BasicButton::vOnShow_Base()
+CBuySideMenu_BasicButton::vOnShow_Base(void)
 {
 	
 	if(vOnShow_Custom != NULL){
@@ -490,12 +569,12 @@ CBuySideMenu_BasicButton::vOnShow_Base()
 		//vOnShow_Custom(_this);
 	}
 	
-}//END OF vOnShow_Base
+}// vOnShow_Base
 
 
 // When this button is clicked, what does it do?
 void
-CBuySideMenu_BasicButton::vOnClick_Base()
+CBuySideMenu_BasicButton::vOnClick_Base(void)
 {
 	
 	// basic button behavior. Only if our array has a non-zero length.
@@ -534,7 +613,7 @@ CBuySideMenu_BasicButton::vOnClick_Base()
 			}
 		}
 		
-	}//END OF button length check
+	}// button length check
 	
 	if(vOnClick_Custom != NULL){
 		// If we have a custom click method, do it.
@@ -560,7 +639,7 @@ CBuySideMenu_WeaponButton::CBuySideMenu_WeaponButton(void)
 void
 CBuySideMenu_WeaponButton::create_WeaponButton
 (
-	string arg_sName, int arg_iHotkey, vector arg_clr,
+	string arg_sName, float arg_flHotkey, vector arg_clr,
 	void(CBuySideMenu_BasicButton* arg_this)* arg_vOnClick_Custom,
 	string arg_sWeaponImagePath, int arg_iWeaponPrice, int arg_iWeaponSlots,
 	int arg_iBitsWeaponOpt
@@ -574,14 +653,15 @@ CBuySideMenu_WeaponButton::create_WeaponButton
 	
 	sName = arg_sName;
 	
-	iHotkey = arg_iHotkey;
+	flHotkey = arg_flHotkey;
 	clr = arg_clr;
 	clr_render = arg_clr; //good default.
 	
 	vOnClick_Custom = arg_vOnClick_Custom; //(int*)&arg_vOnClick_Custom;
 	vOnShow_Custom = NULL; //paranoia?
 	
-	//Why do we add "_0.tga" to a .spr reference for the draw to work? The world may never know.
+	// Why do we add "_0.tga" to a .spr reference for the draw to work?
+	// The world may never know.
 	sWeaponImagePath = sprintf("%s_0.tga", arg_sWeaponImagePath);
 	
 	iWeaponPrice = arg_iWeaponPrice;
@@ -629,11 +709,17 @@ CBuySideMenu_WeaponButton::vOnRender_Base
 	BOOL arg_fIsSelected
 )
 {
-	CBuySideMenu_BasicButton::vOnRender_Base(arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected); //call the parent's.
+	CBuySideMenu_BasicButton::vOnRender_Base(
+		arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected
+	); //call the parent's.
+	
 	// I want to draw my sWeaponImagePath above myself.
 	if(arg_fIsSelected && !(iBitsWeaponOpt & BITS_WEAPONOPT_INSTANT)  ){
 	
-		vector arg_buttonPos = [video_mins[0] + 5 + arg_iLayer * (vButtonSizStandard.x + 1), video_mins[1] + video_res[1]/2 + arg_iButtonRow * (vButtonSizStandard.y + 1) ];
+		vector arg_buttonPos = [
+			video_mins[0] + 5 +
+			arg_iLayer * (vButtonSizStandard.x + 1), video_mins[1] + video_res[1]/2 + arg_iButtonRow * (vButtonSizStandard.y + 1)
+		];
 		
 		float arg_opac;
 		if(arg_fIsSelected || arg_iLayer == iActiveLayer){
@@ -644,13 +730,11 @@ CBuySideMenu_WeaponButton::vOnRender_Base
 		
 		vector textDrawOrigin = [arg_suggestedDrawPos.x + LABEL_OFFSET_X + 128, (video_res[1]/2) + LABEL_OFFSET_Y - (48 + 1)];
 	
-		//NOTICE - draw on top of all buttons on this row unconditionally. Don't use arg_suggestedDrawPos.y
+		// NOTICE - draw on top of all buttons on this row unconditionally. Don't use arg_suggestedDrawPos.y
 		drawsubpic([arg_buttonPos.x, (video_res[1]/2) - (48 + 1)], [128,48], sWeaponImagePath, [0,0], [128/128,48/48], clrPaleBlue, 0.96, DRAWFLAG_ADDITIVE);
-		
 		
 		string drawString1 = sprintf("%i Credits", iWeaponPrice);
 		string drawString2 = sprintf("%i Slots", iWeaponSlots);
-		
 		
 		drawfill( [arg_buttonPos.x, (video_res[1]/2) - (48 + 1)], [256-1, 48], this.clr * 0.93f, arg_opac - 0.60f, DRAWFLAG_NORMAL );
 		
@@ -671,11 +755,11 @@ VGUI_BuySideMenu_ResetTempVariables(void)
 	iExtraPriceTemp = 0;
 	iExtraSlotsTemp = 0;
 	iPurchaseCountTemp = 1;
-}//END OF VGUI_BuySideMenu_ResetTempVariables
+}// VGUI_BuySideMenu_ResetTempVariables
 
 
 void
-CBuySideMenu_WeaponButton::vOnShow_Base()
+CBuySideMenu_WeaponButton::vOnShow_Base(void)
 {
 	CBuySideMenu_BasicButton::vOnShow_Base();
 	// See if this weapon can be afforded.
@@ -691,7 +775,8 @@ void
 CBuySideMenu_WeaponButton::vOnClick_Base(void)
 {
 	weapondata_basic_t weaponRef;
-	// Just one thing. Let's reset this to be safe (new weapon opened for seeing upgrade choices)
+	// Just one thing. Let's reset this to be safe (new weapon opened for seeing
+	// upgrade choices)
 	VGUI_BuySideMenu_ResetTempVariables();
 	// and, thie tempCost starts at the value of this weapon as stated.
 	if(iWeaponPurchaseID == -1){
@@ -733,11 +818,12 @@ buysidemenu_btn_Back_clicked(CBuySideMenu_BasicButton* arg_this)
 void
 buysidemenu_backOneLayer(void)
 {
-	// In any other layer, this reduces iActiveLayer by 1 to stop drawing the latest layer of buttons.
-	// And makes the previous layer accessible again.
+	// In any other layer, this reduces iActiveLayer by 1 to stop drawing the latest
+	// layer of buttons. And makes the previous layer accessible again.
 
-	// The button on the previous layer is unselected.  No button on the current active layer can be
-	// selected technically; selecting a button does so for that layer and then advances the active layer.
+	// The button on the previous layer is unselected.  No button on the current
+	// active layer can be selected technically; selecting a button does so for that
+	// layer and then advances the active layer.
 	ary_layerButtonChoice[iActiveLayer - 1] = NULL;
 	
 	iActiveLayer = iActiveLayer - 1i; //drop a layer.
@@ -748,7 +834,8 @@ void
 buysidemenu_btn_Back_updateText(void)
 {
 	if(iActiveLayer == 0i){
-		buysidemenu_btn_Back.sName = "0 Cancel";  //I will exit the buy menu if hit again.
+		// I will exit the buy menu if hit again.
+		buysidemenu_btn_Back.sName = "0 Cancel";
 	}else{
 		// Still going to say, "Go Back".
 		buysidemenu_btn_Back.sName = "0 Go Back";
@@ -761,66 +848,24 @@ buysidemenu_btn_Back_updateText(void)
 void
 buysidemenu_btn_Buy_Weapon_clicked(CBuySideMenu_BasicButton* arg_this)
 {
-	//if(selectedWeaponButton.iWeaponPurchaseID != -1){
 	if(iWeaponTempID != -1){
-		//CONTINUE HERE.  We're actually not sending messages just yet, edit the current player's tempconfig instead.
-		
-		
-		//but how do we get the player from here... oh that actually still works.
+		// but how do we get the player from here... oh that actually still works.
 		if(canBuyWeapon(iWeaponTempID, iExtraPriceTemp, iExtraSlotsTemp, iPurchaseCountTemp)){
-			//player pl = (player)self;
-			//TODO - allow the buyopts to be represented.
-			//CBuySideMenu_BasicButton thisTemp = *arg_this;
 			BOOL addResult = attemptAddWeaponToConfig(iWeaponTempID, iBitsUpgradeTemp, iPurchaseCountTemp);
 			if(addResult){
-				//went ok. back out of this.
-				//TODO!!! - add the prices then!
+				// went ok. back out of this.
 				buysidemenu_backOneLayer();
 				buysidemenu_backOneLayer();
 			}
 		}
 		refreshButtons();
 	}
-	
-}//END OF buysidemenu_btn_Buy_Weapon_clicked
+}//buysidemenu_btn_Buy_Weapon_clicked
 
 
-//TODO - global??
-string sAryAlphabet[] = {
-	"A",
-	"B",
-	"C",
-	"D",
-	"E",
-	"F",
-	"G",
-	"H",
-	"I",
-	"J",
-	"K",
-	"L",
-	"M",
-	"N",
-	"O",
-	"P",
-	"Q",
-	"R",
-	"S",
-	"T",
-	"U",
-	"V",
-	"W",
-	"X",
-	"Y",
-	"Z"
-};
-
-//One button expected for each weapon in ary_myWeapons of the tempconfig at most. (so up to "ary_myWeapons_length" in count).
-CBuySideMenu_RemoveWeaponButton ary_btn_removeButton[ary_myWeapons_length];
-
-
-void setupRemoveButtonList(void){
-
+void
+setupRemoveButtonList(void)
+{
 	for(int i = 0; i < ary_myWeapons_length; i++){
 		ary_btn_removeButton[i] = spawn(CBuySideMenu_RemoveWeaponButton);
 		
@@ -828,22 +873,14 @@ void setupRemoveButtonList(void){
 		// which will change as things are deleted or the "Remove Items" button is returned to.
 		ary_btn_removeButton[i].setThisPointer(&ary_btn_removeButton[i]);
 		buysidemenu_addbuttonToTotal(&ary_btn_removeButton[i]);
-		
-		
 		buysidemenu_addbutton(&buysidemenu_btn_RemoveItem, &ary_btn_removeButton[i]);
 	}
-	
-}//END OF setupRemoveButtonList
-
-
-
-
-
-// to be aware of me from within removeButton_clicked
-void buysidemenu_btn_RemoveItem_clicked(CBuySideMenu_BasicButton* arg_this);
+}// setupRemoveButtonList
 
 	
-void buysidemenu_btn_removeButton_clicked(CBuySideMenu_BasicButton* arg_this){
+void
+buysidemenu_btn_removeButton_clicked(CBuySideMenu_BasicButton* arg_this)
+{
 	CBuySideMenu_RemoveWeaponButton removeWeaponButtonRef = *( (CBuySideMenu_RemoveWeaponButton*)arg_this );
 	removeWeaponFromConfig(removeWeaponButtonRef.linkedConfigIndex);
 	//and refresh this area.
@@ -851,19 +888,21 @@ void buysidemenu_btn_removeButton_clicked(CBuySideMenu_BasicButton* arg_this){
 }
 
 
-
-void buysidemenu_btn_RemoveItem_clicked(CBuySideMenu_BasicButton* arg_this){
-	
-	//FIRST, set each "ary_myWeapons_length" to be invisible.
-	//Don't get rendered / be clickable unless actually linked to a weapon in the player's inventory.
-	//(well this config really)
-	for(int i = 0; i < ary_myWeapons_length; i++){
+void
+buysidemenu_btn_RemoveItem_clicked(CBuySideMenu_BasicButton* arg_this)
+{
+	int i;
+	// FIRST, set each "ary_myWeapons_length" to be invisible.
+	// Don't get rendered / be clickable unless actually linked to a weapon in the
+	// player's inventory.
+	// (well this config really)
+	for(i = 0; i < ary_myWeapons_length; i++){
 		ary_btn_removeButton[i].bActive = FALSE;
 	}
 	
-	//Get the list of all items in the player's inventory.
-	//Make one button active / set up to delete that item when clicked.
-	for(int i = 0; i < pSeatLocal->m_clientinfo.weaponconfig_temp.ary_myWeapons_softMax; i++){
+	// Get the list of all items in the player's inventory.
+	// Make one button active / set up to delete that item when clicked.
+	for(i = 0; i < pSeatLocal->m_clientinfo.weaponconfig_temp.ary_myWeapons_softMax; i++){
 		weaponconfig_weapon_t* thisWeapo = &pSeatLocal->m_clientinfo.weaponconfig_temp.ary_myWeapons[i];
 		
 		weapondata_basic_t* basicPointer = (weapondata_basic_t*) ary_weaponData[thisWeapo->weaponID];
@@ -877,18 +916,18 @@ void buysidemenu_btn_RemoveItem_clicked(CBuySideMenu_BasicButton* arg_this){
 			buttonDisplayText = sprintf("%i: %s", (i+1i), basicRef.sDisplayName);
 			hotKeyCode = 48+(i+1);  // '0' + (i+1)
 		}
-		else /*if(i < 9+26)*/
+		else if(i < 9+26)
 		{
 			//now pick letters of the alphabet for the rest.
 			//uhhh. I don't know how to work with characters as a type or with ASCII values, so 
 			//we'll just use this array of letters in the alphabet.
-			buttonDisplayText = sprintf("%s: %s", sAryAlphabet[i-9], basicRef.sDisplayName);
+			buttonDisplayText = sprintf("%s: %s", chr2str((float)i+65), basicRef.sDisplayName);
 			hotKeyCode = 97+(i-9);  // 'a' + (i-9)
+		}else{
+			// surpass that range?  Not possible!
+			// In case it somehow is, refuse to generate any more remove buttons.
+			return;
 		}
-		
-		//ary_btn_removeButton[i].sName = buttonDisplayText;
-		//ary_btn_removeButton[i].iHotkey = hotKeyCode;
-		
 		
 		//INITIALIZE_BASICBUTTON(ary_btn_removeButton[i], "7 Buy Random", 48+7,clrGreen, NULL)
 		ary_btn_removeButton[i].create(buttonDisplayText, hotKeyCode, clrPaleBlue, &buysidemenu_btn_removeButton_clicked);
@@ -899,32 +938,34 @@ void buysidemenu_btn_RemoveItem_clicked(CBuySideMenu_BasicButton* arg_this){
 		ary_btn_removeButton[i].linkedConfigIndex = i;
 			
 		
-	}//END OF for everything in the player's inventory
-		
-		
-
-}//END OF buysidemenu_btn_RemoveItem_clicked
+	}// for everything in the player's inventory
+	
+}// buysidemenu_btn_RemoveItem_clicked
 
 
 
-//Take all buttons and call their "vOnShow". See what we can and can't afford (color red when we can't).  vOnShow should handle this appropriately per button.
-void refreshButtons(void){
-
+// Take all buttons and call their "vOnShow". See what we can and can't afford
+// (color red when we can't).  vOnShow should handle this appropriately per button.
+void
+refreshButtons(void)
+{
+	int i;
+	int i2;
 	CBuySideMenu_BasicButton previousLayerButton;
 	CBuySideMenu_BasicButton tempButton;
 	
-	for(int i = 0; i <= iActiveLayer; i++){
+	for(i = 0; i <= iActiveLayer; i++){
 		if(i == 0){
 			//CBuySideMenu_BasicButton tempButton = *ary_layerFirstButton[i2];
-			for(int i2 = 0; i2 < ary_layerFirstButton_softLength; i2++){
+			for(i2 = 0; i2 < ary_layerFirstButton_softLength; i2++){
 				tempButton = *ary_layerFirstButton[i2];
 				tempButton.vOnShow_Base();
-			}//END OF for i2 in ary_layerFirstButton
+			}// for i2 in ary_layerFirstButton
 				
 		}else{
 			previousLayerButton = *ary_layerButtonChoice[i - 1i];
 			
-			for(int i2 = 0i; i2 < previousLayerButton.ary_btn_softLength; i2 = i2+1i){				
+			for(i2 = 0i; i2 < previousLayerButton.ary_btn_softLength; i2 = i2+1i){				
 				//btnToRender = &previousLayerButton.ary_btn[i2];
 				int btnToRender_index_global = previousLayerButton.ary_btn_index[i2];
 				tempButton = *ary_btnTotal[btnToRender_index_global];
@@ -938,8 +979,11 @@ void refreshButtons(void){
 
 
 
-// NOTICE - assumes "Cancel" was clicked. Reverts "temp" config to the "current" config (one last saved / applied).
-void buysidemenu_closeBuyMenu(void){
+// NOTICE - assumes "Cancel" was clicked. Reverts "temp" config to the "current"
+// config (one last saved / applied).
+void
+buysidemenu_closeBuyMenu(void)
+{
 	//other way around.  Copy what's at the current to the temp (forgetting any purchase changes).
 	
 	weaponconfig_data_t* tempWeaponConfig = &pSeatLocal->m_clientinfo.weaponconfig_temp;
@@ -955,7 +999,6 @@ void buysidemenu_closeBuyMenu(void){
 	
 	//that should close the buy menu. Proceed.
 	pSeatLocal->fVGUI_Display = VGUI_SCREEN::NONE;
-	
 }//buysidemenu_closeBuyMenu
 
 // This is the "1 Use New Config" choice in the 1st layer. Applies the config (copies weaponconfig_temp to weapconfig_current).
@@ -969,7 +1012,6 @@ buysidemenu_btn_UseNewConfig_clicked(CBuySideMenu_BasicButton* arg_this)
 	weaponconfig_data_t* currentWeaponConfig = &pSeatLocal->m_clientinfo.weaponconfig_current;
 	
 	//Player wants to apply everything from the currentConfig to tempConfig.
-	//copyConfig(pSeatLocal->m_clientinfo.weaponconfig_current, pSeatLocal->m_clientinfo.weaponconfig_temp);
 	copyConfig(currentWeaponConfig, tempWeaponConfig);
 	
 	// TODO - check to see whether the config we just used was empty or not, to affect this message...
@@ -981,8 +1023,6 @@ buysidemenu_btn_UseNewConfig_clicked(CBuySideMenu_BasicButton* arg_this)
 	
 }//buysidemenu_btn_UseNewConfig_clicked
 	
-
-
 
 void
 buysidemenu_btn_Buy_onShow(CBuySideMenu_BasicButton* arg_this)
@@ -999,11 +1039,8 @@ buysidemenu_btn_Buy_onShow(CBuySideMenu_BasicButton* arg_this)
 	weapondata_basic_t weaponRef = *( (weapondata_basic_t*) ary_weaponData[iWeaponTempID]);
 
 	if(canBuyWeapon(iWeaponTempID, finalExtraPrice, finalExtraSlots, 1)){
-		//CBuySideMenu_BasicButton::vOnRender_Base(arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected); //call the parent's.
 		thisTemp.clr_render = thisTemp.clr;
 	}else{
-		// same, but draw it red to show we can't afford it at a glance.
-		//drawBuyButton(this.iGlobalIndex, this.sName, arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected, clrRed);
 		thisTemp.clr_render = clrRed;
 	}
 }
@@ -1217,10 +1254,10 @@ buysidemenu_btn_FullLoad_clicked(CBuySideMenu_BasicButton* arg_this)
 				thisTemp = *arg_this;
 				//iBitsUpgradeTemp |= BITS_WEAPONOPT_FULLLOAD;
 				iPurchaseCountTemp = numberAfforded;
-				// no need for extra price/slot stuff!  We'll make that from tht altered 'iPurchaseCountTemp'.
-				// That is ever rarely anything besides '1'. Except for this case of course.
-				//iExtraPriceTemp += numberAfforded*weaponRef.iPrice;
-				//iExtraSlotsTemp += numberAfforded*weaponRef.iSlots;
+				// no need for extra price/slot stuff!  We'll make that from that
+				// altered 'iPurchaseCountTemp'.
+				// That is ever rarely anything besides '1'. Except for this case of
+				// course.
 				thisTemp.bActive = FALSE;
 				buysidemenu_btn_Buy_Weapon_clicked( (CBuySideMenu_BasicButton*) &buysidemenu_btn_WeaponOpt_Buy);
 			
@@ -1235,6 +1272,8 @@ buysidemenu_btn_FullLoad_clicked(CBuySideMenu_BasicButton* arg_this)
 void
 VGUI_BuySideMenu_OnInit(void)
 {
+	// for macros below.
+	float flDeterminedHotkey;
 
 	//safety.
 	VGUI_BuySideMenu_ResetTempVariables();
@@ -1242,7 +1281,7 @@ VGUI_BuySideMenu_OnInit(void)
 	//haven't yet.
 	boughtAnything = FALSE;
 	
-	if(VGUI_BuySideMenu_InitBefore == FALSE){
+	if(VGUI_BuySideMenu_InitDone == FALSE){
 		//looks like we need to do this. proceed.
 	}else{
 		//nevermind.
@@ -1250,9 +1289,6 @@ VGUI_BuySideMenu_OnInit(void)
 		//like what was selected, temp buyopts clicked, etc.
 		return;
 	}
-	//don't do this init process again, no need to re-create a bunch of memory that's fine as it is.
-	VGUI_BuySideMenu_InitBefore = TRUE;
-	
 	
 	iActiveLayer = 0i;
 	ary_btnTotal_softLength = 0i;
@@ -1268,37 +1304,37 @@ VGUI_BuySideMenu_OnInit(void)
 	// if the 1st layer is active (drawn to that one). Says "Cancel" there, but if on any deeper layer it reads "Go Back".
 	//buysidemenu_btn_Back.create("0 Cancel", 48, NULL, buysidemenu_btn_Back_clicked);
 	
-	INITIALIZE_BASICBUTTON(Back, "0 Cancel", 48, clrPaleBluePurple, &buysidemenu_btn_Back_clicked)
+	INITIALIZE_BASICBUTTON(Back, "Cancel", "0", clrPaleBluePurple, &buysidemenu_btn_Back_clicked)
 	
 	
 	//INITIALIZE_BASICBUTTON(Buy, "2 Buy", 48+2, NULL, 0, NULL)
-	INITIALIZE_BASICBUTTON(Recentconfig, "1 Use New Config", 48+1, clrGreen, &buysidemenu_btn_UseNewConfig_clicked)
-	INITIALIZE_BASICBUTTON(Buy, "2 Buy", 48+2, clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(RemoveItem, "3 Remove Item", 48+3,clrPaleBlue, &buysidemenu_btn_RemoveItem_clicked)
-	INITIALIZE_BASICBUTTON(ResetConfig, "4 Reset Config", 48+4,clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(SaveConfig, "5 Save Config", 48+5,clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(LoadConfig, "6 Load Config", 48+6,clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(BuyRandom, "7 Buy Random", 48+7,clrGreen, NULL)
-	INITIALIZE_BASICBUTTON(Buy_Handguns, "1 Handguns", 48+1, clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(Buy_SMGs, "2 SMGs", 48+2,clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(Buy_Rifles, "3 Rifles", 48+3,clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(Buy_Shotguns, "4 Shotguns", 48+4,clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(Buy_SpecialPurpose, "5 Special Purpose", 48+5, clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(Recentconfig, "Use New Config", "1", clrGreen, &buysidemenu_btn_UseNewConfig_clicked)
+	INITIALIZE_BASICBUTTON(Buy, "Buy", "2", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(RemoveItem, "Remove Item", "3", clrPaleBlue, &buysidemenu_btn_RemoveItem_clicked)
+	INITIALIZE_BASICBUTTON(ResetConfig, "Reset Config", "4", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(SaveConfig, "Save Config", "5", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(LoadConfig, "Load Config", "6", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(BuyRandom, "Buy Random", "7", clrGreen, NULL)
+	INITIALIZE_BASICBUTTON(Buy_Handguns, "Handguns", "1", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(Buy_SMGs, "SMGs", "2", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(Buy_Rifles, "Rifles", "3", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(Buy_Shotguns, "Shotguns", "4", clrPaleBlue, NULL)
+	INITIALIZE_BASICBUTTON(Buy_SpecialPurpose, "Special Purpose", "5", clrPaleBlue, NULL)
 	
 	
 	// !!! INITIALIZE THE WEAPON-UPGRADE BUTTONS BEFORE THE WEAPONS THEMSELVES. Or else these will be missing at that point.
-	INITIALIZE_BASICBUTTON(WeaponOpt_Buy, "1 Buy", 48+1, clrGreen, &buysidemenu_btn_Buy_Weapon_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Silencer, sprintf("2 Silencer %i", WEAPONOPT_SILENCER_COST), 48+2, clrPaleBlue, &buysidemenu_btn_Silencer_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Lasersight, sprintf("3 Lasersight %i", WEAPONOPT_LASERSIGHT_COST), 48+3, clrPaleBlue, &buysidemenu_btn_Lasersight_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Flashlight, sprintf("4 Flashlight %i", WEAPONOPT_FLASHLIGHT_COST), 48+4, clrPaleBlue, &buysidemenu_btn_Flashlight_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Scope, sprintf("5 Scope %i", WEAPONOPT_SCOPE_COST), 48+5, clrPaleBlue, &buysidemenu_btn_Scope_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Buy, "Buy", "1", clrGreen, &buysidemenu_btn_Buy_Weapon_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Silencer, sprintf("Silencer %i", WEAPONOPT_SILENCER_COST), "2", clrPaleBlue, &buysidemenu_btn_Silencer_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Lasersight, sprintf("Lasersight %i", WEAPONOPT_LASERSIGHT_COST), "3", clrPaleBlue, &buysidemenu_btn_Lasersight_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Flashlight, sprintf("Flashlight %i", WEAPONOPT_FLASHLIGHT_COST), "4", clrPaleBlue, &buysidemenu_btn_Flashlight_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Scope, sprintf("Scope %i", WEAPONOPT_SCOPE_COST), "5", clrPaleBlue, &buysidemenu_btn_Scope_clicked)
 	
 	// Yes, Akimbo and FullLoad use the same hotkey (number 6). They never appear on the same weapon,
 	// since Akimbo is only meant for some guns, and FullLoad is only meant for some melee weapons.
 	// TODO? And if these two were to support flexible prices (show what it costs for the currently selected weapon... akimbo & fullLoad can't be fixed to
 	// one constant for all weapons), their display text + prices would have to be shown as they're shown to the user.
-	INITIALIZE_BASICBUTTON(WeaponOpt_Akimbo, "6 Akimbo", 48+6, clrPaleBlue, &buysidemenu_btn_Akimbo_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_FullLoad, "6 FullLoad", 48+6, clrGreen, &buysidemenu_btn_FullLoad_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Akimbo, "Akimbo", "6", clrPaleBlue, &buysidemenu_btn_Akimbo_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_FullLoad, "FullLoad", "6", clrGreen, &buysidemenu_btn_FullLoad_clicked)
 	
 	buysidemenu_btn_WeaponOpt_Buy.vOnShow_Custom = &buysidemenu_btn_Buy_onShow;
 	
@@ -1310,7 +1346,6 @@ VGUI_BuySideMenu_OnInit(void)
 	buysidemenu_btn_WeaponOpt_FullLoad.vOnShow_Custom = &buysidemenu_btn_FullLoad_onShow;
 	
 	
-	
 	// TODO - ONGOING.  As more weapons are entered, use this new condensed way
 	// to hook up to their info instead of using the hardcoded specifics below.
 	// Any other references to the button may be deleted thereafter.
@@ -1320,51 +1355,51 @@ VGUI_BuySideMenu_OnInit(void)
 	weapondata_basic_t tempWeapRef;
 	
 	
-	INITIALIZE_WEAPONBUTTON_ADV(Glock18, "1", 48+1, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(SOCOM_MK23, "2", 48+2, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(DesertEagle, "3", 48+3, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(FiveSeven, "4", 48+4, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(Beretta, "5", 48+5, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(AkimboColts, "6", 48+6, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(Glock20, "7", 48+7, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(RugerMK1, "8", 48+8, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(RagingBull, "9", 48+9, clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON_ADV(ContenderG2, "A", 97+0, clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(Glock18, "1", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(SOCOM_MK23, "2", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(DesertEagle, "3", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(FiveSeven, "4", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(Beretta, "5", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(AkimboColts, "6", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(Glock20, "7", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(RugerMK1, "8", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(RagingBull, "9", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(ContenderG2, "A", clrPaleBlue, NULL, Handguns)
 	
 	
-	INITIALIZE_WEAPONBUTTON_ADV(MiniUzi, "1", 48+1, clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON_ADV(MP5SD, "2", 48+2, clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON_ADV(MP5K, "3", 48+3, clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(MiniUzi, "1", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(MP5SD, "2", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(MP5K, "3", clrPaleBlue, NULL, SMGs)
 	
-	INITIALIZE_WEAPONBUTTON_ADV(STEYR_TMP, "4", 48+4, clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON_ADV(HK_PDW, "5", 48+5, clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON_ADV(UMP, "6", 48+6, clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(STEYR_TMP, "4", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(HK_PDW, "5", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(UMP, "6", clrPaleBlue, NULL, SMGs)
 	
-	INITIALIZE_WEAPONBUTTON_ADV(Skorpion, "7", 48+7, clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON_ADV(MAC10, "8", 48+8, clrPaleBlue, NULL, SMGs)
-	
-	
-	INITIALIZE_WEAPONBUTTON_ADV(M4A1, "1", 48+1, clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON_ADV(AK47, "2", 48+2, clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON_ADV(STEYR_AUG, "3", 48+3, clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON_ADV(M16A4, "4", 48+4, clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON_ADV(Barrett_M82, "5", 48+5, clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(Skorpion, "7", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(MAC10, "8", clrPaleBlue, NULL, SMGs)
 	
 	
-	INITIALIZE_WEAPONBUTTON_ADV(BenelliM3, "1", 48+1, clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON_ADV(USAS12, "2", 48+2, clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON_ADV(SPAS12, "3", 48+3, clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON_ADV(Mossberg500, "4", 48+4, clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON_ADV(SawedOff, "5", 48+5, clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(M4A1, "1", clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(AK47, "2", clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(STEYR_AUG, "3", clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(M16A4, "4", clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(Barrett_M82, "5", clrPaleBlue, NULL, Rifles)
+	
+	
+	INITIALIZE_WEAPONBUTTON(BenelliM3, "1", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(USAS12, "2", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(SPAS12, "3", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(Mossberg500, "4", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(SawedOff, "5", clrPaleBlue, NULL, Shotguns)
 
 
 	// LATER - make purchaseable only if the gamemode is team/scenario. (mercs vs specialists)
-	INITIALIZE_WEAPONBUTTON_ADV(M61Grenade, "1", 48+1, clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(M61Grenade, "1", clrPaleBlue, NULL, SpecialPurpose)
 	
-	INITIALIZE_WEAPONBUTTON_ADV(CombatKnife, "2", 48+2, clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON_ADV(M60, "3", 48+3, clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON_ADV(Katana, "4", 48+4, clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON_ADV(SealKnife, "5", 48+5, clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(CombatKnife, "2", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(M60, "3", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(Katana, "4", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(SealKnife, "5", clrPaleBlue, NULL, SpecialPurpose)
 
 	//TODO - set these up.  items are simpler than weapons and have no default behavior.
 	// in fact the kevlar just puts armor on the player at spawn, stealthshoes may as well
@@ -1394,7 +1429,10 @@ VGUI_BuySideMenu_OnInit(void)
 	
 	setupRemoveButtonList();
 	
-}//END OF VGUI_BuySideMenu_OnInit
+	// don't do this init process again.
+	VGUI_BuySideMenu_InitDone = TRUE;
+	
+}// VGUI_BuySideMenu_OnInit
 
 
 
@@ -1421,13 +1459,12 @@ VGUI_BuySideMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float
 	
 	// VGUI_Text( sprintf("%s - %s", "Free Specialists", serverkey("hostname") ), vPos + '16 64 0', '12 12', FONT_CON );
 	
-	vector vButtonPos = [video_mins[0] + 5, video_mins[1] + video_res[1]/2, 0];
 	
 	// Checks for clicks be done separately
 	// Only check for buttons from the active layer. 
 	
-	vector vBtnPos;
-	vBtnPos.z = 0;
+	vector vButtonPos = [video_mins[0] + 5, video_mins[1] + video_res[1]/2, 0];
+	vector vBtnPos = [0,0,0];
 	
 	/*
 	if(time >= lastPrintoutTime){
@@ -1437,70 +1474,9 @@ VGUI_BuySideMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float
 	}
 	*/
 	
+	BuySideMenu_onInputEvent();
+	
 	drawPlayerInventory_buy(TRUE);
-	
-	vBtnPos.x = 0;
-	vBtnPos.y = 0;
-	vBtnPos.z = 0;
-	
-	
-	if(iActiveLayer == 0){
-		vBtnPos.x = (int)vButtonPos.x; //default pos.
-		vBtnPos.y = (int)vButtonPos.y;
-		
-		
-		for(int i2 = 0i; i2 < ary_layerFirstButton_softLength; i2++){
-			CBuySideMenu_BasicButton tempButton = *ary_layerFirstButton[i2];
-			
-			checkBuySideMenuButtonClicked(ary_layerFirstButton[i2], vBtnPos, vButtonSizStandard);
-			vBtnPos.y += (vButtonSizStandard.y + 1);
-		}
-		
-	}else{
-		vBtnPos.x = (int)vButtonPos.x + (vButtonSizStandard.x + 1) * iActiveLayer;
-		vBtnPos.y = (int)vButtonPos.y;
-		// All other layers only render buttons that the previous layer (selected button there) tells them to.
-		
-		previousLayerButton = *ary_layerButtonChoice[iActiveLayer - 1i];
-		
-			
-		for(int i2 = 0i; i2 < previousLayerButton.ary_btn_softLength; i2 = i2+1i){
-			
-			// CONCLUSION... maybe.
-			// So much as this local var, "btnCheck", being set to a dereferenced ary_btnTotal element,
-			// and this btnCheck being used in checkBuySideMenubuttonClicked instead of just that ary_btnTotal element (a pointer already)
-			// is enough to trigger this odd error, where the next frame (or if this for loop gets so much as an extra iteration
-			// that resets btnCheck... test with the "if(theThingHappened)continue;" bit above moved to after these lines below too...
-			// Anyways, this makes the difference between whether the real thing the ary_btnTotal element links to stays
-			// consistent between at least loop iterations or not even those.  Staying consistent between frames is definitely out.
-			// When this method ends, or really this scope (?), that thing the ary_btnTotal element is pointing at blanks out.
-			
-			btnToRender_index_global = previousLayerButton.ary_btn_index[i2];
-			
-			CBuySideMenu_BasicButton tempButton2 = *ary_btnTotal[btnToRender_index_global];
-			if(tempButton2.bActive == FALSE){
-				// let the next button be tried instead.
-				continue;
-			}
-			
-			// NOT THIS WAY (causes the odd problem):
-			//if(checkBuySideMenuButtonClicked(&btnCheck, vBtnPos, vButtonSizStandard)){
-			if(checkBuySideMenuButtonClicked(ary_btnTotal[btnToRender_index_global], vBtnPos, vButtonSizStandard)){
-				// nothing special happens if so, checkBuySideMenuButtonClicked handles this fine.
-			}
-			
-			vBtnPos.y += (vButtonSizStandard.y + 1);
-		}//END OF for i2 in this layer's buttons.
-	}
-	
-	//Check the "0. Cancel" button. Special purpose.
-	
-	checkBuySideMenuButtonClicked(&buysidemenu_btn_Back, vBtnPos, vButtonSizStandard);
-	vBtnPos.y += (vButtonSizStandard.y + 1);
-	
-	vBtnPos.x = 0;
-	vBtnPos.y = 0;
-	vBtnPos.z = 0;
 	
 	for(int i = 0i; i <= iActiveLayer; i = i + 1i){
 		//Adjust these as needed. These also show where to draw the "0 Cancel" button
@@ -1560,7 +1536,7 @@ VGUI_BuySideMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float
 				(*ary_btnTotal[btnToRender_index_global]).vOnRender_Base(vBtnPos, i, i2, fIsSelected);
 				vBtnPos.y += (vButtonSizStandard.y + 1);
 				
-			}//END OF for i2 in this layer's buttons.
+			}// for i2 in this layer's buttons.
 		}
 		
 		if(i == iActiveLayer){
@@ -1582,7 +1558,7 @@ VGUI_BuySideMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float
 		}
 		
 		
-	}//END OF for(i from 0 to iActiveLayer, inclusive)
+	}// for(i from 0 to iActiveLayer, inclusive)
 	
 	
 	// TEST!
@@ -1594,5 +1570,31 @@ VGUI_BuySideMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float
 	drawPlayerInventory_TopBar(-1, TRUE);
 	
 }//VGUI_BuySideMenu_Update
+
+
+// Given a single-character string, like "3" or "A", determine the keycode that
+// should be tied to it.  For uppercase characters, force the lowercase one, as the
+// user is certainly pushing that one.
+float determineHotkeyFromChar(string arg_sHotkeyDisplay){
+	if(strlen(arg_sHotkeyDisplay) != 0){
+		float charCode = str2chr(arg_sHotkeyDisplay, 0);
+		if(charCode >= 48 && charCode <= 48+9){
+			// numeric?  Straightforward
+			return charCode;
+		}else if(charCode >= 65 && charCode <= 65+25){
+			// uppercase?  Convert to lowercase for charCode.
+			return charCode + 32;
+		}else if(charCode >= 97 && charCode <= 97+25){
+			// lowercase?  Leave it as it is
+			return charCode;
+		}else{
+			// ???
+			return -1;
+		}
+	}else{
+		// blank string given?
+		return -1;
+	}
+}
 
 

@@ -632,6 +632,7 @@ TSMultiplayerRules::RestartRound(int iWipe)
 	*/
 	//try this
 	// !!!
+	
 	// TAGGG - update2020.  not yet!  See if we even need to, probably but just be safe.
 	// that is re-implement the old decal.c, info_decal edits.
 	//Decals_Reset();

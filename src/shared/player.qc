@@ -756,7 +756,7 @@ void player::player(void){
 	*/
 	
 	
-}//END OF player constructor
+}// player constructor
 
 
 // use TRUE for clean respawns,
@@ -1166,8 +1166,7 @@ player::callWeaponThink(void){
 		
 		basicRef.vOnThink(this, dynaRef);
 		
-		//self.v_angle += '-0.6 0.6 0.0';
-	}//END OF weaponEquipped check
+	}// weaponEquipped check
 }
 
 
@@ -1187,13 +1186,17 @@ player::callWeaponThink(void){
 void
 player::frameThink_fromServer(void){
 	
+	if(autocvar_sv_printoutspam == 1){
+		printfline("My state: %d", iState);
+	}
+	
 	if(fKarateStamina < 1.0){
 		fKarateStamina = bound(0, fKarateStamina + frametime * 0.1667, 1);
 	}
 	
 	handleAccuracyKickback();
 	
-}//END OF frameThink_fromServer
+}// frameThink_fromServer
 
 #endif
 
@@ -1207,6 +1210,10 @@ player::frameThink_fromServer(void){
 void 
 player::preThink(void){
 	weapondynamic_t dynaRef;
+	
+	if(autocvar_cl_printoutspam == 1){
+		printfline("My state: %d", iState);
+	}
 	
 	
 	// Called before rendering, so this is an acceptable place.
@@ -1270,8 +1277,8 @@ player::preThink(void){
 				TS_Weapons_ViewAnimation(baseRef.iAnim_Idle_Index, 2 );
 			}
 			
-		}//END OF inventoryEquippedIndex
-	}//END OF w_freeze_idle_next check
+		}// inventoryEquippedIndex
+	}// w_freeze_idle_next check
 	
 }//preThink
 
@@ -1319,12 +1326,12 @@ player::preThink(void){
 	
 	v_angle = View_approachAngleOffsetTarget(v_angle);
 	
-}//END OF preThink
+}// preThink
 
 void
 player::postThink(void){
 	
-}//END OF postThink
+}// postThink
 #endif
 
 
@@ -1388,7 +1395,7 @@ player::attemptAddWeaponFromPickup(TSWorldGun arg_pickup){
 	}
 	
 	return FALSE;  //don't delete.
-}//END OF attemptAddWeaponFromPickup
+}// attemptAddWeaponFromPickup
 
 
 // Drop this weapon (of that index).  ID is kinda the improper term.
@@ -1602,7 +1609,7 @@ player::dropWeapon(int arg_weaponID, BOOLEAN completeDrop){
 	
 	sound(this, CHAN_WEAPON, "weapons/weapondrop.wav", 1, ATTN_NORM );
 
-}//END OF dropWeapon
+}// dropWeapon
 
 
 
@@ -1617,7 +1624,7 @@ player::anyAmmoPoolNonEmpty(void){
 	}
 	//return anyNonEmpty;
 	return FALSE;  //made it this far?  didn't have any.
-}//END OF anyAmmoPoolNonEmpty
+}// anyAmmoPoolNonEmpty
 
 // oh.. I guess that's it.
 void
@@ -1625,7 +1632,7 @@ player::dropAmmo(void){
 	//TSAmmoPack eDrop = 
 	TSAmmoPack::generate(this);
 
-}//END OF dropAmmo
+}// dropAmmo
 
 
 #endif

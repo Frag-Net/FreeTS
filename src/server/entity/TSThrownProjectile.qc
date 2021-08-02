@@ -12,9 +12,9 @@ void TSThrownProjectile::TSThrownProjectile(void){
 	TSWorldGun::TSWorldGun();
 	
 	startAngularVelocityDelay = -1;
-	//vPreviousVelocity = vecZero;
+	//vPreviousVelocity = g_vZero;
 	forceBecomePickupableTime = -1;
-	queuedVelocity = vecZero;
+	queuedVelocity = g_vZero;
 	queuedVelocityApplyTime = -1;
 	switchToNormalPickupBoundsTime = -1;
 	

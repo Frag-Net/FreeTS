@@ -112,11 +112,6 @@ Draws a button, returns whether or not a mouse is hovering over it (for inherita
 float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSize) {
 	vector vLabelPos;
 	
-	/*
-	if ( iVGUIKey < 57 ) {
-		iVGUIKey++;
-	}
-	*/
 	
 	drawfill( vPosition, [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
 	drawfill( [vPosition[0], vPosition[1] + vSize[1] - 1], [vSize[0], 1], vVGUIColor, VGUI_WINDOW_FGALPHA );
@@ -127,23 +122,14 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 	vLabelPos[0] = vPosition[0] + 16;
 	vLabelPos[1] = vPosition[1] + ( ( vSize[1] / 2 ) - 4 );
 	
-	/*
-//TAGGG REPLACEMENT - "pSeatLocal->fInputKeyCode" for "TS_keyRefUp".
-	if ( ( iVGUIKey == TS_keyRefUp ) ) {
-		vFunction();
-		TS_keyRefUp = 0;
-		return TRUE;
-	}
-	*/
-	
 	
 	
 	if ( VGUI_CheckMouse( vPosition, vSize ) ) {
 		//pSeatLocal->fVGUI_Display
 	
-		if ( TS_mouseClickRef == TRUE ) {
+		if (pSeatLocal->m_inputMouseClicked == TRUE) {
 			vFunction();
-			TS_mouseClickRef = FALSE;
+			pSeatLocal->m_inputMouseClicked = FALSE;
 		}
 		
 		Gfx_Text( vLabelPos, sLabel, vButtonFontSize, vVGUIColor, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );

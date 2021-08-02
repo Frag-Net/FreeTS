@@ -275,7 +275,7 @@ Game_Worldspawn(void)
 	//pointerstat(STAT_WEIGHTSLOTS, EV_FLOAT, iTotalSlots);
 	
 	
-	//TAGGG - INCLUSION. NEW.
+	// NEW.
 	pointerstat(STAT_RULE_MONEYALLOWED, EV_INTEGER, &bRule_MoneyAllowed);
 	pointerstat(STAT_RULE_MAXWEIGHTSLOTS, EV_INTEGER, &iRule_MaxWeightSlots);
 
@@ -283,7 +283,7 @@ Game_Worldspawn(void)
 	localcmd(sprintf("serverinfo slots %d\n", cvar("sv_playerslots")));
 	localcmd("teamplay 1\n");
 	
-	//TAGGG - shouldn't these get explicit defaults?
+	// Shouldn't these get explicit defaults?
 	g_ts_gamestate = GAME_INACTIVE;
 	g_ts_gametime = 0;
 	
@@ -293,19 +293,6 @@ Game_Worldspawn(void)
 	// see what calls that if uncertain from nuclide.
 	initSpawnMem();
 	
-	
-	//TAGGG - 2020update?
-	/*
-	// and what do these mean anyway?  Search game files, maybe something tells what "buy.kevlar" means?
-	// how to derive that to some sound file I assume?
-	Sound_Precache("buy.kevlar");
-	Sound_Precache("buy.weapon");
-	Sound_Precache("buy.ammo");
-	
-	Weapons_Init();
-
-	clientstat(STAT_MONEY, EV_INTEGER, player::money);
-	*/
 	
 	clientstat(STAT_MONEY, EV_INTEGER, player::money);
 	pointerstat(STAT_GAMETIME, EV_FLOAT, &g_ts_gametime);

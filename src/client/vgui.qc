@@ -114,12 +114,12 @@ CSQC_VGUI_Draw( player arg_player)
 	}//END OF screen height check
 	
 	//
-	if(FONT_ARIAL == -1 || Recorded_video_res != video_res){
+	if(FONT_ARIAL == -1 || g_videoResPrev != video_res){
 		//Give it a font based on this screen size.
 		
-		//Recorded_video_res = video_res;
-		Recorded_video_res[0] = video_res[0];
-		Recorded_video_res[1] = video_res[1];
+		//g_videoResPrev = video_res;
+		g_videoResPrev[0] = video_res[0];
+		g_videoResPrev[1] = video_res[1];
 		
 		//FONT_ARIAL = loadfont( "label", "arial", "32", -1 );
 		float font_arial_size = (fontSizeMulti * 24);
@@ -131,14 +131,14 @@ CSQC_VGUI_Draw( player arg_player)
 		FONT_ARIAL = loadfont( "game", "arial", str_font_arial_size, -1 );
 		FONT_ARIAL_TITLE = loadfont( "game", "arial", str_font_arial_title_size, -1 );
 		
-		//print( sprintf("CHANGE height:%i fontm:%.2f fontref:%i match:(%i, %i) totalmatch:%i\n", (int)video_res[1], fontSizeMulti, (int)FONT_ARIAL, (int)(Recorded_video_res[0]==video_res[0]), (int)(Recorded_video_res[1]==video_res[1]), (int)(Recorded_video_res==video_res))  );
+		//print( sprintf("CHANGE height:%i fontm:%.2f fontref:%i match:(%i, %i) totalmatch:%i\n", (int)video_res[1], fontSizeMulti, (int)FONT_ARIAL, (int)(g_videoResPrev[0]==video_res[0]), (int)(g_videoResPrev[1]==video_res[1]), (int)(g_videoResPrev==video_res))  );
 	}
 	
 	//little demo.
 	/*
 	if(nextPrintoutTime == -1 || (time >= nextPrintoutTime) ){
 		nextPrintoutTime = time + 2;
-		print( sprintf("timed printout. height:%i fontm:%.2f fontref:%i match:(%i, %i) totalmatch:%i\n", (int)video_res[1], fontSizeMulti, (int)FONT_ARIAL, (int)(Recorded_video_res[0]==video_res[0]), (int)(Recorded_video_res[1]==video_res[1]), (int)(Recorded_video_res==video_res))  );
+		print( sprintf("timed printout. height:%i fontm:%.2f fontref:%i match:(%i, %i) totalmatch:%i\n", (int)video_res[1], fontSizeMulti, (int)FONT_ARIAL, (int)(g_videoResPrev[0]==video_res[0]), (int)(g_videoResPrev[1]==video_res[1]), (int)(g_videoResPrev==video_res))  );
 	}
 	*/
 	

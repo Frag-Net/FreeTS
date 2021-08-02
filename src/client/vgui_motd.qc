@@ -88,10 +88,10 @@ void VGUI_MessageOfTheDay(player arg_player, vector vPos, vector vWindowSiz, flo
 	// So you have to invent your own wordwrap to get that??  Let's just skip that.
 	Gfx_TextLineWrap( vTextPos, vWindowSiz - ('16 64 0' * 2) , DRAWTEXTFIELD_ALIGN_LEFT_TOP, tempText, FONT_ARIAL );
 	
-	if(TS_keyRefDown && TS_keyRefTapped == 13){
+	if(pSeatLocal->m_inputKeyTapped == 13){
 		//pressing enter here works too.
 		MessageOfTheDay_ButtonOK();
-		TS_keyRefTapped = 0;   //why do we have to do this, no clue
+		pSeatLocal->m_inputKeyTapped = 0;   //why do we have to do this, no clue
 	}
 	
 	VGUI_Button( _("VGUI_OK"), MessageOfTheDay_ButtonOK, [vPos.x + 16, vPos.y + vWindowSiz.y - 30 - 16, 0], '100 30 0' );

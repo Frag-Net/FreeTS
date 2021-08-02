@@ -26,7 +26,9 @@ CUIEventGrabber::Draw(void)
 	// nothing!
 }
 
-//TODO: globals from src/client/defs.h over here now (like TS_mouseClickRef, etc.)
+
+void BuySideMenu_onInputEvent(void);
+extern var BOOL VGUI_BuySideMenu_InitDone;
 
 void
 CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
@@ -38,25 +40,24 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 	switch (flEVType) {
 		
 	case IE_KEYDOWN:
-		//printf("CUIEventGrabber::Input %d\n", flKey); 
+		printf("CUIEventGrabber::Input %d time:%.2f\n", flKey, time);
 		if (flKey == K_MOUSE1) {
-			TS_mouseClickRef = 1;
-		} else {
-			TS_keyRefDown = 1;
+			pSeatLocal->m_inputMouseClicked = TRUE;
 		}
-		TS_keyRefUp = flKey;
-		TS_keyRefTapped = flKey;  //lasts only this frame
-		TS_keyRefUpASCII = flChar;
+		pSeatLocal->m_inputKeyDown = flKey;
+		pSeatLocal->m_inputKeyTapped = flKey;  //lasts only this frame
 		break;
 	case IE_KEYUP:
 		if (flKey == K_MOUSE1) {
-			TS_mouseClickRef = 0;
-		} else {
-			TS_keyRefDown = 0;
+			pSeatLocal->m_inputMouseClicked = FALSE;
 		}
-		TS_keyRefUp = 0;
-		TS_keyRefUpASCII = 0;
+		pSeatLocal->m_inputKeyDown = 0;
 		break;
+	}
+	
+	
+	if(pSeatLocal->fVGUI_Display == BUYSIDEMENU){
+		BuySideMenu_onInputEvent();
 	}
 	
 }

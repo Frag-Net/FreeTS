@@ -1,20 +1,18 @@
 
 
-//TAGGG - why not??
 #define NULL __NULL__
 
-//TAGGG - new. I just want to make it clear this variable is meant to be TRUE or FALSE.
 #define BOOL float
 #define BOOLEAN float
 
-//TAGGG
+// plain printouts, no client/server tagging
 //#define printf(...) print(sprintf(__VA_ARGS__))
 //#define printfline(s1, ...) print(sprintf(s1"\n" __VA_ARGS__))
 //#define printlinef(s1, ...) print(sprintf(s1"\n" __VA_ARGS__))
 
 
 ////////////////////////////////////////////////////////
-//TODO - let some easy constant, or even just "debug", specify whether to include
+// TODO - let some easy constant, or even just "debug", specify whether to include
 // the CL or SV in front.  But we don't know how many re-updates from modern files
 // will happen between now and then.
 
@@ -47,8 +45,6 @@
 
 
 
-
-
 // Safe way to declare an entity seen in FreeHL.  Think of it as:
 //     arg_dest = spawnfunc_ClassNameHere;
 // This lets the constructor invoked by 'spawnfunc_' have a 'self' set
@@ -66,10 +62,6 @@
     self = arg_dest;\
     spawnfunc_##arg_class();\
     self = eold;
-
-
-
-
 
 
 
@@ -187,8 +179,12 @@ if (pl.inputSecondaryTapFrameCount == 0)\
 
 
 
-// be aware that a player is a thing
+// be aware of the player
 class player;
+
+
+extern const vector g_vZero;
+
 
 
 #ifdef SSQC

@@ -1,8 +1,11 @@
 
-//TAGGG - INCLUSION.  and new file.
+// New file.
 
-//Try copying from _base/shared/effects.c.  From the up to date repository or the old one, dunno.
-
+// Try copying from _base/shared/effects.c.  From the up to date repository
+// or the old one, dunno.
+// ...this comment has aged terribly.
+// No clue, these effects are due for a complete overhaul to better resemble
+// TS sometime anyway.
 
 #ifdef SSQC
 void Effect_Explosion(vector vecOrigin )
