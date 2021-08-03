@@ -40,11 +40,6 @@ struct
 	float m_inputKeyDown;
 	float m_inputMouseClicked;
 
-	// like pSeat->ePlayer, but already casted to the gamemod's custom "player" class.
-	// WARNING: Not yet set, find some place around the start of each frame where it 
-	// makes sense to set this.
-	// Nevermind, do-able but likely won't be used much.  Do m_clientinfo instead
-	//player m_ePlayerRef;
 	ClientInfo_t m_clientinfo;
 	
 } g_seatslocal[4], *pSeatLocal;

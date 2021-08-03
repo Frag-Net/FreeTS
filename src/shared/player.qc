@@ -668,9 +668,8 @@ player::SendEntity(entity ePEnt, float fChanged)
 
 
 
-
-void player::player(void){
-	
+void
+player::player(void){
 	printfline("CONSTRUCTOR: player, called");
 	
 	// just in case?
@@ -679,22 +678,19 @@ void player::player(void){
 	// reasonable default?
 	iState = PLAYER_STATE::NOCLIP;
 	
-#ifdef SSQC
+#ifdef SERVER
 	money = 0;  //safety?
 	
 	//this.think = player_frameThink;
 	//this.nextthink = time + 0.0;
 #endif
 
-//only the server actually uses these.  ah well, whatever.
-//(consider making serverside-only?  "ifdef SSQC" ?
-
 	ary_myWeapons_softMax = 0;
 	for(int i = 0; i < ary_myWeapons_length; i++){
 		ary_myWeapons[i] = spawn(weapondynamic_t);
 	}
 	
-#ifdef CSQC
+#ifdef CLIENT
 	weaponSelectHighlightID = -1;
 	weaponSelectHighlightAkimbo = FALSE;
 	
@@ -704,7 +700,6 @@ void player::player(void){
 	flOldZoom = 1;
 	flZoomLerp = 0;
 	flZoomLevel = 0;
-	//queuedDeploySequence = 0;
 #endif
 	
 	flKarateBlockCooldown = 0;
@@ -723,7 +718,7 @@ void player::player(void){
 	reset(TRUE);  //cover anything specified in here too
 	
 	/*
-#ifdef SSQC
+#ifdef SERVER
 	
 	player someThingy = this;
 	printfline("***CHECKPOINT player2***");
@@ -764,7 +759,7 @@ void player::player(void){
 	printfline("dropAmmo: %i", someThingy.dropAmmo);
 	printfline("***END***");
 	
-	#endif
+#endif
 	*/
 	
 	
@@ -774,7 +769,7 @@ void player::player(void){
 // use TRUE for clean respawns,
 // FALSE for only resetting some weapons-related vars between weapon changes, nothing too significant
 void 
-player::reset(BOOLEAN resetInventory){
+player::reset(BOOL resetInventory){
 	
 	INPUT_TAP_RESET(this)
 	
@@ -782,8 +777,7 @@ player::reset(BOOLEAN resetInventory){
 	//iState = ?;
 	
 	
-	#ifdef CSQC
-	
+#ifdef CLIENT
 		// For safety, doing this.
 		// If anywhere that ever calls for this method clientside has this set
 		// properly before the call to here, (whatever event-method in base files leads
@@ -828,12 +822,12 @@ player::reset(BOOLEAN resetInventory){
 		forceViewModelUpdate = FALSE;
 		prev_forceBodygroup1Submodel = 0;
 		
-	#endif
+#endif
 	
-	#ifdef SSQC
+#ifdef SERVER
 		switchToRecentlyAddedWeapon = FALSE;
 		nextUseCooldown = 0;
-	#endif
+#endif
 	
 	currentZoomChoice = -1;
 	setZoom(1.0f);
@@ -895,12 +889,12 @@ player::reset(BOOLEAN resetInventory){
 	
 	// maybe not necessary, but I don't think
 	// the client gets any benefit from this.
-	#ifdef SSQC
+#ifdef SERVER
 	//the first time you fire will be the first frame of firing.
 	//flags = flags | FL_PRIMARY_FIRE_FIRST_FRAME;
 	//flags = flags | FL_SECONDARY_FIRE_FIRST_FRAME;
 	
-	#endif
+#endif
 	
 	recentAkimboAttackChoice = BITS_AKIMBOCHOICE_NONE;
 	nextAkimboAttackPreference = BITS_AKIMBOCHOICE_LEFT;
@@ -912,7 +906,7 @@ player::reset(BOOLEAN resetInventory){
 	
 	// do a check. If we didn't die last time, we don't need to delete this stuff.
 	// is this good?  See that this reliable to check at the time "reset" is called in the spawning method!
-	// or just send a parameter here (preserve weapons:  yes/no boolean) to determine that instead.
+	// or just send a parameter here (preserve weapons:  yes/no BOOL) to determine that instead.
 	
 	if(resetInventory){
 		
@@ -925,14 +919,14 @@ player::reset(BOOLEAN resetInventory){
 	
 		setInventoryEquippedIndex(-1);
 		
-#ifdef SSQC
+#ifdef SERVER
 		// other projects do that so sure?
 		weapon = 0;
 	
 		// TODO - is doing this in here a good idea? decide.
 		WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 		WriteByte( MSG_MULTICAST, EVENT_TS::RESET_VIEW_MODEL );
-		msg_entity = this;  //localPlayer;
+		msg_entity = this;
 		multicast( [0,0,0], MULTICAST_ONE );
 #endif
 		
@@ -957,7 +951,7 @@ vector
 player::View_approachAngleOffsetTarget(vector vecInputAngles)
 {
 	float frametimeUse;
-#ifdef CSQC
+#ifdef CLIENT
 	frametimeUse = clframetime;
 #else
 	frametimeUse = frametime;
@@ -1028,7 +1022,7 @@ player::setInventoryEquippedIndex(int arg_newIndex)
 // Extra version supplied 'useAkimbo'.
 // Also, setting to hte 
 void
-player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOLEAN useAkimbo)
+player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 {
 	printfline("setInventoryEquippedIndex_Akimbo: %i, %d", arg_newIndex, useAkimbo);
 	inventoryEquippedIndex = arg_newIndex;
@@ -1085,30 +1079,33 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOLEAN useAkimbo)
 	// If this is the wrong way to go thinking about this, I need to know more.
 	// ALSO - see other uses of SAVE_STATE, most are for both client & server,
 	// especially the w_attack_next, or w_next_attack, in ts/shared/weapons.qc.
-	#ifdef CLIENT
+#ifdef CLIENT
 	SAVE_STATE(activeweapon);
 	SAVE_STATE(inventoryEquippedIndex);
-	#endif
+#endif
 }
 
 
 
 // get old FreeTS weapon info.
-weapondata_basic_t* player::getEquippedWeaponData(void){
+weapondata_basic_t*
+player::getEquippedWeaponData(void){
 	//weapondynamic_t dynaRef;
 	//dynaRef = ary_myWeapons[inventoryEquippedIndex];
 	//dynaRef.weaponID
 	return getWeaponData((int)activeweapon, weaponEquippedAkimbo);
 }
 
-weapondata_basic_t* player::getEquippedWeaponData_Singular(void){
+weapondata_basic_t*
+player::getEquippedWeaponData_Singular(void){
 	//return getWeaponData_Singular(activeweapon_singular);
 	// no do this.
 	return ary_weaponData[activeweapon_singular];
 }
 
 // For choices other than the equipped weapon ID
-weapondata_basic_t* player::getInventoryWeaponData(int arg_invID, BOOL arg_preferAkimbo){
+weapondata_basic_t*
+player::getInventoryWeaponData(int arg_invID, BOOL arg_preferAkimbo){
 	weapondynamic_t dynaRef;
 	dynaRef = ary_myWeapons[arg_invID];
 	return getWeaponData(dynaRef.weaponID, arg_preferAkimbo);
@@ -1116,7 +1113,8 @@ weapondata_basic_t* player::getInventoryWeaponData(int arg_invID, BOOL arg_prefe
 
 // As the akimbo versions of weapons are saved to g_weapons,
 // the singular version may be desired sometimes.
-weapondata_basic_t* player::getInventoryWeaponData_Singular(int arg_invID){
+weapondata_basic_t*
+player::getInventoryWeaponData_Singular(int arg_invID){
 	weapondynamic_t dynaRef;
 	dynaRef = ary_myWeapons[arg_invID];
 	return getWeaponData_Singular(dynaRef.weaponID);
@@ -1127,7 +1125,8 @@ weapondata_basic_t* player::getInventoryWeaponData_Singular(int arg_invID){
 // or handle this on their own already.
 // Should this be done for price too?  I doubt there would be any benefit to preserving
 // the value stored in weapons ingame.
-void player::updateSlotCountsForEquippedWeapon(void){
+void
+player::updateSlotCountsForEquippedWeapon(void){
 	//weapondynamic_t arg_thisWeapon = ary_myWeapons[inventoryEquippedIndex];
 	weapondata_basic_t* basicP = getEquippedWeaponData();
 	// Record the old number of slots saved to the weapon at its iCount earlier
@@ -1142,7 +1141,8 @@ void player::updateSlotCountsForEquippedWeapon(void){
 // Returns whether the current weapon was removed.
 // Mainly this exists to check if a weapon intended to be removed instead of dropped
 // (count set to 0), but this handles deleting it from the player's inventory anyway.
-BOOL player::equippedWeaponDeleteCheck(void){
+BOOL
+player::equippedWeaponDeleteCheck(void){
 	weapondynamic_t arg_thisWeapon = this.ary_myWeapons[this.inventoryEquippedIndex];
 	if(arg_thisWeapon.iCount == 0){
 		// remove this weapon, pick another one.
@@ -1153,7 +1153,8 @@ BOOL player::equippedWeaponDeleteCheck(void){
 	return FALSE;
 }
 
-BOOL player::inventoryWeaponDeleteCheck(int arg_invID){
+BOOL
+player::inventoryWeaponDeleteCheck(int arg_invID){
 	weapondynamic_t arg_thisWeapon = this.ary_myWeapons[arg_invID];
 	if(arg_thisWeapon.iCount == 0){
 		// remove this weapon, pick another one.
@@ -1183,7 +1184,7 @@ player::callWeaponThink(void){
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 // runs every frame server-side.  postthink, oddly enough, does not.
 // Even cumulative 'frametime' readings do not at all add up to the real passage of time.
 // Looks like we have to do this with server calling our think instead... it's own frame logic
@@ -1215,7 +1216,7 @@ player::frameThink_fromServer(void){
 
 
 
-#ifdef CSQC
+#ifdef CLIENT
 
 // Note that these pre/postThink's aren't game events, they're just called by _base/entry.c before/after
 // prediction accordingly, and every single rendered frame.
@@ -1331,13 +1332,15 @@ player::postThink(void){
 // Now supported clientside as separate implementations (see above)
 // we have other ways for handling logic clientside.
 
-#ifdef SSQC
+#ifdef SERVER
 void
 player::preThink(void){
 	
 	//self.angles += '0 0.3 0';
 	//self.v_angle = self.angles;
 	
+	// TODO - for clientside, this would need to involve the "view_angles" global
+	// instead!  Unsure if the macro GET_VIEW_ANGLES is good enough
 	v_angle = View_approachAngleOffsetTarget(v_angle);
 	
 }// preThink
@@ -1349,9 +1352,9 @@ player::postThink(void){
 #endif
 
 
-#ifdef SSQC
+#ifdef SERVER
 
-BOOLEAN
+BOOL
 player::attemptAddWeaponFromPickup(TSWorldGun arg_pickup){
 	
 	//int existingMatchingIndex = findWeaponInConfig((player)other, (int)arg_pickup.myInfo.weaponID);
@@ -1384,7 +1387,7 @@ player::attemptAddWeaponFromPickup(TSWorldGun arg_pickup){
 		if(switchToRecentlyAddedWeapon){
 			// We assume this is a new weapon or one that upgraded into akimbo.
 			// Play this sound too.
-			sound(this, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM, 100, SOUNDFLAG_CUSTOMCLIENT );
+			sound(this, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM, 100, SOUNDFLAG_PLAYER_COMMON );
 			TS_playerEquippedWeapon(this, slotPlacedIn, TRUE);
 		}
 		
@@ -1416,7 +1419,7 @@ player::attemptAddWeaponFromPickup(TSWorldGun arg_pickup){
 // the "completeDrop" parameter means auto-dropping akimbo.  Player death does this
 // for convenience.
 void 
-player::dropWeapon(int arg_weaponID, BOOLEAN completeDrop){
+player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 	
 	if(arg_weaponID == -1){
 		// ???
@@ -1627,7 +1630,7 @@ player::dropWeapon(int arg_weaponID, BOOLEAN completeDrop){
 
 
 
-BOOLEAN
+BOOL
 player::anyAmmoPoolNonEmpty(void){
 	//BOOL anyNonEmpty = FALSE;
 	for(int i = 0; i < AMMO_ID::LAST_ID; i++){

@@ -50,6 +50,7 @@ VGUI_ChangeScreen(VGUI_SCREEN arg_NewScreenID)
 		// And turn the cursor lock off.
 		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
 		// And don't let Nuclide's src/client/entry.qc try to re-lock the mouse!
+		printfline("TURN SCREEN OFF.");
 		gFun_UI_EventGrabber_Hide();
 		return;
 	}
@@ -65,6 +66,7 @@ VGUI_ChangeScreen(VGUI_SCREEN arg_NewScreenID)
 	// And let the event grabber be shown so that entry.qc doesn't try to undo the mouse lock.
 	gFun_UI_EventGrabber_Show();
 	
+	printfline("TURN SCREEN ON?? WHy. %d", arg_NewScreenID);
 	if(vguiMenus[arg_NewScreenID - 1].vOnInit != NULL){
 		vguiMenus[arg_NewScreenID - 1].vOnInit();
 	}

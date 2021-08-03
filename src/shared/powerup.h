@@ -76,10 +76,10 @@ typedef struct{
 	float fActiveDuration;
 	// What do I do when used?  Generally set some stat(s)/flag(s) to get the effect,
 	// like telling bullets, player movement, etc. how much to be slowed down by for instance.
-	void(player localPlayer) vOnUse;
+	void(player pl) vOnUse;
 	// At the end of my duration, how do I reset the things I set to act as though nothing happened?
 	// Should run on player death or disconnect (if necessary) too as to not leave lingering effects.
-	void(player localPlayer) vOnEnd;
+	void(player pl) vOnEnd;
 	// Note that we have no think effect.  Nothing could be done frame-by-frame that would help
 	// any of the powerups do what it needs to.  Speed modifiers of any sort (slow-mo) can't force
 	// nearby stuff to move slower directly, it sets a flag on use that tells physics to move that stuff
@@ -92,7 +92,7 @@ typedef struct{
 powerupdata_basic_t* ary_powerupData[POWERUP_ID::LAST_ID];
 
 
-#ifdef SSQC
+#ifdef SERVER
 class ts_powerup;
 extern void powerup_linkToStruct(ts_powerup arg_entity, POWERUP_ID arg_id);
 #endif

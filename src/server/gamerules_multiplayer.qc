@@ -1018,9 +1018,7 @@ TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
 		// Already in fake spectator!  Stop.
 		return;
 	}
-
 	
-	//if(pl.classname != "spectator" && pl.modelindex != 0){
 	if(pl.modelindex != 0){
 		// assume this is necessary
 		MakePlayerInvisible(pl);
@@ -1060,13 +1058,11 @@ TSMultiplayerRules::PlayerMakeSpectatorDelayed(base_player pp)
 {
 	// Nevermind, this has no significance anymore with the client entity change no longer
 	// happening.  Redirect to the normal version
-	
 	player pl = (player)pp;
 	PlayerMakeSpectator(pp);
 	
 	/*
 	player pl = (player)pp;
-	
 	if(pl.classname != "spectator" && pl.modelindex != 0){
 		// assume this is necessary
 		MakePlayerInvisible(pl);
@@ -1121,7 +1117,6 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	//pl.team = TEAM_SPECTATOR;
 	
 	
-	
 	// immediately put us into spectating mode
 	// (iState forced to a wrong value to stop MakeSpectator from being skipped)
 	pl.iState = PLAYER_STATE::SPAWNED;
@@ -1162,6 +1157,11 @@ CSEv_GamePlayerSpawn(void)
 	TSMultiplayerRules rules = (TSMultiplayerRules)g_grMode;
 	player pl = (player)self;
 	
+	if(pl.iState == PLAYER_STATE::SPAWNED){
+		// what.
+		return;
+	}
+	
 	//self.dmg_take = 0;
 	//self.dmg_inflictor = NULL; //good idea?
 
@@ -1176,5 +1176,4 @@ CSEv_GamePlayerSpawn(void)
 	// reset the money
 	rules.setPlayerMoneyDefault(pl);
 }
-
 

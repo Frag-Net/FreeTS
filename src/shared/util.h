@@ -24,7 +24,7 @@
 #undef printf
 #endif
 
-#ifdef CSQC
+#ifdef CLIENT
 #define printf_starter print("CL")
 #define printf(s1, ...) print(sprintf(s1, ##__VA_ARGS__))
 #define printfline(s1, ...) print(sprintf("CL: "s1"\n", ##__VA_ARGS__))
@@ -79,7 +79,15 @@
 // OLD INPUT WAY
 // is setting gflags_net too a good idea?  That applies to a whole host of other
 // things too.
-/*
+
+// use 1 for the closest to Nuclide defaults, 2 for a little extra frame tolerance for
+// clientside.
+#define INPUT_TAP_DETECT_CHOICE 1
+
+
+
+#if INPUT_TAP_DETECT_CHOICE == 1
+// Standard way.
 #define INPUT_PRIMARY_TAP_GATE \
 	if (pl.gflags & GF_SEMI_TOGGLED)\
 		return;
@@ -91,10 +99,10 @@
 #define INPUT_PRIMARY_TAP_CHECK_NOT(arg_pl) (pl.gflags & GF_SEMI_TOGGLED)
 #define INPUT_SECONDARY_TAP_CHECK_NOT(arg_pl) (pl.gflags & GF_SEMI_SECONDARY_TOGGLED)
 #define INPUT_TAP_RESET(arg_pl) \
-	arg_pl.gflags |= GF_SEMI_TOGGLED;
+	arg_pl.gflags |= GF_SEMI_TOGGLED; \
 	arg_pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
-*/
 
+#else
 // ALTERNATE WAY: check pl.inputTapFrameCount for primary/secondary.
 // Lets setting an extra frame for a little more tolerance work, these are
 // set to 1 on a fresh key press to work exactly like above or over 1 for
@@ -118,6 +126,8 @@ if (pl.inputSecondaryTapFrameCount == 0)\
 	arg_pl.inputSecondaryTapFrameCount = 0;\
 	arg_pl.inputPrimaryReleasedQueue = FALSE;\
 	arg_pl.inputSecondaryReleasedQueue = FALSE;
+
+#endif// INPUT_TAP_DETECT_CHOICE
 
 
 // FTE needs a space after a preprocessor macro name for a slash to drop-down to the
@@ -171,6 +181,16 @@ if (pl.inputSecondaryTapFrameCount == 0)\
 	weapon_base_setRightAttackDelay(pl, 0.22);
 	
 	
+
+// For serverside, assumes the local player is a var named "pl"!
+#ifdef CLIENT
+#define GET_VIEW_ANGLES view_angles
+#else
+#define GET_VIEW_ANGLES pl.v_angle
+#endif
+	
+
+	
 // OLD UNDERWATER CHECK.  Using a new var for more accuracy.
 //#define WEAPON_UNDERWATER_CHECK pl.waterlevel >= 3
 //#define WEAPON_UNDERWATER_CHECK_NOT pl.waterlevel < 3
@@ -187,7 +207,7 @@ extern const vector g_vZero;
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 void centerprintToAll(string strSend);
 #endif
 
@@ -201,7 +221,7 @@ int randomInRange_i(int min, int max);
 float safeRandom(void);
 
 
-#ifdef SSQC
+#ifdef SERVER
 void removeSelfDelayed(entity entTarget);
 #endif
 
@@ -227,7 +247,7 @@ float getViewPitchRelativeRatio(float playerPitch);
 
 float getViewModelAnimExtraDuration(void);
 
-#ifdef SSQC
+#ifdef SERVER
 class CBaseEntity;
 void entityRemoveRespawnFlag(CBaseEntity arg_this);
 #endif

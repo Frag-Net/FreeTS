@@ -18,10 +18,10 @@ void powerup_Usable_onTouch(int powerupDataID){
 void powerup_SlowMotion_onTouch(void){
 	powerup_Usable_onTouch(POWERUP_ID::SlowMotion);
 }
-void powerup_SlowMotion_onUse(player localPlayer){
+void powerup_SlowMotion_onUse(player pl){
 	
 }
-void powerup_SlowMotion_onEnd(player localPlayer){
+void powerup_SlowMotion_onEnd(player pl){
 	
 }
 
@@ -44,10 +44,10 @@ powerupdata_usable_t powerup_SlowMotion =
 void powerup_InfiniteClip_onTouch(void){
 	powerup_Usable_onTouch(POWERUP_ID::InfiniteClip);
 }
-void powerup_InfiniteClip_onUse(player localPlayer){
+void powerup_InfiniteClip_onUse(player pl){
 	
 }
-void powerup_InfiniteClip_onEnd(player localPlayer){
+void powerup_InfiniteClip_onEnd(player pl){
 	
 }
 
@@ -72,10 +72,10 @@ powerupdata_usable_t powerup_InfiniteClip =
 void powerup_DoubleClip_onTouch(void){
 	powerup_Usable_onTouch(POWERUP_ID::DoubleClip);
 }
-void powerup_DoubleClip_onUse(player localPlayer){
+void powerup_DoubleClip_onUse(player pl){
 	
 }
-void powerup_DoubleClip_onEnd(player localPlayer){
+void powerup_DoubleClip_onEnd(player pl){
 	
 }
 // Stats unknown! Just guessing the time it lasts too.
@@ -108,10 +108,10 @@ powerupdata_instant_t powerup_KungFu =
 void powerup_SlowPause_onTouch(void){
 	powerup_Usable_onTouch(POWERUP_ID::SlowPause);
 }
-void powerup_SlowPause_onUse(player localPlayer){
+void powerup_SlowPause_onUse(player pl){
 	
 }
-void powerup_SlowPause_onEnd(player localPlayer){
+void powerup_SlowPause_onEnd(player pl){
 	
 }
 powerupdata_usable_t powerup_SlowPause =
@@ -140,10 +140,10 @@ powerupdata_usable_t powerup_SlowPause =
 void powerup_SlowPauseOld_onTouch(void){
 	powerup_Usable_onTouch(POWERUP_ID::SlowPauseOld);
 }
-void powerup_SlowPauseOld_onUse(player localPlayer){
+void powerup_SlowPauseOld_onUse(player pl){
 	
 }
-void powerup_SlowPauseOld_onEnd(player localPlayer){
+void powerup_SlowPauseOld_onEnd(player pl){
 	
 }
 // Stats unknown! Just guessing the time it lasts too.
@@ -167,10 +167,10 @@ powerupdata_usable_t powerup_SlowPauseOld =
 void powerup_DoubleFirerate_onTouch(void){
 	powerup_Usable_onTouch(POWERUP_ID::DoubleFirerate);
 }
-void powerup_DoubleFirerate_onUse(player localPlayer){
+void powerup_DoubleFirerate_onUse(player pl){
 	
 }
-void powerup_DoubleFirerate_onEnd(player localPlayer){
+void powerup_DoubleFirerate_onEnd(player pl){
 	
 }
 powerupdata_usable_t powerup_DoubleFirerate =
@@ -245,7 +245,7 @@ powerupdata_instant_t powerup_SuperJump =
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 // Given a powerup entity
 void powerup_linkToStruct(ts_powerup arg_entity, POWERUP_ID arg_id){
 	

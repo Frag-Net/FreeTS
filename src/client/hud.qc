@@ -67,32 +67,32 @@ HUD_Draw(void)
 		Obituary_Draw();
 		Textmenu_Draw();
 		
-	//TAGGG - NEw
-	//////////////////////////////////////////////////////////////
+		//TAGGG - NEw
+		//////////////////////////////////////////////////////////////
 		//View_HandleZoom();
 		
 		//printfline("SCOPE LEVEL %.2f", pl.flZoomLevel);
 		if(pl.flZoomLevel < 0.5){   //is this < 40?	yes.
 			HUD_DrawScope();
 		}else{
-			// We'll leave details like extra details for the lasersight and the weight bars at a bare minimum
-			// (should be drawn at all times, oversight in TS 2.1 that they're missing from melee views
-			// like with knives, katana, corrected in 3.0 of all things)
+			// We'll leave details like extra details for the lasersight and the weight bars at a
+			// bare minimum (should be drawn at all times, oversight in TS 2.1 that they're missing
+			// from melee views like with knives, katana, corrected in 3.0 of all things)
 			HUD_DrawCrosshair();
 		}
-	//////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////
 		
 		GameClient_PlayerInputRaw();
 
-	//TAGGG - NEw
-	//////////////////////////////////////////////////////////////
+		//TAGGG - NEw
+		//////////////////////////////////////////////////////////////
 		drawTimer();
 		drawPlayerStats();  
-		//TAGGG - CRITICAL. Nope, Weapons_DrawCrosshair actually calls a weapon's custom HUD drawing method.
-		// Odd name, but yes, it's not actually focused on just crosshairs.  TS uses the more generic
-		// "HUD_DrawCrosshair" call above.
+		//TAGGG - CRITICAL. Nope, Weapons_DrawCrosshair actually calls a weapon's custom HUD drawing
+		// method. Odd name, but yes, it's not actually focused on just crosshairs.  TS uses the more
+		// generic "HUD_DrawCrosshair" call above.
 		//drawPlayerCurrentWeaponStats();
-	//////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////
 		
 		
 		// TEST!  Just for nuclide, doesn't matter what m_iHUDWeaponSelected is exactly,
@@ -110,8 +110,6 @@ HUD_Draw(void)
 		//Damage_Draw();
 		//ClientGame_DamageDraw();
 		
-		
-		
 	}else{
 		// Fake spectator, or the temporary forced third-person on death (not yet implemented).
 		
@@ -121,9 +119,15 @@ HUD_Draw(void)
 		// Changing the FOV isn't necessary, that already comes with the spec/player change, some 
 		// things are nicely defaulted for us in FTE.
 		setsensitivityscaler(1.0f);
-
 		
-		GameClient_SpectatorInputRaw();
+		pSeat->m_iHUDWeaponSelected = 0;
+		
+		// is this necessary?  With or without the if-then too.
+		/*
+		if(g_vguiWidgetCount > 0){
+			GameClient_SpectatorInputRaw();
+		}
+		*/
 		
 		
 		drawTimer();

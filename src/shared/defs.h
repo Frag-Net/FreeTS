@@ -15,7 +15,7 @@ enum TS_Team{
 	TEAM_4 = 3
 };
 
-#ifdef SSQC
+#ifdef SERVER
 	//server CVar
 	var float autocvar_weaponstay = 60;  //default originally 15
 #endif
@@ -35,20 +35,6 @@ enum TS_Team{
 	#define SOUNDFLAG_PLAYER_SHARED (SOUNDFLAG_FOLLOW | SOUNDFLAG_UNICAST)
 	#define SOUNDFLAG_PLAYER_COMMON (SOUNDFLAG_FOLLOW)
 #endif
-
-
-
-// OLD WAY!  Blah, forgot about this, just use the new names above.
-// Pretty simple way to handle the server not having the "NOSPACIALISE" flag.
-// Sounds that depend on being played very neatly clientside really just need to...
-// be played clientside though (send an event from the server to play it there).
-// Really SOUNDFLAG_CUSTOMCLIENT -> SOUNDFLAG_PLAYER_COMMON .
-#ifdef CSQC
-#define SOUNDFLAG_CUSTOMCLIENT SOUNDFLAG_FOLLOW | SOUNDFLAG_NOSPACIALISE
-#else
-#define SOUNDFLAG_CUSTOMCLIENT SOUNDFLAG_FOLLOW
-#endif
-	
 
 
 // ???

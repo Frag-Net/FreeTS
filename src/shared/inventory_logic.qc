@@ -222,7 +222,7 @@ BOOL INV_anyWeaponUsingAmmoType(player pl, int arg_ammoType, int arg_excludedWea
 
 
 
-#ifdef CSQC
+#ifdef CLIENT
 
 
 void swapConfigElements(int arg_index1, int arg_index2){
@@ -331,12 +331,12 @@ void swapInventoryElements(player pl, int arg_index1, int arg_index2){
 
 
 
-#ifdef CSQC
+#ifdef CLIENT
 //TAGGG - TODO, CRITICAL!!!
 // Have another version, removeWeaponFromInventory, for ingame clientside usage too.
 // This is for spectator managing the config when called clientside, but a lot of script is now
 // more shared.
-// Also, see what can be taken out of #ifdef SSQC/SERVER places to be shared.
+// Also, see what can be taken out of #ifdef SERVER/SERVER places to be shared.
 // So much as the swapConfigElements may need a shared-version that's identical between client/server too!
 // As of now, removeWeaponFromConfig does not have an effect for ingame clientside.  See weapon_combatknife,
 // on throwing the last knife, look at printouts REMOVED, PRE / REMOVED, POST.
@@ -358,7 +358,7 @@ void removeWeaponFromConfig(int arg_removeIndex){
 	
 	
 //NOTICE - only the config does refunding.
-//#ifdef CSQC
+//#ifdef CLIENT
 	if(myWeaponTypeID == WEAPONDATA_TYPEID_GUN || myWeaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
 		//this weapon has ammo.
 		//before we remove this, refund its cost. And see if any other weapons refer to the same ammo pool anymore
@@ -561,11 +561,11 @@ BOOL attemptAddWeaponToConfig(player pl, int arg_weaponID, int arg_iBitsUpgrade,
 			//remember, this is as though the weapon has never been purchased before yet, so this is maxCount times base price.
 			//(not that throwables really have upgrades anyways).
 			//And "iMaxCount - 1" because we already spent the buy price once. For a max of 5 knives, actually add 4 times the cost.
-			#ifdef CSQC
+#ifdef CLIENT
 			//This is only necessary clientside (config), because serverside
 			//we received the count already from having picked FULLLOAD.
 			newCount = throwableRef.iMaxCount;
-			#endif
+#endif
 		}else if(existingMatchingIndex != -1){
 			//could also be buying another to stack on top of the existing by 1. See if we can.
 			int newCountTest = PLAYER_INVENTORY_GENERIC[existingMatchingIndex].iCount + 1;
@@ -621,7 +621,7 @@ BOOL attemptAddWeaponToConfig(player pl, int arg_weaponID, int arg_iBitsUpgrade,
 			
 			
 			// !!! Different between versions
-#ifdef CSQC
+#ifdef CLIENT
 //client needs to consider the total left
 			int remainingPlayerMoney = PLAYER_MONEY - (PLAYER_TOTALCOST + finalPrice) + existingAmmoCost;
 #else
@@ -650,7 +650,7 @@ BOOL attemptAddWeaponToConfig(player pl, int arg_weaponID, int arg_iBitsUpgrade,
 	}//END OF gun OR ironsight weapon type checks
 	
 	
-#ifdef CSQC
+#ifdef CLIENT
 	//totalCost only for client - for the server, we're only concerned with how much the player physically has left
 	if( !RULE_MONEY_ALLOWED || (PLAYER_TOTALCOST + finalPrice - existingAmmoCost <= PLAYER_MONEY) ){
 #else
@@ -691,7 +691,7 @@ BOOL attemptAddWeaponToConfig(player pl, int arg_weaponID, int arg_iBitsUpgrade,
 	}//END OF existingMatchingIndex check
 	
 	
-#ifdef CSQC
+#ifdef CLIENT
 	//finalWeaponIndex ?
 	PLAYER_INVENTORY_GENERIC[matchStart].weaponID = arg_weaponID;
 	PLAYER_INVENTORY_GENERIC[matchStart].weaponTypeID = basicRef.typeID;
@@ -932,11 +932,11 @@ BOOL attemptAddWeaponToConfig(int arg_weaponID, int arg_iBitsUpgrade, int iCount
 			//remember, this is as though the weapon has never been purchased before yet, so this is maxCount times base price.
 			//(not that throwables really have upgrades anyways).
 			//And "iMaxCount - 1" because we already spent the buy price once. For a max of 5 knives, actually add 4 times the cost.
-			#ifdef CSQC
+#ifdef CLIENT
 			//This is only necessary clientside (config), because serverside
 			//we received the count already from having picked FULLLOAD.
 			newCount = throwableRef.iMaxCount;
-			#endif
+#endif
 		}else if(existingMatchingIndex != -1){
 			//could also be buying another to stack on top of the existing by 1. See if we can.
 			int newCountTest = CONFIG_PLAYER_INVENTORY_GENERIC[existingMatchingIndex].iCount + 1;
@@ -1203,11 +1203,11 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 			//remember, this is as though the weapon has never been purchased before yet, so this is maxCount times base price.
 			//(not that throwables really have upgrades anyways).
 			//And "iMaxCount - 1" because we already spent the buy price once. For a max of 5 knives, actually add 4 times the cost.
-			#ifdef CSQC
+#ifdef CLIENT
 			//This is only necessary clientside (config), because serverside
 			//we received the count already from having picked FULLLOAD.
 			newCount = throwableRef.iMaxCount;
-			#endif
+#endif
 		}else if(existingMatchingIndex != -1){
 			//could also be buying another to stack on top of the existing by 1. See if we can.
 			int newCountTest = PLAYER_INVENTORY_GENERIC[existingMatchingIndex].iCount + 1;

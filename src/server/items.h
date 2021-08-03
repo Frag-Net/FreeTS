@@ -15,16 +15,16 @@
  */
 
 /* PICKUP ITEMS */
+
+// Bare minimum to compile with what Nuclide's src/server/weapons.qc expects.
+// TS already has its own weapons-pickup class: TSWorldGun.
+// Although that could fill in Nuclide's expected item_pickup and let anything in-map
+// redirect to this if that were preferred.
+
 class item_pickup:CBaseTrigger
 {
-	int m_bFloating;
 	int m_iClip;
 	int m_iWasDropped;
 	int id;
-	void(void) item_pickup;
-
-	virtual void(void) touch;
 	virtual void(int i) SetItem;
-	virtual void(void) Respawn;
-	virtual void(int) SetFloating;
 };

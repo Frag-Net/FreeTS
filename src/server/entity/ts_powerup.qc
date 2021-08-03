@@ -21,7 +21,7 @@ enum pwuptype_choice{
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 
 class ts_powerup:CBaseEntity{
 	
@@ -272,7 +272,7 @@ void ts_powerup::Touch(void){
 	// adding to the player if they already have a usable powerup equipped (stored for use).
 	// Any other time, this powerup always gets deleted & makes the gunpickup noise in original TS behavior.
 	// Deviate however, or not.
-	sound( other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM, 100, SOUNDFLAG_CUSTOMCLIENT );
+	sound( other, CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM, 100, SOUNDFLAG_PLAYER_COMMON );
 	
 	
 	//remove(self);
@@ -445,7 +445,7 @@ void ts_powerup::declareDisposable(void){
 #endif
 
 
-#ifdef CSQC
+#ifdef CLIENT
 
 class ts_powerup:CBaseEntity{
 	

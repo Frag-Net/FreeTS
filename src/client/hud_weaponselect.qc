@@ -109,7 +109,7 @@ HUD_DrawWeaponSelect_Trigger(void)
 		return;
 	}
 	player pl = (player)pSeat->m_ePlayer;
-	//TAGGG - TODO - was commented out in old FreeTS, doing so here too.
+	// TODO - was commented out in old FreeTS, doing so here too.
 	// But figure out what it needs to do, this likely wasn't pointless
 	/*
 	player pl = (player)pSeat->m_ePlayer;
@@ -131,7 +131,7 @@ HUD_DrawWeaponSelect_Trigger(void)
 	player pl = (player)pSeat->m_ePlayer;
 	if(pSeat->m_flInputBlockTime > time){
 		return;
-	}
+	} 
 	*/
 	
 	TS_HUD_DrawWeaponSelect_CheckClick();
@@ -148,7 +148,7 @@ HUD_DrawWeaponSelect_Last(void)
 	player pl = (player)pSeat->m_ePlayer;
 	
 		
-	//TAGGG - TODO.  Support this.
+	// TODO.  Support this.
 	/*
 	player pl = (player)pSeat->m_ePlayer;
 	if (pl.g_items & g_weapons[pSeat->m_iOldWeapon].id) {
@@ -262,7 +262,7 @@ TS_HUD_DrawWeaponSelect_PreviousItem(
 	
 	
 	//printfline("TS_HUD_DrawWeaponSelect_PreviousItem: weaponID_toStartFrom:%i pl.ary_myWeapons_softMax:%i", weaponID_toStartFrom, pl.ary_myWeapons_softMax);
-	//TAGGG CRITICAL - why wasn't this ">=" and just ">" ???
+	// CRITICAL - why wasn't this ">=" and just ">" ???
 	if(weaponID_toStartFrom >= pl.ary_myWeapons_softMax){
 		//shouldn't be possible but just in case.
 		canAcceptSame = TRUE;
@@ -689,7 +689,6 @@ TS_HUD_CloseWeaponSelect(BOOL playOffSound)
 		}
 		//pSeat->fHUDWeaponSelected = 0;   //no harm but no need now
 		
-		//TAGGG - only makes sense.
 		pl.weaponSelectHighlightID = -1;
 		pl.weaponSelectHighlightAkimbo = FALSE;
 		

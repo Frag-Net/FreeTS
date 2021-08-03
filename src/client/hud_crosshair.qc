@@ -29,9 +29,8 @@ HUD_DrawCrosshair
 Draws the cursor every frame, unless spectator
 =================
 */
-
-
-void HUD_DrawCrosshair(void) {	
+void
+HUD_DrawCrosshair(void){	
 	
 	player pl = (player)pSeat->m_ePlayer;
 	
@@ -146,9 +145,9 @@ void HUD_DrawCrosshair(void) {
 		thirdBelongingTo = 2;
 	}
 	
-	// we COULD make this a property (ts/main.c) to be set by the client and read by the server,
-	// but this might be really inefficient.  May as well use the v_angle already available serverside to determine
-	// what third we're looking at.
+	// we could make this a property (ts/src/server/init.qc) to be set by the client and read
+	// by the server, but this might be really inefficient.  May as well use the v_angle
+	// already available serverside to determine what third we're looking at.
 	
 	// top = 90 degrees for safePlayerViewPitch of -31.
 	// bottom = 270 degrees for safePlayerViewPitch of 30.
@@ -213,7 +212,7 @@ void HUD_DrawCrosshair(void) {
 		drawfill( [vCenter[0] - 1, vCenter[1] + (crosshairDist - 5)], [2, 5], clrPaleBlue, 0.70f, DRAWFLAG_NORMAL );
 		
 		
-	}//END OF ranged weapon check
+	}// ranged weapon check
 	
 	
 	if(hasLasersight){
@@ -266,9 +265,9 @@ void HUD_DrawCrosshair(void) {
 					drawSpriteNumber(ary_LCD_numberSet, vDistNumberLoc.x, vDistNumberLoc.y, pl.recentLaserDistanceDisplay, 3, BITS_DIGITOPT_NONE, clrPaleBlue, 0.91f);
 				}
 			}
-		}//END OF flat drawLaserDots check
+		}// flat drawLaserDots check
 	
-	}//END OF lasersight check
+	}// lasersight check
 	
 	
-}//END OF HUD_DrawCrosshair
+}// HUD_DrawCrosshair

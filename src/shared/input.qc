@@ -36,6 +36,30 @@ Game_Input(void)
 	// If not, grab pSeat->m_ePlayer instead!
 	player pl = (player)self;
 	
+	
+	if(pl.iState != PLAYER_STATE::SPAWNED){
+		// not ingame (fake spectator)?  Do another check instead: spawning.
+#ifdef CLIENT
+		if((input_buttons & INPUT_BUTTON0) && !(pl.gflags & GF_SEMI_TOGGLED) ){
+			if(pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE && pl.iState != PLAYER_STATE::SPAWNED){				
+				sendevent( "GamePlayerSpawn", "");
+			}
+		}
+		// since the rest of this method is about to be skipped.
+		if(input_buttons & INPUT_BUTTON0){
+			pl.gflags |= GF_SEMI_TOGGLED;
+		}else{
+			pl.gflags &= ~GF_SEMI_TOGGLED;
+		}
+#endif
+		return;
+	}
+	
+	// Must be ingame to reach beyond here
+	
+	
+	
+	
 	//TAGGG - good place for this?  Cloned from w_attack_next as a separate counter
 	// for akimbo firing to use.
 	// This method, Game_Input, is called by Nuclide's pmove.qc in the same place
@@ -59,7 +83,6 @@ Game_Input(void)
 		Player_UseUp();
 
 	self.impulse = 0;
-	
 #endif
 
 	// better TS way, weapon thinks happen alongside checking inputs
@@ -81,6 +104,35 @@ Game_Input(void)
 	
 
 
+#if INPUT_TAP_DETECT_CHOICE == 1
+		
+	processInputs();
+	
+	if(input_buttons & INPUT_BUTTON0){
+		pl.gflags |= GF_SEMI_TOGGLED;
+	}else{
+		// held down the previous frame, but not now?  That's a release.
+		if(pl.gflags & GF_SEMI_TOGGLED){
+			TS_Weapon_PrimaryAttackRelease(pl, TRUE);
+			pl.gflags &= ~GF_SEMI_TOGGLED;
+		}
+	}
+	
+	if(input_buttons & INPUT_BUTTON3){
+		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
+	}else{
+		if(pl.gflags & GF_SEMI_SECONDARY_TOGGLED){
+			TS_Weapon_SecondaryAttackRelease(pl, TRUE);
+			pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
+		}
+	}
+	
+#else
+	//////////////////////////////////////////////
+	//INPUT_TAP_DETECT_CHOICE == 2
+	
+	
+	
 	if (input_buttons & INPUT_BUTTON0){
 		// Fresh touch?  Set inputPrimaryTapFrameCount.
 		// The client gets an extra frame to count.  This makes an issue where giving a semi input
@@ -110,13 +162,14 @@ Game_Input(void)
 		// differences, even on the same machine, are enough to make one ready in the same perceived frame
 		// but the other not.  Server or client-exclusive lag may also make the issue more likely even in
 		// clean delays for FreeHL, particularly spamming printouts.
+		
 		if(!(pl.gflags & GF_SEMI_TOGGLED)){
-			#ifdef CLIENT
+#ifdef CLIENT
 			pl.inputPrimaryTapFrameCount = 2;
 			//pl.inputPrimaryTapFrameCount = 1;
-			#else
+#else
 			pl.inputPrimaryTapFrameCount = 1;
-			#endif
+#endif
 		}
 		pl.gflags |= GF_SEMI_TOGGLED;
 		pl.gflags_net |= GF_SEMI_TOGGLED;
@@ -134,11 +187,11 @@ Game_Input(void)
 	// Same for secondary.
 	if (input_buttons & INPUT_BUTTON3){
 		if(!(pl.gflags & GF_SEMI_SECONDARY_TOGGLED)){
-			#ifdef CLIENT
+#ifdef CLIENT
 			pl.inputSecondaryTapFrameCount = 2;
-			#else
+#else
 			pl.inputSecondaryTapFrameCount = 1;
-			#endif
+#endif
 		}
 		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
 		pl.gflags_net |= GF_SEMI_SECONDARY_TOGGLED;
@@ -155,6 +208,7 @@ Game_Input(void)
 	
 	// This way, what's below the script in this method returning early doesn't skip what comes after.
 	processInputs();
+	
 	
 	if(wasPassingFrame){
 		pl.inputPrimaryTapFrameCount = 0;
@@ -179,6 +233,8 @@ Game_Input(void)
 		// TODO - remove 2nd parameter from that!
 		TS_Weapon_SecondaryAttackRelease(pl, TRUE);
 	}
+	
+#endif INPUT_TAP_DETECT_CHOICE
 	
 	//pl.callWeaponThink();
 	
@@ -256,7 +312,7 @@ void processInputs(void){
 		// Nuclide's src/client/entry.qc.  Can we get that CSQC_Input_Frame event to pipe 
 		// a call over to gamemod script for custom behavior like this, perhaps?
 		/*
-		#if CLIENT
+#if CLIENT
 		if ((pSeat->m_iHUDWeaponSelected) ) {
 			HUD_DrawWeaponSelect_Trigger();
 			input_buttons = 0;
@@ -269,7 +325,7 @@ void processInputs(void){
 			input_buttons = 0;
 			return;
 		}
-		#endif
+#endif
 		*/
 		
 		Weapons_Secondary();
@@ -305,11 +361,15 @@ void processInputs(void){
 	// reached here?
 	Weapons_Release();
 	
+	
+	// No need for this now
+	/*
 	// These SEMI flag removals only happen if this area is reached
 	// (note the 'return' statements above with button presses)
 	// Nuclide already does that first one
 	//pl.gflags &= ~GF_SEMI_TOGGLED;
 	pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
+	*/
 	
 }//processInputs
 

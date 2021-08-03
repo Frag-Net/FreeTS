@@ -7,7 +7,7 @@
 // No clue, these effects are due for a complete overhaul to better resemble
 // TS sometime anyway.
 
-#ifdef SSQC
+#ifdef SERVER
 void Effect_Explosion(vector vecOrigin )
 {
 	//the specialists explosion does not do this, strangely enough.
@@ -31,7 +31,7 @@ void EV_Effect_Explosion(vector vecOrigin ){
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 //TAGGG - Thank you The Wastes!
 void Effect_ScreenShake(vector vecOrigin, float fRadius, float fStrength )
 {
@@ -75,7 +75,7 @@ Effect_CreateExplosion(vector vPos)
 	
 #ifdef TS
 
-#ifdef SSQC
+#ifdef SERVER
 	Effect_ScreenShake( vPos, 2048, 255 );
 	Effect_Explosion( vPos + [0,0,16] );
 #else

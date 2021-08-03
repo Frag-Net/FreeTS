@@ -1,16 +1,13 @@
 
 
 BOOL
-TS_Weapon_PrimaryAttackRelease(player localPlayer, BOOL hasAmmo){
+TS_Weapon_PrimaryAttackRelease(player pl, BOOL hasAmmo){
 	// WARNING!  This comment is really out of date, fWeaponEventPlayer is no longer a thing
 	// ------------------------------
 	// what are "fWeaponEventPlayer" and "player_localentnum"? 
 	// we need to figure this shizz out
 	// "fWeaponEventPlayer" is in "ts/client/defs.h". its assigned a lot in "ts/client/event.c".
 	// at least "player_localentnum" is part of the builtins.
-	
-	player pl = localPlayer;
-	
 	if(pl.inventoryEquippedIndex == -1){
 		return FALSE;
 	}
@@ -23,9 +20,7 @@ TS_Weapon_PrimaryAttackRelease(player localPlayer, BOOL hasAmmo){
 
 
 BOOL
-TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOL hasAmmo){
-	player pl = localPlayer;
-	
+TS_Weapon_SecondaryAttackRelease(player pl, BOOL hasAmmo){	
 	if(pl.inventoryEquippedIndex == -1){
 		return FALSE;
 	}
@@ -45,10 +40,8 @@ TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOL hasAmmo){
 void
 TS_Weapon_Draw_extra(void){
 	player pl = (player)self;
-	weapondynamic_t dynaRef;
 	
 	printfline("PLAYER DREW WEAPON: invID:%i (g_weapons ID:%d)", pl.inventoryEquippedIndex, pl.activeweapon);
-	dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	pl.currentZoomChoice = -1;
 	pl.aryNextBurstShotTime_softLength = 0;
@@ -61,8 +54,7 @@ TS_Weapon_Draw_extra(void){
 
 
 void
-TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOL useAkimbo ) {
-	player pl = localPlayer;
+TS_Weapon_Draw(player pl, int weaponEquipped, BOOL useAkimbo ) {
 	//weapondynamic_t dynaRef;
 	//weapondynamic_t dynaRefPRE;
 	
@@ -86,9 +78,9 @@ TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOL useAkimbo ) {
 	// MMMMMmmmmmm sounds odd if Draw containts non-rendering-related startup script,
 	// rather this happen as son as possible for now.
 	
-	#ifdef CSQC
+#ifdef CLIENT
 	printfline("TS_Weapon_Draw (client direct call): prev:%i curr:%d", pSeat->m_iLastWeapon, pl.activeweapon);
-	#endif
+#endif
 	
 	
 	// This Weapons_Draw call is only for serverside, at clientside, we trust
@@ -102,7 +94,7 @@ TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOL useAkimbo ) {
 	
 	
 	// TEST!  Force the call now anyway clientside too.
-//#ifdef SSQC
+//#ifdef SERVER
 	TS_Weapon_Draw_extra();
 	Weapons_Draw();
 //#else
@@ -126,7 +118,7 @@ TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOL useAkimbo ) {
 // TODO.  Would making this shared be OK?  Seems to have worked for grenades and throwing knives
 // on removing themselves on running out of ammo.
 // Just remember that spawning the actual entitiy won't be happening clientside in any form.
-#ifdef SSQC
+#ifdef SERVER
 void
 TS_Weapon_Drop() {
 	player pl = (player)self;
@@ -155,29 +147,27 @@ TS_Weapon_Drop() {
 // CRITICAL!  TS_playerEquippedWeapon methods dummied out to stop conflicts with
 // the new Nuclide way
 void
-TS_playerEquippedWeapon_Shared(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
+TS_playerEquippedWeapon_Shared(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	/*
-	if(localPlayer.inventoryEquippedIndex == newWeaponEquipped && useAkimbo == localPlayer.weaponEquippedAkimbo ){
+	if(pl.inventoryEquippedIndex == newWeaponEquipped && useAkimbo == pl.weaponEquippedAkimbo ){
 		// equipping the same weapon?  Ignore this call then!
 		return;
 	}
 	*/
 	
-	_TS_playerEquippedWeapon(localPlayer, newWeaponEquipped, useAkimbo);
+	_TS_playerEquippedWeapon(pl, newWeaponEquipped, useAkimbo);
 }
 
 
 
-#ifdef CSQC
+#ifdef CLIENT
 
 // Actual clientside logic related to this action. Need to change the viewmodel
 // on a change like this.
 // Note that viewmodels check for "pl.inventoryEquippedIndex" being changed in ts/client/view.c.
 // This is OK.  pl.inventoryEquippedIndex is updated from server to client in client & server/player.c, read/sendEntity methods.  So everything works out.
 void
-_TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
-	//return;
-	player pl = localPlayer;
+_TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	
 	TS_Weapon_Draw(pl, newWeaponEquipped, useAkimbo);
 }
@@ -192,10 +182,10 @@ _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkim
 // The client will tell the server to do something, and THEN the server relays that to
 // the client. Whatever just go with it.
 void
-TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
+TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	//pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
 	
-	//printfline("WELL??! %i %i %d %d", localPlayer.inventoryEquippedIndex, newWeaponEquipped, useAkimbo, localPlayer.weaponEquippedAkimbo);
+	//printfline("WELL??! %i %i %d %d", pl.inventoryEquippedIndex, newWeaponEquipped, useAkimbo, pl.weaponEquippedAkimbo);
 	//TODO - CRITICAL!  Although - might not be that bad.
 	// Note that any weapon removal (only removing the currently equipped weapon is possible) also
 	// sets the current equipped weapon to -1.  So any other choice of weapon after this has to work.
@@ -205,34 +195,32 @@ TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimb
 	// Say there are 3 weapons, #0, #1, #2, and #3.  Say #2 is equipped now.
 	// If #2 is deleted (shifts #3 to be the new #2), and #2 is picked to be the new weapon,
 	// that would cause this check to deny picking the 'new' weapon taking up slot #2.
-	if(localPlayer.inventoryEquippedIndex == newWeaponEquipped && useAkimbo == localPlayer.weaponEquippedAkimbo ){
+	if(pl.inventoryEquippedIndex == newWeaponEquipped && useAkimbo == pl.weaponEquippedAkimbo ){
 		// equipping the same weapon?  Ignore this call then!
 		return;
 	}
 	
-	_TS_playerEquippedWeapon(localPlayer, newWeaponEquipped, useAkimbo);
+	_TS_playerEquippedWeapon(pl, newWeaponEquipped, useAkimbo);
 	sendevent("TS_playerEquippedWeapon", "ii", newWeaponEquipped, (int)useAkimbo);
 }
 
 #endif
-#ifdef SSQC
+#ifdef SERVER
 // that's it really serverside.
 void
-_TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
-	player pl = localPlayer;
+_TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	
 	TS_Weapon_Draw(pl, newWeaponEquipped, useAkimbo);
 }
 
 //The server set the equippedWeapon, and needs to tell the client to keep it in synch
 void
-TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
-	
-	_TS_playerEquippedWeapon(localPlayer, newWeaponEquipped, useAkimbo);
+TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
+	_TS_playerEquippedWeapon(pl, newWeaponEquipped, useAkimbo);
 	
 	// force a sendoff soon!
-	localPlayer.activeweapon_net = 255;
-	localPlayer.inventoryEquippedIndex_net = 255;
+	pl.activeweapon_net = 255;
+	pl.inventoryEquippedIndex_net = 255;
 	
 }
 
@@ -253,26 +241,26 @@ CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOL useAkimbo){
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 // Send a request to change the animation of the viewmodel directly.
 void
-TS_PlayInsertShellSound(player localPlayer){
+TS_PlayInsertShellSound(player pl){
 	/*
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EVENT_TS::PLAY_INSERT_SHELL_SND );
-	msg_entity = localPlayer;
+	msg_entity = pl;
 	multicast( [0,0,0], MULTICAST_ONE );
 	*/
 }
 
 #else
 void
-TS_PlayInsertShellSound(player localPlayer){
-	EV_TS_PlayInsertShellSound(localPlayer);
+TS_PlayInsertShellSound(player pl){
+	EV_TS_PlayInsertShellSound(pl);
 }
 //CLIENTSIDE.  now what do I do over here?
 void
-EV_TS_PlayInsertShellSound(player localPlayer){
+EV_TS_PlayInsertShellSound(player pl){
 	//TODO - lower attenuation maybe?
 	// Nevermind, this is a client-only sound for now anyway.
 	localsound("weapons/insert-shell.wav", CHAN_AUTO, 1.0f);
@@ -285,15 +273,15 @@ EV_TS_PlayInsertShellSound(player localPlayer){
 // The server may want to tell the client to reset its viewmodel.
 // DUMMIED - nevermind that for now, assuming the logic is called from server/client
 // individually like a lot of weapon's logic.
-#ifdef SSQC
+#ifdef SERVER
 void
-TS_resetViewModel(player localPlayer){
+TS_resetViewModel(player pl){
 	
 	/*
-	//localPlayer.lasersightUnlockTime = FALSE;  //reset
+	//pl.lasersightUnlockTime = FALSE;  //reset
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EVENT_TS::RESET_VIEW_MODEL );
-	msg_entity = localPlayer;
+	msg_entity = pl;
 	multicast( [0,0,0], MULTICAST_ONE );
 	*/
 	
@@ -304,7 +292,7 @@ TS_resetViewModel(player localPlayer){
 #else
 //CLIENT
 void
-TS_resetViewModel(player localPlayer){
+TS_resetViewModel(player pl){
 	EV_TS_resetViewModel();
 }
 void
@@ -319,40 +307,32 @@ EV_TS_resetViewModel(void){
 
 
 // Want to reset the player between spawns?
-#ifdef SSQC
+#ifdef SERVER
 void
-TS_resetPlayer(player localPlayer, BOOL resetInventory){
-	if(localPlayer == NULL){
-		return;
-	}
-	if(localPlayer.classname != "player"){
+TS_resetPlayer(player pl, BOOL resetInventory){
+	if(pl == NULL){
 		return;
 	}
 	
 	//reset our inventory, serverside.
-	localPlayer.reset(resetInventory);
+	pl.reset(resetInventory);
 	
 	//And tell the client to do the same.
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EVENT_TS::RESET_PLAYER );
 	WriteByte( MSG_MULTICAST, resetInventory );
-	msg_entity = localPlayer;
+	msg_entity = pl;
 	multicast( [0,0,0], MULTICAST_ONE );
 }
 #else
 //CLIENT
 void
-EV_TS_resetPlayer(player localPlayer, BOOL resetInventory){
-	if(localPlayer == NULL){
+EV_TS_resetPlayer(player pl, BOOL resetInventory){
+	if(pl == NULL){
 		return;
 	}
 	
-	// TODO: just have this check in receiving events to begin with?
-	if(localPlayer.classname == "player"){
-		localPlayer.reset(resetInventory);
-	}else{
-		// ????????????
-	}
+	pl.reset(resetInventory);
 }
 #endif
 
@@ -378,13 +358,12 @@ EV_PlayerDeath(void){
 
 
 
-#ifdef CSQC
+#ifdef CLIENT
 //NOTICE - clientside components removed, except for clientside being able
 // to signal that the server should remove a weapon.
 // This needs no clientside logic equivalent to be mirrored.
 /*
-void _TS_playerDropWeapon(player localPlayer){
-	player pl = localPlayer;
+void _TS_playerDropWeapon(player pl){
 	
 	TS_Weapon_Drop();
 	
@@ -398,15 +377,14 @@ TS_playerDropWeapon(void){
 /*
 //This is a received call from the server - no need to update it back
 //NOTICE - this is the callback telling us to do something.  Yes do something.
-void EV_TS_playerDropWeapon(player localPlayer){
-	player pl = localPlayer;
+void EV_TS_playerDropWeapon(player pl){
 	//pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
 	
-	_TS_playerDropWeapon(localPlayer);
+	_TS_playerDropWeapon(pl);
 }
 */
 #endif
-#ifdef SSQC
+#ifdef SERVER
 //that's it really serverside.
 void
 _TS_playerDropWeapon(void){
@@ -460,17 +438,16 @@ CSEv_TS_playerChangeFiremode_(void){
 void
 TS_playerChangeFiremode(void){
 	player pl = (player)self;
-	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
-		//well gee that is no good
+	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
-	#ifdef CLIENT
+#ifdef CLIENT
 		sendevent("TS_playerChangeFiremode", "");
 		// and do it my side too?
 		_TS_playerChangeFiremode();
-	#else
+#else
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
-	#endif
+#endif
 }
 
 
@@ -553,17 +530,16 @@ CSEv_TS_playerUseItems_(void){
 void
 TS_playerUseItems(void){
 	player pl = (player)self;
-	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
-		//well gee that is no good
+	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
-	#ifdef CLIENT
+#ifdef CLIENT
 		sendevent("TS_playerUseItems", "");
 		// and do it my side too?
 		_TS_playerUseItems();
-	#else
+#else
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
-	#endif
+#endif
 }
 
 
@@ -631,9 +607,9 @@ _TS_playerUseItems(void){
 				
 				
 				// Let's be a clientside sound only.
-				#ifdef CLIENT
+#ifdef CLIENT
 				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
-				#endif
+#endif
 				
 				
 				// (METHOD MADE SINCE: TS_Weapons_PlaySoundChannelDirect)
@@ -644,11 +620,11 @@ _TS_playerUseItems(void){
 				/*
 				// unicast demo .  Why does the sound play clientside the first few times anyway?
 				// It shouldn't ever, with the clientside-call here disabled.
-				#ifdef CLIENT
+#ifdef CLIENT
 				//sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_NONE, 0);
-				#else
+#else
 				sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_UNICAST, 0);
-				#endif
+#endif
 				*/
 			}// bitcount checks
 			
@@ -677,17 +653,16 @@ CSEv_TS_playerUsePowerup_(void){
 void
 TS_playerUsePowerup(void){
 	player pl = (player)self;
-	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
-		//well gee that is no good
+	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
-	#ifdef CLIENT
+#ifdef CLIENT
 		sendevent("TS_playerUsePowerup", "");
 		// and do it my side too?
 		_TS_playerUsePowerup();
-	#else
+#else
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
-	#endif
+#endif
 }
 
 
@@ -718,17 +693,16 @@ CSEv_TS_playerCallAlt1_(void){
 void
 TS_playerCallAlt1(void){
 	player pl = (player)self;
-	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
-		//well gee that is no good
+	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
-	#ifdef CLIENT
+#ifdef CLIENT
 		sendevent("TS_playerCallAlt1", "");
 		// and do it my side too?
 		_TS_playerCallAlt1();
-	#else
+#else
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
-	#endif
+#endif
 }
 
 
@@ -759,17 +733,16 @@ CSEv_TS_playerCallAlt2_(void){
 void
 TS_playerCallAlt2(void){
 	player pl = (player)self;
-	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
-		//well gee that is no good
+	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
-	#ifdef CLIENT
+#ifdef CLIENT
 		sendevent("TS_playerCallAlt2", "");
 		// and do it my side too?
 		_TS_playerCallAlt2();
-	#else
+#else
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
-	#endif
+#endif
 }
 
 
@@ -795,7 +768,7 @@ _TS_playerCallAlt2(void){
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //!!!! SERVER EVENTS ONLY BELOW HERE
-#ifdef SSQC
+#ifdef SERVER
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -945,7 +918,6 @@ CSEv_PlayerBuyWeaponThw_TS_iii( int iWeaponTypeID, int iBuyOpts, int iCount ) {
 	//attemptAddWeaponToConfig(pl, iWeaponTypeID, iBuyOpts);
 	attemptBuyWeapon(pl, iWeaponTypeID, iBuyOpts, iCount);
 }
-
 #endif// SERVER
 
 
@@ -961,26 +933,17 @@ CSEv_PlayerBuyWeaponThw_TS_iii( int iWeaponTypeID, int iBuyOpts, int iCount ) {
 // I think that's it actually.
 // nah, just check for that special case when dropping a weapon
 void
-playerEquipIdeal(player localPlayer){
-
-	//go through all the players weapons. whichever has the highest slot number, except for 5, gets picked
-	player pl = localPlayer;
-
+playerEquipIdeal(player pl){
+	// go through all the players weapons. whichever has the highest slot number, except for 5, gets picked
 	int bestSlotYet = 0;
-
 	weapondynamic_t weapon_DynaRef = NULL;
-	
 	int weaponDynamicID_toEquip = -1;
-
+	int i;
 	//printfline("playerEquipIdeal: invcount: %i", pl.ary_myWeapons_softMax);
 	
-	//work backwards, so the last item in a slot satisfies us
-	for(int i = pl.ary_myWeapons_softMax-1; i >= 0; i--){
-		
-		//weapon_configRef = (weaponconfig_weapon_t) pl.weaponconfig_temp.ary_myWeapons[i];
+	// work backwards, so the last item in a slot satisfies us
+	for(i = pl.ary_myWeapons_softMax-1; i >= 0; i--){
 		weapon_DynaRef = (weapondynamic_t) pl.ary_myWeapons[i];
-		
-
 		weapondata_basic_t* basicPointer = (weapondata_basic_t*) ary_weaponData[weapon_DynaRef.weaponID];
 		weapondata_basic_t basicRef = *(basicPointer);
 
@@ -1010,10 +973,11 @@ playerEquipIdeal(player localPlayer){
 	// Also, the shared version does not send a message to clientside to update the viewmodel,
 	// this causes issues with the grenade removing itself on running out of ammo.
 	// Throwing knives can use either version here though, but everything works with _shared.
-	// Plus changes to what's serverside are sent to the client soon enough anyway, doing so here
-	// seems unnecessary.
+	// Plus changes to what's serverside are sent to the client soon enough anyway, doing so
+	// here seems unnecessary.
 	// TODO, CRITICAL.  Check other places.
-	// Could anywhere else benefit from TS_playerEquippedWeapon being changed to TS_playerEquippedWeapon_Shared ?
+	// Could anywhere else benefit from TS_playerEquippedWeapon being changed to
+	// TS_playerEquippedWeapon_Shared ?
 	
 	TS_playerEquippedWeapon_Shared(pl, weaponDynamicID_toEquip, TRUE);
 	
@@ -1022,11 +986,11 @@ playerEquipIdeal(player localPlayer){
 
 // Call to above with a few extra lines included, commonly used so bundled into a method
 void
-playerEquipIdealSafe(player localPlayer){
-	TS_resetViewModel(localPlayer);
-	localPlayer.setInventoryEquippedIndex(-1);
-	playerEquipIdeal(localPlayer);
+playerEquipIdealSafe(player pl){
+	TS_resetViewModel(pl);
+	pl.setInventoryEquippedIndex(-1);
+	playerEquipIdeal(pl);
 	
-	printfline("playerEquipIdealSafe: stats, activeWeap:%d invEqIndex:%i", localPlayer.activeweapon, localPlayer.inventoryEquippedIndex);
+	printfline("playerEquipIdealSafe: stats, activeWeap:%d invEqIndex:%i", pl.activeweapon, pl.inventoryEquippedIndex);
 }
 

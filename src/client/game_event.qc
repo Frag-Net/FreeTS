@@ -18,17 +18,18 @@ void
 ClientGame_EventParse(float fHeader)
 {
 	player pl = (player)pSeat->m_ePlayer;
-	
 	vector vecOrigin;
-	
 	int iSequence;
 	float fDuration;
 	float fIdleEndOffset;
-	
 	int iType;
 	
-	switch (fHeader) {
-		
+	// !
+	// Any need for a m_ePlayer classname check here?
+	// I think none apply for being an authentic "spectator", most don't for being a buymenu spectator
+	// (player with that is not PLAYER_STATE::SPAWNED)
+	
+	switch(fHeader){
 	case EV_OBITUARY:
 		Obituary_Parse();
 		break;
@@ -102,8 +103,6 @@ ClientGame_EventParse(float fHeader)
 
 		FX_Impact(iType, vOrigin, vNormal);
 		break;
-		
-	//TAGGG - NEW
 	case EVENT_TS::EV_IMPACT_MELEE:
 		int iType3;
 		vector vOrigin3;
@@ -143,7 +142,7 @@ ClientGame_EventParse(float fHeader)
 	case EV_WEAPON_PICKUP:
 		int w = readbyte();
 		
-		//TAGGG - NOTE!
+		// NOTE!
 		// Phase me out, or use me instead.  Whichever.
 		// Redundant with... oh?  Nothing here clearly by name.
 		// Ah well, somewhere there's completly TS independent pickup logic
@@ -162,6 +161,9 @@ ClientGame_EventParse(float fHeader)
 		// time to read the config to send in the weapons one-by-one.
 		deployConfig();
 		
+		// Just in case.
+		VGUI_ChangeScreen(VGUI_SCREEN::NONE);
+
 		// so that any choice of weapon, same as before or even nothing, will still
 		// let client/view.qc do the whole viewmodel routine again
 		pSeat->m_iLastWeapon = -2;
@@ -205,7 +207,5 @@ ClientGame_EventParse(float fHeader)
 		break;
 	*/
 	}
-	
-	
-	
+		
 }

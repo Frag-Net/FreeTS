@@ -167,9 +167,9 @@ w_katana_primary(void)
 		
 		/*
 		// ???  Why was this here, did original TS do this noise on crouch-attacks in particular?
-		#ifdef CLIENT
+#ifdef CLIENT
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-		#endif
+#endif
 		*/
 
 		weapon_base_setWholeAttackDelay(pl, 0.70);
@@ -177,12 +177,12 @@ w_katana_primary(void)
 		pl.fUncrouchBlockDelay = time + 1.0f;
 	}else{
 		//Check.  Are we moving backwards,  enough??  And not looking up/down too far?
-		if(input_movevalues.x < -40 && pl.v_angle.x >= -55 && pl.v_angle.x <= 55){
+		if(input_movevalues.x < -40 && GET_VIEW_ANGLES.x >= -55 && GET_VIEW_ANGLES.x <= 55){
 			//okay!
 			pl.iMeleeCycler = 0;
 			meleeAnimToPlay = 2;
 			
-			makevectors( pl.v_angle );
+			makevectors( GET_VIEW_ANGLES );
 			theReaper = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 80, 74, -v_forward);
 			
 			weapon_base_setWholeAttackDelay(pl, 0.75);
@@ -202,7 +202,7 @@ w_katana_primary(void)
 	
 	// Don't check 'theReaper' client side, ray-checks to see what was hit are
 	// ineffective there
-	#ifdef SERVER
+#ifdef SERVER
 	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
 		randomChoice = randomInRange_i(0, 1);
 		if(randomChoice == 0){
@@ -224,7 +224,7 @@ w_katana_primary(void)
 
 		TS_Weapons_PlaySoundDirect(pl, "weapons/katana/hit-body.wav");
 	}
-	#endif
+#endif
 	
 	
 	if(meleeAnimToPlay == 0){

@@ -6,7 +6,7 @@ const vector g_vZero = [0,0,0];
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 void
 centerprintToAll(string strSend){
 	for (entity eFind = world; (eFind = find(eFind, classname, "player"));) {
@@ -151,7 +151,7 @@ static void entity_removeSelf(void);
 // server's end, no idea.
 // Only lets you specify the entity to GET a location from, and if the
 // entity disappears to soon, no location gets sent.
-#ifdef SSQC
+#ifdef SERVER
 void removeSelfDelayed(entity entTarget){
 	
 	setmodel( entTarget, NULL );
@@ -265,9 +265,9 @@ void stopSound(entity e, float chan){
 	
 	/*
 	// This doesn't do anything... ?   unlike what the 'built-in's file says about it ?
-	#ifdef CSQC
+#ifdef CLIENT
 	soundupdate(pl, CHAN_VOICE, "", -1, ATTN_NORM, 100, 0, 0);
-	#endif
+#endif
 	*/
 }//END OF stopSound
 
@@ -323,7 +323,7 @@ float getViewModelAnimExtraDuration(void){
 }
 
 
-#ifdef SSQC
+#ifdef SERVER
 void entityRemoveRespawnFlag(CBaseEntity arg_this){
 	// old way
 	//arg_this.gflags &= ~GF_CANRESPAWN;
@@ -483,20 +483,20 @@ TS_View_PlayAnimation_EndIdle_custom(int iSequence, float fDuration, float fIdle
 void TS_Weapons_PlaySoundDirect(player pl, string samp){
 	
 	// OLD WAY:
-	#ifdef SERVER
-		sound( pl, CHAN_WEAPON, samp, 1, ATTN_NORM );
-	#endif
+#ifdef SERVER
+		sound(pl, CHAN_WEAPON, samp, 1, ATTN_NORM);
+#endif
 	
 	
 	// for now, only server too.  Don't really understand how unicast works.
 	// Nope, not even that works consistently.  Serverside only, sometimes it just skips
 	// playing completely.
 	/*
-	#ifdef SSQC
+#ifdef SERVER
 	float flVol = 1.0f;
 	float flSpeed = 100.0f;
-	sound( pl, CHAN_WEAPON, samp, flVol, ATTN_NORM, flSpeed, SOUNDFLAG_PLAYER_SHARED, 0 );
-	#endif
+	sound(pl, CHAN_WEAPON, samp, flVol, ATTN_NORM, flSpeed, SOUNDFLAG_PLAYER_SHARED, 0);
+#endif
 	*/
 }
 
@@ -505,16 +505,16 @@ void TS_Weapons_PlaySoundDirect(player pl, string samp){
 void TS_Weapons_PlaySoundChannelDirect(player pl, string samp, int chann){
 	
 	// OLD WAY:
-	#ifdef SERVER
-		sound( pl, chann, samp, 1, ATTN_NORM );
-	#endif
+#ifdef SERVER
+		sound(pl, chann, samp, 1, ATTN_NORM);
+#endif
 	
 	
 	/*
-	#ifdef SSQC
+#ifdef SERVER
 	float flVol = 1.0f;
 	float flSpeed = 100.0f;
-	sound( pl, chann, samp, flVol, ATTN_NORM, flSpeed, SOUNDFLAG_PLAYER_SHARED, 0 );
-	#endif
+	sound(pl, chann, samp, flVol, ATTN_NORM, flSpeed, SOUNDFLAG_PLAYER_SHARED, 0);
+#endif
 	*/
 }

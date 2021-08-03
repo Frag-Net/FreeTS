@@ -169,7 +169,7 @@ w_karate_primary(void)
 	//pl.fUncrouchBlockDelay = time + 1.0f;
 	
 	
-	#ifdef SERVER
+#ifdef SERVER
 	// need the fleshhit sound
 	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
@@ -180,7 +180,7 @@ w_karate_primary(void)
 	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
 		TS_Weapons_PlaySoundDirect(pl, "player/kungfuhit.wav");
 	}
-	#endif
+#endif
 	
 	//Animation_ShootWeapon( self );
 	pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.085, 1);
@@ -206,6 +206,7 @@ w_karate_primary(void)
 	}
 	*/
 }
+
 
 
 
@@ -235,11 +236,11 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* melee
 	
 	if( !(input_buttons&INPUT_BUTTON7) && curSpeed > myMaxSpeed * 0.92 ) {
 		
-		makevectors(pl.v_angle);
+		makevectors(GET_VIEW_ANGLES);
 		vector _2d_dir = normalize([v_forward.x, v_forward.y, 0]);
 		vector velocity_dir = normalize(pl.velocity);
 		
-		if(dotproduct(_2d_dir, velocity_dir) <= -0.7 && pl.v_angle.x >= -55 && pl.v_angle.x <= 55){
+		if(dotproduct(_2d_dir, velocity_dir) <= -0.7 && GET_VIEW_ANGLES.x >= -55 && GET_VIEW_ANGLES.x <= 55){
 			// moving back-kick
 			(*meleeAnimToPlay) = 2;
 			(*theReaper) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 30 * pl.fKarateStamina, 76, -v_forward);
@@ -262,9 +263,9 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* melee
 		return;
 	}
 	
-	if(input_movevalues.x < -40 && pl.v_angle.x >= -55 && pl.v_angle.x <= 55){
+	if(input_movevalues.x < -40 && GET_VIEW_ANGLES.x >= -55 && GET_VIEW_ANGLES.x <= 55){
 		//standing back-kick.
-		makevectors(pl.v_angle);
+		makevectors(GET_VIEW_ANGLES);
 		(*meleeAnimToPlay) = 2;
 		(*theReaper) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 30 * pl.fKarateStamina, 74, -v_forward);
 		weapon_base_setWholeAttackDelay(pl, 1);
@@ -316,7 +317,7 @@ w_karate_secondary(void)
 	//pl.fUncrouchBlockDelay = time + 1.0f;
 	//Animation_ShootWeapon( self );
 	
-	#ifdef SERVER
+#ifdef SERVER
 	// need the fleshhit sound
 	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
@@ -327,7 +328,7 @@ w_karate_secondary(void)
 	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
 		TS_Weapons_PlaySoundDirect(pl, "player/kungfuhit.wav");
 	}
-	#endif
+#endif
 	
 	
 	if(meleeAnimToPlay == 0){
@@ -393,7 +394,7 @@ w_karate_aimanim(void)
 void
 w_karate_hud(void)
 {
-#ifdef CSQC
+#ifdef CLIENT
 	vector clrDraw;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];

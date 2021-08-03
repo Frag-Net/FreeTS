@@ -270,7 +270,7 @@ Player_PreDraw(base_player pp, int thirdperson)
 		posView = pSeat->m_vecPredictedOrigin + [0,0,-8];
 		angView = view_angles;
 		
-		// CHECK: is "getproperty(VF_CL_VIEWANGLES)" always the same as "viewangles"?
+		// CHECK: is "getproperty(VF_CL_VIEWANGLES)" always the same as "view_angles"?
 		
 		if(!pl.weaponEquippedAkimbo){
 			// first-person and this is the local player?

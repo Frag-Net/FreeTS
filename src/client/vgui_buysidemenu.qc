@@ -58,7 +58,7 @@ class CBuySideMenu_WeaponButton;
 class CBuySideMenu_WeaponButton;
 class CBuySideMenu_RemoveWeaponButton;
 
-void buysidemenu_closeBuyMenu(void);
+void buysidemenu_cancelConfigAndClose(void);
 void refreshButtons(void);
 void setupRemoveButtonList(void);
 void buysidemenu_btn_removeButton_clicked(CBuySideMenu_BasicButton* arg_this);
@@ -808,7 +808,7 @@ buysidemenu_btn_Back_clicked(CBuySideMenu_BasicButton* arg_this)
 	if(iActiveLayer == 0i){
 		// This is a request to close the buy menu.
 		// TODO. Support that.
-		buysidemenu_closeBuyMenu();
+		buysidemenu_cancelConfigAndClose();
 	}else{
 		buysidemenu_backOneLayer();
 	}
@@ -982,7 +982,7 @@ refreshButtons(void)
 // NOTICE - assumes "Cancel" was clicked. Reverts "temp" config to the "current"
 // config (one last saved / applied).
 void
-buysidemenu_closeBuyMenu(void)
+buysidemenu_cancelConfigAndClose(void)
 {
 	//other way around.  Copy what's at the current to the temp (forgetting any purchase changes).
 	
@@ -997,9 +997,8 @@ buysidemenu_closeBuyMenu(void)
 		CSQC_Parse_CenterPrint("Buy Order Canceled.\n");
 	}
 	
-	//that should close the buy menu. Proceed.
-	pSeatLocal->fVGUI_Display = VGUI_SCREEN::NONE;
-}//buysidemenu_closeBuyMenu
+	VGUI_ChangeScreen(VGUI_SCREEN::NONE);
+}//buysidemenu_cancelConfigAndClose
 
 // This is the "1 Use New Config" choice in the 1st layer. Applies the config (copies weaponconfig_temp to weapconfig_current).
 // the "_current" one is read at spawn to give the player their loadout.
@@ -1017,10 +1016,7 @@ buysidemenu_btn_UseNewConfig_clicked(CBuySideMenu_BasicButton* arg_this)
 	// TODO - check to see whether the config we just used was empty or not, to affect this message...
 	CSQC_Parse_CenterPrint("Using new config.\n");
 	
-	//we will close the buy menu.
-	//TODO - do a centerprint saying, "using new config" or whatever the specialists did.
-	pSeatLocal->fVGUI_Display = VGUI_SCREEN::NONE;
-	
+	VGUI_ChangeScreen(VGUI_SCREEN::NONE);
 }//buysidemenu_btn_UseNewConfig_clicked
 	
 

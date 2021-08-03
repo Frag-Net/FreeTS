@@ -61,7 +61,7 @@ class player:base_player
 	PREDICTED_CUSTOM(PLAYER_STATE, iState);
 	
 	
-	#ifdef SSQC
+#ifdef SERVER
 	
 	int money;
 	//int voted;
@@ -74,7 +74,7 @@ class player:base_player
 	// UNUSED FOR NOW, just an idea.
 	int flViewModelFrame;
 	
-	#endif
+#endif
 	
 	
 	// who's team am I on?  may not matter depending on gamemode.
@@ -86,7 +86,7 @@ class player:base_player
 	
 
 
-#ifdef CSQC
+#ifdef CLIENT
 	//TAGGG - related to how to handle FOV changes.
 	float flCurrentZoom;
 	float flOldZoom;
@@ -182,7 +182,7 @@ class player:base_player
 	
 	//TODO - see how to handle saving / loadig these on the client's end.
 	//Server probably dosen't need to store config stuff at all.
-#ifdef CSQC
+#ifdef CLIENT
 	
 	// record the time of the previous frame.
 	// TODO - could this be done once globally clientside for all players?
@@ -202,10 +202,10 @@ class player:base_player
 	int weaponSelectHighlightID;
 	//This var gets a chance to turn on after the player goes through all weapons in slots 1-4 to see if any weapons have akimbo.  If so, weaponSelectHighlightID goes to that weapon (the first with akimbo) and this variable turns on. Going to the next/previous weapon goes through all weapons to see the next akimbo one until there are no other choices in that direction (like last akimb weapon --> next goes back to akimbo-less slot 1's first weapon... and so on if empty). Note that slot 5 is imaginary; it is only made of weapons from slots 1-4 with akimbo choices.
 	//Then, selecting a next weapon looks for the next
-	BOOLEAN weaponSelectHighlightAkimbo;
+	BOOL weaponSelectHighlightAkimbo;
 	
 	//used for telling what the most recently equipped weapon's akimbo status was - no or yes.
-	BOOLEAN flag_lastWeaponAkimbo;
+	BOOL flag_lastWeaponAkimbo;
 	
 	float flViewShake;
 	
@@ -216,7 +216,7 @@ class player:base_player
 #endif
 
 	// Should this even be networked?  Seems to work on a very short timeframe
-	BOOLEAN switchToRecentlyAddedWeapon;
+	BOOL switchToRecentlyAddedWeapon;
 	
 	
 	// TODO - reset in server and client respawn calls/notices.
@@ -283,7 +283,7 @@ class player:base_player
 	float shotgunAddAmmoSoundTime;
 	
 	
-#ifdef CSQC
+#ifdef CLIENT
 	
 	
 #else
@@ -361,7 +361,7 @@ class player:base_player
 	//The client needs to know whether our recent attack had ammo while firing.
 	//In case the client needs to play a click sound clientside in response to a failed fire attempt
 	//TAGGG - TODO.  Remove this I think?  AKimbo still uses it a tiny bit though, maybe not.
-	BOOLEAN recentAttackHadAmmo;
+	BOOL recentAttackHadAmmo;
 	
 	
 	//What particular choice of "ary_myWeapons" is equipped?
@@ -434,7 +434,7 @@ class player:base_player
 		
 	////////////////////////////////////////////////////////////
 		
-	virtual void(BOOLEAN resetInventory) reset;
+	virtual void(BOOL resetInventory) reset;
 
 	virtual vector(vector vecInputAngles)View_approachAngleOffsetTarget;
 	virtual void (void)handleAccuracyKickback;
@@ -442,7 +442,7 @@ class player:base_player
 	virtual void(float arg_theZoom) setZoom;
 	
 	virtual void(int arg_newIndex) setInventoryEquippedIndex;
-	virtual void(int arg_newIndex, BOOLEAN useAkimbo) setInventoryEquippedIndex_Akimbo;
+	virtual void(int arg_newIndex, BOOL useAkimbo) setInventoryEquippedIndex_Akimbo;
 	
 	virtual weapondata_basic_t*(void) getEquippedWeaponData;
 	virtual weapondata_basic_t*(void) getEquippedWeaponData_Singular;
@@ -472,7 +472,7 @@ class player:base_player
 	
 	
 
-	#ifdef SSQC
+#ifdef SERVER
 	// !!! SPECIAL CASE?  not built-in but is what the "think" method is set to early on.
 	// (REMOVED: the ".think" pointer will likely be set by other stuff like so much as a reload delay,
 	// let's not expect this to stay as it's set)s
@@ -480,11 +480,11 @@ class player:base_player
 //TAGGG - QUESTION.  Does this need to be separate from postThink at all?  Same for above, forget what these are for
 	virtual void () frameThink_fromServer;
 
-	virtual BOOLEAN(TSWorldGun arg_pickup) attemptAddWeaponFromPickup;
-	virtual void(int arg_weaponID, BOOLEAN completeDrop) dropWeapon;
-	virtual BOOLEAN() anyAmmoPoolNonEmpty;
+	virtual BOOL(TSWorldGun arg_pickup) attemptAddWeaponFromPickup;
+	virtual void(int arg_weaponID, BOOL completeDrop) dropWeapon;
+	virtual BOOL() anyAmmoPoolNonEmpty;
 	virtual void() dropAmmo;
-	#endif
+#endif
 	
 	
 	

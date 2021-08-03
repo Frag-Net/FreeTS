@@ -188,7 +188,7 @@ void TSWorldGun::Touch( void ) {
 		//printfline("the thing I touched is %s", other.classname);
 		// TODO - any others we need to keep track of for making the drop?
 		if(other.classname == "worldspawn" || other.classname == "func_breakable"){
-			sound( this, CHAN_ITEM, "items/weapondrop1.wav", 1, ATTN_NORM, 100, SOUNDFLAG_CUSTOMCLIENT );
+			sound( this, CHAN_ITEM, "items/weapondrop1.wav", 1, ATTN_NORM, 100, SOUNDFLAG_FOLLOW );
 		}
 		
 		return;

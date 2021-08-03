@@ -89,17 +89,15 @@ ClientGame_ConsoleCommand(void)
 		}
 		break;
 	case "buy":
-		//if(getstatf(STAT_BUYZONE) == TRUE) {
-		//	VGUI_BuyMenu();
-		//}
-		
 		//If we're in spectator mode we can do this
 		//  no-screen check, not necessary probably:  pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE && 
 		pl = (player)pSeat->m_ePlayer;
 		
 		printfline("CMD: BUY COMMAND RECEIVED!  Should I react?  %s (1=yes) : %d", getplayerkeyvalue( player_localnum, "*spec" ), pl.iState);
 		
-		if(getplayerkeyvalue( player_localnum, "*spec" ) != "0"){
+		// Should this use a "pl.iState != PLAYER_STATE::SPAWNED" check instead?
+		//if(getplayerkeyvalue( player_localnum, "*spec" ) != "0"){
+		if(pl.iState != PLAYER_STATE::SPAWNED){
 			//we can show it!
 			VGUI_ChangeScreen(VGUI_SCREEN::BUYSIDEMENU);
 		}
@@ -112,7 +110,6 @@ ClientGame_ConsoleCommand(void)
 	//TAGGG - CRITICAL
 	// See CSEv_DropWeapon of src/server/weapons.qc, tie into that better
 	// somehow, may need to rely on Nuclide's own pickup type instead of our own.
-	
 	case "drop":
 		//sendevent("WeaponDrop", "");
 		TS_playerDropWeapon();  //I do it fine.

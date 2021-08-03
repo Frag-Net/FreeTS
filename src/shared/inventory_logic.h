@@ -8,7 +8,6 @@
 #define WEAPONOPT_SCOPE_COST 1500i
 
 
-//SSQC
 #define PLAYER_INVENTORY_GENERIC pl.ary_myWeapons
 #define PLAYER_INVENTORY_GENERIC_MAX pl.ary_myWeapons_softMax
 //The server has the player's physical money for use anytime.
@@ -35,7 +34,7 @@
 
 
 
-#ifdef CSQC
+#ifdef CLIENT
 	// has the player purchased anything? Used to tell whether to print "order canceled" on exiting.
 	var BOOL boughtAnything;
 	

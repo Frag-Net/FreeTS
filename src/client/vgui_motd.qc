@@ -62,9 +62,7 @@ Colors_RGB8_to_HEX(vector color)
 
 void VGUI_MessageOfTheDay(player arg_player, vector vPos, vector vWindowSiz, float fFontSizeMulti ) {
 	
-	static void MessageOfTheDay_ButtonOK( void ) {
-		//pSeatLocal->fVGUI_Display = VGUI_SCREEN::BUYSIDEMENU;
-		
+	static void MessageOfTheDay_ButtonOK( void ) {		
 		printfline("HEY ButtonOK got CLICKED!!!");
 		VGUI_ChangeScreen(VGUI_SCREEN::BUYSIDEMENU);
 	}

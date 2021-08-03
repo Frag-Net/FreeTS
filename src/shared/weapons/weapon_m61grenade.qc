@@ -36,24 +36,23 @@ BOOLEAN weapon_M61Grenade_onUnEquip(player localPlayer, weapondynamic_t arg_this
 
 
 //Serverside only method, generates an entity
-#ifdef SSQC
+#ifdef SERVER
 
 static void weapon_M61Grenade_Touch( void );
 static void weapon_M61Grenade_Explode( void );
 
-void weapon_M61Grenade_spawnProjectile(player localPlayer, weapondynamic_t arg_thisWeapon, BOOL wasToss, float heldDuration){
-	player pl = localPlayer;
+void weapon_M61Grenade_spawnProjectile(player pl, weapondynamic_t arg_thisWeapon, BOOL wasToss, float heldDuration){
 	
 	weapondata_throwable_t basicRef = *((weapondata_throwable_t*)ary_weaponData[WEAPON_ID::M61Grenade]);
 	
-	makevectors( localPlayer.v_angle );
+	makevectors( GET_VIEW_ANGLES );
 	entity eNade = spawn();
-	setorigin( eNade, ( localPlayer.origin + localPlayer.view_ofs ) + ( v_forward * 16 ) );
+	setorigin( eNade, ( pl.origin + pl.view_ofs ) + ( v_forward * 16 ) );
 	setmodel( eNade, basicRef.sWorldModelPath );
 	setsize( eNade, '-1 -1 -1', '1 1 1' );
 	
-	vector vDir = aim ( localPlayer, 100000 );
-	eNade.owner = localPlayer;
+	vector vDir = aim ( pl, 100000 );
+	eNade.owner = pl;
 	eNade.classname = "remove_me";
 	eNade.solid = SOLID_TRIGGER; // This is so grenades will not get slowed down by windows they touch
 	eNade.angles = vectoangles( vDir );
@@ -171,9 +170,9 @@ void weapon_M61Grenade_onThink(player localPlayer, weapondynamic_t arg_thisWeapo
 			pl.updateSlotCountsForEquippedWeapon();
 			pl.grenadeSpawnTime = -1;
 			
-			#ifdef SERVER
+#ifdef SERVER
 			weapon_M61Grenade_spawnProjectile(localPlayer, arg_thisWeapon, pl.grenadeToss, pl.grenadeHeldDuration);
-			#endif
+#endif
 		}
 	}
 	

@@ -172,8 +172,11 @@ View_UpdateWeapon(entity vm, entity mflash)
 	// Call this to do a few other things for any weapon change
 	TS_Weapon_Draw_extra();
 	
-	/* hack, we changed the wep, move this into Game_Input/PMove */
-	Weapons_Draw();
+	// hack, we changed the wep, move this into Game_Input/PMove
+	//... And yes, it seems this bound check is indeed needed, zany sync issues.
+	if(pl.inventoryEquippedIndex != -1){
+		Weapons_Draw();
+	}
 	
 	//No longer a var!  Oops
 	//pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1;
@@ -215,10 +218,6 @@ resetViewModel(void)
 	
 	if(pSeat->m_ePlayer == NULL){
 		printfline("resetViewModel: early end #1, client ent NULL");
-		return;
-	}
-	if(pSeat->m_ePlayer.classname != "player"){
-		printfline("resetViewModel: early end #2, client ent not player");
 		return;
 	}
 	

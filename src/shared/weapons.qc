@@ -1,17 +1,16 @@
 
 
-
 weapon_t w_null = {};
 
 // Populate each slot with a member of the enum early on in runtime instead.
 weapon_t g_weapons[WEAPON_ID::LAST_ID];
 
 // Not needed here anymore?
-//var int g_weapon_weights[g_weapons.length];
+//var int g_weapon_weights[g_weapons.lengdth];
 
 
-void weaponconfig_data_init(weaponconfig_data_t* arg_this){
-//void weaponconfig_data_t::weaponconfig_data_t(void){
+void
+weaponconfig_data_init(weaponconfig_data_t* arg_this){
 	arg_this->ary_myWeapons_softMax = 0;
 	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
 		arg_this->ary_ammoTotal[i] = 0;
@@ -28,37 +27,35 @@ void weaponconfig_data_init(weaponconfig_data_t* arg_this){
 	}
 	*/
 	
-}//END OF weaponconfig_data_t constructor
+}// weaponconfig_data_t constructor
 
 
-void weapon_base_setWholeAttackDelay(player localPlayer, float amount){
-			
-	localPlayer.w_attack_next = amount;
-	localPlayer.w_attack_akimbo_next = amount;
+void
+weapon_base_setWholeAttackDelay(player pl, float amount){
+	pl.w_attack_next = amount;
+	pl.w_attack_akimbo_next = amount;
 	
 	// I think this is a good idea, right?
 	// or, is only for the client better?  Turned out to be the case somewhere else...
 	//#ifdef SERVER
-	SAVE_STATE(localPlayer.w_attack_next);
-	SAVE_STATE(localPlayer.w_attack_akimbo_next);
+	//SAVE_STATE(pl.w_attack_next);
+	//SAVE_STATE(pl.w_attack_akimbo_next);
 	//#endif
-}//END OF weapon_base_setWholeAttackDelay
+}// weapon_base_setWholeAttackDelay
 
 
 // normal delay only?
-void weapon_base_setLeftAttackDelay(player localPlayer, float amount){
-	
-	localPlayer.w_attack_next = amount;
-	// ???
-	SAVE_STATE(localPlayer.w_attack_next);
+void
+weapon_base_setLeftAttackDelay(player pl, float amount){
+	pl.w_attack_next = amount;
+	//SAVE_STATE(pl.w_attack_next);
 }
 
 // akimbo secondary delay only?
-void weapon_base_setRightAttackDelay(player localPlayer, float amount){
-	
-	localPlayer.w_attack_akimbo_next = amount;
-	
-	SAVE_STATE(localPlayer.w_attack_akimbo_next);
+void
+weapon_base_setRightAttackDelay(player pl, float amount){
+	pl.w_attack_akimbo_next = amount;
+	//SAVE_STATE(pl.w_attack_akimbo_next);
 }
 
 
@@ -66,38 +63,36 @@ void weapon_base_setRightAttackDelay(player localPlayer, float amount){
 // Only set the delay if it is below the given amount.
 // If there are 2 seconds left until firing is allowed, ignore a request
 // to set it to 0.3 seconds.
-void weapon_base_setLeftAttackDelay_AtLeast(player localPlayer, float amount){
-	
-	if(localPlayer.w_attack_next <= amount){
-		localPlayer.w_attack_next = amount;
-		
-		SAVE_STATE(localPlayer.w_attack_next);
+void
+weapon_base_setLeftAttackDelay_AtLeast(player pl, float amount){
+	if(pl.w_attack_next <= amount){
+		pl.w_attack_next = amount;
+		//SAVE_STATE(pl.w_attack_next);
 	}
 }
 
 // akimbo secondary delay only?
-void weapon_base_setRightAttackDelay_AtLeast(player localPlayer, float amount){
-	
-	if(localPlayer.w_attack_akimbo_next <= amount){
-		localPlayer.w_attack_akimbo_next = amount;
-		
-		SAVE_STATE(localPlayer.w_attack_akimbo_next);
+void
+weapon_base_setRightAttackDelay_AtLeast(player pl, float amount){
+	if(pl.w_attack_akimbo_next <= amount){
+		pl.w_attack_akimbo_next = amount;
+		//SAVE_STATE(pl.w_attack_akimbo_next);
 	}
 }
 
 
-MELEE_HIT_RESPONSE weapon_base_coldcock(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range ) {
-	
+MELEE_HIT_RESPONSE
+weapon_base_coldcock(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	float damageToDeal, float range
+){
 	MELEE_HIT_RESPONSE resultHit = MELEE_HIT_RESPONSE::NONE;
-#ifdef SSQC
-	player pl = localPlayer;
-	
+#ifdef SERVER
 	weapondata_basic_t baseRef = *basePRef;
+	makevectors( GET_VIEW_ANGLES );
 	
-	makevectors( localPlayer.v_angle );
-	
-	vector vSource = ( pl.origin + pl.view_ofs );
-	traceline( vSource, vSource + ( v_forward * range ), MOVE_HITMODEL, pl );
+	vector vSource = (pl.origin + pl.view_ofs);
+	traceline(vSource, vSource + (v_forward * range), MOVE_HITMODEL, pl);
 	
 	if ( trace_fraction == 1.0 ) {
 		//did not hit anything
@@ -127,27 +122,31 @@ MELEE_HIT_RESPONSE weapon_base_coldcock(player localPlayer, weapondata_basic_t* 
 }//weapon_base_coldcock
 
 
-
-MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range) {
-	makevectors( localPlayer.v_angle );
-	return weapon_base_onPrimaryAttack_melee_fromCustomDirection(localPlayer, basePRef, arg_thisWeapon, damageToDeal, range, v_forward);
-}//END OF weapon_base_onPrimaryAttack_melee_fromCustomDirection
+MELEE_HIT_RESPONSE
+weapon_base_onPrimaryAttack_melee(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	float damageToDeal, float range
+){
+	makevectors( GET_VIEW_ANGLES );
+	return weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, basePRef, arg_thisWeapon, damageToDeal, range, v_forward);
+}// weapon_base_onPrimaryAttack_melee
 
 // After the server calls this method (possibly client later?),
 // we expect trace_ent to store the thing we recently hit for playing custom sounds.
 // Anything that doesn't want the general material-hit sounds / sparks on hitting metalic/generic stuff
 // should not use this method, just copy it and work as needed (looking at you karate).
-// 
-MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee_fromCustomDirection(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range, vector vTraceDirection ) {
-	
+MELEE_HIT_RESPONSE
+weapon_base_onPrimaryAttack_melee_fromCustomDirection(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	float damageToDeal, float range, vector vTraceDirection
+){
 	MELEE_HIT_RESPONSE resultHit = MELEE_HIT_RESPONSE::NONE;
 	
-#ifdef SSQC
-
+#ifdef SERVER
 	// safe default in case this method finds nothing.
+	// Might be unnecessary to do this?
 	trace_ent = NULL;
 	
-	player pl = localPlayer;
 	weapondata_basic_t baseRef = *basePRef;
 	
 	vector vSource;
@@ -197,14 +196,14 @@ MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee_fromCustomDirection(player 
 		tex = getsurfacetexture(trace_ent, surf);
 		
 		
-		#ifndef TEXTURE_LENGTH_LIMIT
+#ifndef TEXTURE_LENGTH_LIMIT
 			//nothing to do here.
-		#else
+#else
 			//Enforce the cutoff.
 			//...I know texture names above weren't enforced to be lowercase,
 			// but isn't it a good idea to do it here anyway?
 			tex = strtolower(substring(tex, 0, TEXTURE_LENGTH_LIMIT));
-		#endif
+#endif
 		
 		//printfline("I hit: %s ::: %s", floatToChar((float)hash_get(hashMaterials, tex)), tex );
 		printfline("weapon_base_onPrimaryAttack_melee_fromCustomDirection - I hit: %s", chr2str((float)hash_get(hashMaterials, tex)) );
@@ -252,31 +251,31 @@ MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee_fromCustomDirection(player 
 			break;
 		}
 		
-	}//END OF trace_ent.takedamage check
+	}// trace_ent.takedamage check
 #endif
 
 	return resultHit;
-}//END OF weapon_base_onPrimaryAttack_melee
+}// weapon_base_onPrimaryAttack_melee
 
 
-//Apparently serverside-only? ok...
-void weapon_base_onAttack(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
-	weapon_base_onAttack_multi(localPlayer, basePRef, arg_thisWeapon, 1, attackTypeUsed);
-}//END OF weapon_base_onAttack
-
+// Apparently serverside-only? ok...
+void
+weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+	weapon_base_onAttack_multi(pl, basePRef, arg_thisWeapon, 1, attackTypeUsed);
+}// weapon_base_onAttack
 
 
 // Was considering making this client-callable, buuuuut
 // the fire-viewcamera-kickback thing is going a different direciton though, so never mind that.
 // In short, this is effectively serverside-only, clientside script in any weapon is never expected to call this method.
 // If we ever need that changed, that would need to be edited in every single weapon.. ehhhhhh.
-//TAGGG - TODO!  Mass rename this to weapon_gun_onAttack_multi, same for above.
+// TODO!  Mass rename this to weapon_gun_onAttack_multi, same for above.
 // Why would this ever be called for a non-gun?  Melee uses a different method completely,
 // and we refer to fRange here, a weapon-only attribute.
 // (effectively becomes 'max number of penetrations allowed', which is still something only for guns)
-void weapon_base_onAttack_multi(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed){
-	// NOTE - checks for being unable to fire yet not included!
-	player pl = localPlayer;
+// NOTE - checks for being unable to fire yet not included!
+void
+weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed){
 	
 #ifdef SERVER
 	weapondata_gun_t baseRef = *((weapondata_gun_t*)basePRef);
@@ -318,7 +317,6 @@ void weapon_base_onAttack_multi(player localPlayer, weapondata_basic_t* basePRef
 	//TODO - factor in 'fAccuracyKickback' too.
 	
 	vector toGo;
-	
 	float miner = 0.65 * 1;
 	float maxer = 1.00 * 1;
 	//float miner = 0.75/128;
@@ -348,12 +346,11 @@ void weapon_base_onAttack_multi(player localPlayer, weapondata_basic_t* basePRef
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	
 	//TAGGG - TODO!  The last parameter of TraceAttack_FireBullets should use the Weapon ID,
 	// like "WEAPON_ID::Glock18".  Consider sending that as a parameter to be available here
 	if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
 		//left
-		TraceAttack_FireBullets( shellCount, ( localPlayer.origin + localPlayer.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
+		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
 		arg_thisWeapon.iClipLeft -= 1;
 		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
 		pl.vViewAngleOffsetTarget += toGo;
@@ -361,7 +358,7 @@ void weapon_base_onAttack_multi(player localPlayer, weapondata_basic_t* basePRef
 	if(attackTypeUsed & BITS_AKIMBOCHOICE_RIGHT){
 		
 		//right
-		TraceAttack_FireBullets( shellCount, ( localPlayer.origin + localPlayer.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
+		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
 
 		arg_thisWeapon.iClipAkimboLeft -= 1;
 		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
@@ -382,23 +379,24 @@ void weapon_base_onAttack_multi(player localPlayer, weapondata_basic_t* basePRef
 	}
 	
 	// TODO - third person.
-	//Animation_ShootWeapon( localPlayer );
+	//Animation_ShootWeapon( pl );
 #else
 	//CLIENTSIDE
 
 #endif
 	
-}//END OF weapon_base_onAttack
+}// weapon_base_onAttack
 
 
-
-
-void weapon_base_burstFire(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed, int shotCount, float shotDelay){
-	player pl = localPlayer;
+void
+weapon_base_burstFire(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	int attackTypeUsed, int shotCount, float shotDelay
+){
 	weapondata_basic_t baseRef = *basePRef;
 
 	float thatStuff = shotDelay * (shotCount-1) + baseRef.fAttackDelay;
-	weapon_base_setWholeAttackDelay(localPlayer, thatStuff);
+	weapon_base_setWholeAttackDelay(pl, thatStuff);
 	
 	//printfline("??? %.2f ", thatStuff);
 	pl.aryNextBurstShotTime_softLength = shotCount;
@@ -411,7 +409,7 @@ void weapon_base_burstFire(player localPlayer, weapondata_basic_t* basePRef, wea
 	pl.aryNextBurstShotTime_listenIndex = 0;
 	
 	// and fire this very first frame.
-	weapon_gun_fireBurstBullet(localPlayer, basePRef, arg_thisWeapon);
+	weapon_gun_fireBurstBullet(pl, basePRef, arg_thisWeapon);
 }//weapon_base_burstFire
 
 
@@ -419,11 +417,10 @@ void weapon_base_burstFire(player localPlayer, weapondata_basic_t* basePRef, wea
 // This method is called instead of firing when left-clicking while reloading.
 // How do we handle this at different phases of the reload?
 // This also returns "FALSE" if it didn't even have a reload to interrupt, conveniece feature.
-BOOL weapon_shotgun_onInterrupt(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;
-	
-	
-	
+BOOL
+weapon_shotgun_onInterrupt(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	if(pl.shotgunReloadIndex == 0){
 		// nothing to interrupt.
 		return FALSE;
@@ -440,17 +437,17 @@ BOOL weapon_shotgun_onInterrupt(player localPlayer, weapondata_basic_t* basePRef
 		}
 	//}
 	
-	
 	return TRUE;
-}//END OF weapon_shotgun_onInterrupt
+}// weapon_shotgun_onInterrupt
 
 
 // Method assumes the player's "shotgunReload1_seq" and "_Duration" for vars Reload1, 2, and 3
 // have been set correctly first, probably in the weapon's "onEquip" method.
 // few others like shotgunReload2_ammoLoadDelay (serverside) too.  nah that's it.
-void weapon_shotgun_reload(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon){
-	
-	player pl = localPlayer;
+void
+weapon_shotgun_reload(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	weapondata_gun_t baseRef = *((weapondata_gun_t*)basePRef);
 	
 	//printfline("weapon_shotgun_reload %d %i", pl.isReloading, pl.shotgunReloadIndex);
@@ -514,20 +511,19 @@ void weapon_shotgun_reload(player localPlayer, weapondata_basic_t* basePRef, wea
 	pl.shotgunReloadIndexQueued = 2;
 	
 	TS_Weapons_ViewAnimation(pl.shotgunReload1_seq, pl.shotgunReload1_Duration );
-
+	
 }//weapon_shotgun_reload
 
 
 
-//NOTICE - shotguns with typical shotgun reload logic should use this method at all times.
-// It includes checks for whether the shotgun is actually reloading or not (don't do anything if not of course)
-void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;
+// NOTICE - shotguns with typical shotgun reload logic should use this method at all
+// times. It includes checks for whether the shotgun is actually reloading or not
+// (don't do anything if not of course)
+void
+weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
 	weapondata_gun_t baseRef = *basePRef;
 	
-	
 	//printfline("FRAME att: %.2f", pl.w_attack_next);
-	
 	
 	if(pl.shotgunReloadIndex > 0){
 		//reloading at all only.
@@ -606,9 +602,9 @@ void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* ba
 				arg_thisWeapon.iClipLeft++;
 				pl.ary_ammoTotal[baseRef.iAmmoDataID] -= 1;
 				
-				#ifdef CLIENT
+#ifdef CLIENT
 				sound(pl, CHAN_ITEM, "weapons/insert-shell.wav", 1, ATTN_NONE);
-				#endif
+#endif
 				
 				pl.shotgunAddAmmoTime = -1;   //don't keep doing it.
 			}
@@ -617,27 +613,24 @@ void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* ba
 				pl.shotgunAddAmmoSoundTime = -1;
 			}
 			
-			
 		}
-		
 	}
-	
-	// TODO!  Just be its own method, this is sloppy being duplicated.
 	
 	if(pl.w_attack_next <= 0){
 		// little copy from base think logic, since we're replacing it for shotguns.
 		if(pl.isChangingIronsight){
-			weapon_gun_endOfIronSight(localPlayer, basePRef, arg_thisWeapon);
+			weapon_gun_endOfIronSight(pl, basePRef, arg_thisWeapon);
 		}
 	}
 }//weapon_shotgun_onThink_reloadLogic
 
-	
 
 
-
-
-BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback){
+BOOL
+weapon_akimbo_AttackDualHack(
+	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
+	int* arg_akimboFireCallback
+){
 	//printfline("WELL WHAT. %.2f, %i, %i", pl.akimboDualFireToleranceTime, pl.akimboFirePrev, arg_flagger);
 	if(arg_flagger == 0){
 		// ???
@@ -682,7 +675,7 @@ BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int
 		// Could make a table to know what to use per akimbo weapon ID, having a table
 		// with one space for every single weapon in the game seems pretty wasteful.
 		// Calls like weapon_SOCOM_MK23_akimbo_attack, etc.
-		BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, int attackTypeUsed)* tempRef = arg_akimboFireCallback;
+		BOOL(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed)* tempRef = arg_akimboFireCallback;
 		(*tempRef)(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
 		
 		//printfline("I WENT, akprev:%i aktest:%i - flagg:%i", pl.akimboFirePrev, pl.akimboTest, arg_flagger);
@@ -697,12 +690,18 @@ BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int
 	}
 }
 
-// If the user clicks both mouse buttons (or whatever way of calling primary/secondary) in very
-// rapid succession, go ahead and quickly correct that to the dual firing animation, as that's otherwise
-// hard to make work.  This gives a little tolerance for that, the user clearly meant to do that.
-// Returns whether the conditions were met to do the dual correction.  If not, the default behavior
-// should be done by the caller instead.
-BOOL weapon_akimbo_semiAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback){
+
+// If the user clicks both mouse buttons (or whatever way of calling primary/secondary)
+//  in very rapid succession, go ahead and quickly correct that to the dual firing
+// animation, as that's otherwise hard to make work.  This gives a little tolerance
+// for that, the user clearly meant to do that.
+// Returns whether the conditions were met to do the dual correction.  If not, the
+// default behavior should be done by the caller instead.
+BOOL
+weapon_akimbo_semiAttackDualHack(
+	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
+	int* arg_akimboFireCallback
+){
 	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
 		return FALSE;
 	}
@@ -712,7 +711,11 @@ BOOL weapon_akimbo_semiAttackDualHack(player pl, weapondynamic_t arg_thisWeapon,
 // WARNING!  Don't do this, full-firing akimbos really don't need this,
 // original TS doesn't even allow separate fire-delays between the full-
 // fire akimbo weapons.
-BOOL weapon_akimbo_fullAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback){
+BOOL
+weapon_akimbo_fullAttackDualHack(
+	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
+	int* arg_akimboFireCallback
+){
 	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FULL_AUTO){
 		return FALSE;
 	}
@@ -732,11 +735,13 @@ BOOL weapon_akimbo_fullAttackDualHack(player pl, weapondynamic_t arg_thisWeapon,
 // to mean "stop what you're doing, return FALSE, don't send an even to the client at all", to whatever called this.
 // Also note that this may edit pl.nextAkimboAttackPreference, for which gun to check next time an ambiguous button is pressed
 // (that is primary fire for semi-auto mode; free-auto lets primary/secondary fire pick the left/right weapon consistently)
-int weapon_akimbo_semiAttackChoice(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+int
+weapon_akimbo_semiAttackChoice(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	int attackTypeUsed
+){
 	int originalInput = attackTypeUsed;
 	int finalAkimboChoice = BITS_AKIMBOCHOICE_NONE;
-	
-	player pl = localPlayer;
 	weapondata_basic_t baseRef = *basePRef;
 	
 	//printfline("PRE - EVERYBODY GET DOWN x - next:%d", pl.nextAkimboAttackPreference);
@@ -799,7 +804,7 @@ int weapon_akimbo_semiAttackChoice(player localPlayer, weapondata_basic_t* baseP
 			}else{
 				//nope
 			}
-		}//END OF nextAkimboattackPreference check
+		}// nextAkimboattackPreference check
 		
 		
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_NONE){
@@ -850,7 +855,7 @@ int weapon_akimbo_semiAttackChoice(player localPlayer, weapondata_basic_t* baseP
 				//printfline("1d - BITS_AKIMBOCHOICE_LEFT");
 			}
 			
-		}//END OF no choice in finalAkimboChoice
+		}// no choice in finalAkimboChoice
 		
 	}else if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FREE_SEMI){
 		
@@ -894,7 +899,7 @@ int weapon_akimbo_semiAttackChoice(player localPlayer, weapondata_basic_t* baseP
 		
 	}else{
 		//no appropriate firemode....... wat
-	}//END OF firemode check
+	}// firemode check
 	
 	if(finalAkimboChoice != -1){
 		//we expect these things to be set.
@@ -923,8 +928,7 @@ int weapon_akimbo_semiAttackChoice(player localPlayer, weapondata_basic_t* baseP
 	//printfline("EVERYBODY GET DOWN %i - next:%d", finalAkimboChoice, pl.nextAkimboAttackPreference);
 	
 	return finalAkimboChoice;
-}//END OF weapon_akimbo_semiAttackChoice
-
+}// weapon_akimbo_semiAttackChoice
 
 
 // A clone of semiAttackChoice for... you guessed it, akimbo full-fire weapons
@@ -939,14 +943,17 @@ int weapon_akimbo_semiAttackChoice(player localPlayer, weapondata_basic_t* baseP
 // non-fired one during that time will make it fire the next time the fire delay's are up).
 // In other words both weapons share the same fire delay for either firing.
 // This might make our job easier!
-int weapon_akimbo_fullAttackChoice(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+int
+weapon_akimbo_fullAttackChoice(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	int attackTypeUsed
+){
 	int originalInput = attackTypeUsed;
 	int finalAkimboChoice = BITS_AKIMBOCHOICE_NONE;
 	
 	// DEFAULT
-	localPlayer.recentAttackHadAmmo = TRUE;
+	pl.recentAttackHadAmmo = TRUE;
 
-	player pl = localPlayer;
 	weapondata_basic_t baseRef = *basePRef;
 
 	//notice: never use "pl.nextAkimboAttackPreference".  We don't alternate fire
@@ -1077,7 +1084,7 @@ int weapon_akimbo_fullAttackChoice(player localPlayer, weapondata_basic_t* baseP
 		
 	}else{
 		//no appropriate firemode....... wat
-	}//END OF firemode check
+	}// firemode check
 	
 	if(finalAkimboChoice != -1){
 		//we expect these things to be set.
@@ -1116,18 +1123,17 @@ int weapon_akimbo_fullAttackChoice(player localPlayer, weapondata_basic_t* baseP
 		pl.recentAkimboAttackChoice = finalAkimboChoice;
 	}
 
-	// ma client should not call this
 	return finalAkimboChoice;
 }//weapon_akimbo_fullAttackChoice
 
 
-
-BOOLEAN weapon_ironsight_ToggleIronsight(player localPlayer, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;
-	
+BOOL
+weapon_ironsight_ToggleIronsight(
+	player pl, weapondata_ironsight_t* basePRef,
+	weapondynamic_t arg_thisWeapon
+){
 	//weapondata_ironsight_t* basePRef = (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOM_MK23];
 	weapondata_ironsight_t baseRef = *basePRef;
-	
 	
 	// SEARCH ME!!!
 	//arg_thisWeapon.iIronSight = 0; 
@@ -1143,14 +1149,14 @@ BOOLEAN weapon_ironsight_ToggleIronsight(player localPlayer, weapondata_ironsigh
 		// Why does only from ironSight == 0, going towards 1, use the "_EndIdle" version, but
 		// the other way around doesn't?  Does this make sense for all weapons?
 		if(arg_thisWeapon.iIronSight == 0){
-			weapon_base_setWholeAttackDelay(localPlayer, baseRef.ironsightdata.fAnim_Change_Duration * 0.9 );
+			weapon_base_setWholeAttackDelay(pl, baseRef.ironsightdata.fAnim_Change_Duration * 0.9 );
 			
 			TS_Weapons_ViewAnimation_EndIdle( baseRef.ironsightdata.iAnim_Change_Index, baseRef.ironsightdata.fAnim_Change_Duration );
 			
 			//TS_Weapons_ViewAnimation( baseRef.ironsightdata.iAnim_Change_Index, baseRef.ironsightdata.fAnim_Change_Duration );
 			
 		}else{
-			weapon_base_setWholeAttackDelay(localPlayer, baseRef.ironsightdata.fAnim_ReChange_Duration * 0.9);
+			weapon_base_setWholeAttackDelay(pl, baseRef.ironsightdata.fAnim_ReChange_Duration * 0.9);
 			TS_Weapons_ViewAnimation( baseRef.ironsightdata.iAnim_ReChange_Index, baseRef.ironsightdata.fAnim_ReChange_Duration );
 		}
 		
@@ -1166,13 +1172,13 @@ BOOLEAN weapon_ironsight_ToggleIronsight(player localPlayer, weapondata_ironsigh
 	}
 		
 	return FALSE;
-	
-}//END OF weapon_ironsight_ToggleIronsight
+}// weapon_ironsight_ToggleIronsight
 
 
-
-void weapon_gun_Reload(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon ) {
-	player pl = localPlayer;
+void
+weapon_gun_Reload(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	weapondata_gun_t baseRef = *basePRef;
 	
 	if (pl.isReloading || pl.isChangingIronsight){
@@ -1206,15 +1212,18 @@ void weapon_gun_Reload(player localPlayer, weapondata_gun_t* basePRef, weapondyn
 	weapon_base_setWholeAttackDelay(pl, baseRef.fAnim_Reload_Duration);
 	TS_Weapons_ViewAnimation(baseRef.iAnim_Reload_Index, baseRef.fAnim_Reload_Duration);
 	
-	//TAGGG TODO - third person.
+	//TAGGG TODO - third person model anim
 	//Animation_ReloadWeapon( self );
 	
 }//weapon_gun_Reload
 
 
 // like above, but pick a sequence/time to use instead of using config info.
-void weapon_gun_Reload_CustomSequence(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon, int arg_iReloadSeq, float arg_flReloadSeqTime ) {
-	player pl = localPlayer;
+void
+weapon_gun_Reload_CustomSequence(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon,
+	int arg_iReloadSeq, float arg_flReloadSeqTime
+){
 	weapondata_gun_t baseRef = *basePRef;
 	
 	if (pl.isReloading || pl.isChangingIronsight){
@@ -1248,14 +1257,17 @@ void weapon_gun_Reload_CustomSequence(player localPlayer, weapondata_gun_t* base
 	weapon_base_setWholeAttackDelay(pl, arg_flReloadSeqTime);
 	TS_Weapons_ViewAnimation(arg_iReloadSeq, arg_flReloadSeqTime);
 	
-	//TAGGG TODO - third person.
+	//TAGGG TODO - third person model anim
 	//Animation_ReloadWeapon( self );
 	
 }//weapon_gun_Reload_CustomSequence
 
 
-void weapon_ironsight_Reload(player localPlayer, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon ) {
-	player pl = localPlayer;
+void
+weapon_ironsight_Reload(
+	player pl, weapondata_ironsight_t* basePRef,
+	weapondynamic_t arg_thisWeapon
+){
 	weapondata_ironsight_t baseRef = *basePRef;
 	
 	if ( pl.isReloading || pl.isChangingIronsight){
@@ -1297,24 +1309,23 @@ void weapon_ironsight_Reload(player localPlayer, weapondata_ironsight_t* basePRe
 		TS_Weapons_ViewAnimation(baseRef.ironsightdata.iAnim_Reload_Index, baseRef.ironsightdata.fAnim_Reload_Duration );
 	}
 	
-	//TAGGG TODO - third person.
+	//TAGGG TODO - third person model anim.
 	//Animation_ReloadWeapon( self );
 	
 }//weapon_ironsight_Reload
 
 
-
-void weapon_gun_endOfReload(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon ){
-	player pl = localPlayer;
+void
+weapon_gun_endOfReload(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	weapondata_gun_t baseRef = *basePRef;
-	
 	int ammoReserve = pl.ary_ammoTotal[baseRef.iAmmoDataID];
-	
 	
 	if(!pl.weaponEquippedAkimbo){
 		int ammoToFill = (baseRef.iClipMax - arg_thisWeapon.iClipLeft);
 		if(ammoToFill <= ammoReserve){
-			//ok
+			// ok
 		}else{
 			ammoToFill = ammoReserve;  //can't fill more than we got.
 		}
@@ -1322,48 +1333,43 @@ void weapon_gun_endOfReload(player localPlayer, weapondata_gun_t* basePRef, weap
 		arg_thisWeapon.iClipLeft += ammoToFill;
 		pl.ary_ammoTotal[baseRef.iAmmoDataID] -= ammoToFill;
 	}else{
-		//if akimbo, we have to fill baseRef.iClipLeft and iClipAkimboLeft.
-		//int totalAmmoToFill = (baseRef.iClipMax - arg_thisWeapon.iClipLeft) + (baseRef.iClipMax - arg_thisWeapon.iClipAkimboLeft);
-		
+		// if akimbo, we have to fill baseRef.iClipLeft and iClipAkimboLeft.
 		int ammoToFillClip1 = (baseRef.iClipMax - arg_thisWeapon.iClipLeft);
 		int ammoToFillClip2 = (baseRef.iClipMax - arg_thisWeapon.iClipAkimboLeft);
 		int totalAmmoToFill = ammoToFillClip1 + ammoToFillClip2;
 		
 		if(totalAmmoToFill <= ammoReserve){
-			//well that was easy
+			// well that was easy
 		}else{
-			//say we have 0 ammo in store left.
-			//   /12  (6)  
-			//   /12  (8)  
-			
 			float halfUp = ceil(ammoReserve/2);
 			
 			if(ammoToFillClip1 < halfUp ){
-				//If we had enough ammo to fill clip1 to the top, put the remainder in clip2.
+				// If we had enough ammo to fill clip1 to the top, put the remainder in clip2.
 				ammoToFillClip2 = ammoReserve - ammoToFillClip1;
 			}else if(ammoToFillClip2 < halfUp){
 				ammoToFillClip1 = ammoReserve - ammoToFillClip2;
 			}else{
-				//both are above half?  Just divy it out
+				// both are above half?  Just divy it out
 				ammoToFillClip1 = halfUp;  //ceil, in case an odd number is used, this one gets +1.
 				ammoToFillClip2 = ammoReserve/2;
 			}
-		}//END OF totalAmmoToFill <= ammoReserve compare
+		}// totalAmmoToFill <= ammoReserve compare
 		
 		printfline("***Akimbo ammo refill debug:  remaining before fill:%i  to fill left:%i right:%i", pl.ary_ammoTotal[baseRef.iAmmoDataID], ammoToFillClip1, ammoToFillClip2);
 		
 		arg_thisWeapon.iClipLeft += ammoToFillClip1;
 		arg_thisWeapon.iClipAkimboLeft += ammoToFillClip2;
 		pl.ary_ammoTotal[baseRef.iAmmoDataID] -= (ammoToFillClip1 + ammoToFillClip2);
-	}//END OF pl.weaponEquippedAkimbo check
+	}// pl.weaponEquippedAkimbo check
 	
-}//END OF weapon_gun_endOfReload
+}// weapon_gun_endOfReload
 
 
-void weapon_gun_endOfIronSight(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
+void
+weapon_gun_endOfIronSight(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	printfline("weapon_ironsight_ToggleIronsight was:%i", arg_thisWeapon.iIronSight);
-	
-	//arg_thisWeapon.iIronSight = !arg_thisWeapon.iIronSight;
 	if(arg_thisWeapon.iIronSight == 0){
 		arg_thisWeapon.iIronSight = 1;
 	}else{
@@ -1375,28 +1381,22 @@ void weapon_gun_endOfIronSight(player pl, weapondata_gun_t* basePRef, weapondyna
 }
 
 
-//TAGGG - CRITICAL.  Good to go for Nuclide support!!!
-// Given a pointer to some element of ary_weaponData or ary_akimboUpgradeData (weapon info), and
-// the actual inventory space of the user, do the basic deploy behavior.
-void weapon_base_onEquip(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;
+// CRITICAL.  Good to go for Nuclide support!!!
+// Given a pointer to some element of ary_weaponData or ary_akimboUpgradeData (weapon
+// info), and the actual inventory space of the user, do the basic deploy behavior.
+void
+weapon_base_onEquip(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	weapondata_basic_t baseRef = *basePRef;
 	
-	printfline("WHAT IS THIS WEAPON EQUIPPED?! activeweap:%d sName:%s sName2:%s", pl.activeweapon, baseRef.sDisplayName, g_weapons[pl.activeweapon].name);
+	printfline("weapon_base_onEquip: activeweap:%d sName:%s sName2:%s", pl.activeweapon, baseRef.sDisplayName, g_weapons[pl.activeweapon].name);
 	
 #ifdef CLIENT
 	TS_SetViewModelFromStats();
-	//sound( localPlayer, CHAN_ITEM, "weapons/draw.wav", 1, ATTN_NORM, 100, SOUNDFLAG_CUSTOMCLIENT );
+	//sound(pl, CHAN_ITEM, "weapons/draw.wav", 1, ATTN_NORM, 100, SOUNDFLAG_PLAYER_COMMON);
 	localsound("weapons/draw.wav", CHAN_AUTO, 1.0f);
-	
 	//printfline("weapon_base_onEquip: playing deploy anim");
-	
-	// if we need queuedDeplySequneceBack.
-	// It might make sense if the viewmodel updates after an animation is sent here.
-	// Because if so, we just sent this animation to the old viewmodel, then it changes
-	// to reflect the current weapon and forgets the sequence we just gave it.
-	// But it looks like that isn't happening at least.
-	//pl.queuedDeploySequence = baseRef.iAnim_Deploy_Index;
 #endif
 	
 	TS_Weapons_ViewAnimation(baseRef.iAnim_Deploy_Index, baseRef.fAnim_Deploy_Duration);
@@ -1407,67 +1407,59 @@ void weapon_base_onEquip(player localPlayer, weapondata_basic_t* basePRef, weapo
 	
 	arg_thisWeapon.iIronSight = 0;   //reset ironsight each time.
 	//TAGGG TODO - decision
-	//If we notice any weapon keeps ironsight changes between picking different weapons / coming back,
-	//this needs to stay specific to the weapon.  If it's always reset it may as well be specific
-	//to the player though.
+	// If we notice any weapon keeps ironsight changes between picking different weapons / coming back,
+	// this needs to stay specific to the weapon.  If it's always reset it may as well be specific
+	// to the player though.
 	
 	weapon_base_setWholeAttackDelay(pl, baseRef.fAnim_Deploy_Duration);
-}//END OF weapon_base_onEquip
+}// weapon_base_onEquip
 
 
 // really, just check to see if we're reloading or changing ironsight
 // when w_attack_next expires.
-void weapon_gun_onThink(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;
-	
+void
+weapon_gun_onThink(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	if(pl.w_attack_next <= 0){
 		if(pl.isReloading){
 			// end of reloading
-			weapon_gun_endOfReload(localPlayer, basePRef, arg_thisWeapon);
+			weapon_gun_endOfReload(pl, basePRef, arg_thisWeapon);
 			pl.isReloading = FALSE;
 		}
 		if(pl.isChangingIronsight){
-			weapon_gun_endOfIronSight(localPlayer, basePRef, arg_thisWeapon);
+			weapon_gun_endOfIronSight(pl, basePRef, arg_thisWeapon);
 		}
 	}
-}//END OF weapon_gun_onThink
+}// weapon_gun_onThink
 
 
-
-void weapon_gun_fireBurstBullet(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;
+void
+weapon_gun_fireBurstBullet(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	weapondata_gun_t basicRef = *(basePRef);
-	
 	float oldFireDelay = pl.w_attack_next;
-	
 	pl.w_attack_next = 0;
-	
 	pl.aryNextBurstShotTime_listenIndex++;
+	BOOL hasAmmo = (arg_thisWeapon.iClipLeft != 0);
 	
-	BOOLEAN hasAmmo = (arg_thisWeapon.iClipLeft != 0);
-	
-	//pl.recentAttackHadAmmo = hasAmmo;
-	
-	#ifdef CSQC
+#ifdef CLIENT
 	//printfline("What now2 %i m:%i", pl.aryNextBurstShotTime_listenIndex, pl.aryNextBurstShotTime_softLength);
-	#endif
+#endif
 
 	// this lets Weapons_Primary ignore 
 	arg_thisWeapon.iFireMode = BITS_FIREMODE_NONE;
 	
-	//#ifdef SSQC
-	// Nope!  Do it the Nuclide way
-	//BOOLEAN sendToClient = basicRef.vOnPrimaryAttack(pl, arg_thisWeapon, hasAmmo);
 	Weapons_Primary();
 	
-	//#endif
 	arg_thisWeapon.iFireMode = BITS_FIREMODE_BURST;
 	
 	// forget any changes to fire delay. HACKY.
 	pl.w_attack_next = oldFireDelay;
 	
 	if(pl.aryNextBurstShotTime_listenIndex >= pl.aryNextBurstShotTime_softLength){
-		//out of shots.
+		// out of shots.
 		pl.aryNextBurstShotTime_listenIndex = -1;
 		pl.aryNextBurstShotTime_softLength = 0;
 	}
@@ -1476,34 +1468,26 @@ void weapon_gun_fireBurstBullet(player localPlayer, weapondata_gun_t* basePRef, 
 
 // NOTE!  Meant to be called in addition to normal weapon_gun_onThink
 // in a weapon's onThink method, do not replace that entirely
-void weapon_gun_onThink_burstFireLogic(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;	
+void
+weapon_gun_onThink_burstFireLogic(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon
+){
 	weapondata_gun_t basicRef = *(basePRef);
 	
 	if(pl.aryNextBurstShotTime_listenIndex >= 0){
-		//if(time >= pl.aryNextBurstShotTime[pl.aryNextBurstShotTime_listenIndex] ){
-		
-		//printfline("WHAT?? %.2f <= [%i]%.2f", pl.w_attack_next, pl.aryNextBurstShotTime_listenIndex, pl.aryNextBurstShotTime[pl.aryNextBurstShotTime_listenIndex]);
+		//printfline("weapon_gun_onThink_burstFireLogic, lisenting: %.2f <= [%i]%.2f", pl.w_attack_next, pl.aryNextBurstShotTime_listenIndex, pl.aryNextBurstShotTime[pl.aryNextBurstShotTime_listenIndex]);
 			
 		if(pl.w_attack_next <= pl.aryNextBurstShotTime[pl.aryNextBurstShotTime_listenIndex] ){
-			//surpassed this one?  ok.
-			weapon_gun_fireBurstBullet(localPlayer, basePRef, arg_thisWeapon);
-			
+			weapon_gun_fireBurstBullet(pl, basePRef, arg_thisWeapon);
 		}
 	}
-}//OF weapon_gun_onThink
+}// weapon_gun_onThink
 
 
-
-
-void weapon_gun_onDrawHUD(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
-	
-	//Method is for clientside only.
-#ifdef CSQC
-	player pl = localPlayer;
-	
+void
+weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
+#ifdef CLIENT
 	weapondata_gun_t baseRef = *basePRef;
-	
 	
 	//DUMMY
 	vector vEquippedWeaponInfoDraw = [video_res[0] - 128 - 8, video_res[1] - 19 - 8];
@@ -1534,17 +1518,12 @@ void weapon_gun_onDrawHUD(player localPlayer, weapondata_gun_t* basePRef, weapon
 		iCurrentWeaponOptsCount++;
 	}
 	
-	
 	ammodata_t* ammoPRef = ary_ammoData[baseRef.iAmmoDataID];
 	ammodata_t ammoRef = *ammoPRef;
-	
-	
 	vector clrDraw;
 	
-	
 	if(!pl.weaponEquippedAkimbo){
-		
-		//ammo:  clip count / total count (for the type of ammo)
+		// ammo:  clip count / total count (for the type of ammo)
 		drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 		if(arg_thisWeapon.iClipLeft > 0){
 			clrDraw = clrPaleBlue;
@@ -1563,13 +1542,14 @@ void weapon_gun_onDrawHUD(player localPlayer, weapondata_gun_t* basePRef, weapon
 		vEquippedWeaponInfoDraw.y -= 20;
 		
 	}else{
-		//TODO - support drawing the clips of each gun?  ehh could be neat.
-		//No, force drawing both BECAUSE IM MAD.
-		//or just allow combined / separated ammo readings for akimbo stuff to be picked by CVar?
-		//TODO - CVAR.	 yeh.
+		// TODO - Could make a CVar for the current way (drawing akimbo weapon clips
+		// per weapon separately) or combined like they were one weapon (original TS
+		// way). Regardless of being combined or not, that's only how they're
+		// portrayed in the HUD here.  With 12-ammo-clipped weapons, combined does
+		// not mean a single one can fire 24 times without reloading.
 		
-		//drawing from the bottom, so akimbo (right) gun comes first.
-		//ammo:  clip count / total count (for the type of ammo)
+		// drawing from the bottom, so akimbo (right) gun comes first.
+		// ammo:  clip count / total count (for the type of ammo)
 		drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 		if(arg_thisWeapon.iClipAkimboLeft > 0){
 			clrDraw = clrPaleBlue;
@@ -1586,7 +1566,7 @@ void weapon_gun_onDrawHUD(player localPlayer, weapondata_gun_t* basePRef, weapon
 		drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 94, vEquippedWeaponInfoDraw.y + 0, pl.ary_ammoTotal[baseRef.iAmmoDataID], 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
 		vEquippedWeaponInfoDraw.y -= 20;
 		
-		//ammo:  clip count / total count (for the type of ammo)
+		// ammo:  clip count / total count (for the type of ammo)
 		drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 		if(arg_thisWeapon.iClipLeft > 0){
 			clrDraw = clrPaleBlue;
@@ -1604,14 +1584,9 @@ void weapon_gun_onDrawHUD(player localPlayer, weapondata_gun_t* basePRef, weapon
 		vEquippedWeaponInfoDraw.y -= 20;
 		
 		
-	}//END OF pl.weaponEquippedAkimbo check
+	}// pl.weaponEquippedAkimbo check
 	
-	
-	/*
-	iBitsFireModes
 	// What firemode is the player using for this weapon now?
-	int iFireMode;
-	*/
 	int* fireModeVar;
 	if(!pl.weaponEquippedAkimbo){
 		fireModeVar = &arg_thisWeapon.iFireMode;
@@ -1627,112 +1602,88 @@ void weapon_gun_onDrawHUD(player localPlayer, weapondata_gun_t* basePRef, weapon
 		fireModeName = getAkimboFiremodeName((*fireModeVar));
 	}
 	
-	//fire mode name?
-	//IMPORTANT. If this weapon is akimbo we have to use the "getAkimboFiremodeName" variant!
+	// fire mode name?
+	// IMPORTANT. If this weapon is akimbo we have to use the "getAkimboFiremodeName"
+	// variant!
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], fireModeName, vButtonFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 	
-	//ammo type name
+	// ammo type name
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], ammoRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 	
-	//title
+	// title
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
-	
-//FOR REFERENCE
-//void Gfx_Text(vector pos, string txt, vector sz, vector col, float a, 
-//					float fl, float fnt)
-#endif	
-	
-}//END OF weapon_gun_onDrawHUD
+#endif
+}// weapon_gun_onDrawHUD
 
 
-
-void weapon_throwable_onDrawHUD(player localPlayer, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon){
-	
-	// Method is for clientside only.
-#ifdef CSQC
-	player pl = localPlayer;
-	
+void
+weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon){
+#ifdef CLIENT
 	weapondata_throwable_t baseRef = *basePRef;
 	
 	// DUMMY
 	vector vEquippedWeaponInfoDraw = [video_res[0] - 128 - 8, video_res[1] - 19 - 8];
 	
 	int iBitsCurrentWeaponOpts = arg_thisWeapon.iBitsUpgrade;
-	
-	
 	vector clrDraw;
-	
 	clrDraw = clrPaleBlue;
 	
-	
-	//draw the count
+	// draw the count
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 	drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 128 - 2 - 11*3, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iCount, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
 	vEquippedWeaponInfoDraw.y -= 20;
 		
-	//title
+	// title
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
-	
-//FOR REFERENCE
-//void Gfx_Text(vector pos, string txt, vector sz, vector col, float a, 
-//					float fl, float fnt)
 #endif
-	
-}//END OF weapon_throwable_onDrawHUD
+}// weapon_throwable_onDrawHUD
 
 
 
-void weapon_melee_onDrawHUD(player localPlayer, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon){
-	//Method is for clientside only.
-#ifdef CSQC
-	player pl = localPlayer;
-	
+void
+weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon){
+#ifdef CLIENT
 	weapondata_melee_t baseRef = *basePRef;
 	
 	// DUMMY
 	vector vEquippedWeaponInfoDraw = [video_res[0] - 128 - 8, video_res[1] - 19 - 8];
 	
 	int iBitsCurrentWeaponOpts = arg_thisWeapon.iBitsUpgrade;
-	
 	vector clrDraw;
-	
 	clrDraw = clrPaleBlue;
 	
 	// empty box?  ok.
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	//drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 128 - 2 - 11*3, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iCount, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
+	// drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 128 - 2 - 11*3, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iCount, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
 	vEquippedWeaponInfoDraw.y -= 20;
 		
-	//title
+	// title
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
 	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
-	
-//FOR REFERENCE
-//void Gfx_Text(vector pos, string txt, vector sz, vector col, float a, 
-//					float fl, float fnt)
-#endif	
-	
-}//END OF weapon_throwable_onDrawHUD
+#endif
+}// weapon_throwable_onDrawHUD
 
 
 
-
-BOOLEAN dummy1(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
+BOOL
+dummy1(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo){
 	return FALSE;
 }
-void dummy2(player localPlayer, weapondynamic_t arg_thisWeapon){
+void
+dummy2(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
-BOOLEAN dummy2b(player localPlayer, weapondynamic_t arg_thisWeapon){
+BOOL
+dummy2b(player pl, weapondynamic_t arg_thisWeapon){
 	return FALSE;
 }
 
@@ -1814,7 +1765,8 @@ weapondata_basic_t weapon_NONE_akimbo =
 //include after all weapons have been defined? (that is, compile weapon.c (here), then weapon-specific files, then a new file containing setupWeaponData)
 //Or would it make sense to extern the structs here and keep this method in the same file?
 //	(compile weapon-specific files first, then weapon.c)
-void setupWeaponData(void){
+void
+setupWeaponData(void){
 	
 	// for reference, old way.  REDO THAT MACRO to involve g_weapons, described more below
 	//#define ASSIGN_WEAPONDATA(arg_constName) ary_weaponData[WEAPON_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_constName;
@@ -1964,7 +1916,8 @@ void setupWeaponData(void){
 
 
 
-weapondata_basic_t* getWeaponData(int arg_weaponID, BOOL arg_akimbo){
+weapondata_basic_t*
+getWeaponData(int arg_weaponID, BOOL arg_akimbo){
 	weapondata_basic_t* basicP;
 	
 	// no cap check for now
@@ -2040,20 +1993,23 @@ getAmmoTypeOfWeapon(int arg_weaponID)
 		return -1;  //does not use ammo for all we care.
 	}
 	
-}//END OF getAmmoTypeOfWeapon
+}// getAmmoTypeOfWeapon
 
 
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!
-// check for being redundant with the events_custom.qc (whatever) ejectshell - like method!
-// Could likely combine this better with that alternate way, but both should effectively do the exact same thing.
-// This is based off what the HL glock does, adjust with custom shell-choices per different weapons that use them.
-// Is HL's "w_shotgun_ejectshell" even any different from this besides shell-model choice?
-// Not that this is an exact match for how TS does any shell eject logic, maybe, but an example of
-// how to do it at all in FTE at least, exactly-accurate TS shell ejection is not a huge priority.
+// check for being redundant with the events_custom.qc (whatever) ejectshell - like
+// method!
+// Could likely combine this better with that alternate way, but both should
+// effectively do the exact same thing.
+// This is based off what the HL glock does, adjust with custom shell-choices per
+// different weapons that use them.
+// Is HL's "w_shotgun_ejectshell" even any different from this besides shell-model
+// choice? Not that this is an exact match for how TS does any shell eject logic,
+// maybe, but an example of how to do it at all in FTE at least, exactly-accurate
+// TS shell ejection is not a huge priority.
 // In fact it isn't even supported serverside yet I think?
-// Try testing FreeHL or FreeCS, do you see your own shells in thirdperson on firing and (multiplayer) do other
-// players see your shells on firing?
+// Try testing FreeHL or FreeCS, do you see your own shells in thirdperson on firing
+// and (multiplayer) do other players see your shells on firing?
 
 // (based off w_glock_ejectshell)
 #ifdef CLIENT

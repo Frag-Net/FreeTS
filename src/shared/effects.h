@@ -1,6 +1,6 @@
 
 
-#ifdef SSQC
+#ifdef SERVER
 void Effect_Explosion(vector vecOrigin );
 #else
 void EV_Effect_Explosion(vector vecOrigin );
@@ -8,7 +8,7 @@ void EV_Effect_Explosion(vector vecOrigin );
 
 
 
-#ifdef SSQC
+#ifdef SERVER
 //TAGGG - Thank you The Wastes!
 void Effect_ScreenShake(vector vecOrigin, float fRadius, float fStrength );
 #else

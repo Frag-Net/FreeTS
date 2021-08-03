@@ -227,13 +227,13 @@ w_m16a4_primary(void)
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_BURST)
 	{
 		/*
-		#ifdef SSQC
+#ifdef SERVER
 		weapon_base_burstFire(pl, ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.11);
 		// signal for server logic... for now.
 		return FALSE;
-		#else
+#else
 		weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
-		#endif
+#endif
 		*/
 		
 		weapon_base_burstFire(pl, ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.02);

@@ -177,7 +177,7 @@ w_combatknife_primary(void)
 	MELEE_HIT_RESPONSE theReaper =  weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::CombatKnife], arg_thisWeapon, baseRef.fAttackDamage, 58);
 	
 	// Only the server is doing traces so far to get results for this to be worth checking.
-#ifdef SSQC
+#ifdef SERVER
 	//printfline("melee hit reponse: %d soft? %d", theReaper, (theReaper==MELEE_HIT_RESPONSE::SOFT));
 	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav");
@@ -230,7 +230,7 @@ w_combatknife_secondary(void)
 		pl.updateSlotCountsForEquippedWeapon();
 		arg_thisWeapon.forceBodygroup1Submodel = 1;  //reset, new knife is not bloody.
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav");
-#ifdef SSQC
+#ifdef SERVER
 		TSThrownProjectile::generate2(pl, arg_thisWeapon);
 #endif
 	}

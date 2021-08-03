@@ -1,6 +1,20 @@
 
 // NEW FILE.
 
+// RECENT: This file is pending deletion, if the "GamePlayerSpawn" message call in
+// ts/src/shared/input.qc is good enough.
+// That would mean GameClient_SpectatorInputRaw, nor any pSeatLocal vars only it uses,
+// would no longer be necessary.
+// Just want to be sure first with some more tests, no getting locked out of spawning.
+// GameClient_PlayerInputRaw is tiny and hud.qc can do what it does instead.
+
+// The "DISABLED" area further down is worth seeing if supporting right click to close
+// an open weapon select immediately without applying any selection is a good idea though. 
+
+ // -----------------------------
+ 
+ 
+
 // WARNING: Do not get this file mixed up with <game>/src/shared/input.qc, that one is
 // only called when the player is spawned (collision, seen by others, etc.).
 // This is for checking to see if the user performed some action that does not need
@@ -101,12 +115,15 @@ GameClient_SpectatorInputRaw(void)
 		}
 		///////////////////////////////////////////////////////
 		
+		player pl = (player)pSeat->m_ePlayer;
+		
 		// primary fire?
 		if(!pSeatLocal->m_bNeedPrimaryRelease && (input_buttons & INPUT_BUTTON0) ){
 			
 			if(
 				pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE &&
-				getplayerkeyvalue(player_localnum, "*spec") != "0"
+				//getplayerkeyvalue(player_localnum, "*spec") != "0"
+				pl.iState != PLAYER_STATE::SPAWNED
 			){
 				// && getstati(STAT_RULE_ALLOW_SPAWN))
 				// just send the intention we want to spawn, the server will see if a delay is needed.
@@ -142,13 +159,12 @@ GameClient_PlayerInputRaw(void)
 	player pl = (player)pSeat->m_ePlayer;
 	// weapon select extra.
 	if(pl == NULL){
-		// ???
 		return;
 	}
 	
 	// This was removed?  Legacy VGUI
 	// If we are inside a VGUI, don't let the client do stuff outside
-	if ((pSeatLocal->fVGUI_Display != VGUI_SCREEN::NONE)) {
+	if (pl.iState != PLAYER_STATE::SPAWNED && pSeatLocal->fVGUI_Display != VGUI_SCREEN::NONE){
 		pSeat->m_flInputBlockTime = time + 0.2;
 	}
 	

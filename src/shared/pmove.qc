@@ -50,13 +50,6 @@ const vector VEC_CHULL_MAX = [16,16,18];
 */
 
 	
-// helper macro for here.
-#ifdef CSQC
-#define GET_VIEW_ANGLES view_angles
-#else
-#define GET_VIEW_ANGLES target.v_angle
-#endif
-
 
 	
 .float waterlevel;
@@ -198,17 +191,17 @@ player::Physics_Jump(void)
 // as a "ledge".  At least I think that's what the original TS was going for.
 // This may even be a little more likely to work than in the original, I don't
 // think that's too bad.
-void LedgeCheck(player target){
+void LedgeCheck(player pl){
 	
-	//if(target.velocity.z != 0 && !(target.velocity.z >= -45 && target.velocity.z <= 50)){
-	//	printfline("that VELOCITY is bad  %.2f", target.velocity.z);
+	//if(pl.velocity.z != 0 && !(pl.velocity.z >= -45 && pl.velocity.z <= 50)){
+	//	printfline("that VELOCITY is bad  %.2f", pl.velocity.z);
 	//}
 	
-	//&& target.velocity.z >= -45 && target.velocity.z <= 50
+	//&& pl.velocity.z >= -45 && pl.velocity.z <= 50
 	if(
-		!(target.flags & FL_ONGROUND) &&
+		!(pl.flags & FL_ONGROUND) &&
 		GET_VIEW_ANGLES.x >= -70 && GET_VIEW_ANGLES.x <= 80
-		&& (target.velocity.z >= -90 && target.velocity.z <= 160)
+		&& (pl.velocity.z >= -90 && pl.velocity.z <= 160)
 	){
 		
 		makevectors(GET_VIEW_ANGLES);
@@ -216,28 +209,28 @@ void LedgeCheck(player target){
 		
 		// Does a line from the bottom of the player model to a little further below
 		// find anything?
-		vector vBottomStart = target.origin + [0,0,target.mins.z + 2];
-		vector vBottomDown = target.origin + [0,0,target.mins.z - 2];
-		traceline(vBottomStart, vBottomDown, FALSE, target);
+		vector vBottomStart = pl.origin + [0,0,pl.mins.z + 2];
+		vector vBottomDown = pl.origin + [0,0,pl.mins.z - 2];
+		traceline(vBottomStart, vBottomDown, FALSE, pl);
 		if(trace_fraction == 1.0){
 			//printfline("tracetest A");
 			// If not, proceed. Does a line from a little below the player outward
 			// find something?
-			vector vBottomDownForward = vBottomDown + v_forward_proj * (target.maxs.x * 1.7);
+			vector vBottomDownForward = vBottomDown + v_forward_proj * (pl.maxs.x * 1.7);
 			
-			traceline(vBottomDown, vBottomDownForward, FALSE, target);
+			traceline(vBottomDown, vBottomDownForward, FALSE, pl);
 			if(trace_fraction < 1.0){
 				//ok. And does a line from the top of the model going forwards work?
 				
-				vector vTopStart = target.origin + [0,0,target.maxs.z + 1];
-				vector vTopForward = vTopStart + v_forward_proj * (target.maxs.x * 1.7);
+				vector vTopStart = pl.origin + [0,0,pl.maxs.z + 1];
+				vector vTopForward = vTopStart + v_forward_proj * (pl.maxs.x * 1.7);
 				
-				traceline(vTopStart, vTopForward, FALSE, target);
+				traceline(vTopStart, vTopForward, FALSE, pl);
 				//printfline("tracetest B trace: %.2f", trace_fraction);
 				if(trace_fraction == 1.0){
 					//printfline("tracetest C");
 					//ok! do it
-					target.velocity.z += 10;
+					pl.velocity.z += 10;
 				}
 			}
 		}

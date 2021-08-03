@@ -436,22 +436,22 @@ typedef struct{
 	string sIconFilePath;  //icon for the inventory and buy menu.
 	
 	//!!!!!!!!!
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttackRelease;
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
 	
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
+	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
 																		  //Returns whether the current weapon got deleted, which could otherwise be hard to determine.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
 					//See if two think methods, for earlier or later (preframe / postframe) are needed.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
 	//This event is for a gun's melee attack, if supported. Actual melee weapons still use PrimaryAttack.
 	//To see it in The Specialists (original beta 2), use this in console to bind cold cocking to the "c" key:
 	//	bind "c" "+alt2"
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
 	
 	//We'll handle firing animations (weapon recoil mainly) in their own methods.
 	//Little too much going on. Number of animations to cylce through (shoot1, shoot2)?
@@ -474,7 +474,7 @@ typedef struct{
 	
 	//Can crosshairs be custom per weapon? unsure yet.
 	//I think all weapon lasersights at the same behavor though. Measure distance and change the crosshair a little.
-	BOOLEAN fDrawCrosshair;
+	BOOL fDrawCrosshair;
 	
 	
 	int iBitsUpgrade;
@@ -522,18 +522,18 @@ typedef struct{
 	string sIconFilePath;  //icon for the inventory and buy menu.
 	
 	//!!!!!!!!!
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttackRelease;
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
 
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
+	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
 					//See if two think methods, for earlier or later (preframe / postframe) are needed.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
 	
 	
 	//We'll handle firing animations (weapon recoil mainly) in their own methods.
@@ -559,7 +559,7 @@ typedef struct{
 	
 	//Can crosshairs be custom per weapon? unsure yet.
 	//I think all weapon lasersights at the same behavor though. Measure distance and change the crosshair a little.
-	BOOLEAN fDrawCrosshair;
+	BOOL fDrawCrosshair;
 	
 	
 	int iBitsUpgrade;
@@ -630,18 +630,18 @@ typedef struct{
 	string sIconFilePath;  //icon for the inventory and buy menu.
 	
 	//!!!!!!!!!
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttackRelease;
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
 	
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
+	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
 					//See if two think methods, for earlier or later (preframe / postframe) are needed.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
 	
 	
 	//We'll handle firing animations (weapon recoil mainly) in our own event methods (vOnWhatever above)
@@ -672,7 +672,7 @@ typedef struct{
 	
 	//Can crosshairs be custom per weapon? unsure yet.
 	//I think all weapon lasersights at the same behavor though. Measure distance and change the crosshair a little.
-	BOOLEAN fDrawCrosshair;
+	BOOL fDrawCrosshair;
 	
 	
 	int iBitsUpgrade;
@@ -730,18 +730,18 @@ typedef struct{
 	string sIconFilePath;  //icon for the inventory and buy menu.
 	
 	//!!!!!!!!!
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttackRelease;
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
 	
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
+	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
 					//See if two think methods, for earlier or later (preframe / postframe) are needed.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
 	
 	//We'll handle firing animations (weapon recoil mainly) in their own methods.
 	//Little too much going on. Number of animations to cylce through (shoot1, shoot2)?
@@ -764,7 +764,7 @@ typedef struct{
 	
 	//Can crosshairs be custom per weapon? unsure yet.
 	//I think all weapon lasersights at the same behavor though. Measure distance and change the crosshair a little.
-	BOOLEAN fDrawCrosshair;
+	BOOL fDrawCrosshair;
 	
 	
 	int iBitsUpgrade;
@@ -804,18 +804,18 @@ typedef struct{
 	string sIconFilePath;  //icon for the inventory and buy menu.
 	
 	//!!!!!!!!!
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnPrimaryAttackRelease;
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo) vOnSecondaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;  //Pressed the primary fire button. Typically fires a gun or uses melee.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;  //Pressed the secondary fire button. Typically uses ironsight/scope if available.
+	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
 	
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
-	BOOLEAN(player localPlayer, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
+	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
 					//See if two think methods, for earlier or later (preframe / postframe) are needed.
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
-	void(player localPlayer, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
+	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
 	
 	
 	//We'll handle firing animations (weapon recoil mainly) in their own methods.
@@ -839,7 +839,7 @@ typedef struct{
 	
 	//Can crosshairs be custom per weapon? unsure yet.
 	//I think all weapon lasersights at the same behavor though. Measure distance and change the crosshair a little.
-	BOOLEAN fDrawCrosshair;
+	BOOL fDrawCrosshair;
 	
 	
 	int iBitsUpgrade;
@@ -894,31 +894,31 @@ weapondata_basic_t* ary_akimboUpgradeData[WEAPON_AKIMBO_UPGRADE_ID::LAST_ID];
 
 
 
-extern void weapon_base_setWholeAttackDelay(player localPlayer, float amount);
-extern void weapon_base_setLeftAttackDelay(player localPlayer, float amount);
-extern void weapon_base_setRightAttackDelay(player localPlayer, float amount);
-extern void weapon_base_setLeftAttackDelay_AtLeast(player localPlayer, float amount);
-extern void weapon_base_setRightAttackDelay_AtLeast(player localPlayer, float amount);
+extern void weapon_base_setWholeAttackDelay(player pl, float amount);
+extern void weapon_base_setLeftAttackDelay(player pl, float amount);
+extern void weapon_base_setRightAttackDelay(player pl, float amount);
+extern void weapon_base_setLeftAttackDelay_AtLeast(player pl, float amount);
+extern void weapon_base_setRightAttackDelay_AtLeast(player pl, float amount);
 
 
-extern MELEE_HIT_RESPONSE weapon_base_coldcock(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range );
+extern MELEE_HIT_RESPONSE weapon_base_coldcock(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range );
 
 
-extern void weapon_base_onEquip(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
+extern void weapon_base_onEquip(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
 
 
-extern MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range);
-extern MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee_fromCustomDirection(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range, vector customAngle );
+extern MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range);
+extern MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee_fromCustomDirection(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range, vector customAngle );
 
-extern void weapon_base_onAttack(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
-extern void weapon_base_onAttack_multi(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed);
+extern void weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
+extern void weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed);
 
 
-extern void weapon_base_burstFire(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed, int shotCount, float shotDelay);
+extern void weapon_base_burstFire(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed, int shotCount, float shotDelay);
 
-BOOL weapon_shotgun_onInterrupt(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
-void weapon_shotgun_reload(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
-void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
+BOOL weapon_shotgun_onInterrupt(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
+void weapon_shotgun_reload(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
+void weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
 
 
 
@@ -926,32 +926,32 @@ extern BOOL weapon_akimbo_semiAttackDualHack(player pl, weapondynamic_t arg_this
 extern BOOL weapon_akimbo_fullAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback);
 extern BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback);
 
-extern int weapon_akimbo_semiAttackChoice(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
-extern int weapon_akimbo_fullAttackChoice(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
+extern int weapon_akimbo_semiAttackChoice(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
+extern int weapon_akimbo_fullAttackChoice(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
 
 
 
-extern BOOLEAN weapon_ironsight_ToggleIronsight(player localPlayer, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon);
+extern BOOL weapon_ironsight_ToggleIronsight(player pl, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon);
 
 
 
-extern void weapon_gun_Reload(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
-extern void weapon_gun_Reload_CustomSequence(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon, int arg_iReloadSeq, float arg_flReloadSeqTime);
-extern void weapon_ironsight_Reload(player localPlayer, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon );
+extern void weapon_gun_Reload(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
+extern void weapon_gun_Reload_CustomSequence(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon, int arg_iReloadSeq, float arg_flReloadSeqTime);
+extern void weapon_ironsight_Reload(player pl, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon );
 
-extern void weapon_gun_endOfReload(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
+extern void weapon_gun_endOfReload(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
 extern void weapon_gun_endOfIronSight(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
 
 
-extern void weapon_gun_onThink(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
+extern void weapon_gun_onThink(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
 
-extern void weapon_gun_fireBurstBullet(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
+extern void weapon_gun_fireBurstBullet(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
 
-extern void weapon_gun_onThink_burstFireLogic(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
+extern void weapon_gun_onThink_burstFireLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
 
-extern void weapon_gun_onDrawHUD(player localPlayer, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
-extern void weapon_throwable_onDrawHUD(player localPlayer, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon);
-extern void weapon_melee_onDrawHUD(player localPlayer, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon);
+extern void weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
+extern void weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon);
+extern void weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon);
 
 extern void setupWeaponData(void);
 
