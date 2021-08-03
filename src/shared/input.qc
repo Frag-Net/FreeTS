@@ -234,7 +234,7 @@ Game_Input(void)
 		TS_Weapon_SecondaryAttackRelease(pl, TRUE);
 	}
 	
-#endif INPUT_TAP_DETECT_CHOICE
+#endif// INPUT_TAP_DETECT_CHOICE
 	
 	//pl.callWeaponThink();
 	

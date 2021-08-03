@@ -212,9 +212,11 @@ w_sealknife_secondary(void)
 		// another knife left?  Bring it up with a draw animation.
 		TS_Weapons_ViewAnimation(weaponseq_sealknife::draw, (31.0f / 30.0f) );
 	}else{
+#ifdef SERVER
 		// No knives left?  Unequip, pick something else.
 		removeWeaponFromInventory(pl, pl.inventoryEquippedIndex);
 		playerEquipIdealSafe(pl);
+#endif
 		
 		return FALSE;
 	}

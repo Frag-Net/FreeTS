@@ -12,6 +12,11 @@
 // the MoTD or the buysidemenu screens.
 // Do not give me child elements!  Behavior for handling children removed.
 
+// assuming these are provided elsewhere, works for now.
+extern var BOOL VGUI_BuySideMenu_InitDone;
+void BuySideMenu_onInputEvent(void);
+
+
 class CUIEventGrabber:CUIWidget
 {
 	//void(void) CUIEventGrabber;
@@ -26,9 +31,6 @@ CUIEventGrabber::Draw(void)
 	// nothing!
 }
 
-
-void BuySideMenu_onInputEvent(void);
-extern var BOOL VGUI_BuySideMenu_InitDone;
 
 void
 CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
@@ -47,6 +49,9 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 		pSeatLocal->m_inputKeyDown = flKey;
 		pSeatLocal->m_inputKeyTapped = flKey;  //lasts only this frame
 		
+		// TODO TODO TODO!  Check for mouse-clicks (K_MOUSE1) and key presses by separate methods?
+		// Checking for keypresses on a mouse-click or for mouse-coords on a keypress on every
+		// single button (even a mouse, yes/no check every time) is unnecessary.
 		if(pSeatLocal->fVGUI_Display == BUYSIDEMENU){
 			BuySideMenu_onInputEvent();
 		}

@@ -1403,7 +1403,6 @@ weapon_base_onEquip(
 	
 	pl.recentAkimboAttackChoice = BITS_AKIMBOCHOICE_NONE;
 	pl.nextAkimboAttackPreference = BITS_AKIMBOCHOICE_LEFT;
-	pl.recentAttackHadAmmo = FALSE;
 	
 	arg_thisWeapon.iIronSight = 0;   //reset ironsight each time.
 	//TAGGG TODO - decision
@@ -1442,7 +1441,6 @@ weapon_gun_fireBurstBullet(
 	float oldFireDelay = pl.w_attack_next;
 	pl.w_attack_next = 0;
 	pl.aryNextBurstShotTime_listenIndex++;
-	BOOL hasAmmo = (arg_thisWeapon.iClipLeft != 0);
 	
 #ifdef CLIENT
 	//printfline("What now2 %i m:%i", pl.aryNextBurstShotTime_listenIndex, pl.aryNextBurstShotTime_softLength);
@@ -1977,20 +1975,18 @@ getWeaponData_Singular(int arg_weaponID)
 	return basicP;
 }
 
-//If this weapon does not use ammo, this returns -1.
+// If this weapon does not use ammo, this returns -1.
 int
 getAmmoTypeOfWeapon(int arg_weaponID)
 {
-	
 	weapondata_basic_t* basicPointer = (weapondata_basic_t*)ary_weaponData[arg_weaponID];
 	weapondata_basic_t basicRef = *basicPointer;
 	
 	if(basicRef.typeID == WEAPONDATA_TYPEID_GUN || basicRef.typeID == WEAPONDATA_TYPEID_IRONSIGHT){
-		//and the type of ammo is?
 		weapondata_gun_t gunRef = *((weapondata_gun_t*)basicPointer);
 		return gunRef.iAmmoDataID;
 	}else{
-		return -1;  //does not use ammo for all we care.
+		return -1;  // does not use ammo for all we care.
 	}
 	
 }// getAmmoTypeOfWeapon
@@ -2049,10 +2045,8 @@ w_ejectshell_pistol(void)
 void
 copyWeaponConfig(weaponconfig_weapon_t* arg_dest, weaponconfig_weapon_t* arg_src)
 {
-	
 	arg_dest->weaponID = arg_src->weaponID;
 	arg_dest->weaponTypeID = arg_src->weaponTypeID;
-	
 	arg_dest->iBitsUpgrade = arg_src->iBitsUpgrade;
 	arg_dest->iCount = arg_src->iCount;
 	arg_dest->iPrice = arg_src->iPrice;
@@ -2067,14 +2061,11 @@ copyConfig(weaponconfig_data_t* arg_dest, weaponconfig_data_t* arg_src)
 	for(int i = 0; i < arg_src->ary_myWeapons_softMax; i++){
 		copyWeaponConfig(&arg_dest.ary_myWeapons[i], &arg_src.ary_myWeapons[i]);
 	}
-	
 	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
 		arg_dest->ary_ammoTotal[i] = arg_src->ary_ammoTotal[i];
 	}
-	
 	arg_dest->iTotalSlots = arg_src->iTotalSlots;
 	arg_dest->iTotalPrice = arg_src->iTotalPrice;
-	
 }//copyConfig
 
 #endif // CLIENT

@@ -1,4 +1,16 @@
 
+// GENERAL FTE NOTE!
+// Don't use 'extern' on method prototypes, it makes no difference and the compiler prints
+// a spammy warning "Only global functions may be defined as external (yet)" without a line
+// number when it sees it.
+// Or it happens anyway and I have no clue what I'm going on about.
+// Maybe even externing var's does it.
+
+
+// also, FTE needs a space after a preprocessor macro name for a slash to drop-down to the
+// rest of the definition, like "#define thing \".
+
+
 
 #define NULL __NULL__
 
@@ -87,6 +99,7 @@
 
 
 #if INPUT_TAP_DETECT_CHOICE == 1
+///////////////////////////////////////////////////////////////////////////////////////////
 // Standard way.
 #define INPUT_PRIMARY_TAP_GATE \
 	if (pl.gflags & GF_SEMI_TOGGLED)\
@@ -103,6 +116,7 @@
 	arg_pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
 
 #else
+///////////////////////////////////////////////////////////////////////////////////////////
 // ALTERNATE WAY: check pl.inputTapFrameCount for primary/secondary.
 // Lets setting an extra frame for a little more tolerance work, these are
 // set to 1 on a fresh key press to work exactly like above or over 1 for
@@ -127,11 +141,8 @@ if (pl.inputSecondaryTapFrameCount == 0)\
 	arg_pl.inputPrimaryReleasedQueue = FALSE;\
 	arg_pl.inputSecondaryReleasedQueue = FALSE;
 
+///////////////////////////////////////////////////////////////////////////////////////////
 #endif// INPUT_TAP_DETECT_CHOICE
-
-
-// FTE needs a space after a preprocessor macro name for a slash to drop-down to the
-// rest of the definition, like "#define thing \".
 
 
 // OLD WAY TO DO CLICK SOUNDS

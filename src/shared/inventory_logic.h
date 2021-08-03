@@ -76,34 +76,34 @@
 
 
 #ifdef CLIENT
-extern BOOL canBuyWeapon(int arg_weaponID, int arg_extraPrice, int arg_extraSlots, int iPurchaseCount);
-extern int fullLoadCountToBuy(int arg_weaponID);
-extern int determineThrowableBuyCount(int arg_weaponID, int arg_iSlotsAvailable, int arg_iMoneyAvailable);
-extern int findWeaponInConfig(int arg_searchWeaponID);
-extern BOOL CON_anyWeaponUsingAmmoType(int arg_ammoType, int arg_excludedWeaponID);
+BOOL canBuyWeapon(int arg_weaponID, int arg_extraPrice, int arg_extraSlots, int iPurchaseCount);
+int fullLoadCountToBuy(int arg_weaponID);
+int determineThrowableBuyCount(int arg_weaponID, int arg_iSlotsAvailable, int arg_iMoneyAvailable);
+int findWeaponInConfig(int arg_searchWeaponID);
+BOOL CON_anyWeaponUsingAmmoType(int arg_ammoType, int arg_excludedWeaponID);
 #endif
 
-extern int findWeaponInInventory(player pl, int arg_searchWeaponID);
-extern BOOL INV_anyWeaponUsingAmmoType(player pl, int arg_ammoType, int arg_excludedWeaponID);
+int findWeaponInInventory(player pl, int arg_searchWeaponID);
+BOOL INV_anyWeaponUsingAmmoType(player pl, int arg_ammoType, int arg_excludedWeaponID);
 
 
 #ifdef CLIENT
-extern void swapConfigElements(int arg_index1, int arg_index2);
-extern void removeWeaponFromConfig(int arg_removeIndex);
-extern BOOL attemptAddWeaponToConfig(int arg_weaponID, int arg_iBitsUpgrade, int iCount);
+void swapConfigElements(int arg_index1, int arg_index2);
+void removeWeaponFromConfig(int arg_removeIndex);
+BOOL attemptAddWeaponToConfig(int arg_weaponID, int arg_iBitsUpgrade, int iCount);
 #endif
-extern void swapInventoryElements(player pl, int arg_index1, int arg_index2);
+void swapInventoryElements(player pl, int arg_index1, int arg_index2);
 
-extern void removeWeaponFromInventory(player pl, int arg_removeIndex);
+void removeWeaponFromInventory(player pl, int arg_removeIndex);
 
 #ifdef SERVER
-extern BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCount);
+BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCount);
 #endif 
 
 #ifdef SERVER
-extern int addWeaponToInventory(player pl, TSWorldGun arg_pickupRef);
+int addWeaponToInventory(player pl, TSWorldGun arg_pickupRef);
 #endif
 
 #ifdef CLIENT
-extern void deployConfig(void);
+void deployConfig(void);
 #endif

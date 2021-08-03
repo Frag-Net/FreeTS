@@ -7,8 +7,8 @@ enum weaponseq_m61grenade{
 	throw_slide
 };
 
-extern BOOLEAN weapon_grenade_onInputPress(player localPlayer, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
-//extern BOOLEAN weapon_grenade_onInputRelease(player localPlayer, weapondynamic_t arg_thisWeapon);
+BOOLEAN weapon_grenade_onInputPress(player localPlayer, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
+//BOOLEAN weapon_grenade_onInputRelease(player localPlayer, weapondynamic_t arg_thisWeapon);
 
 
 BOOLEAN weapon_M61Grenade_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){

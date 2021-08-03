@@ -19,6 +19,8 @@
 // floating around.  Most of the codebase is FreeHL inspired but this is an exception.
 
 
+// TODO - move someplace better perhaps?
+#define MAX_SPAWN_POINTS 32
 
 
 extern TS_GameMode currentGameMode;
@@ -42,8 +44,6 @@ extern float global_nextBreakableRespawn;
 
 
 
-//TAGGG - move someplace better perhaps?
-#define MAX_SPAWN_POINTS 32
 var entity ary_spawnStart_start[MAX_SPAWN_POINTS];
 var int ary_spawnStart_start_softMax = 0;
 var entity ary_spawnStart_deathmatch[MAX_SPAWN_POINTS];

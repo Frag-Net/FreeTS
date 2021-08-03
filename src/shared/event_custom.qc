@@ -1,6 +1,6 @@
 
 
-BOOL
+void
 TS_Weapon_PrimaryAttackRelease(player pl, BOOL hasAmmo){
 	// WARNING!  This comment is really out of date, fWeaponEventPlayer is no longer a thing
 	// ------------------------------
@@ -9,27 +9,27 @@ TS_Weapon_PrimaryAttackRelease(player pl, BOOL hasAmmo){
 	// "fWeaponEventPlayer" is in "ts/client/defs.h". its assigned a lot in "ts/client/event.c".
 	// at least "player_localentnum" is part of the builtins.
 	if(pl.inventoryEquippedIndex == -1){
-		return FALSE;
+		return;
 	}
 	
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = pl.getEquippedWeaponData();
 	
-	return (*basicP).vOnPrimaryAttackRelease(pl, dynaRef, hasAmmo);
+	(*basicP).vOnPrimaryAttackRelease(pl, dynaRef, hasAmmo);
 }
 
 
-BOOL
+void
 TS_Weapon_SecondaryAttackRelease(player pl, BOOL hasAmmo){	
 	if(pl.inventoryEquippedIndex == -1){
-		return FALSE;
+		return;
 	}
 	
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = pl.getEquippedWeaponData();
 	
-	return (*basicP).vOnSecondaryAttackRelease(pl, dynaRef, hasAmmo);
-}// TS_Weapon_SecondaryAttackRelease
+	(*basicP).vOnSecondaryAttackRelease(pl, dynaRef, hasAmmo);
+}
 
 
 
@@ -370,6 +370,8 @@ void _TS_playerDropWeapon(player pl){
 }
 */
 // TODO.  Do anything clientside here too, maybe?  Unsure.
+// Could call the player's DropWeapon method here, but it's hard to trust FTE with prediction
+// when it comes to altering inventories it seems.
 void
 TS_playerDropWeapon(void){
 	sendevent("TS_playerDropWeapon", "");

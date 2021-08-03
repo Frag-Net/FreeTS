@@ -235,16 +235,22 @@ w_combatknife_secondary(void)
 #endif
 	}
 	
+	// TODO - Beware!  This method may be called many many times for a single knife throw
+	// especially with packet delays.  So this draw may not even happen, not sure the
+	// best way around that yet.
 	printfline("IM A KNIFE I GOT THROWN YES current count: %i", arg_thisWeapon.iCount);
 	if(arg_thisWeapon.iCount > 0){
 		// another knife left?  Bring it up with a draw animation.
 		TS_Weapons_ViewAnimation(weaponseq_combatknife::draw, (31.0f / 30.0f) );
 	}else{
+		
+#ifdef SERVER
 		// No knives left?  Unequip, pick something else.
 		printfline("REMOVED, PRE.  invcount:%i", pl.ary_myWeapons_softMax);
 		removeWeaponFromInventory(pl, pl.inventoryEquippedIndex);
 		printfline("REMOVED, POST.  invcount:%i", pl.ary_myWeapons_softMax);
 		playerEquipIdealSafe(pl);
+#endif
 		
 		return FALSE;
 	}

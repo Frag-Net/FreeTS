@@ -225,7 +225,8 @@ player::ReceiveEntity(float new, float fl)
 	//UNNECESSARY. This array is of fixed length, so known at all times.
 	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
 	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
-		// See serverside equivalent, too much info was lost from some pools being over 255 (well I guess that's all there is to it)
+		// See serverside equivalent, too much info was lost from some pools being over 255
+		// (well I guess that's all there is to it)
 		ary_ammoTotal[i] = readlong();
 	}
 	
@@ -654,7 +655,8 @@ player::SendEntity(entity ePEnt, float fChanged)
 	//UNNECESSARY. This array is of fixed length, so known at all times.
 	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
 	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
-		// using 'WriteLong' instead of 'WriteByte', because SOME AMMO POOL just had to exceed 255, didn't it.
+		// using 'WriteLong' instead of 'WriteByte', because SOME AMMO POOL just had to
+		// exceed 255, didn't it.
 		WriteLong(MSG_ENTITY, ary_ammoTotal[i] );
 	}
 	
@@ -767,7 +769,8 @@ player::player(void){
 
 
 // use TRUE for clean respawns,
-// FALSE for only resetting some weapons-related vars between weapon changes, nothing too significant
+// FALSE for only resetting some weapons-related vars between weapon changes, nothing too
+// significant
 void 
 player::reset(BOOL resetInventory){
 	
@@ -905,8 +908,10 @@ player::reset(BOOL resetInventory){
 	// TODO - FIGURE THIS OUT, for gamemodes that involve money.
 	
 	// do a check. If we didn't die last time, we don't need to delete this stuff.
-	// is this good?  See that this reliable to check at the time "reset" is called in the spawning method!
-	// or just send a parameter here (preserve weapons:  yes/no BOOL) to determine that instead.
+	// is this good?  See that this reliable to check at the time "reset" is called in the
+	// spawning method!
+	// or just send a parameter here (preserve weapons:  yes/no BOOL) to determine that
+	// instead.
 	
 	if(resetInventory){
 		
@@ -930,7 +935,9 @@ player::reset(BOOL resetInventory){
 		multicast( [0,0,0], MULTICAST_ONE );
 #endif
 		
-		ary_myWeapons_softMax = 0;  //effectively says, no weapons.  Any other info in there is to be overwritten as needed.
+		// effectively says, no weapons.  Any other info in there is to be overwritten as
+		// needed.
+		ary_myWeapons_softMax = 0;
 		
 		//All ammo counters, goodbye.
 		for(int i = 0; i < AMMO_ID::LAST_ID; i++){
@@ -1062,7 +1069,7 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 	}
 	
 	// NOTE, IMPORTANT.
-	// !!! Is this necessary?
+	// Is this necessary?
 	// Makes a decent example for paying attention to SAVE and ROLLBACKs in player script
 	// (see activeweapon SAVE_STATE/ROLLBACK's in Nuclide's src/shared/player.qc).
 	// ALSO - for this demo to work, remove the karate call in 'deployConfig',
@@ -1070,12 +1077,13 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 	
 	// When nothing is here instead (comment out), try throwing the last throwing knife.
 	// Often, you'll still hear the 'draw' noise because a rollback sets activeweapon back
-	// to the previous value, even though you want it to be nothing from having nothing equipped.
-	// But if this is enabled all the time (client and serverside), the weapon set by the server
-	// exclusively, such as player-spawn, does not get sent off..
+	// to the previous value, even though you want it to be nothing from having nothing
+	// equipped.
+	// But if this is enabled all the time (client and serverside), the weapon set by the
+	// server exclusively, such as player-spawn, does not get sent off..
 	// This seems to be the best case scenario: setting this clientside stops the rollback
-	// to undo setting the current equipped weapon to 'nothing' back to the throwing knife, which
-	// would not even be equipped anymore.
+	// to undo setting the current equipped weapon to 'nothing' back to the throwing knife,
+	// which would not even be equipped anymore.
 	// If this is the wrong way to go thinking about this, I need to know more.
 	// ALSO - see other uses of SAVE_STATE, most are for both client & server,
 	// especially the w_attack_next, or w_next_attack, in ts/shared/weapons.qc.
@@ -1145,6 +1153,7 @@ BOOL
 player::equippedWeaponDeleteCheck(void){
 	weapondynamic_t arg_thisWeapon = this.ary_myWeapons[this.inventoryEquippedIndex];
 	if(arg_thisWeapon.iCount == 0){
+		printfline("!!! Auto delete check, equipping a new weapon");
 		// remove this weapon, pick another one.
 		removeWeaponFromInventory(this, this.inventoryEquippedIndex);
 		playerEquipIdealSafe(this);
@@ -1187,11 +1196,11 @@ player::callWeaponThink(void){
 #ifdef SERVER
 // runs every frame server-side.  postthink, oddly enough, does not.
 // Even cumulative 'frametime' readings do not at all add up to the real passage of time.
-// Looks like we have to do this with server calling our think instead... it's own frame logic
-// method does add up to something that resmebles the passage of time at least.
-// The "frameThink_fromServer" further below is actually called from the server and runs every
-// single logic frame of the server, as evidenced by its frametime's summing up to the passage of
-// time.
+// Looks like we have to do this with server calling our think instead... it's own frame
+// logic method does add up to something that resmebles the passage of time at least.
+// The "frameThink_fromServer" further below is actually called from the server and runs
+// every single logic frame of the server, as evidenced by its frametime's summing up to the
+// passage of time.
 // Strangely, setting the ".think" method of the player clientside, even with nextThink set,
 // does nothing at all. Even though other clientside-programmed entities like the ts_powerup
 // work fine with it...   I.  DONT.  KNOW.
@@ -1218,9 +1227,10 @@ player::frameThink_fromServer(void){
 
 #ifdef CLIENT
 
-// Note that these pre/postThink's aren't game events, they're just called by _base/entry.c before/after
-// prediction accordingly, and every single rendered frame.
-// Unlike serverside preThink / postThink, which (I think?) are called independent of any logic frame-rate on the server.
+// Note that these pre/postThink's aren't game events, they're just called by _base/entry.c
+// before/after prediction accordingly, and every single rendered frame.
+// Unlike serverside preThink / postThink, which (I think?) are called independent of any
+// logic frame-rate on the server.
 void 
 player::preThink(void){
 	weapondynamic_t dynaRef;
@@ -1242,8 +1252,8 @@ player::preThink(void){
 	
 	// TAGGG - TODO.
 	// maybe rename this to "viewModelAnimationDuration"
-	// and let "nextViewModelAnimationTime" be re-used if we ever support idle animations like HL does?
-	// doubt that really though.
+	// and let "nextViewModelAnimationTime" be re-used if we ever support idle animations
+	// like HL does? doubt that really though.
 	
 	// When a viewmodel's w_freeze_idle_next has expired, force to the frozen idle frame.
 	if(w_freeze_idle_next == 0){
@@ -1264,8 +1274,9 @@ player::preThink(void){
 				BOOL usingIronSight;
 				
 				// Usually we can depend on iIronSight, but not always.
-				// If using switch - ironsight calls, we need to be able to tell what the intended iIronSight is,
-				// since it changes at the end on the server and might not've reached us (the client) in time.
+				// If using switch - ironsight calls, we need to be able to tell what the
+				// intended iIronSight is, since it changes at the end on the server and
+				// might not've reached us (the client) in time.
 				
 				if(pSeat->m_eViewModel.frame == ironsightRef.ironsightdata.iAnim_Change_Index){
 					usingIronSight = TRUE;  //assuming the end of this.  Pick the opposite.
@@ -1277,8 +1288,8 @@ player::preThink(void){
 				}
 				
 				
-				// idle anims don't really have any length.  Let's just say "2" seconds if we ever care about
-				// some delay for this in the future.
+				// idle anims don't really have any length.  Let's just say "2" seconds if
+				// we ever care about some delay for this in the future.
 				if(!usingIronSight){
 					// use this one (plain)
 					TS_Weapons_ViewAnimation(ironsightRef.iAnim_Idle_Index, 2 );

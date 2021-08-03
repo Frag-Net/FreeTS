@@ -41,7 +41,8 @@ class player:base_player
 	
 	
 	//TAGGG - I'm not messing around with that memory issue from last time.
-	// But try again with this removed whenever it turns out ok, see if this is needed anymore.
+	// But try again with this removed whenever it turns out ok, see if this is needed
+	// anymore.
 	//virtual void (void)dummyBufferMethod;
 	
 	
@@ -68,9 +69,10 @@ class player:base_player
 	//int ingame;
 	
 	// Keep a record of the most recently seen viewmodel frame for this player for sendoffs.
-	// That way, if the server/client go out-of-synch in the middle of an animation, or something that should
-	// have started playing according to the server doesn't at clientside, clientside can receive the frame
-	// (really sequence, or animation choice) it should be and correct that.
+	// That way, if the server/client go out-of-synch in the middle of an animation, or
+	// something that should have started playing according to the server doesn't at
+	// clientside, clientside can receive the frame (really sequence, or animation choice)
+	// it should be and correct that.
 	// UNUSED FOR NOW, just an idea.
 	int flViewModelFrame;
 	
@@ -104,34 +106,40 @@ class player:base_player
 	int recentLaserDistanceDisplay;
 	
 	BOOL forceViewModelUpdate;
-	// NOTICE - individual dynamic weapons have "forceBodygroup1Submodel".  "prev_forceBodygroup1Submodel" is player-wide
-	// (here) instead because we only need to keep track of changes in a weapon's forceBodygroup1Submodel while that weapon
-	// is equipped.  Not that it could ever change while not equipped anyway.
+	// NOTICE - individual dynamic weapons have "forceBodygroup1Submodel".
+	// "prev_forceBodygroup1Submodel" is player-wide (here) instead because we only need to
+	// keep track of changes in a weapon's forceBodygroup1Submodel while that weapon is
+	// equipped.  Not that it could ever change while not equipped anyway.
 	int prev_forceBodygroup1Submodel;
 	
 	
 	// WEAPON KICKBACK STUFF.
 	// Way it works is a little different from the average (Half-Life and Counterstrike).
-	// We do have a crosshair that can grow with repeated fire to show increased inaccuracy with firing
-	// too often (this is not related to the offset of the camera from firing recently, but often just happens
-	// at the same time)
-	// ANYWAY.  Base (HL / CS) kickback behavior for firing is to throw the player camera off seemingly by a small angle
-	// in any direction quickly (slightly upward-biased?, unsure), but it will return to the default position on its own
-	// over time, more quickly the further away it is from the intended aim angle.
-	// In TS, it's similar but instead lerps quickly to a new position somewhere between +- 45 degrees (maybe more?)
-	// from the very top.  Continuous firing likely adds to the new angle to lerp to.
-	// So you over time get closer to looking at the very top with continuous firing without moving the mouse,
-	// and then further firing will just start rotating left/right a tiny bit once it's at the very top.
+	// We do have a crosshair that can grow with repeated fire to show increased inaccuracy
+	// with firing too often (this is not related to the offset of the camera from firing
+	// recently, but often just happens at the same time)
+	// ANYWAY.  Base (HL / CS) kickback behavior for firing is to throw the player camera
+	// off seemingly by a small angle in any direction quickly (slightly upward-biased?,
+	// unsure), but it will return to the default position on its own over time, more quickly
+	// the further away it is from the intended aim angle.
+	// In TS, it's similar but instead lerps quickly to a new position somewhere between
+	// +- 45 degrees (maybe more?) from the very top.  Continuous firing likely adds to the
+	// new angle to lerp to.
+	// So you over time get closer to looking at the very top with continuous firing without
+	// moving the mouse, and then further firing will just start rotating left/right a tiny
+	// bit once it's at the very top.
 	//
-	// Way this works is, it's vector(0,0,0) by default, and on firing, it gets a constant amount added, like
-	// (-0.1, 0.1, 0).  Next frame we will move the view angle by 40% of what's left:
-	// (-0.04, 0.04, 0) and subtract that from the OffsetTarget, leaving it (-0.06, 0.06, 0).
+	// Way this works is, it's vector(0,0,0) by default, and on firing, it gets a constant
+	// amount added, like (-0.1, 0.1, 0).  Next frame we will move the view angle by 40% of
+	// what's left: (-0.04, 0.04, 0) and subtract that from the OffsetTarget, leaving it
+	// (-0.06, 0.06, 0).
 	// Repeat until OffsetTarget gets so low we just 0 it out.
-	// Firing further only adds to OffsetTarget as it is, so we approach the 0 point in neglibly more time /
-	// the angle moves faster during that time to reach the increased offset.
-	//...also, this variable will be shared.  Serverside since it must be presistent 
-	// (not just something to step away from after it happens the first frame), and clientside
-	// to keep track of how to behave in case the connection is broken since.
+	// Firing further only adds to OffsetTarget as it is, so we approach the 0 point in
+	// neglibly more time / the angle moves faster during that time to reach the increased
+	// offset.
+	// ...also, this variable will be shared.  Serverside since it must be presistent 
+	// (not just something to step away from after it happens the first frame), and
+	// clientside to keep track of how to behave in case the connection is broken since.
 	//vector vViewAngleOffsetTarget;
 	
 	
@@ -155,8 +163,8 @@ class player:base_player
 	// from server time.
 	float fAccuracyKickbackStartCooldown;
 	
-	//  The client can keep its own in mind as prediction between frames if needed.  Server time and client time aren't
-	//  really compatible to send b/w like this.
+	// The client can keep its own in mind as prediction between frames if needed.  Server
+	// time and client time aren't really compatible to send like this.
 	
 	
 	
@@ -197,14 +205,22 @@ class player:base_player
 	// When should the viewmodel anim switch to the frozen idle anim?
 	float w_freeze_idle_next;
 
-	//In the weapon select menu, what is currently being highlighted & picked if fire is pressed?
-	//Also used as a base for finding the "previous" or "next" weapon while mouse wheeling through
+	//In the weapon select menu, what is currently being highlighted & picked if fire is
+	// pressed? Also used as a base for finding the "previous" or "next" weapon while mouse
+	// wheeling through
 	int weaponSelectHighlightID;
-	//This var gets a chance to turn on after the player goes through all weapons in slots 1-4 to see if any weapons have akimbo.  If so, weaponSelectHighlightID goes to that weapon (the first with akimbo) and this variable turns on. Going to the next/previous weapon goes through all weapons to see the next akimbo one until there are no other choices in that direction (like last akimb weapon --> next goes back to akimbo-less slot 1's first weapon... and so on if empty). Note that slot 5 is imaginary; it is only made of weapons from slots 1-4 with akimbo choices.
+	//This var gets a chance to turn on after the player goes through all weapons in slots
+	// 1-4 to see if any weapons have akimbo.  If so, weaponSelectHighlightID goes to that
+	// weapon (the first with akimbo) and this variable turns on. Going to the next/previous
+	// weapon goes through all weapons to see the next akimbo one until there are no other
+	// choices in that direction (like last akimb weapon --> next goes back to akimbo-less
+	// slot 1's first weapon... and so on if empty). Note that slot 5 is imaginary; it is
+	// only made of weapons from slots 1-4 with akimbo choices.
 	//Then, selecting a next weapon looks for the next
 	BOOL weaponSelectHighlightAkimbo;
 	
-	//used for telling what the most recently equipped weapon's akimbo status was - no or yes.
+	// used for telling what the most recently equipped weapon's akimbo status was - no or
+	// yes.
 	BOOL flag_lastWeaponAkimbo;
 	
 	float flViewShake;
@@ -225,12 +241,11 @@ class player:base_player
 	BOOL inputPrimaryReleasedQueue;
 	BOOL inputSecondaryReleasedQueue;
 
-
 	// -1 means not using a scope, regardless of whether the weapon has it.
-	// We'll keep this serverside too, since that's the one relaying the decisions to the client.
+	// We'll keep this serverside too, since that's the one relaying the decisions to the
+	// client.
 	int currentZoomChoice;
 	
-
 	// Shared, but don't network!  I think?
 	int aryNextBurstShotTime_softLength;
 	float aryNextBurstShotTime[5];
@@ -243,18 +258,20 @@ class player:base_player
 //NOTICE - all networked now, testing.
 
 	// serverside 
-	//What animation is the shotgun in?
+	// What animation is the shotgun in?
 	// -1 = not reloading
 	// 0 = doing reload1 (start)
 	// 1 = doing reload2 (intermediate; ammo loading)
 	// 2 = doing reload3 (end)
-	// ALSO!  Call Byte vars 'floats' because FTE makes 'readbvte' give a float.  I... just, don't, know.
+	// ALSO!  Call Byte vars 'floats' because FTE makes 'readbyte' give a float.
 	PREDICTED_FLOAT(shotgunReloadIndex);
 	
-	// Not networked!  For keeping track of changes to shotgunReloadIndex outside of the client directly,
-	// like if the client and server are waiting for a reload anim to finish, but the server finishes first
-	// and gives the client the new shotgunReloadIndex.  This leaves the client to skip picking the new
-	// shotgunReloadIndex itself and the viewmodel animation call that goes with it.
+	// Not networked!  For keeping track of changes to shotgunReloadIndex outside of the
+	// client directly, like if the client and server are waiting for a reload anim to finish,
+	// but the server finishes first and gives the client the new shotgunReloadIndex. This
+	// leaves the client to skip picking the new shotgunReloadIndex itself and the viewmodel
+	// animation call that goes with it.
+	// (NOT INVOLVED YET. Is this even a good idea?)
 	float shotgunReloadIndexPrev;
 	
 	// Same as shotgunReloadIndex, but for keeping track of the next
@@ -331,8 +348,8 @@ class player:base_player
 	//for pmove to set
 	BOOL viewAboveWater;
 
-	//TODO - could this just be an entity flag just as well?  Unfortunately I don't know for sure what
-	//flags are guaranteed open / nonconflicting with anything else.
+	//TODO - could this just be an entity flag just as well?  Unfortunately I don't know for
+	// sure what flags are guaranteed open / nonconflicting with anything else.
 	
 	// was BOOL
 	PREDICTED_FLOAT(isReloading);
@@ -354,37 +371,38 @@ class player:base_player
 	// The fireMode controls whether this variable is relevant at all
 	// (another firemode makes primary / secondary fire use either akimbo weapon consistently)
 	PREDICTED_FLOAT(recentAkimboAttackChoice);
-	//What is the next way I want to try firing if only primary is supposed to be used?
-	//Only used for certain firemode(s).
+	// What is the next way I want to try firing if only primary is supposed to be used?
+	// Only used for certain firemode(s).
 	PREDICTED_FLOAT(nextAkimboAttackPreference);
 	
-	//The client needs to know whether our recent attack had ammo while firing.
-	//In case the client needs to play a click sound clientside in response to a failed fire attempt
-	//TAGGG - TODO.  Remove this I think?  AKimbo still uses it a tiny bit though, maybe not.
+	// Only used by akimbo to tell something about a recently chosen attack.
+	// Pending a rename to make that more clear
 	BOOL recentAttackHadAmmo;
 	
 	
 	//What particular choice of "ary_myWeapons" is equipped?
 	// NOPE!  Rely on the nuclide-provided activeweapon "float".
 	// ...not quite though, use a new var in its place instead.
-	// 'activeweapon' is used by Nuclide to access info about a weapon in g_weapons (list of weapons in the Nuclide weapon_t format).
-	// It can't be used to access inventory places in our own system, so just use another var for that completely.
-	// On changing the currently equipped weapon, set 'activeweapon' to the type of weapon in that inventory space to let Nuclide
-	// tap into weapon info as needed, best of both worlds.
+	// 'activeweapon' is used by Nuclide to access info about a weapon in g_weapons (list of
+	// weapons in the Nuclide weapon_t format). It can't be used to access inventory places
+	// in our own system, so just use another var for that completely. On changing the
+	// currently equipped weapon, set 'activeweapon' to the type of weapon in that inventory
+	// space to let Nuclide tap into weapon info as needed, best of both worlds.
 	//int activeweapon;
 	PREDICTED_INT(inventoryEquippedIndex);
 	// for akimbo weapons, the ID of the singular version for easy reference.
 	float activeweapon_singular;
 	
-	// which one was equipped previously?  For easily swapping back/forth weapons by some hotkey or console handle linked to a key, I forget.
+	// which one was equipped previously?  For easily swapping back/forth weapons by some
+	// hotkey or console handle linked to a key, I forget.
 	// I think this is redundant with pSeat->m_iOldWeapon or something similar to that,
 	// try using that instead.  Remove this if so.
 	int inventoryEquippedIndex_previous;
 	
 	
-	//This will tell us whether we intend to equip the akimbo version of hte currently equipped weapon.
-	//This is done since akimso variants, although selected separately in weapon select, are still
-	//tied to the exact same element in ary_myWeapons.
+	//This will tell us whether we intend to equip the akimbo version of hte currently
+	// equipped weapon. This is done since akimso variants, although selected separately in
+	// weapon select, are still tied to the exact same element in ary_myWeapons.
 	
 	// was BOOL.
 	PREDICTED_FLOAT(weaponEquippedAkimbo);
@@ -393,16 +411,18 @@ class player:base_player
 	weapondynamic_t ary_myWeapons[ary_myWeapons_length];
 	int ary_myWeapons_softMax;
 	
-	//Have one space for each type of ammo available.
-	//If there were a large number of ammunitions and a low likelihood that all/most were going to be used
-	//in most loadouts, this could similarly store a list of the max number of ammunitions expected and
-	//keep track of which one an index (0, 1, 2, 3, etc.) refers to.
-	//Sounds like a lot of extra work for a single ammo counter per type of ammo which is all this is.
+	// Have one space for each type of ammo available.
+	// If there were a large number of ammunitions and a low likelihood that all/most were
+	// going to be used in most loadouts, this could similarly store a list of the max number
+	// of ammunitions expected and keep track of which one an index (0, 1, 2, 3, etc.) refers
+	// to. Sounds like a lot of extra work for a single ammo counter per type of ammo which
+	// is all this is.
 	int ary_ammoTotal[AMMO_ID::LAST_ID];
 	
-	//Provided for quick reference.  How many slots does the current loadout take?
-	//There is a record of how much money has been spent, similar to config, but that isn't too important.
-	//The attached "money" (variable) is much more important (only pay attention to it serverside, fetch it from clientside: GetStatF(...) or something.
+	// Provided for quick reference.  How many slots does the current loadout take?
+	// There is a record of how much money has been spent, similar to config, but that isn't
+	// too important.
+	// The attached "money" (variable) is much more important (only pay attention to it serverside, fetch it from clientside: GetStatF(...) or something.
 	int iTotalSlots;
 	int iTotalPrice;
 	
@@ -411,8 +431,8 @@ class player:base_player
 	
 	
 	// from FreeHL, probaby good to use here too then?
-	//TAGGG - TODO.  See if these need other lines to be supported & actually used, remove if not
-	// needed at all for what TS does.
+	//TAGGG - TODO.  See if these need other lines to be supported & actually used, remove
+	// if not needed at all for what TS does.
 #ifdef CLIENT
 	/* External model */
 	entity p_model;
@@ -474,16 +494,17 @@ class player:base_player
 
 #ifdef SERVER
 	// !!! SPECIAL CASE?  not built-in but is what the "think" method is set to early on.
-	// (REMOVED: the ".think" pointer will likely be set by other stuff like so much as a reload delay,
-	// let's not expect this to stay as it's set)s
+	// (REMOVED: the ".think" pointer will likely be set by other stuff like so much as a
+	// reload delay, let's not expect this to stay as it's set)
 	//virtual void () frameThink;
-//TAGGG - QUESTION.  Does this need to be separate from postThink at all?  Same for above, forget what these are for
+	//TAGGG - QUESTION.  Does this need to be separate from postThink at all?  Same for above,
+	// forget what these are for
 	virtual void () frameThink_fromServer;
 
 	virtual BOOL(TSWorldGun arg_pickup) attemptAddWeaponFromPickup;
 	virtual void(int arg_weaponID, BOOL completeDrop) dropWeapon;
-	virtual BOOL() anyAmmoPoolNonEmpty;
-	virtual void() dropAmmo;
+	virtual BOOL(void) anyAmmoPoolNonEmpty;
+	virtual void(void) dropAmmo;
 #endif
 	
 	
