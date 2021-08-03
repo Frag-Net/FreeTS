@@ -17,6 +17,7 @@
 int
 ClientGame_ConsoleCommand(void)
 {
+	player pl;
 	
 	//printfline("ClientGame_ConsoleCommand: %s", argv(0));
 	
@@ -94,6 +95,10 @@ ClientGame_ConsoleCommand(void)
 		
 		//If we're in spectator mode we can do this
 		//  no-screen check, not necessary probably:  pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE && 
+		pl = (player)pSeat->m_ePlayer;
+		
+		printfline("CMD: BUY COMMAND RECEIVED!  Should I react?  %s (1=yes) : %d", getplayerkeyvalue( player_localnum, "*spec" ), pl.iState);
+		
 		if(getplayerkeyvalue( player_localnum, "*spec" ) != "0"){
 			//we can show it!
 			VGUI_ChangeScreen(VGUI_SCREEN::BUYSIDEMENU);

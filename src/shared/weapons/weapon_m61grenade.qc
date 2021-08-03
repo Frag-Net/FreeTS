@@ -58,7 +58,7 @@ void weapon_M61Grenade_spawnProjectile(player localPlayer, weapondynamic_t arg_t
 	eNade.solid = SOLID_TRIGGER; // This is so grenades will not get slowed down by windows they touch
 	eNade.angles = vectoangles( vDir );
 	
-	//TAGGG - TODO, CRITICAL.
+	// TODO, CRITICAL.
 	// Factor in wasToss, heldDuration (out of 3, small minimum from clicking without holding down while
 	// some of the toss anim plays)?
 	eNade.velocity = ( vDir * 200 );  //was 1000
@@ -152,7 +152,7 @@ static void weapon_M61Grenade_Explode( void ) {
 void weapon_M61Grenade_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
 	player pl = localPlayer;
 	
-	//TAGGG - WARNING!!!
+	// WARNING!!!
 	// grenadeHeldDuration is not networked!  It counts up faster for the client than the server.
 	// If using to keep track of what animation to play (like HL having different throw anims for
 	// range), that should be networked so that this gives an accurate viewmodel.
@@ -226,17 +226,22 @@ void weapon_M61Grenade_onThink(player localPlayer, weapondynamic_t arg_thisWeapo
 		//printfline("Remove grenade? Count:%i", arg_thisWeapon.iCount);
 		if(arg_thisWeapon.iCount > 0){
 			TS_Weapons_ViewAnimation(weaponseq_m61grenade::draw, 31.0f / 40.0f );
+			printfline("I set grenadeFireIndex to -1, B!");
 			pl.grenadeFireIndex = -1;
 			weapon_base_setWholeAttackDelay(pl, (31.0f/40.0f));
 		}else{
 			
 			// no more, remove this item and pick another.
 			//printfline("removeWeaponFromInventory PRE cur weapo: %i", pl.inventoryEquippedIndex);
-			
+
+#ifdef SERVER
 			removeWeaponFromInventory(pl, pl.inventoryEquippedIndex);
 			playerEquipIdealSafe(pl);
+#endif
 			
 			//printfline("removeWeaponFromInventory POST cur weapo: %i", pl.inventoryEquippedIndex);
+			
+			printfline("I set grenadeFireIndex to -1, C!");
 			pl.grenadeFireIndex = -1;  // paranoia?
 			return;
 		}
@@ -296,8 +301,10 @@ BOOLEAN weapon_grenade_onInputPress(player localPlayer, weapondynamic_t arg_this
 	
 	if(arg_thisWeapon.iCount == 0){
 		// what.  how.
+#ifdef SERVER
 		removeWeaponFromInventory(pl, pl.inventoryEquippedIndex);
 		playerEquipIdealSafe(pl);
+#endif
 		return;
 	}
 
@@ -306,6 +313,7 @@ BOOLEAN weapon_grenade_onInputPress(player localPlayer, weapondynamic_t arg_this
 	if(pl.w_attack_next <= 0 && (INPUT_PRIMARY_TAP_CHECK(pl) || INPUT_SECONDARY_TAP_CHECK(pl))){
 		if(pl.grenadeFireIndex == -1){
 			pl.grenadeFireIndex = 0;
+			printfline("WHAT THE heckin heck IS THIS %.2f", time);
 			pl.grenadeSpawnTime = -1;  // not yet!
 			pl.grenadeHeldDuration = 0;
 			TS_Weapons_ViewAnimation(weaponseq_m61grenade::start, (31.0f/35.0f) );
@@ -399,6 +407,7 @@ w_m61grenade_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
+	printfline("I set grenadeFireIndex to -1, A!");
 	pl.grenadeFireIndex = -1;
 	pl.grenadeSpawnTime = -1;
 	pl.grenadeHeldDuration = 0;

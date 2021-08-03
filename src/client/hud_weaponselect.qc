@@ -13,8 +13,9 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
-var float fHUDWeaponLast;
+ 
+// NOTE - file organized so that any methods called by Nuclide occur first,
+// see the section further down labeled "TS helper methods" for the rest.
 
 typedef struct {
 	string sSprite;
@@ -22,27 +23,237 @@ typedef struct {
 } weaponsymbolinfo_t;
 
 
-/*
-=================
-HUD_DrawWeaponSelect_PreviousItem
 
-Checks and returns the next slot with a weapon in it
-=================
-*/
+void
+HUD_DrawWeaponSelect_Forward(void)
+{
+	if(TS_HUD_earlyTerminateCheck()){
+		return;
+	}
+	player pl = (player)pSeat->m_ePlayer;
+	
+	
+	if(pl.weaponSelectHighlightID == -1){
+		//pick the weapon after then
+		pl.weaponSelectHighlightAkimbo = pl.weaponEquippedAkimbo;
+		pl.weaponSelectHighlightID = TS_HUD_DrawWeaponSelect_NextItem(pl.inventoryEquippedIndex, TRUE);
+		
+		//printfline("HUD_DrawWeaponSelect_Forward A? %i", pl.weaponSelectHighlightID);
+		
+		if(pl.weaponSelectHighlightID != -1){
+			sound(pl, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
+			pSeat->m_flHUDWeaponSelectTime = time + 3;
+		}else{
+			pSeat->m_flHUDWeaponSelectTime = 0;
+		}
+	}else{
+		
+		//printfline("HUD_DrawWeaponSelect_Forward B? %i", pl.weaponSelectHighlightID);
+		
+		pl.weaponSelectHighlightID = TS_HUD_DrawWeaponSelect_NextItem(pl.weaponSelectHighlightID, TRUE);
+		if(pl.weaponSelectHighlightID != -1){
+			sound(pl, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
+			pSeat->m_flHUDWeaponSelectTime = time + 3;
+		}else{
+			pSeat->m_flHUDWeaponSelectTime = 0;
+		}
+	}
+	
+}
 
-//TAGGG - REPLACEMENT.
-//Now deal with int's (type) instead.
-//Also, this takes two parameters now: what index in the player weapon list to start looking for
-//the next weapon from, and whether finding the next/previous weapon is restricted
-//to some slot in particular, like pressing the "2" key to go through weapons in slot 2
-//(on reaching the last weapon, the 1st weapon in slot 2 is selected again, don't move to slot 3).
-//Note that this is the same display slot. There is no slot 0.
-//A slot of "-1" will be code for, no restriction, feel free to move between slots on trying to go
-//to the previous weapon on the first of a slot, or the next weapon on the last of a slot.
-//The last optional parameter, neede if freeSlotMovement is false, is what slot the weapon must belong to.
-//If we pick a slot different of the currently selected weapon, we start over in the new slot.
+void
+HUD_DrawWeaponSelect_Back(void)
+{
+	if(TS_HUD_earlyTerminateCheck()){
+		return;
+	}
+	player pl = (player)pSeat->m_ePlayer;
+	
+	if(pl.weaponSelectHighlightID == -1){
+		//pick the weapon after then
+		pl.weaponSelectHighlightAkimbo = pl.weaponEquippedAkimbo;
+		pl.weaponSelectHighlightID = TS_HUD_DrawWeaponSelect_PreviousItem(pl.inventoryEquippedIndex, TRUE);
+		
+		//printfline("HUD_DrawWeaponSelect_Back C? %i", pl.weaponSelectHighlightID);
+		
+		if(pl.weaponSelectHighlightID != -1){
+			sound(pl, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
+			pSeat->m_flHUDWeaponSelectTime = time + 3;
+		}else{
+			pSeat->m_flHUDWeaponSelectTime = 0;
+		}
+	}else{
+		
+		//printfline("HUD_DrawWeaponSelect_Back D? %i", pl.weaponSelectHighlightID);
+		
+		pl.weaponSelectHighlightID = TS_HUD_DrawWeaponSelect_PreviousItem(pl.weaponSelectHighlightID, TRUE);
+		if(pl.weaponSelectHighlightID != -1){
+			sound(pl, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
+		pSeat->m_flHUDWeaponSelectTime = time + 3;
+		}else{
+			pSeat->m_flHUDWeaponSelectTime = 0;
+		}
+	}
+
+}
+
+
+
+// TODO!!! also for this to be supported instead of TS_HUD_DrawWeaponSelect_CheckClick,
+// need to involve "m_iHUDWeaponSelected" elsewhere in this file properly!
+// _Trigger is not even called if iHUDWeaponSelected is FALSE !
+void
+HUD_DrawWeaponSelect_Trigger(void)
+{
+	if(TS_HUD_earlyTerminateCheck()){
+		return;
+	}
+	player pl = (player)pSeat->m_ePlayer;
+	//TAGGG - TODO - was commented out in old FreeTS, doing so here too.
+	// But figure out what it needs to do, this likely wasn't pointless
+	/*
+	player pl = (player)pSeat->m_ePlayer;
+	pl.setInventoryEquippedIndex(pSeat->m_iHUDWeaponSelected);
+	sendevent("PlayerSwitchWeapon", "i", pSeat->m_iHUDWeaponSelected);
+	sound(pSeat->m_ePlayer, CHAN_ITEM, "common/wpn_select.wav", 0.5f, ATTN_NONE);
+	pSeat->m_iHUDWeaponSelected = pSeat->m_flHUDWeaponSelectTime = 0;
+	*/
+	
+	// Redirect!
+	// ACTUALLY not yet.  This redirect won't work until script
+	// involving m_iHUDWeaponSelected is properly hooked up!
+	
+	// NEVERMIND.  Attempt to stop holding down primary fire while pushing number keys
+	// to open weapon-select instantly picking a weapon.
+	// It works, but can be annoying as this completly blocks the ability to tell
+	// what is or isn't a fresh key press during that time.  Not worth it.
+	/*
+	player pl = (player)pSeat->m_ePlayer;
+	if(pSeat->m_flInputBlockTime > time){
+		return;
+	}
+	*/
+	
+	TS_HUD_DrawWeaponSelect_CheckClick();
+}
+
+
+
+void
+HUD_DrawWeaponSelect_Last(void)
+{
+	if(TS_HUD_earlyTerminateCheck()){
+		return;
+	}
+	player pl = (player)pSeat->m_ePlayer;
+	
+		
+	//TAGGG - TODO.  Support this.
+	/*
+	player pl = (player)pSeat->m_ePlayer;
+	if (pl.g_items & g_weapons[pSeat->m_iOldWeapon].id) {
+		pl.setInventoryEquippedIndex(pSeat->m_iOldWeapon);
+		sendevent("PlayerSwitchWeapon", "i", pSeat->m_iOldWeapon);
+	}
+	*/
+}
+
+
+
+void
+HUD_SlotSelect(int slot)
+{
+	if(TS_HUD_earlyTerminateCheck()){
+		return;
+	}
+	player pl = (player)pSeat->m_ePlayer;
+	
+	
+	int slotPicked = slot+1;
+	
+		
+	// Keep track of the currently open slot. Navigate through it...
+	// move to another slot if needed
+	
+	//printlinef("HUD_SlotSelect: %i maxweap:%i classname:%s\n", slot, pl.ary_myWeapons_softMax, pl.classname);
+	//printfline("weapon slot currently highlighted: %i", pl.weaponSelectHighlightID);
+	
+	if(pl.weaponSelectHighlightID == -1){
+		//pick the weapon after then
+		
+		pl.weaponSelectHighlightAkimbo = pl.weaponEquippedAkimbo;
+		
+		
+		pl.weaponSelectHighlightID = TS_HUD_DrawWeaponSelect_PreviousItem(-1, FALSE, slotPicked);
+		if(pl.weaponSelectHighlightID != -1){
+			sound(pl, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
+			pSeat->m_flHUDWeaponSelectTime = time + 3;
+		}else{
+			pSeat->m_flHUDWeaponSelectTime = 0;
+		}
+	}else{
+		// uhhhh...  try going previous of -1 then?  Hits the first weapon we got I think.
+		pl.weaponSelectHighlightID = TS_HUD_DrawWeaponSelect_PreviousItem(pl.weaponSelectHighlightID, FALSE, slotPicked);
+		if(pl.weaponSelectHighlightID != -1){
+			sound(pl, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
+		pSeat->m_flHUDWeaponSelectTime = time + 3;
+		}else{
+			pSeat->m_flHUDWeaponSelectTime = 0;
+		}
+	}
+	
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+// TS helper methods below. Only ever called from the gamemod
+
+
+// Makes the calls to draw the HUD.
+// Still, never called by Nuclide, so in this section it goes.
+void
+TS_HUD_DrawWeaponSelect(void)
+{
+	player pl = (player)pSeat->m_ePlayer;
+	
+	if(pSeat->m_flHUDWeaponSelectTime < time){
+		// only need to play the sound the first time,  but keep blocking
+		// the below methods.
+		if(pSeat->m_flHUDWeaponSelectTime != -1){
+			pSeat->m_flHUDWeaponSelectTime = -1;
+				
+			//printfline("HUD_DrawWeaponSelect IM closin my weapon select 1");
+			
+			TS_HUD_CloseWeaponSelect(TRUE);
+		}
+		return;
+	}
+	
+	drawPlayerInventory_buy(FALSE);
+	drawPlayerInventory_TopBar(-1, FALSE);
+	
+}//HUD_DrawWeaponSelect
+
+
+// Takes two parameters: what index in the player weapon list to start looking for the
+// next weapon from, and whether finding the next/previous weapon is restricted to some
+// slot in particular, like pressing the "2" key to go through weapons in slot 2 (on
+// reaching the last weapon, the 1st weapon in slot 2 is selected again, don't move to
+// slot 3).
+// Note that this is the same display slot. There is no slot 0.
+// A slot of "-1" will be code for, no restriction, feel free to move between slots on
+// trying to go to the previous weapon on the first of a slot, or the next weapon on
+// the last of a slot.
+// The last optional parameter, neede if freeSlotMovement is false, is what slot the
+// weapon must belong to.
+// If we pick a slot different of the currently selected weapon, we start over in the
+// new slot.
 int
-HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement, optional int forcedSlot)
+TS_HUD_DrawWeaponSelect_PreviousItem(
+	int weaponID_toStartFrom, BOOLEAN freeSlotMovement, optional int forcedSlot
+)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	
@@ -50,7 +261,7 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 	BOOLEAN canAcceptSame = FALSE;
 	
 	
-	//printfline("HUD_DrawWeaponSelect_PreviousItem: weaponID_toStartFrom:%i pl.ary_myWeapons_softMax:%i", weaponID_toStartFrom, pl.ary_myWeapons_softMax);
+	//printfline("TS_HUD_DrawWeaponSelect_PreviousItem: weaponID_toStartFrom:%i pl.ary_myWeapons_softMax:%i", weaponID_toStartFrom, pl.ary_myWeapons_softMax);
 	//TAGGG CRITICAL - why wasn't this ">=" and just ">" ???
 	if(weaponID_toStartFrom >= pl.ary_myWeapons_softMax){
 		//shouldn't be possible but just in case.
@@ -224,14 +435,16 @@ HUD_DrawWeaponSelect_PreviousItem(int weaponID_toStartFrom, BOOLEAN freeSlotMove
 			scheduleTermination = TRUE;
 		}
 		
-	}//END OF LOOP THROUGH SLOTS
+	}// LOOP THROUGH SLOTS
 	
 	//printfline("END.  weaponID_toStartFrom:%i", weaponID_toStartFrom);
 	return weaponID_toStartFrom;  //uhhhh.  what??  guess there would be no change in this odd case
-}//HUD_DrawWeaponSelect_PreviousItem
+}//TS_HUD_DrawWeaponSelect_PreviousItem
 
 int
-HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement, optional int forcedSlot)
+TS_HUD_DrawWeaponSelect_NextItem(
+	int weaponID_toStartFrom, BOOLEAN freeSlotMovement, optional int forcedSlot
+)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	
@@ -251,7 +464,7 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 	
 	int currentSlot = -1;
 	
-	//printfline("HUD_DrawWeaponSelect_NextItem weaponID_toStartFrom:%i", weaponID_toStartFrom);
+	//printfline("TS_HUD_DrawWeaponSelect_NextItem weaponID_toStartFrom:%i", weaponID_toStartFrom);
 	
 	if(weaponID_toStartFrom != -1){
 		dynaRef = pl.ary_myWeapons[weaponID_toStartFrom];
@@ -371,7 +584,7 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 					//woohoo
 					//foundNewWeapon = TRUE;
 					pl.weaponSelectHighlightAkimbo = FALSE;
-					//printfline("HUD_DrawWeaponSelect_NextItem NON-AKIMBO WEAPON %i, ITS NAME: %s", i, weaponBasicOtherRef.sDisplayName);
+					//printfline("TS_HUD_DrawWeaponSelect_NextItem NON-AKIMBO WEAPON %i, ITS NAME: %s", i, weaponBasicOtherRef.sDisplayName);
 					return i;
 				}
 			}
@@ -423,134 +636,49 @@ HUD_DrawWeaponSelect_NextItem(int weaponID_toStartFrom, BOOLEAN freeSlotMovement
 			slotOffset -= 1;  //keep the slot exactly the same
 			scheduleTermination = TRUE;
 		}
-	}//END OF LOOP THROUGH SLOTS
+	}// LOOP THROUGH SLOTS
 	
 	
 	//printfline("END. weaponID_toStartFrom:%i", weaponID_toStartFrom);
 	// is "- 1" always a good idea here?
 	return weaponID_toStartFrom - 1;  //uhhhh.  what??  guess there would be no change in this odd case
-}//HUD_DrawWeaponSelect_NextItem
+}//TS_HUD_DrawWeaponSelect_NextItem
 
 
-void
-HUD_DrawWeaponSelect_Forward(void)
+
+//if the user clicked (by calling this mehtod we assume they did), we see
+//if the user was in weapon select. If so, pick it.
+BOOL
+TS_HUD_DrawWeaponSelect_CheckClick(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
-	if(pl.iState != PLAYER_STATE::SPAWNED){
-		return;
-	}
 	
-	if(pl.weaponSelectHighlightID == -1){
-		//pick the weapon after then
-		pl.weaponSelectHighlightAkimbo = pl.weaponEquippedAkimbo;
-		pl.weaponSelectHighlightID = HUD_DrawWeaponSelect_NextItem(pl.inventoryEquippedIndex, TRUE);
+	if(pl.weaponSelectHighlightID != -1){
+		// clicking picks it then.
 		
-		//printfline("HUD_DrawWeaponSelect_Forward A? %i", pl.weaponSelectHighlightID);
+		pSeat->m_flHUDWeaponSelectTime = -1;
 		
-		if(pl.weaponSelectHighlightID != -1){
-			sound(pl, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
-			pSeat->m_flHUDWeaponSelectTime = time + 3;
-		}else{
-			pSeat->m_flHUDWeaponSelectTime = 0;
-		}
+		// don't get overridden by the draw sound (CHAN_AUTO, not CHAN_ITEM)
+		// ...or really, just don't play this at all.  The TS weapon is much more silent anyway,
+		// needs more sound changes.  Removals?
+		//sound(pl, CHAN_AUTO, "common/wpn_select.wav", 0.5f, ATTN_NONE);
+		
+		
+		TS_playerEquippedWeapon(pl, pl.weaponSelectHighlightID, pl.weaponSelectHighlightAkimbo);
+		
+		pl.weaponSelectHighlightID = -1;
+		pl.weaponSelectHighlightAkimbo = FALSE;
+		
+		return TRUE;
 	}else{
-		
-		//printfline("HUD_DrawWeaponSelect_Forward B? %i", pl.weaponSelectHighlightID);
-		
-		pl.weaponSelectHighlightID = HUD_DrawWeaponSelect_NextItem(pl.weaponSelectHighlightID, TRUE);
-		if(pl.weaponSelectHighlightID != -1){
-			sound(pl, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
-			pSeat->m_flHUDWeaponSelectTime = time + 3;
-		}else{
-			pSeat->m_flHUDWeaponSelectTime = 0;
-		}
+		return FALSE;  //didn't change the weapon.
 	}
-	
-}
-
-void
-HUD_DrawWeaponSelect_Back(void)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	if(pl.iState != PLAYER_STATE::SPAWNED){
-		return;
-	}
-	
-	if(pl.weaponSelectHighlightID == -1){
-		//pick the weapon after then
-		pl.weaponSelectHighlightAkimbo = pl.weaponEquippedAkimbo;
-		pl.weaponSelectHighlightID = HUD_DrawWeaponSelect_PreviousItem(pl.inventoryEquippedIndex, TRUE);
-		
-		//printfline("HUD_DrawWeaponSelect_Back C? %i", pl.weaponSelectHighlightID);
-		
-		if(pl.weaponSelectHighlightID != -1){
-			sound(pl, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
-			pSeat->m_flHUDWeaponSelectTime = time + 3;
-		}else{
-			pSeat->m_flHUDWeaponSelectTime = 0;
-		}
-	}else{
-		
-		//printfline("HUD_DrawWeaponSelect_Back D? %i", pl.weaponSelectHighlightID);
-		
-		pl.weaponSelectHighlightID = HUD_DrawWeaponSelect_PreviousItem(pl.weaponSelectHighlightID, TRUE);
-		if(pl.weaponSelectHighlightID != -1){
-			sound(pl, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
-		pSeat->m_flHUDWeaponSelectTime = time + 3;
-		}else{
-			pSeat->m_flHUDWeaponSelectTime = 0;
-		}
-	}
-
-}
-
-
-
-
-// TODO!!! also for this to be supported instead of HUD_DrawWeaponSelect_CheckClick,
-// need to involve "m_iHUDWeaponSelected" elsewhere in this file properly!
-// _Trigger is not even called if iHUDWeaponSelected is FALSE !
-void
-HUD_DrawWeaponSelect_Trigger(void)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	if(pl.iState != PLAYER_STATE::SPAWNED){
-		return;
-	}
-	
-	//TAGGG - TODO - was commented out in old FreeTS, doing so here too.
-	// But figure out what it needs to do, this likely wasn't pointless
-	/*
-	player pl = (player)pSeat->m_ePlayer;
-	pl.setInventoryEquippedIndex(pSeat->m_iHUDWeaponSelected);
-	sendevent("PlayerSwitchWeapon", "i", pSeat->m_iHUDWeaponSelected);
-	sound(pSeat->m_ePlayer, CHAN_ITEM, "common/wpn_select.wav", 0.5f, ATTN_NONE);
-	pSeat->m_iHUDWeaponSelected = pSeat->m_flHUDWeaponSelectTime = 0;
-	*/
-	
-	// Redirect!
-	// ACTUALLY not yet.  This redirect won't work until script
-	// involving m_iHUDWeaponSelected is properly hooked up!
-	
-	// NEVERMIND.  Attempt to stop holding down primary fire while pushing number keys
-	// to open weapon-select instantly picking a weapon.
-	// It works, but can be annoying as this completly blocks the ability to tell
-	// what is or isn't a fresh key press during that time.  Not worth it.
-	/*
-	player pl = (player)pSeat->m_ePlayer;
-	if(pSeat->m_flInputBlockTime > time){
-		return;
-	}
-	*/
-	
-	HUD_DrawWeaponSelect_CheckClick();
-}
-
+}//TS_HUD_DrawWeaponSelect_CheckClick
 
 
 // Cheap way to instantly close the weapon select area
-BOOLEAN
-HUD_CloseWeaponSelect(BOOL playOffSound)
+BOOL
+TS_HUD_CloseWeaponSelect(BOOL playOffSound)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	
@@ -574,136 +702,20 @@ HUD_CloseWeaponSelect(BOOL playOffSound)
 
 
 
-/*
-=================
-HUD_DrawWeaponSelect
-
-Drawn every frame through HUD.c
-=================
-*/
-void
-HUD_DrawWeaponSelect(void)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	
-	if ( pSeat->m_flHUDWeaponSelectTime < time) {
-		//if (pSeat->fHUDWeaponSelected) {
-		
-		// only need to play the sound the first time,  but keep blocking
-		// the below methods.
-		if(pSeat->m_flHUDWeaponSelectTime != -1){
-			pSeat->m_flHUDWeaponSelectTime = -1;
-				
-			//printfline("HUD_DrawWeaponSelect IM closin my weapon select 1");
-			
-			HUD_CloseWeaponSelect(TRUE);
-		}
-		
-		//}
-		return;
-	}
-	
-	//TAGGG - TEST THIS!!! Does the compile order allow this??
-	drawPlayerInventory_buy(FALSE);
-	
-	drawPlayerInventory_TopBar(-1, FALSE);
-	
-}//HUD_DrawWeaponSelect
-
-
-
-
-//if the user clicked (by calling this mehtod we assume they did), we see
-//if the user was in weapon select. If so, pick it.
-BOOLEAN
-HUD_DrawWeaponSelect_CheckClick(void)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	if(pl.iState != PLAYER_STATE::SPAWNED){
-		HUD_CloseWeaponSelect(FALSE);
-		return FALSE;
-	}
-	
-	player pl = (player)pSeat->m_ePlayer;
-	
-	if(pl.weaponSelectHighlightID != -1){
-		// clicking picks it then.
-		
-		pSeat->m_flHUDWeaponSelectTime = -1;
-		
-		// don't get overridden by the draw sound (CHAN_AUTO, not CHAN_ITEM)
-		// ...or really, just don't play this at all.  The TS weapon is much more silent anyway,
-		// needs more sound changes.  Removals?
-		//sound(pl, CHAN_AUTO, "common/wpn_select.wav", 0.5f, ATTN_NONE);
-		
-		
-		TS_playerEquippedWeapon(pl, pl.weaponSelectHighlightID, pl.weaponSelectHighlightAkimbo);
-		
-		pl.weaponSelectHighlightID = -1;
-		pl.weaponSelectHighlightAkimbo = FALSE;
-		
+// returns TRUE if this call should stop due to being called before the player has finished
+// loading/connecting, or isn't in the SPAWNED state.
+BOOL
+TS_HUD_earlyTerminateCheck(void){
+	entity plEnt = pSeat->m_ePlayer;
+	// even if "pl" is NULL, or the world-ent from being that early on in the connection,
+	// this should still be ok.
+	if(getplayerkeyfloat(plEnt.entnum - 1, "done_connecting") == 0){
 		return TRUE;
-	}else{
-		return FALSE;  //didn't change the weapon.
 	}
-}//HUD_DrawWeaponSelect_CheckClick
-
-
-void
-HUD_DrawWeaponSelect_Last(void)
-{
-	//TAGGG - TODO.  Support this.
-	/*
-	player pl = (player)pSeat->m_ePlayer;
-	if (pl.g_items & g_weapons[pSeat->m_iOldWeapon].id) {
-		pl.setInventoryEquippedIndex(pSeat->m_iOldWeapon);
-		sendevent("PlayerSwitchWeapon", "i", pSeat->m_iOldWeapon);
-	}
-	*/
-}
-
-
-
-void
-HUD_SlotSelect(int slot)
-{
-	player pl = (player)pSeat->m_ePlayer;
+	player pl = (player)plEnt;
 	if(pl.iState != PLAYER_STATE::SPAWNED){
-		return;
+		return TRUE;
 	}
-	
-	int slotPicked = slot+1;
-	
-		
-	// Keep track of the currently open slot. Navigate through it...
-	// move to another slot if needed
-	
-	//printlinef("HUD_SlotSelect: %i maxweap:%i classname:%s\n", slot, pl.ary_myWeapons_softMax, pl.classname);
-	//printfline("weapon slot currently highlighted: %i", pl.weaponSelectHighlightID);
-	
-	if(pl.weaponSelectHighlightID == -1){
-		//pick the weapon after then
-		
-		pl.weaponSelectHighlightAkimbo = pl.weaponEquippedAkimbo;
-		
-		
-		pl.weaponSelectHighlightID = HUD_DrawWeaponSelect_PreviousItem(-1, FALSE, slotPicked);
-		if(pl.weaponSelectHighlightID != -1){
-			sound(pl, CHAN_ITEM, "common/wpn_hudon.wav", 0.5, ATTN_NONE);
-			pSeat->m_flHUDWeaponSelectTime = time + 3;
-		}else{
-			pSeat->m_flHUDWeaponSelectTime = 0;
-		}
-	}else{
-		// uhhhh...  try going previous of -1 then?  Hits the first weapon we got I think.
-		pl.weaponSelectHighlightID = HUD_DrawWeaponSelect_PreviousItem(pl.weaponSelectHighlightID, FALSE, slotPicked);
-		if(pl.weaponSelectHighlightID != -1){
-			sound(pl, CHAN_ITEM, "common/wpn_moveselect.wav", 0.5, ATTN_NONE);
-		pSeat->m_flHUDWeaponSelectTime = time + 3;
-		}else{
-			pSeat->m_flHUDWeaponSelectTime = 0;
-		}
-	}
-	
+	return FALSE;
 }
 

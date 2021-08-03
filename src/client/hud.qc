@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void HUD_DrawWeaponSelect(void);
 
 // Nope, HUD/UI-related precaches in client/precache.qc instead
 // ...mostly, keeping this one here?
@@ -64,7 +63,7 @@ HUD_Draw(void)
 
 		/* little point in not drawing these, even if you don't have a suit */
 		Weapons_DrawCrosshair();
-		HUD_DrawWeaponSelect();
+		TS_HUD_DrawWeaponSelect();
 		Obituary_Draw();
 		Textmenu_Draw();
 		

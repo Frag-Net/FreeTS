@@ -14,7 +14,6 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-//TAGGG - Definitely change this!!!
 // Do we need to use this for powerups? anything else new?
 
 enum

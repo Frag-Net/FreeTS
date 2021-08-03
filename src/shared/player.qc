@@ -200,7 +200,6 @@ player::ReceiveEntity(float new, float fl)
 	shotgunReloadIndexQueued = readbyte();
 	shotgunWaitingForPump = readbyte();
 	//shotgunReload2_ammoLoadDelay = readbyte();
-	//shotgunNextIndexTime = readbyte();
 	//shotgunAddAmmoTime = readbyte();
 	//shotgunAddAmmoSoundTime = readbyte();
 	
@@ -308,6 +307,10 @@ player::PredictPreFrame(void)
 	SAVE_STATE(grenadeFireIndex);
 	SAVE_STATE(grenadeToss);
 	
+	SAVE_STATE(shotgunReloadIndex);
+	SAVE_STATE(shotgunReloadIndexQueued);
+	SAVE_STATE(shotgunWaitingForPump);
+	
 }
 
 /*
@@ -372,6 +375,11 @@ player::PredictPostFrame(void)
 	ROLL_BACK(akimboDualFireToleranceTime);
 	ROLL_BACK(grenadeFireIndex);
 	ROLL_BACK(grenadeToss);
+	
+	ROLL_BACK(shotgunReloadIndex);
+	ROLL_BACK(shotgunReloadIndexQueued);
+	ROLL_BACK(shotgunWaitingForPump);
+	
 	
 }
 
@@ -482,6 +490,11 @@ player::EvaluateEntity(void)
 	SAVE_STATE(akimboDualFireToleranceTime);
 	SAVE_STATE(grenadeFireIndex);
 	SAVE_STATE(grenadeToss);
+	
+	
+	SAVE_STATE(shotgunReloadIndex);
+	SAVE_STATE(shotgunReloadIndexQueued);
+	SAVE_STATE(shotgunWaitingForPump);
 	
 }
 
@@ -616,7 +629,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, shotgunReloadIndexQueued );
 	WriteByte(MSG_ENTITY, shotgunWaitingForPump );
 	//WriteByte(MSG_ENTITY, shotgunReload2_ammoLoadDelay );
-	//WriteByte(MSG_ENTITY, shotgunNextIndexTime );
 	//WriteByte(MSG_ENTITY, shotgunAddAmmoTime );
 	//WriteByte(MSG_ENTITY, shotgunAddAmmoSoundTime );
 	
@@ -861,7 +873,6 @@ player::reset(BOOLEAN resetInventory){
 	shotgunReloadIndexQueued = 0;
 	shotgunWaitingForPump = FALSE;
 	shotgunReload2_ammoLoadDelay = -1;
-	shotgunNextIndexTime = -1;
 	shotgunAddAmmoTime = -1;
 	shotgunAddAmmoSoundTime = -1;
 	
@@ -873,6 +884,7 @@ player::reset(BOOLEAN resetInventory){
 	shotgunReload3_Duration = -1;
 	
 	//Grenade stuff
+	printfline("I set grenadeFireIndex to -1, D!");
 	grenadeFireIndex = -1;
 	grenadeHeldDuration = -1;
 	grenadeSpawnTime = -1;
@@ -1204,6 +1216,7 @@ player::frameThink_fromServer(void){
 
 
 #ifdef CSQC
+
 // Note that these pre/postThink's aren't game events, they're just called by _base/entry.c before/after
 // prediction accordingly, and every single rendered frame.
 // Unlike serverside preThink / postThink, which (I think?) are called independent of any logic frame-rate on the server.
@@ -1213,6 +1226,7 @@ player::preThink(void){
 	
 	if(autocvar_cl_printoutspam == 1){
 		printfline("My state: %d", iState);
+		gFun_UI_EventGrabber_DebugMethod();
 	}
 	
 	

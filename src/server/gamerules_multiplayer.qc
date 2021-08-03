@@ -1120,7 +1120,11 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	//pl.deaths = 0;
 	//pl.team = TEAM_SPECTATOR;
 	
+	
+	
 	// immediately put us into spectating mode
+	// (iState forced to a wrong value to stop MakeSpectator from being skipped)
+	pl.iState = PLAYER_STATE::SPAWNED;
 	PlayerMakeSpectator(pl);
 	// Use our game's custom ObserverCam instead.
 	Game_Spawn_ObserverCam(pl);
@@ -1137,6 +1141,7 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	forceinfokey(pl, "*team", "0"); 
 	forceinfokey(pl, "*deaths", "0"); //ftos(pl.deaths));
 	
+	forceinfokey(pl, "done_connecting", "1");
 }
 
 

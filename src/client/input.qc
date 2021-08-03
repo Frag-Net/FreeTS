@@ -152,28 +152,25 @@ GameClient_PlayerInputRaw(void)
 		pSeat->m_flInputBlockTime = time + 0.2;
 	}
 	
-	// we're changing this up a little.
-	// We'll call a method to let weapon-select related script determine whether
-	// the player is going through weapon selection when they clicked, not here.
-	// That is we just call it if a click was detected, it does the rest.
-	// It will return TRUE if it caused the current weapon to be changed
-	// (since we don't want to send a fire order below like left-clicking usually does)
-	// NO NEED FOR THIS CHECK, Nuclide does HUD_DrawWeaponSelect_Trigger on detecting a
-	// click while something is selected in weapon select.
-	// WAIT!  Keep for now, other things have to be changed internally for _Trigger to
-	// work right.
 	
+	// No need to check for calling TS_HUD_DrawWeaponSelect_CheckClick or
+	// HUD_DrawWeaponSelect_Trigger here, Nuclide calls the latter which works
+	// fine.
+	
+	
+	// CRITICAL.
+	// DISABLED.
+	// This is trying to close weaponselect on detecting a right-click, but it 
+	// has issues.
+	// Idea is, this needs to *absorb* the right-click, and stop it from reaching
+	// the rest of the client and server to work with weapons, like a change-ironsight
+	// order.
+	// This might stop the client weapon logic from seeing the right click, but not
+	// the server.
+	// It appears there is no way to stop that without the FTE built-in event method 
+	// CSQC_Input_Frame (defined by Nuclide) letting the gamemod block right-click
+	// inputs per some condition, like weapon-select being up.
 	/*
-	// Nuclide calls the Trigger method fine again
-	if(input_buttons & INPUT_BUTTON0){
-		if(HUD_DrawWeaponSelect_CheckClick()){
-			input_buttons = 0;
-			pSeat->m_flInputBlockTime = time + 0.2;
-		}
-	}
-	*/
-	
-	//TAGGG - this block is all new.   apparently this is right-click.
 	if(pSeat->m_iInputAttack2){   //input_buttons & INPUT_BUTTON3){
 		if(HUD_CloseWeaponSelect(TRUE)){
 			pSeat->m_flInputBlockTime = time + 0.2;
@@ -184,6 +181,7 @@ GameClient_PlayerInputRaw(void)
 			//pSeat->m_iInputAttack2 = TRUE;
 		}
 	}
+	*/
 	
 }//GameClient_PlayerInputRaw
 

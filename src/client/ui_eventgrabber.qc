@@ -46,6 +46,11 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 		}
 		pSeatLocal->m_inputKeyDown = flKey;
 		pSeatLocal->m_inputKeyTapped = flKey;  //lasts only this frame
+		
+		if(pSeatLocal->fVGUI_Display == BUYSIDEMENU){
+			BuySideMenu_onInputEvent();
+		}
+		
 		break;
 	case IE_KEYUP:
 		if (flKey == K_MOUSE1) {
@@ -56,9 +61,6 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 	}
 	
 	
-	if(pSeatLocal->fVGUI_Display == BUYSIDEMENU){
-		BuySideMenu_onInputEvent();
-	}
 	
 }
 
@@ -72,6 +74,11 @@ var CUIEventGrabber g_UI_EventGrabber;
 void gFun_UI_EventGrabber_Initialize(void){
 	g_UI_EventGrabber = spawn(CUIEventGrabber);
 	g_uiDesktop.Add(g_UI_EventGrabber);
+	
+	printfline("gFun_UI_EventGrabber_Initialize: Added to VGUI.  Right?");
+	
+	printfline("(g_vguiWidgetCount: %i)", g_vguiWidgetCount);
+	
 	
 	// make it "visible", or rather, "active" for grabbing input events?
 	// If this flag is missing it gets overlooked in ui.qc's run-through
@@ -87,3 +94,10 @@ void gFun_UI_EventGrabber_Show(void){
 void gFun_UI_EventGrabber_Hide(void){
 	g_UI_EventGrabber.FlagRemove(1);
 }
+
+
+
+void gFun_UI_EventGrabber_DebugMethod(void){
+		printfline("HOW IS EVENGRAB DOIN %i %i", g_UI_EventGrabber.m_iFlags, (g_UI_EventGrabber.m_iFlags & 1) );
+}
+

@@ -422,6 +422,8 @@ void weapon_base_burstFire(player localPlayer, weapondata_basic_t* basePRef, wea
 BOOL weapon_shotgun_onInterrupt(player localPlayer, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon){
 	player pl = localPlayer;
 	
+	
+	
 	if(pl.shotgunReloadIndex == 0){
 		// nothing to interrupt.
 		return FALSE;
@@ -438,6 +440,7 @@ BOOL weapon_shotgun_onInterrupt(player localPlayer, weapondata_basic_t* basePRef
 		}
 	//}
 	
+	
 	return TRUE;
 }//END OF weapon_shotgun_onInterrupt
 
@@ -451,7 +454,6 @@ void weapon_shotgun_reload(player localPlayer, weapondata_basic_t* basePRef, wea
 	weapondata_gun_t baseRef = *((weapondata_gun_t*)basePRef);
 	
 	//printfline("weapon_shotgun_reload %d %i", pl.isReloading, pl.shotgunReloadIndex);
-	
 	
 	// Mostly to forbid reloading while doing a pump-mode pump followed by firing, bit jarring looking
 	// to interrupt that.
@@ -506,15 +508,11 @@ void weapon_shotgun_reload(player localPlayer, weapondata_basic_t* basePRef, wea
 	
 	pl.shotgunReloadIndex = 1;
 	
-	// was CLIENT Only
-	//pl.shotgunNextIndexTime = time + pl.shotgunReload1_Duration;
-	
 	//printfline("HERES THAT shotgunReload1_Duration %.2f", pl.shotgunReload1_Duration);
 	weapon_base_setWholeAttackDelay(pl, pl.shotgunReload1_Duration);
 	
 	pl.shotgunReloadIndexQueued = 2;
 	
-	//printfline("whuzzdat %i %d", pl.shotgunReload1_seq, pl.shotgunReload1_Duration);
 	TS_Weapons_ViewAnimation(pl.shotgunReload1_seq, pl.shotgunReload1_Duration );
 
 }//weapon_shotgun_reload
@@ -534,7 +532,6 @@ void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* ba
 	if(pl.shotgunReloadIndex > 0){
 		//reloading at all only.
 		
-		////if(time >= pl.shotgunNextIndexTime){
 		if(pl.w_attack_next <= 0){
 			//time has surpassed the time to the next phase?  Check the pl.shotgunReloadIndexQueued.
 			
@@ -561,8 +558,6 @@ void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* ba
 					
 					pl.shotgunReloadIndex = 3;
 					TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
-					////pl.shotgunNextIndexTime = time + pl.shotgunReload3_Duration;
-					//pl.w_attack_next = pl.shotgunReload3_Duration;
 					weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
 
 					
@@ -574,8 +569,6 @@ void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* ba
 					TS_Weapons_ViewAnimation(pl.shotgunReload2_seq, pl.shotgunReload2_Duration);
 					
 					pl.shotgunReloadIndex = 2;
-					////pl.shotgunNextIndexTime = time + pl.shotgunReload2_Duration;
-					//pl.w_attack_next = pl.shotgunReload2_Duration;
 					weapon_base_setWholeAttackDelay(pl, pl.shotgunReload2_Duration);
 					
 					pl.shotgunReloadIndexQueued = 2;
@@ -596,14 +589,12 @@ void weapon_shotgun_onThink_reloadLogic(player localPlayer, weapondata_gun_t* ba
 				//end anim
 				
 				TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
-				////pl.shotgunNextIndexTime = time + pl.shotgunReload3_Duration;
-				//pl.w_attack_next = pl.shotgunReload3_Duration;
 				weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
 				
 				pl.shotgunReloadIndexQueued = 0;
 			}
 			
-		}//END OF time >= pl.shotgunNextIndexTime
+		}// w_attack_next <= 0
 		
 		
 		if(pl.shotgunReloadIndex == 2){

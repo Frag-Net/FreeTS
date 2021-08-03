@@ -42,6 +42,8 @@ VGUI_ChangeScreen(VGUI_SCREEN arg_NewScreenID)
 {
 	pSeatLocal->fVGUI_Display = (float)arg_NewScreenID;
 	
+	printfline("VGUI_ChangeScreen:: arg_NewScreenID? %d", arg_NewScreenID);
+	
 	if(arg_NewScreenID <= VGUI_SCREEN::NONE){
 		// If at NONE or below, also do nothing. This has no "vOnInit" behavior.
 		// Besides obligatory cleanup if we choose (which may as well be done right here)

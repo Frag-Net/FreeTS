@@ -249,7 +249,7 @@ class player:base_player
 	// 1 = doing reload2 (intermediate; ammo loading)
 	// 2 = doing reload3 (end)
 	// ALSO!  Call Byte vars 'floats' because FTE makes 'readbvte' give a float.  I... just, don't, know.
-	float shotgunReloadIndex;
+	PREDICTED_FLOAT(shotgunReloadIndex);
 	
 	// Not networked!  For keeping track of changes to shotgunReloadIndex outside of the client directly,
 	// like if the client and server are waiting for a reload anim to finish, but the server finishes first
@@ -262,7 +262,7 @@ class player:base_player
 	// reload2 is completely interruptable at any point, but reload1 and
 	// reload3 have to finish completely before changing to a new animation.
 	// Left-clicking during reload1 will now terminate 
-	float shotgunReloadIndexQueued;
+	PREDICTED_FLOAT(shotgunReloadIndexQueued);
 	
 	// In pump-action mode, set to TRUE after firing the shotgun. The next click pumps
 	// instead.
@@ -270,7 +270,8 @@ class player:base_player
 	// Changing to semi-fire mode alone however, doesn't (changing fire modes without firing
 	// leaves this flag unaffected).
 	// Reloading also disables this flag, as it always ends in a visual pump.
-	BOOL shotgunWaitingForPump;
+	// (was BOOL)
+	PREDICTED_FLOAT(shotgunWaitingForPump);
 	
 	// how long into the 2nd reload do we actually load a bullet into the shotgun?
 	float shotgunReload2_ammoLoadDelay;
@@ -278,7 +279,6 @@ class player:base_player
 	// When do I want to move on to the next phase?
 	// For reload2 without a changed shotgunReloadIndexQueued or seeing the shotgun is full,
 	// it wants to repeat to put more bullets in.
-	float shotgunNextIndexTime;
 	float shotgunAddAmmoTime;
 	float shotgunAddAmmoSoundTime;
 	

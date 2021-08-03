@@ -1,6 +1,7 @@
 
 
-BOOLEAN TS_Weapon_PrimaryAttackRelease(player localPlayer, BOOLEAN hasAmmo){
+BOOL
+TS_Weapon_PrimaryAttackRelease(player localPlayer, BOOL hasAmmo){
 	// WARNING!  This comment is really out of date, fWeaponEventPlayer is no longer a thing
 	// ------------------------------
 	// what are "fWeaponEventPlayer" and "player_localentnum"? 
@@ -21,7 +22,8 @@ BOOLEAN TS_Weapon_PrimaryAttackRelease(player localPlayer, BOOLEAN hasAmmo){
 }
 
 
-BOOLEAN TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOLEAN hasAmmo){
+BOOL
+TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOL hasAmmo){
 	player pl = localPlayer;
 	
 	if(pl.inventoryEquippedIndex == -1){
@@ -32,7 +34,7 @@ BOOLEAN TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOLEAN hasAmmo){
 	weapondata_basic_t* basicP = pl.getEquippedWeaponData();
 	
 	return (*basicP).vOnSecondaryAttackRelease(pl, dynaRef, hasAmmo);
-}//END OF TS_Weapon_SecondaryAttackRelease
+}// TS_Weapon_SecondaryAttackRelease
 
 
 
@@ -40,7 +42,8 @@ BOOLEAN TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOLEAN hasAmmo){
 // even if Weapons_Draw itself is skipped in the clientside weapon-select route.
 // This does get called by ts/client/view.qc calling Weapons_Draw for clientside though,
 // so treat this as 'whatever I want to happen on drawing a weapon'.
-void TS_Weapon_Draw_extra(void){
+void
+TS_Weapon_Draw_extra(void){
 	player pl = (player)self;
 	weapondynamic_t dynaRef;
 	
@@ -57,8 +60,8 @@ void TS_Weapon_Draw_extra(void){
 }
 
 
-//CLONED FROM weapon.h
-void TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOLEAN useAkimbo ) {
+void
+TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOL useAkimbo ) {
 	player pl = localPlayer;
 	//weapondynamic_t dynaRef;
 	//weapondynamic_t dynaRefPRE;
@@ -110,9 +113,9 @@ void TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOLEAN useAkimbo ) 
 //#endif
 	
 	// Is that necessary?
-	#ifdef CLIENT
-	HUD_CloseWeaponSelect(TRUE);
-	#endif
+#ifdef CLIENT
+	TS_HUD_CloseWeaponSelect(TRUE);
+#endif
 
 }//TS_Weapon_Draw
 
@@ -124,7 +127,8 @@ void TS_Weapon_Draw(player localPlayer, int weaponEquipped, BOOLEAN useAkimbo ) 
 // on removing themselves on running out of ammo.
 // Just remember that spawning the actual entitiy won't be happening clientside in any form.
 #ifdef SSQC
-void TS_Weapon_Drop() {
+void
+TS_Weapon_Drop() {
 	player pl = (player)self;
 	
 	if(pl.inventoryEquippedIndex == -1){
@@ -139,7 +143,6 @@ void TS_Weapon_Drop() {
 	// weapon know that it's about to be unequipped.
 	if(currentWeaponMem != -1){
 		pl.dropWeapon(currentWeaponMem, FALSE);
-		//}//END OF pl.inventoryEquippedIndex check
 	}
 	////////////////////////////////////
 	
@@ -149,13 +152,10 @@ void TS_Weapon_Drop() {
 
 
 
-
-
 // CRITICAL!  TS_playerEquippedWeapon methods dummied out to stop conflicts with
 // the new Nuclide way
-
-void TS_playerEquippedWeapon_Shared(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo){
-	
+void
+TS_playerEquippedWeapon_Shared(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
 	/*
 	if(localPlayer.inventoryEquippedIndex == newWeaponEquipped && useAkimbo == localPlayer.weaponEquippedAkimbo ){
 		// equipping the same weapon?  Ignore this call then!
@@ -174,7 +174,8 @@ void TS_playerEquippedWeapon_Shared(player localPlayer, int newWeaponEquipped, B
 // on a change like this.
 // Note that viewmodels check for "pl.inventoryEquippedIndex" being changed in ts/client/view.c.
 // This is OK.  pl.inventoryEquippedIndex is updated from server to client in client & server/player.c, read/sendEntity methods.  So everything works out.
-void _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo){
+void
+_TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
 	//return;
 	player pl = localPlayer;
 	
@@ -185,11 +186,13 @@ void _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN
 
 
 // The client set the equippedWeapon, and needs to tell the server to keep it in synch
-// NOTICE - if we commit the change this very moment, it actually messes with prediction stuff.
+// NOTICE - if we commit the change this very moment, it actually messes with
+// prediction stuff.
 // So don't do any real client changes from calls when the client starts them.
-// The client will tell the server to do something, and THEN the server relays that to the client.
-// Whatever just go with it.
-void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo){
+// The client will tell the server to do something, and THEN the server relays that to
+// the client. Whatever just go with it.
+void
+TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
 	//pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
 	
 	//printfline("WELL??! %i %i %d %d", localPlayer.inventoryEquippedIndex, newWeaponEquipped, useAkimbo, localPlayer.weaponEquippedAkimbo);
@@ -214,16 +217,16 @@ void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN 
 #endif
 #ifdef SSQC
 // that's it really serverside.
-int _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo){
+void
+_TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
 	player pl = localPlayer;
 	
 	TS_Weapon_Draw(pl, newWeaponEquipped, useAkimbo);
-	
-	return newWeaponEquipped;  //in case any changes were made to this, let the caller know
 }
 
 //The server set the equippedWeapon, and needs to tell the client to keep it in synch
-void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo){
+void
+TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo){
 	
 	_TS_playerEquippedWeapon(localPlayer, newWeaponEquipped, useAkimbo);
 	
@@ -238,7 +241,8 @@ void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN 
 // of the updated state.  Even though the client initiated the call in this case.
 // The server can initiate the call too.
 // Either side can call "TS_playerEquippedWeapon" to get the orders right.
-void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOLEAN useAkimbo){
+void
+CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOL useAkimbo){
 	player pl = (player)self;
 	
 	TS_playerEquippedWeapon(pl, newWeaponEquipped, useAkimbo);
@@ -249,12 +253,10 @@ void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOLEAN useAkimbo){
 
 
 
-
-
 #ifdef SSQC
-//SERVER ONLY.  Send a request to change the animation of the viewmodel directly.
-void TS_PlayInsertShellSound(player localPlayer){
-	
+// Send a request to change the animation of the viewmodel directly.
+void
+TS_PlayInsertShellSound(player localPlayer){
 	/*
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EVENT_TS::PLAY_INSERT_SHELL_SND );
@@ -264,11 +266,13 @@ void TS_PlayInsertShellSound(player localPlayer){
 }
 
 #else
-void TS_PlayInsertShellSound(player localPlayer){
+void
+TS_PlayInsertShellSound(player localPlayer){
 	EV_TS_PlayInsertShellSound(localPlayer);
 }
 //CLIENTSIDE.  now what do I do over here?
-void EV_TS_PlayInsertShellSound(player localPlayer){
+void
+EV_TS_PlayInsertShellSound(player localPlayer){
 	//TODO - lower attenuation maybe?
 	// Nevermind, this is a client-only sound for now anyway.
 	localsound("weapons/insert-shell.wav", CHAN_AUTO, 1.0f);
@@ -282,7 +286,8 @@ void EV_TS_PlayInsertShellSound(player localPlayer){
 // DUMMIED - nevermind that for now, assuming the logic is called from server/client
 // individually like a lot of weapon's logic.
 #ifdef SSQC
-void TS_resetViewModel(player localPlayer){
+void
+TS_resetViewModel(player localPlayer){
 	
 	/*
 	//localPlayer.lasersightUnlockTime = FALSE;  //reset
@@ -298,10 +303,12 @@ void TS_resetViewModel(player localPlayer){
 }
 #else
 //CLIENT
-void TS_resetViewModel(player localPlayer){
+void
+TS_resetViewModel(player localPlayer){
 	EV_TS_resetViewModel();
 }
-void EV_TS_resetViewModel(void){
+void
+EV_TS_resetViewModel(void){
 	player pl = (player)self;
 	pSeat->m_iLastWeapon = -1;  // any weapon slot choice will refresh the view model.
 	pl.lasersightUnlockTime = FALSE;
@@ -313,8 +320,8 @@ void EV_TS_resetViewModel(void){
 
 // Want to reset the player between spawns?
 #ifdef SSQC
-void TS_resetPlayer(player localPlayer, BOOLEAN resetInventory){
-	
+void
+TS_resetPlayer(player localPlayer, BOOL resetInventory){
 	if(localPlayer == NULL){
 		return;
 	}
@@ -334,7 +341,8 @@ void TS_resetPlayer(player localPlayer, BOOLEAN resetInventory){
 }
 #else
 //CLIENT
-void EV_TS_resetPlayer(player localPlayer, BOOLEAN resetInventory){
+void
+EV_TS_resetPlayer(player localPlayer, BOOL resetInventory){
 	if(localPlayer == NULL){
 		return;
 	}
@@ -350,23 +358,23 @@ void EV_TS_resetPlayer(player localPlayer, BOOLEAN resetInventory){
 
 
 #ifdef CLIENT
-// Called by the GameRules, PlayerDeath, for the client to do something as soon as possible.
-void EV_PlayerDeath(void){
+// Called by the GameRules, PlayerDeath, for the client to do something as soon as
+// possible.
+void
+EV_PlayerDeath(void){
 	printfline("EV_PlayerDeath");
-	// Require a tiny amount of time and a mouse release before a respawn, so that dying
-	// with the mouse held down isn't enough to trigger a respawn request.
+	// Require a tiny amount of time and a mouse release before a respawn, so that
+	// dying with the mouse held down isn't enough to trigger a respawn request.
 	pSeatLocal->m_bNeedPrimaryRelease = TRUE;
 	pSeatLocal->m_flReleaseTime = time + 0.15;
 	
 	// Unfortunately not as effective as it may look. 
-	// On the player using "kill" in console, a CSQC_Parse_Damage call happens shortly after
-	// this PlayerDeath one, somehow.  Stopping damage-drawing on the "*dead" key being 1 works.
+	// On the player using "kill" in console, a CSQC_Parse_Damage call happens shortly
+	// after this PlayerDeath one, somehow.  Stopping damage-drawing on the "*dead" key
+	// being 1 works.
 	pSeat->m_flDamageAlpha = 0;
 }
 #endif
-
-
-
 
 
 
@@ -383,9 +391,10 @@ void _TS_playerDropWeapon(player localPlayer){
 }
 */
 // TODO.  Do anything clientside here too, maybe?  Unsure.
-void TS_playerDropWeapon(void){
+void
+TS_playerDropWeapon(void){
 	sendevent("TS_playerDropWeapon", "");
-}//END OF TS_playerDropWeapon
+}// TS_playerDropWeapon
 /*
 //This is a received call from the server - no need to update it back
 //NOTICE - this is the callback telling us to do something.  Yes do something.
@@ -399,7 +408,8 @@ void EV_TS_playerDropWeapon(player localPlayer){
 #endif
 #ifdef SSQC
 //that's it really serverside.
-void _TS_playerDropWeapon(void){
+void
+_TS_playerDropWeapon(void){
 	player pl = (player)self;
 	
 	TS_Weapon_Drop();
@@ -407,7 +417,8 @@ void _TS_playerDropWeapon(void){
 }//_TS_playerDropWeapon
 
 //The server set the equippedWeapon, and needs to tell the client to keep it in synch
-void TS_playerDropWeapon(void){
+void
+TS_playerDropWeapon(void){
 	player pl = (player)self;
 	//pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
 	_TS_playerDropWeapon();
@@ -424,7 +435,8 @@ void TS_playerDropWeapon(void){
 //of the updated state.  Even though the client initiated the call in this case.
 //The server can initiate the call too.
 //Either side can call "TS_playerEquippedWeapon" to get the orders right.
-void CSEv_TS_playerDropWeapon_(){
+void
+CSEv_TS_playerDropWeapon_(){
 	player pl = (player)self;
 	
 	TS_playerDropWeapon();
@@ -436,14 +448,17 @@ void CSEv_TS_playerDropWeapon_(){
 
 #ifdef SERVER
 // Server receives the message
-void CSEv_TS_playerChangeFiremode_(void){
+void
+CSEv_TS_playerChangeFiremode_(void){
 	_TS_playerChangeFiremode();
 }
 #endif
 
 // For now, only the client will expect direct calls to these.
-// Client sends the input, server receives a message in response to perform things on its end too.
-void TS_playerChangeFiremode(void){
+// Client sends the input, server receives a message in response to perform things on
+// its end too.
+void
+TS_playerChangeFiremode(void){
 	player pl = (player)self;
 	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
 		//well gee that is no good
@@ -459,8 +474,8 @@ void TS_playerChangeFiremode(void){
 }
 
 
-void _TS_playerChangeFiremode(void ) {
-	
+void
+_TS_playerChangeFiremode(void ) {
 	player pl = (player)self;
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
@@ -485,7 +500,6 @@ void _TS_playerChangeFiremode(void ) {
 		if( (*fireModeVar) == basicRef.iBitsFireModes){
 			return;
 		}
-		
 		
 		//push the bits up until we get a match
 		int originalChoice;
@@ -520,24 +534,24 @@ void _TS_playerChangeFiremode(void ) {
 		}
 		
 		//couldn't change? only fire mode... hopefully anyways.
-	}//END OF "is a gun" - check
+	}// "is a gun" - check
 	
 }//_TS_playerChangeFiremode
 
 
 
-
-
 #ifdef SERVER
 // Server receives the message
-void CSEv_TS_playerUseItems_(void){
+void
+CSEv_TS_playerUseItems_(void){
 	_TS_playerUseItems();
 }
 #endif
 
 // For now, only the client will expect direct calls to these.
 // Client sends the input, server receives a message in response to perform things on its end too.
-void TS_playerUseItems(void){
+void
+TS_playerUseItems(void){
 	player pl = (player)self;
 	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
 		//well gee that is no good
@@ -555,7 +569,8 @@ void TS_playerUseItems(void){
 
 // For making the lasersight & flashlights toggle on/off with the "n" key by default.  Cycle through the combos of
 // off/on.
-void _TS_playerUseItems(void){
+void
+_TS_playerUseItems(void){
 	player pl = (player)self;
 	
 	if(pl.inventoryEquippedIndex != -1){
@@ -635,12 +650,12 @@ void _TS_playerUseItems(void){
 				sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_UNICAST, 0);
 				#endif
 				*/
-			}//END OF bitcount checks
+			}// bitcount checks
 			
 			
 			
-		}///END OF _GUN or _IRONSIGHT type checks
-	}//END OF weaponEquippedID check
+		}/// _GUN or _IRONSIGHT type checks
+	}// weaponEquippedID check
 	
 	
 	printfline("CSEv_TS_playerUseItems_");
@@ -651,14 +666,16 @@ void _TS_playerUseItems(void){
 
 #ifdef SERVER
 // Server receives the message
-void CSEv_TS_playerUsePowerup_(void){
+void
+CSEv_TS_playerUsePowerup_(void){
 	_TS_playerUsePowerup();
 }
 #endif
 
 // For now, only the client will expect direct calls to these.
 // Client sends the input, server receives a message in response to perform things on its end too.
-void TS_playerUsePowerup(void){
+void
+TS_playerUsePowerup(void){
 	player pl = (player)self;
 	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
 		//well gee that is no good
@@ -676,7 +693,8 @@ void TS_playerUsePowerup(void){
 
 // TODO.
 // Applies the currently equipped player powerup if there is one.
-void _TS_playerUsePowerup(void){
+void
+_TS_playerUsePowerup(void){
 	player pl = (player)self;
 	
 	// ...
@@ -689,14 +707,16 @@ void _TS_playerUsePowerup(void){
 
 #ifdef SERVER
 // Server receives the message
-void CSEv_TS_playerCallAlt1_(void){
+void
+CSEv_TS_playerCallAlt1_(void){
 	_TS_playerCallAlt1();
 }
 #endif
 
 // For now, only the client will expect direct calls to these.
 // Client sends the input, server receives a message in response to perform things on its end too.
-void TS_playerCallAlt1(void){
+void
+TS_playerCallAlt1(void){
 	player pl = (player)self;
 	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
 		//well gee that is no good
@@ -715,7 +735,8 @@ void TS_playerCallAlt1(void){
 // middle mouse wheel?  Use for some stunts, at least ones that don't necessarily involve being
 // mid-air.
 // double-tapping space does that.  I think?
-void _TS_playerCallAlt1( void ) {
+void
+_TS_playerCallAlt1( void ) {
 	player pl = (player)self;
 	
 	// ...
@@ -727,14 +748,16 @@ void _TS_playerCallAlt1( void ) {
 
 #ifdef SERVER
 // Server receives the message
-void CSEv_TS_playerCallAlt2_(void){
+void
+CSEv_TS_playerCallAlt2_(void){
 	_TS_playerCallAlt2();
 }
 #endif
 
 // For now, only the client will expect direct calls to these.
 // Client sends the input, server receives a message in response to perform things on its end too.
-void TS_playerCallAlt2(void){
+void
+TS_playerCallAlt2(void){
 	player pl = (player)self;
 	if(pl.classname == "spectator" || pl.inventoryEquippedIndex == -1){
 		//well gee that is no good
@@ -751,7 +774,8 @@ void TS_playerCallAlt2(void){
 
 
 // coldcock / weapon-melee?
-void _TS_playerCallAlt2(void){
+void
+_TS_playerCallAlt2(void){
 	player pl = (player)self;
 	printfline("CSEv_TS_playerCallAlt2_");
 	
@@ -778,7 +802,8 @@ void _TS_playerCallAlt2(void){
 ///////////////////////////////////////////////////////////////////////////////////////
 // !!! DEBUG STUFF?
 
-void CSEv_TS_Debug_getOrigin_(void ) {
+void
+CSEv_TS_Debug_getOrigin_(void ) {
 	player pl = (player)self;
 	if(pl != NULL){
 		printfline("Client origin: %.1f %.1f %.1f", pl.origin.x, pl.origin.y, pl.origin.z);
@@ -788,7 +813,8 @@ void CSEv_TS_Debug_getOrigin_(void ) {
 	
 }
 
-void CSEv_TS_Debug_getAngle_(void ) {
+void
+CSEv_TS_Debug_getAngle_(void ) {
 	player pl = (player)self;
 	if(pl != NULL){
 		printfline("Client angles : %.1f %.1f %.1f", pl.angles.x, pl.angles.y, pl.angles.z);
@@ -812,7 +838,8 @@ void CSEv_TS_Debug_getAngle_(void ) {
 // Note that trying to exceed an ammo's max allowed ammount still caps at the ammmo's capacity.
 // And if the player can't afford the ammount, the next greatest ammount to use the remaining money
 // will be used instead.
-void CSEv_PlayerBuyAmmo_TS_i( int iAmmoTypeID, int iAmmoAmount ) {
+void
+CSEv_PlayerBuyAmmo_TS_i( int iAmmoTypeID, int iAmmoAmount ) {
 	player pl = (player)self;
 	
 	//Using this new var for safety.
@@ -875,9 +902,9 @@ void CSEv_PlayerBuyAmmo_TS_i( int iAmmoTypeID, int iAmmoAmount ) {
 		}
 		pl.ary_ammoTotal[iAmmoTypeID] += iActualAmmoAmount;
 		
-	}//END OF iAmmoTypeID valid check
+	}// iAmmoTypeID valid check
 	
-}//END OF CSEv_PlayerBuyAmmo_TS_i
+}// CSEv_PlayerBuyAmmo_TS_i
 
 
 
@@ -885,7 +912,8 @@ void CSEv_PlayerBuyAmmo_TS_i( int iAmmoTypeID, int iAmmoAmount ) {
 // start equipped with.
 // Order appears to be the highest slot number first, unless there is a weapon in slot 3 (small
 // machine guns). Then it gets equipped instead.
-void CSEv_PlayerBuyWeapon_TS_end_( void ) {
+void
+CSEv_PlayerBuyWeapon_TS_end_( void ) {
 	player pl = (player)self;
 	
 	printfline("CSEv_PlayerBuyWeapon_TS_end_");
@@ -895,7 +923,8 @@ void CSEv_PlayerBuyWeapon_TS_end_( void ) {
 // Support upgrades, akimbo, etc. Include ammo if necessary!
 // ACTUALLY... ammo will be signaled for purchase separately. The client still determines how much 
 // ammo to buy though.
-void CSEv_PlayerBuyWeapon_TS_ii( int iWeaponTypeID, int iBuyOpts ) {
+void
+CSEv_PlayerBuyWeapon_TS_ii( int iWeaponTypeID, int iBuyOpts ) {
 	player pl = (player)self;
 	printf("Buying weaponTypeID:%i\n", iWeaponTypeID);
 	
@@ -903,7 +932,8 @@ void CSEv_PlayerBuyWeapon_TS_ii( int iWeaponTypeID, int iBuyOpts ) {
 }
 
 // Version that takes a count of the weapon, since throwables stack in place.
-void CSEv_PlayerBuyWeaponThw_TS_iii( int iWeaponTypeID, int iBuyOpts, int iCount ) {
+void
+CSEv_PlayerBuyWeaponThw_TS_iii( int iWeaponTypeID, int iBuyOpts, int iCount ) {
 	player pl = (player)self;
 	
 	printf("Buying weaponTypeID (Thw):%i COUNT? %i\n", iWeaponTypeID, iCount);
@@ -920,8 +950,6 @@ void CSEv_PlayerBuyWeaponThw_TS_iii( int iWeaponTypeID, int iBuyOpts, int iCount
 
 
 
-
-
 // Goes through the available weapons and picks what would make sense to equip.
 // SUGGESTION. Don't equip a weapon automatically if it's out of ammo,
 // assuming we have an option that isn't out of ammo.
@@ -932,7 +960,8 @@ void CSEv_PlayerBuyWeaponThw_TS_iii( int iWeaponTypeID, int iBuyOpts, int iCount
 // two weapons left in inventory).
 // I think that's it actually.
 // nah, just check for that special case when dropping a weapon
-void playerEquipIdeal(player localPlayer){
+void
+playerEquipIdeal(player localPlayer){
 
 	//go through all the players weapons. whichever has the highest slot number, except for 5, gets picked
 	player pl = localPlayer;
@@ -955,7 +984,7 @@ void playerEquipIdeal(player localPlayer){
 		weapondata_basic_t* basicPointer = (weapondata_basic_t*) ary_weaponData[weapon_DynaRef.weaponID];
 		weapondata_basic_t basicRef = *(basicPointer);
 
-		BOOLEAN hasAkimbo = FALSE;   //really only used if we bother to do this check.
+		BOOL hasAkimbo = FALSE;   //really only used if we bother to do this check.
 		
 		if(bestSlotYet <= 2){
 			//check for akimbo...
@@ -973,7 +1002,7 @@ void playerEquipIdeal(player localPlayer){
 			weaponDynamicID_toEquip = i;
 		}
 
-	}//END OF for loop through all inventory weapons
+	}// for loop through all inventory weapons
 
 	// it is ok to blank the current weapon too (when _toEquip is -1)
 	// The "TRUE" is for using akimbo, if the default weapon
@@ -992,7 +1021,8 @@ void playerEquipIdeal(player localPlayer){
 
 
 // Call to above with a few extra lines included, commonly used so bundled into a method
-void playerEquipIdealSafe(player localPlayer){
+void
+playerEquipIdealSafe(player localPlayer){
 	TS_resetViewModel(localPlayer);
 	localPlayer.setInventoryEquippedIndex(-1);
 	playerEquipIdeal(localPlayer);

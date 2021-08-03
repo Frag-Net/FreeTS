@@ -1,7 +1,7 @@
 
 
-BOOLEAN TS_Weapon_PrimaryAttackRelease(player localPlayer, BOOLEAN hasAmmo);
-BOOLEAN TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOLEAN hasAmmo);
+BOOL TS_Weapon_PrimaryAttackRelease(player localPlayer, BOOL hasAmmo);
+BOOL TS_Weapon_SecondaryAttackRelease(player localPlayer, BOOL hasAmmo);
 
 void TS_Weapon_Draw_extra(void);
 
@@ -9,20 +9,20 @@ void TS_Weapon_Draw_extra(void);
 
 
 
-void TS_playerEquippedWeapon_Shared(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo);
+void TS_playerEquippedWeapon_Shared(player localPlayer, int newWeaponEquipped, BOOL useAkimbo);
 
 #ifdef CSQC
-void _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo);
+void _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo);
 
-void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo);
+void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo);
 
 #endif
 #ifdef SSQC
-int _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo);
+void _TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo);
 
-void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOLEAN useAkimbo);
+void TS_playerEquippedWeapon(player localPlayer, int newWeaponEquipped, BOOL useAkimbo);
 
-void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOLEAN useAkimbo);
+void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOL useAkimbo);
 #endif
 
 
@@ -43,9 +43,9 @@ void EV_TS_resetViewModel(void);
 #endif
 
 #ifdef SSQC
-void TS_resetPlayer(player localPlayer, BOOLEAN resetInventory)
+void TS_resetPlayer(player localPlayer, BOOL resetInventory)
 #else
-void EV_TS_resetPlayer(player localPlayer, BOOLEAN resetInventory)
+void EV_TS_resetPlayer(player localPlayer, BOOL resetInventory)
 #endif
 
 #ifdef CLIENT
