@@ -12,6 +12,31 @@
 
 
 
+// Few config macros:
+
+// If this is on, what's done for clientside on some commands (change firemode, change
+// buyoption toggleables) will be dummied or much simpler to avoid a slight flicker
+// seen in realistic packet delays (typical multiplayer).
+// Why doesn't the chage made just stay until server update?  I have no idea.
+//#define CLIENT_CMD_SAFEMODE
+
+
+// Do testing to see my attempt to get prediction with firemodes working (default control:
+// F-key).
+// Or, obvious with a high cl_delay_packets choice (1000), the firemode flickers to the
+// new value and back to the old one, the full second has to pass for a delay_packets choice 
+// of 1000, and then it stays at the new version.   ...?
+// Why do messages keep coming back from the server to revert the firemode until the server
+// message comes back?  Shouldn't it be the case that nothing happens to it until then?
+//#define FIREMODE_PREDICTION_TEST
+
+///////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 #define NULL __NULL__
 
 #define BOOL float
@@ -32,6 +57,12 @@
 // That means Nuclide's printf is only a shortener of print + sprintf for calls
 // without any other fill-ins (%d, etc.).
 // Undoing that here for now, compatible with original calls anytime.
+
+// And do we care about bprint (broadcast-print)?  Example:
+//    	bprint(PRINT_HIGH, sprintf("SSQC: %s", sWow) );
+// Probably not for debugging as printf is working fine for the typical rapid-fire
+// single player debug.
+
 #ifdef printf
 #undef printf
 #endif

@@ -85,6 +85,64 @@ Game_Input(void)
 	self.impulse = 0;
 #endif
 
+
+
+
+/*
+// FreeHL's way
+
+	if (input_buttons & INPUT_BUTTON0)
+		Weapons_Primary();
+	else if (input_buttons & INPUT_BUTTON4)
+		Weapons_Reload();
+	else if (input_buttons & INPUT_BUTTON3)
+		Weapons_Secondary();
+	//else
+		pl.callWeaponThink();  //Weapons_Release();
+
+// Added portion to that.
+	if(input_buttons & INPUT_BUTTON0){
+		pl.gflags |= GF_SEMI_TOGGLED;
+	}else{
+		// held down the previous frame, but not now?  That's a release.
+		if(pl.gflags & GF_SEMI_TOGGLED){
+			TS_Weapon_PrimaryAttackRelease(pl, TRUE);
+			pl.gflags &= ~GF_SEMI_TOGGLED;
+		}
+	}
+	if(input_buttons & INPUT_BUTTON3){
+		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
+	}else{
+		if(pl.gflags & GF_SEMI_SECONDARY_TOGGLED){
+			TS_Weapon_SecondaryAttackRelease(pl, TRUE);
+			pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
+		}
+	}
+	// it's this way or the much more modified way further down
+	return;
+*/
+
+
+#ifdef FIREMODE_PREDICTION_TEST
+	if(pl.doFiremodeChange){
+		
+		// so they say?
+		#ifdef CLIENT
+		//sendevent("TS_playerChangeFiremode", "");
+		#endif
+		int iOldFiremode = pl.ary_myWeapons[pl.inventoryEquippedIndex].iFireMode;
+		_TS_playerChangeFiremode();
+		pl.doFiremodeChange = FALSE;
+		int iNewFiremode = pl.ary_myWeapons[pl.inventoryEquippedIndex].iFireMode;
+		printfline("!!! pl.doFiremodeChange seen!  Firemode, old:%i new:%i", iOldFiremode, iNewFiremode);
+	}
+#endif
+
+
+	
+
+
+
 	// better TS way, weapon thinks happen alongside checking inputs
 	pl.callWeaponThink();
 
@@ -102,8 +160,6 @@ Game_Input(void)
 	// to give some tolerance to ease some slight frame desyncs between the client/server.
 	BOOL wasPassingFrame = (pl.w_attack_next <= 0);
 	
-
-
 #if INPUT_TAP_DETECT_CHOICE == 1
 		
 	processInputs();

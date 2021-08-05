@@ -70,11 +70,13 @@ drawPlayerInventory_TopBar(int arg_iSlotSelected, BOOL arg_fBuyMode)
 	
 }//drawPlayerInventory_TopBar
 
+
 // While in the buy screen, draw each slot according to the current temp config.
-// This includes using the #1 slot for the text 
-// ...We're going to take advantage of the fact that weaponconfig_weapon_t 
+// This includes using the #1 slot for the text.
+// For buymode, we're displaying the tempconfig (what things to buy at spawntime).
+// Otherwise, this is the player's ingame inventory being drawn.
 void
-drawPlayerInventory_buy(BOOL arg_fBuyMode)
+drawPlayerInventory(BOOL arg_fBuyMode)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	

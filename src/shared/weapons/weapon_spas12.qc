@@ -203,8 +203,8 @@ w_spas12_primary(void)
 				View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 			
-			randomChoice = random();
-			if(randomChoice > 0.5){
+			int r = (float)input_sequence % 2;
+			if(r == 0){
 				TS_Weapons_ViewAnimation(weaponseq_spas12::pump, 31.0f/35.0f);
 			}else{
 				TS_Weapons_ViewAnimation(weaponseq_spas12::pump2, 31.0f/35.0f);

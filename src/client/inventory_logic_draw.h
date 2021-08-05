@@ -57,7 +57,7 @@ imageCropBounds_t ary_LCD_numberSet[] = {
 
 void drawWeaponOptionBar(vector arg_vDrawOrigin, string arg_sOptionName, BOOLEAN arg_fBrightLight, float arg_opac);
 void drawPlayerInventory_TopBar(int arg_iSlotSelected, BOOL arg_fBuyMode);
-void drawPlayerInventory_buy(BOOL arg_fBuyMode);
+void drawPlayerInventory(BOOL arg_fBuyMode);
 
 void drawPlayerInventory_place(int arg_iSlot, int arg_iRow, string arg_sWeaponSpritePath, string arg_sSelectedWeaponDisplayName, BOOL arg_fBuyMode, optional int ammoCount, optional BOOL hasAnyAmmo, optional int bitsUpgradeOpts);
 

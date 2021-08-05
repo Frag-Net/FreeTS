@@ -11,7 +11,7 @@
 #define PLAYER_INVENTORY_GENERIC pl.ary_myWeapons
 #define PLAYER_INVENTORY_GENERIC_MAX pl.ary_myWeapons_softMax
 //The server has the player's physical money for use anytime.
-//Can make changes to it as needed. Just use the usual "ifdef SSQC" check first.
+//Can make changes to it as needed. Just use the usual "ifdef SERVER" check first.
 //...actually, we're using CHANGE_PLAYER_MONEY instead. It includes instructions for changing the player's own memory of total amount
 //spent (useless for the server?), and actually changes the money count.
 #define PLAYER_MONEY pl.money

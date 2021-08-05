@@ -180,7 +180,6 @@ w_mossberg500_holster(void)
 void
 w_mossberg500_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -219,8 +218,8 @@ w_mossberg500_primary(void)
 			if(!arg_thisWeapon.iIronSight){
 				TS_Weapons_ViewAnimation(weaponseq_mossberg500::pump, 31.0f/35.0f);
 			}else{
-				randomChoice = random();
-				if(randomChoice > 0.5){
+				int r = (float)input_sequence % 2;
+				if(r == 0){
 					TS_Weapons_ViewAnimation(weaponseq_mossberg500::pumpb, 31.0f/35.0f);
 				}else{
 					TS_Weapons_ViewAnimation(weaponseq_mossberg500::pumpb2, 31.0f/35.0f);

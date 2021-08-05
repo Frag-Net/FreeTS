@@ -1,5 +1,14 @@
 
 
+
+
+
+
+
+
+
+
+
 weapon_t w_null = {};
 
 // Populate each slot with a member of the enum early on in runtime instead.
@@ -35,9 +44,7 @@ weapon_base_setWholeAttackDelay(player pl, float amount){
 	pl.w_attack_next = amount;
 	pl.w_attack_akimbo_next = amount;
 	
-	// I think this is a good idea, right?
-	// or, is only for the client better?  Turned out to be the case somewhere else...
-	//#ifdef SERVER
+	//#ifdef CLIENT
 	//SAVE_STATE(pl.w_attack_next);
 	//SAVE_STATE(pl.w_attack_akimbo_next);
 	//#endif
@@ -422,6 +429,18 @@ weapon_shotgun_onInterrupt(
 	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon
 ){
 	if(pl.shotgunReloadIndex == 0){
+		// not reloading, nothing to interrupt.
+		return FALSE;
+	}
+	
+	if(pl.shotgunReloadIndex == 1 || pl.shotgunReloadIndex == 2){
+		// pre-reload or shell-load sequences?  Going to the end instead next time.
+		pl.shotgunReloadIndex = 3;
+	}
+	
+	
+	/*
+	if(pl.shotgunReloadIndex == 0){
 		// nothing to interrupt.
 		return FALSE;
 	}
@@ -436,6 +455,7 @@ weapon_shotgun_onInterrupt(
 			pl.shotgunReloadIndexQueued = 3;
 		}
 	//}
+	*/
 	
 	return TRUE;
 }// weapon_shotgun_onInterrupt
@@ -492,7 +512,6 @@ weapon_shotgun_reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	SAVE_STATE(pl.isChangingIronsight);
 	pl.currentZoomChoice = -1;
 	pl.setZoom(1.00f);
 	pl.aryNextBurstShotTime_softLength = 0;
@@ -503,7 +522,6 @@ weapon_shotgun_reload(
 	//printfline("weapon_shotgun_reload %i %d", pl.shotgunReloadIndex, pl.shotgunPumpEndTime);
 	pl.isReloading = TRUE;
 	
-	pl.shotgunReloadIndex = 1;
 	
 	//printfline("HERES THAT shotgunReload1_Duration %.2f", pl.shotgunReload1_Duration);
 	weapon_base_setWholeAttackDelay(pl, pl.shotgunReload1_Duration);
@@ -511,9 +529,19 @@ weapon_shotgun_reload(
 	pl.shotgunReloadIndexQueued = 2;
 	
 	TS_Weapons_ViewAnimation(pl.shotgunReload1_seq, pl.shotgunReload1_Duration );
+	pl.shotgunReloadIndex = 1;
 	
 }//weapon_shotgun_reload
 
+
+
+
+#ifdef CLIENT
+void viewEv_playShotgunInsertShellSound(void){
+	player pl = (player)self;
+	sound(pl, CHAN_AUTO, "weapons/insert-shell.wav", 1, ATTN_NONE);
+}
+#endif
 
 
 // NOTICE - shotguns with typical shotgun reload logic should use this method at all
@@ -525,103 +553,99 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 	
 	//printfline("FRAME att: %.2f", pl.w_attack_next);
 	
-	if(pl.shotgunReloadIndex > 0){
-		//reloading at all only.
+	
+	if(pl.shotgunAddAmmoTime != -1 && pl.w_attack_next <= pl.shotgunAddAmmoTime){
+		// add the ammo!!
+		arg_thisWeapon.iClipLeft++;
+		pl.ary_ammoTotal[baseRef.iAmmoDataID] -= 1;
 		
-		if(pl.w_attack_next <= 0){
-			//time has surpassed the time to the next phase?  Check the pl.shotgunReloadIndexQueued.
-			
-			pl.shotgunReloadIndex = pl.shotgunReloadIndexQueued;
-			
-			
-			
-			//printfline("ack: %i", pl.shotgunReloadIndex);
-			if(pl.shotgunReloadIndex == 0){
-				//little bit of cleanup, since we're done reloading.
-				pl.isReloading = FALSE;
-				
-				
-				//printfline("shotgunWaitingForPump go BYEBYE 1");
-				//if we were waiting for a pump, stop now. the anim did a pump by this point.
-				pl.shotgunWaitingForPump = FALSE;
-				
-				//NOTICE - an index of 0 should not be possible, we move away from it always.
-			}else if(pl.shotgunReloadIndex == 2){
-				//time to plug the bullets in
-				
-				
-				if( arg_thisWeapon.iClipLeft >= baseRef.iClipMax || pl.ary_ammoTotal[baseRef.iAmmoDataID] <= 0 ){
-					
-					pl.shotgunReloadIndex = 3;
-					TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
-					weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
-
-					
-					pl.shotgunReloadIndexQueued = 0;
-				}else{
-					// if we still have ammo left in the reserve,
-					// AND the clip is not full, repeat, going to reload again.
-					
-					TS_Weapons_ViewAnimation(pl.shotgunReload2_seq, pl.shotgunReload2_Duration);
-					
-					pl.shotgunReloadIndex = 2;
-					weapon_base_setWholeAttackDelay(pl, pl.shotgunReload2_Duration);
-					
-					pl.shotgunReloadIndexQueued = 2;
-					
-					// 2.0 - 0.3 = 1.7
-					// idea: set shotgunAddAmmoTime to the w_attack_next (total duration of the anim) minus ammoLoadDelay,
-					// since w_attack_next counts down.  When w_attack_next goes below shotgunAddAmmoTime, that means
-					// the "shotgunReload2_ammoLoadDelay" amount of time has passed, same thing, better for networking.
-					//// pl.shotgunAddAmmoTime = time + pl.shotgunReload2_ammoLoadDelay;
-					pl.shotgunAddAmmoTime = pl.w_attack_next - pl.shotgunReload2_ammoLoadDelay;
-					
-					
-					pl.shotgunAddAmmoSoundTime = time + pl.shotgunReload2_ammoLoadDelay - 0.03f;
-				}
-				
-				
-			}else if(pl.shotgunReloadIndex == 3){
-				//end anim
-				
-				TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
-				weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
-				
-				pl.shotgunReloadIndexQueued = 0;
-			}
-			
-		}// w_attack_next <= 0
+		printfline("I ADDED AMMO TO SHOTGUN.  %i - %i", arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[baseRef.iAmmoDataID]);
 		
-		
-		if(pl.shotgunReloadIndex == 2){
-			
-			////if(pl.shotgunAddAmmoTime != -1 && time >= pl.shotgunAddAmmoTime){
-			if(pl.shotgunAddAmmoTime != -1 && pl.w_attack_next <= pl.shotgunAddAmmoTime){
-				//add the ammo!!
-				
-				arg_thisWeapon.iClipLeft++;
-				pl.ary_ammoTotal[baseRef.iAmmoDataID] -= 1;
-				
-#ifdef CLIENT
-				sound(pl, CHAN_ITEM, "weapons/insert-shell.wav", 1, ATTN_NONE);
-#endif
-				
-				pl.shotgunAddAmmoTime = -1;   //don't keep doing it.
-			}
-			if(pl.shotgunAddAmmoSoundTime != -1 && time >= pl.shotgunAddAmmoSoundTime){
-				//TS_PlayInsertShellSound(pl);
-				pl.shotgunAddAmmoSoundTime = -1;
-			}
-			
-		}
+		pl.shotgunAddAmmoTime = -1;   //don't keep doing it.
 	}
 	
-	if(pl.w_attack_next <= 0){
-		// little copy from base think logic, since we're replacing it for shotguns.
-		if(pl.isChangingIronsight){
-			weapon_gun_endOfIronSight(pl, basePRef, arg_thisWeapon);
-		}
+	if(pl.shotgunAddAmmoSoundTime != -1 && pl.w_attack_next <= pl.shotgunAddAmmoSoundTime){
+		
+		//TS_PlayInsertShellSound(pl);
+		//TS_Weapons_PlaySoundChannelDirect(pl, "weapons/insert-shell.wav", CHAN_AUTO);
+		
+		// TODO: if you want other players to hear this, the server should play it for all players
+		// except the localone here because it already played clientside, again with a delay would be
+		// pointless for the one that already heard it.
+		/*
+#ifdef CLIENT
+		sound(pl, CHAN_AUTO, "weapons/insert-shell.wav", 1, ATTN_NONE);
+#endif
+		*/
+		
+		pl.shotgunAddAmmoSoundTime = -1;
 	}
+	
+	
+	if(pl.w_attack_next > 0.0){
+		return;
+	}
+	
+	// in case this weapon is ironsight.
+	if(pl.isChangingIronsight){
+		weapon_gun_endOfIronSight(pl, basePRef, arg_thisWeapon);
+		return;
+	}
+	
+	if(pl.shotgunReloadIndex == 0){
+		// nothing to do here
+	}else if(pl.shotgunReloadIndex == 1 || pl.shotgunReloadIndex == 2){
+		// end of pre-reload anim (bringing the shotgun into place) or a shell-load anim.
+		// Same thing wanted in either case: start another shell-load anim
+		
+		printfline("w_attack_next pass!!!");
+		
+		
+		if (pl.ary_ammoTotal[baseRef.iAmmoDataID] <= 0 || arg_thisWeapon.iClipLeft >= baseRef.iClipMax) {
+			//pl.shotgunReloadIndex = 3;
+			
+			//if(pl.shotgunAddAmmoTime_canSet()){
+			//	pl.shotgunAddAmmoTime_setCooldownSetTime();
+				TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
+				weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
+				pl.shotgunReloadIndex = 0;
+				pl.isReloading = FALSE;
+			//}
+		}else{
+			TS_Weapons_ViewAnimation(pl.shotgunReload2_seq, pl.shotgunReload2_Duration);
+			weapon_base_setWholeAttackDelay(pl, pl.shotgunReload2_Duration);
+			pl.shotgunReloadIndex = 2;
+
+
+
+			//if(pl.shotgunAddAmmoTime_canSet()){
+			//	pl.shotgunAddAmmoTime_setCooldownSetTime();
+				printfline("I SET shotgunAddAmmoTime!");
+				
+				//View_AddEvent(w_ejectshell_pistol, pl.w_attack_next - pl.shotgunReload2_ammoLoadDelay);
+				#ifdef CLIENT
+				View_AddEvent(viewEv_playShotgunInsertShellSound, pl.shotgunReload2_Duration - (pl.shotgunReload2_ammoLoadDelay - 0.03f));
+				#endif
+				pl.shotgunAddAmmoTime = pl.shotgunReload2_Duration - pl.shotgunReload2_ammoLoadDelay;
+				//pl.shotgunAddAmmoSoundTime = pl.shotgunReload2_Duration - (pl.shotgunReload2_ammoLoadDelay - 0.03f);
+			//}
+			
+			
+			//arg_thisWeapon.iClipLeft++;
+			//pl.ary_ammoTotal[baseRef.iAmmoDataID]--;
+			
+		}
+		
+	}else if(pl.shotgunReloadIndex == 3){
+		// end of reload anim wanted!
+		TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
+		weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
+		pl.shotgunReloadIndex = 0;
+		// this will be true when the fire delay expires, but doesn't hurt happening earlier.
+		pl.isReloading = FALSE;
+	}
+	
+	
 }//weapon_shotgun_onThink_reloadLogic
 
 
@@ -1143,7 +1167,6 @@ weapon_ironsight_ToggleIronsight(
 		printfline("time: %.2f weapon_ironsight_ToggleIronsight PASS.  CURRENT:%i", time, arg_thisWeapon.iIronSight);
 	
 		pl.isChangingIronsight = TRUE;
-		SAVE_STATE(pl.isChangingIronsight);
 		
 		//TAGGG - QUESTION.
 		// Why does only from ironSight == 0, going towards 1, use the "_EndIdle" version, but
@@ -1202,7 +1225,6 @@ weapon_gun_Reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	SAVE_STATE(pl.isChangingIronsight);
 	pl.currentZoomChoice = -1;
 	pl.setZoom(1.00f);
 	pl.aryNextBurstShotTime_softLength = 0;
@@ -1247,7 +1269,6 @@ weapon_gun_Reload_CustomSequence(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	SAVE_STATE(pl.isChangingIronsight);
 	pl.currentZoomChoice = -1;
 	pl.setZoom(1.00f);
 	pl.aryNextBurstShotTime_softLength = 0;
@@ -1295,7 +1316,6 @@ weapon_ironsight_Reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-		SAVE_STATE(pl.isChangingIronsight);
 	pl.currentZoomChoice = -1;
 	pl.setZoom(1.00f);
 	pl.aryNextBurstShotTime_softLength = 0;
@@ -1377,7 +1397,6 @@ weapon_gun_endOfIronSight(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	SAVE_STATE(pl.isChangingIronsight);
 }
 
 

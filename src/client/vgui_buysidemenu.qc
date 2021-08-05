@@ -1438,6 +1438,7 @@ void
 VGUI_BuySideMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float fFontSizeMulti)
 {
 	// If we leave spectator view (spawned and walking/aiming), disallow the buy menu.
+	// (could also check for "player.iState == PLAYER_STATE::SPAWNED" )
 	if(getplayerkeyvalue(player_localnum, "*spec") == "0"){
 		
 		VGUI_ChangeScreen(VGUI_SCREEN::NONE);
@@ -1472,7 +1473,7 @@ VGUI_BuySideMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float
 	
 	BuySideMenu_onInputEvent();
 	
-	drawPlayerInventory_buy(TRUE);
+	drawPlayerInventory(TRUE);
 	
 	for(int i = 0i; i <= iActiveLayer; i = i + 1i){
 		//Adjust these as needed. These also show where to draw the "0 Cancel" button

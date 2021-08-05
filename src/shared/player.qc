@@ -73,7 +73,8 @@ player::ReceiveEntity(float new, float fl)
 		anim_bottom = readbyte();
 		anim_bottom_time = readfloat();
 	}
-
+	
+	int i;
 	float temp_flViewModelFrame;
 	
 	temp_flViewModelFrame = readfloat();
@@ -200,14 +201,18 @@ player::ReceiveEntity(float new, float fl)
 	shotgunReloadIndexQueued = readbyte();
 	shotgunWaitingForPump = readbyte();
 	//shotgunReload2_ammoLoadDelay = readbyte();
-	//shotgunAddAmmoTime = readbyte();
-	//shotgunAddAmmoSoundTime = readbyte();
+	shotgunAddAmmoTime = readfloat();
+	shotgunAddAmmoSoundTime = readfloat();
 	
+	//doFiremodeChange = readbyte();
 	
+	currentZoomChoice = readbyte() - 1;
+	
+	// TODO: IDEA.  Only send updates for the currently equipped weapon, maybe the previously equipped one
+	// a few frames too?  Unsure.
 	ary_myWeapons_softMax = readbyte();
-	for(int i = 0; i < ary_myWeapons_softMax; i++){
+	for(i = 0; i < ary_myWeapons_softMax; i++){
 		ary_myWeapons[i].weaponID = readbyte();
-		//printfline("ERE I GO %i - %i\n", i, ary_myWeapons[i].weaponID);
 		ary_myWeapons[i].weaponTypeID = readbyte();
 		ary_myWeapons[i].iBitsUpgrade = readbyte();
 		ary_myWeapons[i].iCount = readbyte();
@@ -216,7 +221,21 @@ player::ReceiveEntity(float new, float fl)
 		ary_myWeapons[i].iClipLeft = readbyte();
 		ary_myWeapons[i].iClipAkimboLeft = readbyte();
 		ary_myWeapons[i].iBitsUpgrade_on = readbyte();
-		ary_myWeapons[i].iFireMode = readbyte();
+		
+		int newFir = readbyte();
+		
+#if defined(FIREMODE_PREDICTION_TEST)
+		if(i == this.inventoryEquippedIndex && ary_myWeapons[i].iFireMode != newFir){
+			printfline("!!! player::ReceiveEntity, iFireMode update, changed firemode, WAS: %i NOW: %i", ary_myWeapons[i].iFireMode, newFir);
+		}
+		if(time >= this.ignoreFiremodeReceiveTime){
+			printfline("X Change blocked, too soon");
+			ary_myWeapons[i].iFireMode = newFir;
+		}
+#else
+		ary_myWeapons[i].iFireMode = newFir;
+#endif
+		
 		ary_myWeapons[i].iFireModeAkimbo = readbyte();
 		ary_myWeapons[i].iIronSight = readbyte();
 		ary_myWeapons[i].forceBodygroup1Submodel = readbyte();
@@ -224,15 +243,13 @@ player::ReceiveEntity(float new, float fl)
 
 	//UNNECESSARY. This array is of fixed length, so known at all times.
 	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
-	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
+	for(i = 0; i < AMMO_ID::LAST_ID; i++){
 		// See serverside equivalent, too much info was lost from some pools being over 255
 		// (well I guess that's all there is to it)
 		ary_ammoTotal[i] = readlong();
 	}
 	
 	/////////////////////////////////////////////////////
-	
-	currentZoomChoice = readbyte() - 1;
 	
 	
 
@@ -312,6 +329,37 @@ player::PredictPreFrame(void)
 	SAVE_STATE(shotgunReloadIndexQueued);
 	SAVE_STATE(shotgunWaitingForPump);
 	
+	SAVE_STATE(shotgunAddAmmoTime);
+	SAVE_STATE(shotgunAddAmmoSoundTime);
+	
+	//SAVE_STATE(doFiremodeChange);
+	
+	
+	SAVE_STATE(ary_myWeapons_softMax);
+	for(int i = 0; i < ary_myWeapons_softMax; i++){
+		SAVE_STATE(ary_myWeapons[i].weaponID);
+		SAVE_STATE(ary_myWeapons[i].weaponTypeID);
+		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade);
+		SAVE_STATE(ary_myWeapons[i].iCount);
+		//SAVE_STATE(ary_myWeapons[i].iPrice);
+		//SAVE_STATE(ary_myWeapons[i].iSlots);
+		SAVE_STATE(ary_myWeapons[i].iClipLeft);
+		SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft);
+		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on);
+		SAVE_STATE(ary_myWeapons[i].iFireMode);
+		SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
+		SAVE_STATE(ary_myWeapons[i].iIronSight);
+		SAVE_STATE(ary_myWeapons[i].forceBodygroup1Submodel);
+	}
+
+	//UNNECESSARY. This array is of fixed length, so known at all times.
+	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
+	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
+		// See serverside equivalent, too much info was lost from some pools being over 255
+		// (well I guess that's all there is to it)
+		SAVE_STATE_ARY(ary_ammoTotal, i);
+	}
+	
 }
 
 /*
@@ -381,6 +429,35 @@ player::PredictPostFrame(void)
 	ROLL_BACK(shotgunReloadIndexQueued);
 	ROLL_BACK(shotgunWaitingForPump);
 	
+	ROLL_BACK(shotgunAddAmmoTime);
+	ROLL_BACK(shotgunAddAmmoSoundTime);
+	
+	//ROLL_BACK(doFiremodeChange);
+	
+	ROLL_BACK(ary_myWeapons_softMax);
+	for(int i = 0; i < ary_myWeapons_softMax; i++){
+		ROLL_BACK(ary_myWeapons[i].weaponID);
+		ROLL_BACK(ary_myWeapons[i].weaponTypeID);
+		ROLL_BACK(ary_myWeapons[i].iBitsUpgrade);
+		ROLL_BACK(ary_myWeapons[i].iCount);
+		//ROLL_BACK(ary_myWeapons[i].iPrice);
+		//ROLL_BACK(ary_myWeapons[i].iSlots);
+		ROLL_BACK(ary_myWeapons[i].iClipLeft);
+		ROLL_BACK(ary_myWeapons[i].iClipAkimboLeft);
+		ROLL_BACK(ary_myWeapons[i].iBitsUpgrade_on);
+		ROLL_BACK(ary_myWeapons[i].iFireMode);
+		ROLL_BACK(ary_myWeapons[i].iFireModeAkimbo);
+		ROLL_BACK(ary_myWeapons[i].iIronSight);
+		ROLL_BACK(ary_myWeapons[i].forceBodygroup1Submodel);
+	}
+
+	//UNNECESSARY. This array is of fixed length, so known at all times.
+	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
+	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
+		// See serverside equivalent, too much info was lost from some pools being over 255
+		// (well I guess that's all there is to it)
+		ROLL_BACK_ARY(ary_ammoTotal, i);
+	}
 	
 }
 
@@ -497,6 +574,37 @@ player::EvaluateEntity(void)
 	SAVE_STATE(shotgunReloadIndexQueued);
 	SAVE_STATE(shotgunWaitingForPump);
 	
+	SAVE_STATE(shotgunAddAmmoTime);
+	SAVE_STATE(shotgunAddAmmoSoundTime);
+	
+	//SAVE_STATE(doFiremodeChange);
+	
+	
+	SAVE_STATE(ary_myWeapons_softMax);
+	for(int i = 0; i < ary_myWeapons_softMax; i++){
+		SAVE_STATE(ary_myWeapons[i].weaponID);
+		SAVE_STATE(ary_myWeapons[i].weaponTypeID);
+		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade);
+		SAVE_STATE(ary_myWeapons[i].iCount);
+		//SAVE_STATE(ary_myWeapons[i].iPrice);
+		//SAVE_STATE(ary_myWeapons[i].iSlots);
+		SAVE_STATE(ary_myWeapons[i].iClipLeft);
+		SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft);
+		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on);
+		SAVE_STATE(ary_myWeapons[i].iFireMode);
+		SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
+		SAVE_STATE(ary_myWeapons[i].iIronSight);
+		SAVE_STATE(ary_myWeapons[i].forceBodygroup1Submodel);
+	}
+
+	//UNNECESSARY. This array is of fixed length, so known at all times.
+	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
+	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
+		// See serverside equivalent, too much info was lost from some pools being over 255
+		// (well I guess that's all there is to it)
+		SAVE_STATE_ARY(ary_ammoTotal, i);
+	}
+	
 }
 
 /*
@@ -517,9 +625,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 		return (0);
 	}
 
-
-
-
 	//TAGGG - REPLACED.
 	/*
 	// other players don't need to know about these attributes
@@ -539,6 +644,9 @@ player::SendEntity(entity ePEnt, float fChanged)
 
 	/* the generic client attributes */
 	base_player::SendEntity(ePEnt, fChanged);
+	
+	
+	int i;
 
 	if (fChanged & PLAYER_TOPFRAME) {
 		WriteByte(MSG_ENTITY, anim_top);
@@ -630,13 +738,17 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, shotgunReloadIndexQueued );
 	WriteByte(MSG_ENTITY, shotgunWaitingForPump );
 	//WriteByte(MSG_ENTITY, shotgunReload2_ammoLoadDelay );
-	//WriteByte(MSG_ENTITY, shotgunAddAmmoTime );
-	//WriteByte(MSG_ENTITY, shotgunAddAmmoSoundTime );
+	WriteFloat(MSG_ENTITY, shotgunAddAmmoTime );
+	WriteFloat(MSG_ENTITY, shotgunAddAmmoSoundTime );
 	
+	//WriteByte(MSG_ENTITY, doFiremodeChange);
+	
+	WriteByte(MSG_ENTITY, currentZoomChoice + 1 );
+
 	
 	//weapondynamic_t ary_myWeapons[ary_myWeapons_length];
 	WriteByte(MSG_ENTITY, ary_myWeapons_softMax );
-	for(int i = 0; i < ary_myWeapons_softMax; i++){
+	for(i = 0; i < ary_myWeapons_softMax; i++){
 		WriteByte(MSG_ENTITY, ary_myWeapons[i].weaponID );
 		WriteByte(MSG_ENTITY, ary_myWeapons[i].weaponTypeID );
 		WriteByte(MSG_ENTITY, ary_myWeapons[i].iBitsUpgrade );
@@ -654,14 +766,12 @@ player::SendEntity(entity ePEnt, float fChanged)
 	
 	//UNNECESSARY. This array is of fixed length, so known at all times.
 	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
-	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
+	for(i = 0; i < AMMO_ID::LAST_ID; i++){
 		// using 'WriteLong' instead of 'WriteByte', because SOME AMMO POOL just had to
 		// exceed 255, didn't it.
 		WriteLong(MSG_ENTITY, ary_ammoTotal[i] );
 	}
 	
-	WriteByte(MSG_ENTITY, currentZoomChoice + 1 );
-
 	
 
 	return (1);
@@ -680,6 +790,10 @@ player::player(void){
 	// reasonable default?
 	iState = PLAYER_STATE::NOCLIP;
 	
+#ifdef FIREMODE_PREDICTION_TEST
+	ignoreFiremodeReceiveTime = -1;
+#endif
+
 #ifdef SERVER
 	money = 0;  //safety?
 	
@@ -872,13 +986,17 @@ player::reset(BOOL resetInventory){
 	shotgunReload2_ammoLoadDelay = -1;
 	shotgunAddAmmoTime = -1;
 	shotgunAddAmmoSoundTime = -1;
-	
+#ifdef CLIENT
+	shotgunAddAmmoTime_cooldownSetTime = -1;
+#endif
 	shotgunReload1_seq = -1;
 	shotgunReload1_Duration = -1;
 	shotgunReload2_seq = -1;
 	shotgunReload2_Duration = -1;
 	shotgunReload3_seq = -1;
 	shotgunReload3_Duration = -1;
+	
+	doFiremodeChange = FALSE;
 	
 	//Grenade stuff
 	printfline("I set grenadeFireIndex to -1, D!");
@@ -1191,6 +1309,30 @@ player::callWeaponThink(void){
 	}// weaponEquipped check
 }
 
+
+// well that didn't work.
+/*
+BOOL
+player::shotgunAddAmmoTime_canSet(void){
+	#ifdef CLIENT
+		// require the cooldown
+		// is cltime better?  Unsure
+		return (time >= shotgunAddAmmoTime_cooldownSetTime);
+	#else
+		// Server? Always
+		return TRUE;
+	#endif
+}
+void
+player::shotgunAddAmmoTime_setCooldownSetTime(void){
+	#ifdef CLIENT
+		// do it
+		shotgunAddAmmoTime_cooldownSetTime = time + 0.02f;
+	#else
+		// Server? I don't.
+	#endif
+}
+*/
 
 
 #ifdef SERVER

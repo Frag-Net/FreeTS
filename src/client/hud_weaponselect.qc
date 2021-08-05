@@ -231,7 +231,7 @@ TS_HUD_DrawWeaponSelect(void)
 		return;
 	}
 	
-	drawPlayerInventory_buy(FALSE);
+	drawPlayerInventory(FALSE);
 	drawPlayerInventory_TopBar(-1, FALSE);
 	
 }//HUD_DrawWeaponSelect

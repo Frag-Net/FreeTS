@@ -27,8 +27,19 @@ enum PLAYER_STATE{
 };
 
 
-#define PREDICTED_CUSTOM(arg_t, x) arg_t x; arg_t x ##_net
 
+#define ATTR_CHANGED_ARY(ary, i) (ary ##_net[i] != ary[i])
+
+#define PREDICTED_ARY_INT(ary, size) int ary[size]; int ary ##_net[size]
+
+#define ROLL_BACK_ARY(ary, i) ary[i] = ary ##_net[i]
+#define SAVE_STATE_ARY(ary, i) ary ##_net[i] = ary[i]
+
+#define PREDICTED_CUSTOM(arg_t, x) arg_t x; arg_t x ##_net
+/*
+#define ROLL_BACK_ARRAY_MEMBER(ary, i, sub) ary[i].sub = ary ##_net[i].sub
+#define SAVE_STATE_ARRAY_MEMBER(ary, i, sub) x ##_net = x    // did not do
+*/
 
 noref int input_sequence;
 class player:base_player
@@ -296,16 +307,16 @@ class player:base_player
 	// When do I want to move on to the next phase?
 	// For reload2 without a changed shotgunReloadIndexQueued or seeing the shotgun is full,
 	// it wants to repeat to put more bullets in.
-	float shotgunAddAmmoTime;
-	float shotgunAddAmmoSoundTime;
-	
-	
+	PREDICTED_FLOAT(shotgunAddAmmoTime);
+	PREDICTED_FLOAT(shotgunAddAmmoSoundTime);
+
 #ifdef CLIENT
-	
-	
-#else
-	
+	// This time must pass before re-setting the shotgunAddAmmoTime/shotgunAddAmmoSoundTime counters is allowed.
+	// Why do we need to do this?  Ask FTE.
+	float shotgunAddAmmoTime_cooldownSetTime;
 #endif
+	
+	
 	
 	// shared
 	
@@ -317,6 +328,11 @@ class player:base_player
 	float shotgunReload2_Duration;
 	int shotgunReload3_seq;
 	float shotgunReload3_Duration;
+	
+	
+	// was BOOL
+	PREDICTED_FLOAT(doFiremodeChange);
+	
 	
 //////////////////////////////////////////////////////////////////////////////
 
@@ -401,15 +417,14 @@ class player:base_player
 	
 	
 	//This will tell us whether we intend to equip the akimbo version of hte currently
-	// equipped weapon. This is done since akimso variants, although selected separately in
+	// equipped weapon. This is done since akimso variants, although selected separately in222222222222
 	// weapon select, are still tied to the exact same element in ary_myWeapons.
 	
 	// was BOOL.
 	PREDICTED_FLOAT(weaponEquippedAkimbo);
 
-	//TAGGG - you're the man now, dog!
 	weapondynamic_t ary_myWeapons[ary_myWeapons_length];
-	int ary_myWeapons_softMax;
+	PREDICTED_INT(ary_myWeapons_softMax);
 	
 	// Have one space for each type of ammo available.
 	// If there were a large number of ammunitions and a low likelihood that all/most were
@@ -417,7 +432,8 @@ class player:base_player
 	// of ammunitions expected and keep track of which one an index (0, 1, 2, 3, etc.) refers
 	// to. Sounds like a lot of extra work for a single ammo counter per type of ammo which
 	// is all this is.
-	int ary_ammoTotal[AMMO_ID::LAST_ID];
+	//int ary_ammoTotal[AMMO_ID::LAST_ID];
+	PREDICTED_ARY_INT(ary_ammoTotal,AMMO_ID::LAST_ID);
 	
 	// Provided for quick reference.  How many slots does the current loadout take?
 	// There is a record of how much money has been spent, similar to config, but that isn't
@@ -443,6 +459,9 @@ class player:base_player
 	//float lastweapon;
 #endif
 
+#ifdef FIREMODE_PREDICTION_TEST
+	float ignoreFiremodeReceiveTime;
+#endif
 	
 	//TAGGG - NEW, constructor
 	void(void) player;
@@ -473,6 +492,11 @@ class player:base_player
 	virtual BOOL(int arg_invID) inventoryWeaponDeleteCheck;
 	
 	virtual void(void) callWeaponThink;
+	
+	/*
+	virtual BOOL(void) shotgunAddAmmoTime_canSet;
+	virtual void(void) shotgunAddAmmoTime_setCooldownSetTime;
+	*/
 	
 	//TAGGG - CRITICAL.
 	// overriding Nuclide player physics method!
@@ -506,7 +530,6 @@ class player:base_player
 	virtual BOOL(void) anyAmmoPoolNonEmpty;
 	virtual void(void) dropAmmo;
 #endif
-	
 	
 	
 	////////////////////////////////////////////////////////////

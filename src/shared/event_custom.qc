@@ -426,11 +426,20 @@ CSEv_TS_playerDropWeapon_(){
 
 
 
+
+
+
 #ifdef SERVER
 // Server receives the message
 void
 CSEv_TS_playerChangeFiremode_(void){
+	player pl = (player)self;
+	
+#ifdef FIREMODE_PREDICTION_TEST
+	pl.doFiremodeChange = TRUE;
+#else
 	_TS_playerChangeFiremode();
+#endif//FIREMODE_PREDICTION_TEST
 }
 #endif
 
@@ -443,10 +452,18 @@ TS_playerChangeFiremode(void){
 	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
+	
 #ifdef CLIENT
 		sendevent("TS_playerChangeFiremode", "");
-		// and do it my side too?
+
+#ifdef FIREMODE_PREDICTION_TEST
+		pl.ignoreFiremodeReceiveTime = time + 0.4f;
+		pl.doFiremodeChange = TRUE;
+#else
+		// do it for the client too?
 		_TS_playerChangeFiremode();
+#endif//FIREMODE_PREDICTION_TEST
+		
 #else
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
 #endif
@@ -457,6 +474,12 @@ void
 _TS_playerChangeFiremode(void ) {
 	player pl = (player)self;
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+	
+	
+#if defined(CLIENT_CMD_SAFEMODE) && defined(CLIENT)
+	// nope!
+	return;
+#endif
 	
 	if(dynaRef.weaponTypeID == WEAPONDATA_TYPEID_GUN || dynaRef.weaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
 		weapondata_gun_t* basicPointer = (weapondata_gun_t*) pl.getEquippedWeaponData();
@@ -470,10 +493,13 @@ _TS_playerChangeFiremode(void ) {
 		}
 		
 		int* fireModeVar;
+		int* fireModeVar_net;
 		if(!pl.weaponEquippedAkimbo){
 			fireModeVar = &dynaRef.iFireMode;
+			fireModeVar_net = &dynaRef.iFireMode_net;
 		}else{
 			fireModeVar = &dynaRef.iFireModeAkimbo;
+			fireModeVar_net = &dynaRef.iFireModeAkimbo_net;
 		}
 		
 		if( (*fireModeVar) == basicRef.iBitsFireModes){
@@ -506,6 +532,12 @@ _TS_playerChangeFiremode(void ) {
 			if(basicRef.iBitsFireModes & currentChoice){
 				//this power of 2 is a valid fireMode?  pick it
 				(*fireModeVar) = currentChoice;
+				
+				#ifdef CLIENT
+				// effectively SAVE_STATE on whatever choice
+				(*fireModeVar_net) = currentChoice;
+				#endif
+				
 				return;
 			}
 			
@@ -551,6 +583,8 @@ void
 _TS_playerUseItems(void){
 	player pl = (player)self;
 	
+	
+	
 	if(pl.inventoryEquippedIndex != -1){
 	
 		weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
@@ -572,6 +606,16 @@ _TS_playerUseItems(void){
 			if(bitCount == 0){
 				//no togglable buyopts at all?  I guess that's it.
 			}else{
+				
+	
+#if defined(CLIENT_CMD_SAFEMODE) && defined(CLIENT)
+				// Have a much simpler version instead
+				#ifdef CLIENT
+					localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
+				#endif
+				return;
+#endif
+				
 				
 				if(bitCount == 1){
 					//one bit available?  just toggle on/off then.

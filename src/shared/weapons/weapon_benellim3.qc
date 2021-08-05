@@ -167,7 +167,6 @@ w_benellim3_holster(void)
 void
 w_benellim3_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -178,10 +177,12 @@ w_benellim3_primary(void)
 		return;
 	}
 	
+	
 	// good place?  should this go above onInterrupt above?
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
+	
 	
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_SEMI){
 		INPUT_PRIMARY_TAP_GATE
@@ -200,8 +201,10 @@ w_benellim3_primary(void)
 				View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 			
-			randomChoice = random();
-			if(randomChoice > 0.5){
+			// float randomChoice = random();
+			// why the cast to float here?  No idea
+			int r = (float)input_sequence % 2;
+			if(r == 0){
 				TS_Weapons_ViewAnimation(weaponseq_benellim3::pump, 29.0f/35.0f);
 			}else{
 				TS_Weapons_ViewAnimation(weaponseq_benellim3::pump2, 25.0f/35.0f);

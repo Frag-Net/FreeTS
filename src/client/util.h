@@ -41,11 +41,7 @@
 
 
 
-
-
-
-
-#if defined(CSQC) || defined(MENU)
+#if defined(CLIENT) || defined(MENU)
 
 //TAGGG - just give those bits names
 #define DRAWTEXTFIELD_ALIGN_LEFT 1
@@ -65,11 +61,6 @@
 #define DRAWTEXTFIELD_ALIGN_LEFT_BOTTOM 1|8
 
 #endif
-
-
-
-
-
 
 
 
