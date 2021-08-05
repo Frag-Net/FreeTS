@@ -936,6 +936,7 @@ CSEv_PlayerBuyWeapon_TS_end_( void ) {
 	player pl = (player)self;
 	
 	printfline("CSEv_PlayerBuyWeapon_TS_end_");
+	pl.completeInventorySend = TRUE;
 	playerEquipIdeal(pl);
 }
 

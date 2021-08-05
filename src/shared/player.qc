@@ -208,47 +208,39 @@ player::ReceiveEntity(float new, float fl)
 	
 	currentZoomChoice = readbyte() - 1;
 	
-	// TODO: IDEA.  Only send updates for the currently equipped weapon, maybe the previously equipped one
-	// a few frames too?  Unsure.
-	ary_myWeapons_softMax = readbyte();
-	for(i = 0; i < ary_myWeapons_softMax; i++){
-		ary_myWeapons[i].weaponID = readbyte();
-		ary_myWeapons[i].weaponTypeID = readbyte();
-		ary_myWeapons[i].iBitsUpgrade = readbyte();
-		ary_myWeapons[i].iCount = readbyte();
-		//ary_myWeapons[i].iPrice = readbyte();
-		//ary_myWeapons[i].iSlots = readbyte();
-		ary_myWeapons[i].iClipLeft = readbyte();
-		ary_myWeapons[i].iClipAkimboLeft = readbyte();
-		ary_myWeapons[i].iBitsUpgrade_on = readbyte();
-		
-		int newFir = readbyte();
-		
-#if defined(FIREMODE_PREDICTION_TEST)
-		if(i == this.inventoryEquippedIndex && ary_myWeapons[i].iFireMode != newFir){
-			printfline("!!! player::ReceiveEntity, iFireMode update, changed firemode, WAS: %i NOW: %i", ary_myWeapons[i].iFireMode, newFir);
-		}
-		if(time >= this.ignoreFiremodeReceiveTime){
-			printfline("X Change blocked, too soon");
-			ary_myWeapons[i].iFireMode = newFir;
-		}
-#else
-		ary_myWeapons[i].iFireMode = newFir;
-#endif
-		
-		ary_myWeapons[i].iFireModeAkimbo = readbyte();
-		ary_myWeapons[i].iIronSight = readbyte();
-		ary_myWeapons[i].forceBodygroup1Submodel = readbyte();
-	}
-
-	//UNNECESSARY. This array is of fixed length, so known at all times.
-	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
-	for(i = 0; i < AMMO_ID::LAST_ID; i++){
-		// See serverside equivalent, too much info was lost from some pools being over 255
-		// (well I guess that's all there is to it)
-		ary_ammoTotal[i] = readlong();
-	}
 	
+	ary_myWeapons_softMax = readbyte();
+	
+	
+	this.completeInventorySend = readbyte();
+	
+	if(this.completeInventorySend){
+		for(i = 0; i < ary_myWeapons_softMax; i++){
+			ReceiveEntity_ary_myWeapons(i);
+		}
+		for(i = 0; i < AMMO_ID::LAST_ID; i++){
+			ary_ammoTotal[i] = readlong();
+		}
+	}else if(fl & PLAYER_UNUSED1){
+		
+		i = inventoryEquippedIndex;
+		/// could this ever be -1?
+		if(i != -1){
+			ReceiveEntity_ary_myWeapons(i);
+
+			int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+			if(myAmmoType != -1){
+				i = myAmmoType;
+				//UNNECESSARY. This array is of fixed length, so known at all times.
+				//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
+				//for(i = 0; i < AMMO_ID::LAST_ID; i++){
+					// See serverside equivalent, too much info was lost from some pools being over 255
+					// (well I guess that's all there is to it)
+					ary_ammoTotal[i] = readlong();
+				//}
+			}
+		}
+	}
 	/////////////////////////////////////////////////////
 	
 	
@@ -260,6 +252,44 @@ player::ReceiveEntity(float new, float fl)
 
 	setorigin(this, origin);
 }
+
+void player::ReceiveEntity_ary_myWeapons(int i){
+	
+	// TODO: IDEA.  Only send updates for the currently equipped weapon, maybe the previously equipped one
+	// a few frames too?  Unsure.
+	ary_myWeapons[i].weaponID = readbyte();
+	ary_myWeapons[i].weaponTypeID = readbyte();
+	ary_myWeapons[i].iBitsUpgrade = readbyte();
+	ary_myWeapons[i].iCount = readbyte();
+	//ary_myWeapons[i].iPrice = readbyte();
+	//ary_myWeapons[i].iSlots = readbyte();
+	ary_myWeapons[i].iClipLeft = readbyte();
+	ary_myWeapons[i].iClipAkimboLeft = readbyte();
+	ary_myWeapons[i].iBitsUpgrade_on = readbyte();
+	
+	int newFir = readbyte();
+	
+#if defined(FIREMODE_PREDICTION_TEST)
+	if(i == this.inventoryEquippedIndex && ary_myWeapons[i].iFireMode != newFir){
+		printfline("!!! player::ReceiveEntity, iFireMode update, changed firemode, WAS: %i NOW: %i", ary_myWeapons[i].iFireMode, newFir);
+	}
+	if(time >= this.ignoreFiremodeReceiveTime){
+		printfline("X Change blocked, too soon");
+		ary_myWeapons[i].iFireMode = newFir;
+	}
+#else
+	ary_myWeapons[i].iFireMode = newFir;
+#endif
+	
+	ary_myWeapons[i].iFireModeAkimbo = readbyte();
+	ary_myWeapons[i].iIronSight = readbyte();
+	ary_myWeapons[i].forceBodygroup1Submodel = readbyte();
+
+}
+
+
+
+
 
 /*
 =================
@@ -467,6 +497,8 @@ player::EvaluateEntity(void)
 {
 	/* the generic client attributes */
 	base_player::EvaluateEntity();
+	
+	int i;
 
 	/* animation */
 	if (ATTR_CHANGED(anim_bottom) || ATTR_CHANGED(anim_bottom_time))
@@ -550,6 +582,48 @@ player::EvaluateEntity(void)
 	SAVE_STATE(mode_tempstate);
 */
 
+
+	// IDEA: do a full-send, all weapons stats on executing a buyconfig order?
+	// set some flag to convey that?
+
+
+	SAVE_STATE(ary_myWeapons_softMax);
+	
+	
+	i = inventoryEquippedIndex;
+	if(i != -1){
+		//for(i = 0; i < ary_myWeapons_softMax; i++){
+			if(ATTR_CHANGED(ary_myWeapons[i].weaponID)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].weaponTypeID)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].iBitsUpgrade))SendFlags |= PLAYER_UNUSED1; 
+			if(ATTR_CHANGED(ary_myWeapons[i].iCount)) SendFlags |= PLAYER_UNUSED1;
+			//SAVE_STATE(ary_myWeapons[i].iPrice));
+			//SAVE_STATE(ary_myWeapons[i].iSlots));
+			if(ATTR_CHANGED(ary_myWeapons[i].iClipLeft)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].iClipAkimboLeft)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].iBitsUpgrade_on)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].iFireMode)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].iFireModeAkimbo)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].iIronSight)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].forceBodygroup1Submodel)) SendFlags |= PLAYER_UNUSED1;
+		//}
+		int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		if(myAmmoType != -1){
+			i = myAmmoType;
+			//UNNECESSARY. This array is of fixed length, so known at all times.
+			//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
+			//for(i = 0; i < AMMO_ID::LAST_ID; i++){
+				// See serverside equivalent, too much info was lost from some pools being over 255
+				// (well I guess that's all there is to it)
+				if(ATTR_CHANGED_ARY(ary_ammoTotal, i)) SendFlags |= PLAYER_UNUSED1;
+			//}
+		}
+		
+	}
+	
+	
+	
+
 	SAVE_STATE(anim_top);
 	SAVE_STATE(anim_top_delay);
 	SAVE_STATE(anim_top_time);
@@ -581,28 +655,38 @@ player::EvaluateEntity(void)
 	
 	
 	SAVE_STATE(ary_myWeapons_softMax);
-	for(int i = 0; i < ary_myWeapons_softMax; i++){
-		SAVE_STATE(ary_myWeapons[i].weaponID);
-		SAVE_STATE(ary_myWeapons[i].weaponTypeID);
-		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade);
-		SAVE_STATE(ary_myWeapons[i].iCount);
-		//SAVE_STATE(ary_myWeapons[i].iPrice);
-		//SAVE_STATE(ary_myWeapons[i].iSlots);
-		SAVE_STATE(ary_myWeapons[i].iClipLeft);
-		SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft);
-		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on);
-		SAVE_STATE(ary_myWeapons[i].iFireMode);
-		SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
-		SAVE_STATE(ary_myWeapons[i].iIronSight);
-		SAVE_STATE(ary_myWeapons[i].forceBodygroup1Submodel);
-	}
+	
+	
+	i = inventoryEquippedIndex;
+	if(i != -1){
+		//for(i = 0; i < ary_myWeapons_softMax; i++){
+			SAVE_STATE(ary_myWeapons[i].weaponID);
+			SAVE_STATE(ary_myWeapons[i].weaponTypeID);
+			SAVE_STATE(ary_myWeapons[i].iBitsUpgrade);
+			SAVE_STATE(ary_myWeapons[i].iCount);
+			//SAVE_STATE(ary_myWeapons[i].iPrice);
+			//SAVE_STATE(ary_myWeapons[i].iSlots);
+			SAVE_STATE(ary_myWeapons[i].iClipLeft);
+			SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft);
+			SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on);
+			SAVE_STATE(ary_myWeapons[i].iFireMode);
+			SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
+			SAVE_STATE(ary_myWeapons[i].iIronSight);
+			SAVE_STATE(ary_myWeapons[i].forceBodygroup1Submodel);
+		//}
 
-	//UNNECESSARY. This array is of fixed length, so known at all times.
-	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
-	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
-		// See serverside equivalent, too much info was lost from some pools being over 255
-		// (well I guess that's all there is to it)
-		SAVE_STATE_ARY(ary_ammoTotal, i);
+
+		int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		if(myAmmoType != -1){
+			i = myAmmoType;
+			//UNNECESSARY. This array is of fixed length, so known at all times.
+			//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
+			//for(i = 0; i < AMMO_ID::LAST_ID; i++){
+				// See serverside equivalent, too much info was lost from some pools being over 255
+				// (well I guess that's all there is to it)
+				SAVE_STATE_ARY(ary_ammoTotal, i);
+			//}
+		}
 	}
 	
 }
@@ -748,35 +832,66 @@ player::SendEntity(entity ePEnt, float fChanged)
 	
 	//weapondynamic_t ary_myWeapons[ary_myWeapons_length];
 	WriteByte(MSG_ENTITY, ary_myWeapons_softMax );
-	for(i = 0; i < ary_myWeapons_softMax; i++){
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].weaponID );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].weaponTypeID );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iBitsUpgrade );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iCount );
-		//WriteByte(MSG_ENTITY, ary_myWeapons[i].iPrice );
-		//WriteByte(MSG_ENTITY, ary_myWeapons[i].iSlots );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iClipLeft );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iClipAkimboLeft );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iBitsUpgrade_on );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireMode );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireModeAkimbo );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].iIronSight );
-		WriteByte(MSG_ENTITY, ary_myWeapons[i].forceBodygroup1Submodel);
+	
+	
+	
+	WriteByte(MSG_ENTITY, this.completeInventorySend );
+	
+	if(this.completeInventorySend){
+		for(i = 0; i < ary_myWeapons_softMax; i++){
+			SendEntity_ary_myWeapons(i);
+		}
+		for(i = 0; i < AMMO_ID::LAST_ID; i++){
+			WriteLong(MSG_ENTITY, ary_ammoTotal[i] );
+		}
+	}else if(fChanged & PLAYER_UNUSED1){
+		
+		i = inventoryEquippedIndex;
+		/// could this ever be -1?
+		if(i != -1){
+			SendEntity_ary_myWeapons(i);
+
+			int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+			if(myAmmoType != -1){		
+				i = myAmmoType;
+				//UNNECESSARY. This array is of fixed length, so known at all times.
+				//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
+				//for(i = 0; i < AMMO_ID::LAST_ID; i++){
+					// using 'WriteLong' instead of 'WriteByte', because SOME AMMO POOL just had to
+					// exceed 255, didn't it.
+					WriteLong(MSG_ENTITY, ary_ammoTotal[i] );
+				//}
+			}
+		}
 	}
 	
-	//UNNECESSARY. This array is of fixed length, so known at all times.
-	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
-	for(i = 0; i < AMMO_ID::LAST_ID; i++){
-		// using 'WriteLong' instead of 'WriteByte', because SOME AMMO POOL just had to
-		// exceed 255, didn't it.
-		WriteLong(MSG_ENTITY, ary_ammoTotal[i] );
-	}
+	// no need to send again until this flag is set freshly.
+	this.completeInventorySend = FALSE;
 	
 	
 
 	return (1);
 }
+
+void player::SendEntity_ary_myWeapons(int i){
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].weaponID );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].weaponTypeID );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iBitsUpgrade );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iCount );
+	//WriteByte(MSG_ENTITY, ary_myWeapons[i].iPrice );
+	//WriteByte(MSG_ENTITY, ary_myWeapons[i].iSlots );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iClipLeft );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iClipAkimboLeft );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iBitsUpgrade_on );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireMode );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireModeAkimbo );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iIronSight );
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].forceBodygroup1Submodel);
+}
+
 #endif
+
+
 
 
 
@@ -789,6 +904,7 @@ player::player(void){
 	
 	// reasonable default?
 	iState = PLAYER_STATE::NOCLIP;
+	completeInventorySend = FALSE;
 	
 #ifdef FIREMODE_PREDICTION_TEST
 	ignoreFiremodeReceiveTime = -1;

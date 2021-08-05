@@ -438,6 +438,7 @@ void removeWeaponFromInventory(player pl, int arg_removeIndex){
 	//reduced.
 	PLAYER_INVENTORY_GENERIC_MAX--;
 	
+	pl.completeInventorySend = TRUE;
 }//removeWeaponFromInventory
 
 
@@ -1453,7 +1454,7 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 	//	printfline("WEAPON %i - %i", i, PLAYER_INVENTORY_GENERIC[i].weaponID);
 	//}
 	
-	
+	pl.completeInventorySend = TRUE;
 	return TRUE;
 }//END OF attemptBuyWeapon
 #endif
@@ -1835,6 +1836,7 @@ Full Load: X times the buy price, where "X" is max capacity (throwing knives or 
 	}
 	*/
 	
+	pl.completeInventorySend = TRUE;
 	return matchStart;  // we need to tell the caller what spot we put the weapon in, in the player's inventory.
 }//END OF addWeaponToInventory
 #endif

@@ -50,6 +50,9 @@ class player:base_player
 	// On death, set this to 2.5.  If it is less than 1.5,
 	float deathCameraChangeTime;
 	
+	BOOL completeInventorySend;
+
+	
 	
 	//TAGGG - I'm not messing around with that memory issue from last time.
 	// But try again with this removed whenever it turns out ok, see if this is needed
@@ -97,7 +100,6 @@ class player:base_player
 	// Should this be predicted?  Unsure, I doubt it.
 	float maxspeed_raw;
 	
-
 
 #ifdef CLIENT
 	//TAGGG - related to how to handle FOV changes.
@@ -541,11 +543,15 @@ class player:base_player
 	virtual float() predraw;
 	virtual void(void) postdraw;
 	virtual void(float,float) ReceiveEntity;
+	// NEW
+	virtual void(int i) ReceiveEntity_ary_myWeapons;
 	virtual void(void) PredictPreFrame;
 	virtual void(void) PredictPostFrame;
 #else
 	virtual void(void) EvaluateEntity;
 	virtual float(entity, float) SendEntity;
+	// NEW
+	virtual void(int i) SendEntity_ary_myWeapons;
 #endif
 
 };
