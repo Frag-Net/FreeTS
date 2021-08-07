@@ -75,9 +75,10 @@ HUD_Draw(void)
 		if(pl.flZoomLevel < 0.5){   //is this < 40?	yes.
 			HUD_DrawScope();
 		}else{
-			// We'll leave details like extra details for the lasersight and the weight bars at a
-			// bare minimum (should be drawn at all times, oversight in TS 2.1 that they're missing
-			// from melee views like with knives, katana, corrected in 3.0 of all things)
+			// We'll leave details like extra details for the lasersight and the
+			// weight bars at a bare minimum (should be drawn at all times, oversight
+			// in TS 2.1 that they're missing from melee views like with knives,
+			// katana, corrected in 3.0 of all things)
 			HUD_DrawCrosshair();
 		}
 		//////////////////////////////////////////////////////////////
@@ -88,10 +89,8 @@ HUD_Draw(void)
 		//////////////////////////////////////////////////////////////
 		drawTimer();
 		drawPlayerStats();  
-		//TAGGG - CRITICAL. Nope, Weapons_DrawCrosshair actually calls a weapon's custom HUD drawing
-		// method. Odd name, but yes, it's not actually focused on just crosshairs.  TS uses the more
-		// generic "HUD_DrawCrosshair" call above.
-		//drawPlayerCurrentWeaponStats();
+		
+		// ---OLD LOCATION for weapon stats drawing (Weapons_DrawCrosshair)
 		//////////////////////////////////////////////////////////////
 		
 		
@@ -104,9 +103,10 @@ HUD_Draw(void)
 		
 		HUD_DrawNotify();
 		// Nuclide provided method, draws the HL pain arrows
-		// Nope!  Replaced with a completely new version that does that and more for more control.
-		// And not even calling from here, leaving that to PostDraw (draw.qc) instead.
-		// Might stop the pain flash from affecting the color of HUD draw's.
+		// Nope!  Replaced with a completely new version that does that and more for
+		// more control. And not even calling from here, leaving that to PostDraw
+		// (draw.qc) instead. Might stop the pain flash from affecting the color of
+		// HUD draw's.
 		//Damage_Draw();
 		//ClientGame_DamageDraw();
 		
@@ -114,10 +114,11 @@ HUD_Draw(void)
 		// Fake spectator, or the temporary forced third-person on death (not yet implemented).
 		
 		drawfont = FONT_20;
-		// TAGGG - could have some message from server-to-client on changing from player to spectator
-		// to call this only then, but I think doing this every frame for spectator is harmless anyway.
-		// Changing the FOV isn't necessary, that already comes with the spec/player change, some 
-		// things are nicely defaulted for us in FTE.
+		// TAGGG - could have some message from server-to-client on changing from
+		// player to spectator to call this only then, but I think doing this every
+		// frame for spectator is harmless anyway. Changing the FOV isn't necessary,
+		// that already comes with the spec/player change, some things are nicely
+		// defaulted for us in FTE.
 		setsensitivityscaler(1.0f);
 		
 		pSeat->m_iHUDWeaponSelected = 0;
@@ -151,9 +152,9 @@ string g_specmodes[] = {
 	"First Person"
 };
 
-// specatator main entry
-// NOTE!  This is for the real, Nuclide-provided spectator.
-// The fake spectator is a normal player entity with iState set to PLAYER_STATE::NOCLIP.
+// specatator main entry (method cloned from FreeHL)
+// -NOTE!  This is for the real, Nuclide-provided spectator. The fake spectator is a
+// normal player entity with iState set to PLAYER_STATE::NOCLIP.
 // HUD_DRAW above is still called in that case.  That needs the MoTD and buymenu.
 void
 HUD_DrawSpectator(void)

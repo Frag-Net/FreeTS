@@ -1,6 +1,5 @@
 
 //TODO - is "stock" a melee attack??
-
 enum weaponseq_contenderg2{
 	idle,
 	draw,
@@ -10,38 +9,19 @@ enum weaponseq_contenderg2{
 	stock
 };
 
-
-BOOLEAN weapon_ContenderG2_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_ContenderG2_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_ContenderG2_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_ContenderG2_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_ContenderG2_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_ContenderG2_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_ContenderG2_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::ContenderG2], arg_thisWeapon);
-}
-void weapon_ContenderG2_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_ContenderG2_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_ContenderG2_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-
-
+void weapon_contenderg2_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
-//weapondata_ironsight_t weapon_ContenderG2 =
-weapondata_gun_t weapon_ContenderG2 =
+}
+void weapon_contenderg2_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
+}
+void weapon_contenderg2_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon);
+}
+void weapon_contenderg2_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
+}
+
+weapondata_gun_t weapon_contenderg2 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Contender G2",
@@ -50,20 +30,14 @@ weapondata_gun_t weapon_ContenderG2 =
 	"",
 	"models/w_contender.mdl",
 	"sprites/weapons/contender.spr",
-	weapon_ContenderG2_onPrimaryAttack,
-	weapon_ContenderG2_onPrimaryAttackRelease,
-	weapon_ContenderG2_onSecondaryAttack,
-	weapon_ContenderG2_onSecondaryAttackRelease,
-	weapon_ContenderG2_onEquip,
-	weapon_ContenderG2_onUnEquip,
-	weapon_ContenderG2_onThink,
-	weapon_ContenderG2_onDrawHUD,
-	weapon_ContenderG2_onReload,
-	weapon_ContenderG2_onColdCock,
+	weapon_contenderg2_onPrimaryAttackRelease,
+	weapon_contenderg2_onSecondaryAttackRelease,
+	weapon_contenderg2_onThink,
+	weapon_contenderg2_onColdCock,
 	weaponseq_contenderg2::idle,
 	weaponseq_contenderg2::draw,
 	31.0f / 30.0f,
-	0.35f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.35f,  //fire delay
 	60.0f,
 	TRUE,
 	BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_SCOPE,
@@ -79,7 +53,7 @@ weapondata_gun_t weapon_ContenderG2 =
 	BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_SEMI,
 	
-	AMMO_ID::_7p62x51mm,
+	AMMO_ID::_7P62X51MM,
 	1,
 	
 	4096,
@@ -90,52 +64,35 @@ weapondata_gun_t weapon_ContenderG2 =
 	-1,
 	2
 	
-	/*
-	//ironsightdata_t
-	{
-		weaponseq_contenderg2::change,
-		21.0f / 35.0f,
-		weaponseq_contenderg2::rechange,
-		21.0f / 35.0f,
-		weaponseq_contenderg2::idle,
-		weaponseq_contenderg2::reload,
-		61.0f / 30.0f,
-		//can have different firestats from ordinary firing.  Dbn't know yet though.
-		{0.010000, 8.000000, 0.000000}
-	}
-	*/
 };
-
 
 
 
 void
 w_contenderg2_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::CONTENDERG2]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/contender/close.wav");
+	precache_sound("weapons/contender/fire.wav");
+	//precache_sound("weapons/contender/hammerback.wav");
+	//precache_sound("weapons/contender/insert-shell.wav");
+	//precache_sound("weapons/contender/open.wav");
+	//precache_sound("weapons/contender/shellout.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_contenderg2_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_contenderg2_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::ContenderG2]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::CONTENDERG2]).sWorldModelPath;
 }
 
 string
@@ -143,7 +100,7 @@ w_contenderg2_pmodel(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return (*ary_weaponData[WEAPON_ID::ContenderG2]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::CONTENDERG2]).sPlayerModelPath;
 }
 
 string
@@ -157,7 +114,7 @@ w_contenderg2_draw(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::ContenderG2], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon);
 }
 
 void
@@ -171,7 +128,7 @@ w_contenderg2_primary(void)
 	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-
+	
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
@@ -185,7 +142,7 @@ w_contenderg2_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/contender/fire.wav");
+	SoundPitched_Send(pl, SNDP_CONTENDERG2_FIRE);
 	
 	if ( random() <= 0.5 ) {
 		TS_Weapons_ViewAnimation(weaponseq_contenderg2::shoot1, 31.0f/30.0f);
@@ -198,7 +155,7 @@ w_contenderg2_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::ContenderG2], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -243,18 +200,15 @@ w_contenderg2_secondary(void)
 	
 }
 
-
 void
 w_contenderg2_reload(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::ContenderG2], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_contenderg2_aimanim(void)
 {
@@ -267,12 +221,9 @@ w_contenderg2_hud(void)
 	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::ContenderG2], arg_thisWeapon);
-
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon);
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_contenderg2_hudpic(int selected, vector pos, float a)
 {

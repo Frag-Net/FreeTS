@@ -1,6 +1,5 @@
 
 enum weaponseq_akimbocolts{
-	//...
 	idle,
 	reload,
 	draw,
@@ -13,40 +12,21 @@ enum weaponseq_akimbocolts{
 	
 };
 
-
-
-
-BOOLEAN weapon_AkimboColts_akimbo_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_akimbocolts_akimbo_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_AkimboColts_akimbo_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_AkimboColts_akimbo_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_AkimboColts_akimbo_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_AkimboColts_akimbo_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_AkimboColts_akimbo_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_AkimboColts_akimbo_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AkimboColts], arg_thisWeapon);
-}
-void weapon_AkimboColts_akimbo_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_AkimboColts_akimbo_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_AkimboColts_akimbo_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_akimbocolts_akimbo_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
+void weapon_akimbocolts_akimbo_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
+}
+void weapon_akimbocolts_akimbo_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
-weapondata_gun_t weapon_AkimboColts =
+}
+
+weapondata_gun_t weapon_akimbocolts =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Golden Colts",
@@ -55,20 +35,14 @@ weapondata_gun_t weapon_AkimboColts =
 	"",
 	"models/w_gold.mdl",
 	"sprites/weapons/gold.spr",
-	weapon_AkimboColts_akimbo_onPrimaryAttack,
-	weapon_AkimboColts_akimbo_onPrimaryAttackRelease,
-	weapon_AkimboColts_akimbo_onSecondaryAttack,
-	weapon_AkimboColts_akimbo_onSecondaryAttackRelease,
-	weapon_AkimboColts_akimbo_onEquip,
-	weapon_AkimboColts_akimbo_onUnEquip,
-	weapon_AkimboColts_akimbo_onThink,
-	weapon_AkimboColts_akimbo_onDrawHUD,
-	weapon_AkimboColts_akimbo_onReload,
-	weapon_AkimboColts_akimbo_onColdCock,
+	weapon_akimbocolts_akimbo_onPrimaryAttackRelease,
+	weapon_akimbocolts_akimbo_onSecondaryAttackRelease,
+	weapon_akimbocolts_akimbo_onThink,
+	weapon_akimbocolts_akimbo_onColdCock,
 	weaponseq_akimbocolts::idle,
 	weaponseq_akimbocolts::draw,
 	31.0f / 30.0f,
-	0.19f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.19f,  //fire delay
 	15.0f,  //dmg
 	TRUE,
 	BITS_WEAPONOPT_AKIMBO,
@@ -84,7 +58,7 @@ weapondata_gun_t weapon_AkimboColts =
 	
 	BITS_FIREMODE_AKIMBO_SEMI_AUTO | BITS_FIREMODE_AKIMBO_FREE_SEMI,
 	BITS_FIREMODE_AKIMBO_SEMI_AUTO,
-	AMMO_ID::_45Acp,
+	AMMO_ID::_45ACP,
 	16,  //clip
 	4096, //range
 	weaponseq_akimbocolts::reload,
@@ -101,30 +75,26 @@ weapondata_gun_t weapon_AkimboColts =
 void
 w_akimbocolts_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::AKIMBOCOLTS]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/gold/clipin.wav");
+	//precache_sound("weapons/gold/clipout.wav");
+	precache_sound("weapons/gold/gold-fire.wav");
+	//precache_sound("weapons/gold/sliderelease.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_akimbocolts_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_akimbocolts_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::AkimboColts]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::AKIMBOCOLTS]).sWorldModelPath;
 }
 
 string
@@ -132,7 +102,7 @@ w_akimbocolts_pmodel(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return (*ary_weaponData[WEAPON_ID::AkimboColts]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::AKIMBOCOLTS]).sPlayerModelPath;
 }
 
 string
@@ -146,7 +116,7 @@ w_akimbocolts_draw(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::AkimboColts], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
 }
 
 void
@@ -161,9 +131,8 @@ w_akimbocolts_holster(void)
 // Akimbo weapons consistently.
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
-BOOLEAN weapon_AkimboColts_akimbo_attack(player localPlayer, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+BOOLEAN weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
 	float randomChoice;
-	player pl = localPlayer;
 	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	//special case
@@ -177,7 +146,7 @@ BOOLEAN weapon_AkimboColts_akimbo_attack(player localPlayer, weapondynamic_t arg
 	// Muzzle flashes and shell ejections for akimbo pending!
 	
 	// because I am not copy/pasting this monstrosity 5 times.
-	finalAkimboChoice = weapon_akimbo_semiAttackChoice(localPlayer, ary_weaponData[WEAPON_ID::AkimboColts], arg_thisWeapon, attackTypeUsed);
+	finalAkimboChoice = weapon_akimbo_semiAttackChoice(pl, ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon, attackTypeUsed);
 	
 #ifdef CLIENT
 	SAVE_STATE(pl.nextAkimboAttackPreference);
@@ -214,7 +183,7 @@ BOOLEAN weapon_AkimboColts_akimbo_attack(player localPlayer, weapondynamic_t arg
 	// sudden dual-fire request though.
 	int effectiveAkimboChoice = finalAkimboChoice & ~pl.akimboTest;  //finalAkimboChoice;//BITS_AKIMBOCHOICE_NONE & ~pl.akimboTest
 	
-	weapon_base_onAttack(localPlayer, ary_weaponData[WEAPON_ID::AkimboColts], arg_thisWeapon, effectiveAkimboChoice);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon, effectiveAkimboChoice);
 	
 #if 0
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_LEFT){
@@ -224,7 +193,7 @@ BOOLEAN weapon_AkimboColts_akimbo_attack(player localPlayer, weapondynamic_t arg
 		TS_Weapons_PlaySoundDirect(pl, "weapons/gold/gold-fire.wav");
 	}
 #else
-	SoundPitched_Send(pl, SNDP_AKIMBOCOLTS);
+	SoundPitched_Send(pl, SNDP_AKIMBOCOLTS_FIRE);
 #endif
 	
 	
@@ -294,7 +263,7 @@ BOOLEAN weapon_AkimboColts_akimbo_attack(player localPlayer, weapondynamic_t arg
 	}
 	
 	return TRUE;
-}//END OF weapon_AkimboColts_akimbo_attack
+}//END OF weapon_akimbocolts_akimbo_attack
 
 
 void
@@ -308,15 +277,15 @@ w_akimbocolts_primary(void)
 	
 	// in addition to the primary input, which lead to '_primary' being called at all.
 	if(input_buttons & INPUT_BUTTON3){
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH, &weapon_AkimboColts_akimbo_attack)){
+		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH, &weapon_akimbocolts_akimbo_attack)){
 			// nothing unusual here.
 			pl.akimboTest = 0;
-			weapon_AkimboColts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
+			weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
 		}else{
 		}
 	}else{
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT, &weapon_AkimboColts_akimbo_attack)){
-			weapon_AkimboColts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT, &weapon_akimbocolts_akimbo_attack)){
+			weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 			pl.akimboFirePrev = BITS_AKIMBOCHOICE_LEFT;
 		}
 		
@@ -341,11 +310,11 @@ w_akimbocolts_secondary(void)
 	}else{
 		// fires the right weapon always
 		
-		//weapon_AkimboColts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+		//weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
 		//return;
 		
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, &weapon_AkimboColts_akimbo_attack)){
-			weapon_AkimboColts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, &weapon_akimbocolts_akimbo_attack)){
+			weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
 			pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
 		}
 	}
@@ -358,37 +327,31 @@ w_akimbocolts_reload(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AkimboColts], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
 	
 	leftCount = 0;
 	rightCount = 0;
 }
 
-// ???
 float
 w_akimbocolts_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
-
 void
 w_akimbocolts_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AkimboColts], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
 }
 
-
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_akimbocolts_hudpic(int selected, vector pos, float a)
 {
 	//
 }
-
 
 weapon_t w_akimbocolts =
 {

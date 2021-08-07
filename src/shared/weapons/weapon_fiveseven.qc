@@ -1,5 +1,4 @@
 
-
 enum weaponseq_fiveseven{
 	idle = 0,
 	reload = 1,
@@ -8,39 +7,20 @@ enum weaponseq_fiveseven{
 	shootlast = 4
 };
 
-
-
-BOOLEAN weapon_FiveSeven_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_fiveseven_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_FiveSeven_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_fiveseven_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_FiveSeven_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_fiveseven_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FIVESEVEN], arg_thisWeapon);
 }
-BOOLEAN weapon_FiveSeven_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_FiveSeven_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_FiveSeven_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_FiveSeven_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FiveSeven], arg_thisWeapon);
-}
-void weapon_FiveSeven_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_FiveSeven_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_FiveSeven_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_fiveseven_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_gun_t weapon_FiveSeven =
+weapondata_gun_t weapon_fiveseven =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Five-seveN",
@@ -49,20 +29,14 @@ weapondata_gun_t weapon_FiveSeven =
 	"models/p_fnh_sil.mdl",
 	"models/w_fnh.mdl",
 	"sprites/weapons/fnh.spr",
-	weapon_FiveSeven_onPrimaryAttack,
-	weapon_FiveSeven_onPrimaryAttackRelease,
-	weapon_FiveSeven_onSecondaryAttack,
-	weapon_FiveSeven_onSecondaryAttackRelease,
-	weapon_FiveSeven_onEquip,
-	weapon_FiveSeven_onUnEquip,
-	weapon_FiveSeven_onThink,
-	weapon_FiveSeven_onDrawHUD,
-	weapon_FiveSeven_onReload,
-	weapon_FiveSeven_onColdCock,
+	weapon_fiveseven_onPrimaryAttackRelease,
+	weapon_fiveseven_onSecondaryAttackRelease,
+	weapon_fiveseven_onThink,
+	weapon_fiveseven_onColdCock,
 	weaponseq_fiveseven::idle,
 	weaponseq_fiveseven::draw,
 	31.0f / 30.0f,
-	0.19f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.19f,  //fire delay
 	15.0f,  //dmg
 	TRUE,
 	BITS_WEAPONOPT_SILENCER | BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_FLASHLIGHT | BITS_WEAPONOPT_AKIMBO,
@@ -72,10 +46,10 @@ weapondata_gun_t weapon_FiveSeven =
 	BUYCATEGORY_HANDGUNS,
 	2,
 	{0.010000, 1.300000, 0.000000},
-	WEAPON_AKIMBO_UPGRADE_ID::FiveSeven,
+	WEAPON_AKIMBO_UPGRADE_ID::FIVESEVEN,
 	BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_SEMI,
-	AMMO_ID::_5p7x28,
+	AMMO_ID::_5P7X28,
 	20,  //clip
 	4096, //range
 	weaponseq_fiveseven::reload,
@@ -92,30 +66,27 @@ weapondata_gun_t weapon_FiveSeven =
 void
 w_fiveseven_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::FIVESEVEN]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/fnh/clipin.wav");
+	//precache_sound("weapons/fnh/clipout.wav");
+	precache_sound("weapons/fnh/fnh-fire-sil.wav");
+	precache_sound("weapons/fnh/fnh-fire.wav");
+	//precache_sound("weapons/fnh/sliderelease.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_fiveseven_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_fiveseven_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::FiveSeven]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::FIVESEVEN]).sWorldModelPath;
 }
 
 string
@@ -125,9 +96,9 @@ w_fiveseven_pmodel(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		return (*ary_weaponData[WEAPON_ID::FiveSeven]).sPlayerModelPath;
+		return (*ary_weaponData[WEAPON_ID::FIVESEVEN]).sPlayerModelPath;
 	} else {
-		return (*ary_weaponData[WEAPON_ID::FiveSeven]).sPlayerSilencerModelPath;
+		return (*ary_weaponData[WEAPON_ID::FIVESEVEN]).sPlayerSilencerModelPath;
 	}
 }
 
@@ -142,7 +113,7 @@ w_fiveseven_draw(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::FiveSeven];
+	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::FIVESEVEN];
 	
 	weapon_base_onEquip(pl, basicP, arg_thisWeapon);
 }
@@ -174,9 +145,9 @@ w_fiveseven_primary(void)
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/fnh/fnh-fire.wav");
+		SoundPitched_Send(pl, SNDP_FIVESEVEN_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/fnh/fnh-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_FIVESEVEN_FIRE_SIL);
 	}
 
 	if(arg_thisWeapon.iClipLeft > 0){
@@ -192,7 +163,7 @@ w_fiveseven_primary(void)
 #endif
 
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::FiveSeven], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::FIVESEVEN], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -204,14 +175,10 @@ w_fiveseven_primary(void)
 	
 }
 
-
-
 void
 w_fiveseven_secondary(void)
 {
 }
-
-
 
 void
 w_fiveseven_reload(void)
@@ -219,10 +186,9 @@ w_fiveseven_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FiveSeven], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FIVESEVEN], arg_thisWeapon);
 }
 
-// ???
 float
 w_fiveseven_aimanim(void)
 {
@@ -234,11 +200,9 @@ w_fiveseven_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FiveSeven], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FIVESEVEN], arg_thisWeapon);
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_fiveseven_hudpic(int selected, vector pos, float a)
 {

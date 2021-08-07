@@ -198,6 +198,9 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::SOUNDPITCHED:
 		SoundPitched_Receive();
 		break;
+	case EVENT_TS::SOUNDPITCHED_CHANNEL:
+		SoundPitched_Channel_Receive();
+		break;
 	/*
 	// can this even happen anymore?
 	// If a drop-weapon call can be signaled by the server, not shared with the client & server

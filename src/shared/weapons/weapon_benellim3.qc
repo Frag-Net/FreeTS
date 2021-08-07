@@ -1,5 +1,4 @@
 
-
 enum weaponseq_benellim3{
 	idle,
 	idle2,
@@ -13,37 +12,20 @@ enum weaponseq_benellim3{
 	pump2
 };
 
-
-BOOLEAN weapon_BenelliM3_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_benellim3_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_BenelliM3_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_benellim3_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_BenelliM3_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_benellim3_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_shotgun_onThink_reloadLogic(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon);
 }
-BOOLEAN weapon_BenelliM3_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_BenelliM3_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_BenelliM3_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_BenelliM3_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_shotgun_onThink_reloadLogic(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BenelliM3], arg_thisWeapon);
-}
-void weapon_BenelliM3_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_BenelliM3_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_BenelliM3_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_benellim3_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
 
-
-weapondata_gun_t weapon_BenelliM3 =
+weapondata_gun_t weapon_benellim3 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Benelli M3",
@@ -52,16 +34,10 @@ weapondata_gun_t weapon_BenelliM3 =
 	"",
 	"models/w_m3.mdl",
 	"sprites/weapons/m3.spr",
-	weapon_BenelliM3_onPrimaryAttack,
-	weapon_BenelliM3_onPrimaryAttackRelease,
-	weapon_BenelliM3_onSecondaryAttack,
-	weapon_BenelliM3_onSecondaryAttackRelease,
-	weapon_BenelliM3_onEquip,
-	weapon_BenelliM3_onUnEquip,
-	weapon_BenelliM3_onThink,
-	weapon_BenelliM3_onDrawHUD,
-	weapon_BenelliM3_onReload,
-	weapon_BenelliM3_onColdCock,
+	weapon_benellim3_onPrimaryAttackRelease,
+	weapon_benellim3_onSecondaryAttackRelease,
+	weapon_benellim3_onThink,
+	weapon_benellim3_onColdCock,
 	weaponseq_benellim3::idle,
 	weaponseq_benellim3::draw,
 	31.0f / 30.0f,
@@ -90,36 +66,40 @@ weapondata_gun_t weapon_BenelliM3 =
 	1
 };
 
+weapondata_shotgun_extra_t weapon_benellim3_shotgunExtra = 
+{
+	weaponseq_benellim3::reload1,
+	21.0f/40.0f,
+	weaponseq_benellim3::reload2,
+	21.0f/50.0f,
+	10.0f/50.0f,
+	weaponseq_benellim3::reload3,
+	26.0f/30.0f
+};
 
 
 
 void
 w_benellim3_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::BENELLIM3]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/m3/m3-pump.wav");
+	precache_sound("weapons/m3/m3-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_benellim3_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_benellim3_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::BenelliM3]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::BENELLIM3]).sWorldModelPath;
 }
 
 string
@@ -127,7 +107,7 @@ w_benellim3_pmodel(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return (*ary_weaponData[WEAPON_ID::BenelliM3]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::BENELLIM3]).sPlayerModelPath;
 }
 
 string
@@ -142,18 +122,9 @@ w_benellim3_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	//shotgun reload settings: shared
-	pl.shotgunReload1_seq = weaponseq_benellim3::reload1;
-	pl.shotgunReload1_Duration = 21.0f/40.0f;
-	pl.shotgunReload2_seq = weaponseq_benellim3::reload2;
-	pl.shotgunReload2_Duration = 21.0f/50.0f;
-	pl.shotgunReload3_seq = weaponseq_benellim3::reload3;
-	pl.shotgunReload3_Duration = 26.0f/30.0f;
+	pl.iShotgunExtraDataID = SHOTGUN_EXTRA_ID::BENELLIM3;
 	
-	
-	pl.shotgunReload2_ammoLoadDelay = 10.0f/50.0f;
-	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::BenelliM3], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon);
 }
 
 
@@ -170,7 +141,7 @@ w_benellim3_primary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	if(!weapon_shotgun_onInterrupt(pl, ary_weaponData[WEAPON_ID::BenelliM3], arg_thisWeapon)){
+	if(!weapon_shotgun_onInterrupt(pl, ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon)){
 		// no reload to interrupt?  ok.
 	}else{
 		// reload to interrupt?  stop this.
@@ -194,8 +165,9 @@ w_benellim3_primary(void)
 			// pump instead!
 			pl.shotgunWaitingForPump = FALSE;
 			
- 			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/m3/m3-pump.wav", CHAN_AUTO);
-			
+			//SoundPitched_Channel_Send(pl, SNDP_BENELLIM3_PUMP, CHAN_AUTO);
+			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/m3/m3-pump.wav", CHAN_AUTO);
+
 			// these pumps eject shells
 #ifdef CLIENT
 				View_AddEvent(w_ejectshell_pistol, 0.0f);
@@ -224,7 +196,7 @@ w_benellim3_primary(void)
 	}
 	
 // 	TS_Weapons_PlaySoundDirect(pl, "weapons/m3/m3-fire.wav");
-	SoundPitched_Send(pl, SNDP_M3_FIRE);
+	SoundPitched_Send(pl, SNDP_BENELLIM3_FIRE);
 
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		TS_Weapons_ViewAnimation(weaponseq_benellim3::shootpump, (31.0f/35.0f) );
@@ -242,7 +214,7 @@ w_benellim3_primary(void)
 #endif
 	}
 	
-	weapon_base_onAttack_multi(pl, ary_weaponData[WEAPON_ID::BenelliM3], arg_thisWeapon, 8, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack_multi(pl, ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon, 8, BITS_AKIMBOCHOICE_LEFT);
 
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		// use the TS stats for delay.
@@ -300,17 +272,14 @@ w_benellim3_secondary(void)
 	}
 }
 
-
 void
 w_benellim3_reload(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_shotgun_reload(pl, ary_weaponData[WEAPON_ID::BenelliM3], arg_thisWeapon);
+	weapon_shotgun_reload(pl, ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_benellim3_aimanim(void)
 {
@@ -322,12 +291,10 @@ w_benellim3_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BenelliM3], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_benellim3_hudpic(int selected, vector pos, float a)
 {

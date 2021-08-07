@@ -19,58 +19,41 @@ enum weaponseq_m4a1{
 };
 
 
-
-BOOLEAN weapon_M4A1_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_m4a1_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_M4A1_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_M4A1_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_M4A1_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_m4a1_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
 
-void weapon_M4A1_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_m4a1_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon);
 }
-BOOLEAN weapon_M4A1_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_M4A1_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon);
-}
-void weapon_M4A1_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_M4A1_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_M4A1_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-	player pl = localPlayer;
+void weapon_m4a1_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 	if(pl.w_attack_next > 0){
 		return;
 	}
 	
-	MELEE_HIT_RESPONSE theReaper = weapon_base_coldcock(pl, ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon, 40, 66);
+	MELEE_HIT_RESPONSE hitRep = weapon_base_coldcock(pl, ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon, 40, 66);
 	weapon_base_setWholeAttackDelay(pl, 0.73f);
 	TS_Weapons_ViewAnimation_noLaserLock(weaponseq_m4a1::coldcock, 30.0f/40.0f);
 	arg_thisWeapon.iIronSight = 0;  //disable, coldcock returns to non-ironsight look
 	
-	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
+	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::SOFT){
+	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::METAL){
+	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
+	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hitbody.wav");
 	}
 	
 }
 
 	
-weapondata_ironsight_t weapon_M4A1 =
+weapondata_ironsight_t weapon_m4a1 =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"M4A1",
@@ -79,16 +62,10 @@ weapondata_ironsight_t weapon_M4A1 =
 	"models/p_m4_sil.mdl",
 	"models/w_m4.mdl",
 	"sprites/weapons/m4.spr",
-	weapon_M4A1_onPrimaryAttack,
-	weapon_M4A1_onPrimaryAttackRelease,
-	weapon_M4A1_onSecondaryAttack,
-	weapon_M4A1_onSecondaryAttackRelease,
-	weapon_M4A1_onEquip,
-	weapon_M4A1_onUnEquip,
-	weapon_M4A1_onThink,
-	weapon_M4A1_onDrawHUD,
-	weapon_M4A1_onReload,
-	weapon_M4A1_onColdCock,
+	weapon_m4a1_onPrimaryAttackRelease,
+	weapon_m4a1_onSecondaryAttackRelease,
+	weapon_m4a1_onThink,
+	weapon_m4a1_onColdCock,
 	weaponseq_m4a1::idle,
 	weaponseq_m4a1::draw,
 	31.0f / 35.0f,
@@ -105,7 +82,7 @@ weapondata_ironsight_t weapon_M4A1 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_FULL | BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_5p56Nato,
+	AMMO_ID::_5P56NATO,
 	30,  //clip
 	4096, //range
 	weaponseq_m4a1::reload,
@@ -131,24 +108,21 @@ weapondata_ironsight_t weapon_M4A1 =
 void
 w_m4a1_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::M4A1]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/m4/boltpull.wav");
+	//precache_sound("weapons/m4/clipin.wav");
+	//precache_sound("weapons/m4/clipout.wav");
+	precache_sound("weapons/m4/m4-fire-sil.wav");
+	precache_sound("weapons/m4/m4-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_m4a1_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -211,9 +185,9 @@ w_m4a1_primary(void)
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/m4/m4-fire.wav");
+		SoundPitched_Send(pl, SNDP_M4A1_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/m4/m4-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_M4A1_FIRE_SIL);
 	}
 
 	if(!arg_thisWeapon.iIronSight){
@@ -303,8 +277,6 @@ w_m4a1_reload(void)
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_m4a1_aimanim(void)
 {
@@ -321,8 +293,6 @@ w_m4a1_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_m4a1_hudpic(int selected, vector pos, float a)
 {

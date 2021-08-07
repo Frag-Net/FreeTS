@@ -223,7 +223,7 @@ TS_HUD_DrawWeaponSelect(void)
 		// the below methods.
 		if(pSeat->m_flHUDWeaponSelectTime != -1){
 			pSeat->m_flHUDWeaponSelectTime = -1;
-				
+			
 			//printfline("HUD_DrawWeaponSelect IM closin my weapon select 1");
 			
 			TS_HUD_CloseWeaponSelect(TRUE);
@@ -682,15 +682,15 @@ TS_HUD_CloseWeaponSelect(BOOL playOffSound)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	
+	pl.weaponSelectHighlightID = -1;
+	pl.weaponSelectHighlightAkimbo = FALSE;
+		
 	if(pSeat->m_flHUDWeaponSelectTime != -1){
 		
 		if(playOffSound && getplayerkeyvalue(player_localnum, "*spec") == "0"  ){
 			sound(pl, CHAN_ITEM, "common/wpn_hudoff.wav", 0.5, ATTN_NONE);
 		}
 		//pSeat->fHUDWeaponSelected = 0;   //no harm but no need now
-		
-		pl.weaponSelectHighlightID = -1;
-		pl.weaponSelectHighlightAkimbo = FALSE;
 		
 		pSeat->m_flHUDWeaponSelectTime = -1;
 		return TRUE;

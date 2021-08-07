@@ -279,20 +279,6 @@ class player:base_player
 	// ALSO!  Call Byte vars 'floats' because FTE makes 'readbyte' give a float.
 	PREDICTED_FLOAT(shotgunReloadIndex);
 	
-	// Not networked!  For keeping track of changes to shotgunReloadIndex outside of the
-	// client directly, like if the client and server are waiting for a reload anim to finish,
-	// but the server finishes first and gives the client the new shotgunReloadIndex. This
-	// leaves the client to skip picking the new shotgunReloadIndex itself and the viewmodel
-	// animation call that goes with it.
-	// (NOT INVOLVED YET. Is this even a good idea?)
-	float shotgunReloadIndexPrev;
-	
-	// Same as shotgunReloadIndex, but for keeping track of the next
-	// value to turn when the current one is done.
-	// reload2 is completely interruptable at any point, but reload1 and
-	// reload3 have to finish completely before changing to a new animation.
-	// Left-clicking during reload1 will now terminate 
-	PREDICTED_FLOAT(shotgunReloadIndexQueued);
 	
 	// In pump-action mode, set to TRUE after firing the shotgun. The next click pumps
 	// instead.
@@ -303,36 +289,24 @@ class player:base_player
 	// (was BOOL)
 	PREDICTED_FLOAT(shotgunWaitingForPump);
 	
-	// how long into the 2nd reload do we actually load a bullet into the shotgun?
-	float shotgunReload2_ammoLoadDelay;
-	
-	// When do I want to move on to the next phase?
-	// For reload2 without a changed shotgunReloadIndexQueued or seeing the shotgun is full,
-	// it wants to repeat to put more bullets in.
 	PREDICTED_FLOAT(shotgunAddAmmoTime);
 	PREDICTED_FLOAT(shotgunAddAmmoSoundTime);
 
 #ifdef CLIENT
 	// This time must pass before re-setting the shotgunAddAmmoTime/shotgunAddAmmoSoundTime counters is allowed.
 	// Why do we need to do this?  Ask FTE.
-	float shotgunAddAmmoTime_cooldownSetTime;
+	// NEVERMIND.  Canned
+	//float shotgunAddAmmoTime_cooldownSetTime;
 #endif
 	
+	// What ary_shotgunExtra element to use for extra reload-reloated information in
+	// the shotgun. Not networked, set on draw or right before a reload in the case
+	// of ironsight weapons.  Might be better ways of handling this but this is better
+	// than setting seven vars every time.
+	int iShotgunExtraDataID;
 	
 	
-	// shared
-	
-	// length of time for the start, intermediate (ammo loading) and end animations.
-	// Set by the shotgun on a reload call so these are known.
-	int shotgunReload1_seq;
-	float shotgunReload1_Duration;
-	int shotgunReload2_seq;
-	float shotgunReload2_Duration;
-	int shotgunReload3_seq;
-	float shotgunReload3_Duration;
-	
-	
-	// was BOOL
+	// was BOOL  (a test, not even networked though)
 	PREDICTED_FLOAT(doFiremodeChange);
 	
 	
@@ -382,13 +356,6 @@ class player:base_player
 	PREDICTED_FLOAT(akimboDualFireToleranceTime);
 	
 	
-	// When firing akimbo weapons, which one fired recently?
-	// Just use FALSE or TRUE to see which, left/right.
-	// This isn't whether to alternate firing both akimbo weapons, but which to use next
-	// IF we are doing alt fire for pressing primary over and over.
-	// The fireMode controls whether this variable is relevant at all
-	// (another firemode makes primary / secondary fire use either akimbo weapon consistently)
-	PREDICTED_FLOAT(recentAkimboAttackChoice);
 	// What is the next way I want to try firing if only primary is supposed to be used?
 	// Only used for certain firemode(s).
 	PREDICTED_FLOAT(nextAkimboAttackPreference);

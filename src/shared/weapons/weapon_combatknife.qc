@@ -1,65 +1,33 @@
 
-//TAGGG - TODO (same for seal knife): spark-effect on bouncing off something and hitting something?
+//TAGGG - TODO (same for seal knife): spark-effect on bouncing off something and hitting something
+// (only if non-organic, i.e. not a player, probably)?
 // That would be for the resulting throwable object.
 // Although same effect for any melee hits with knives and the katana too I think.
 
-
-/*
-Combat Knife
-100 Credits
-1 Slots
-BuyOpts: Full Load (5 knives)
-MELEE, THROWABLE
-*/
-
-
 enum weaponseq_combatknife{
 	idle,
-	idle2,   // ???  why? identical.
+	idle2,   // why? identical.
 	draw,
 	slash1,
 	left,
 	right,
-	hold   // ??? WHERE WOULD WE USE THIS?  Is there any way to block with melee besides "R" in karate?
+	hold   // WHERE WOULD WE USE THIS?  Is there any way to block with melee besides "R" in karate?
 };
 
-
-
-BOOLEAN weapon_CombatKnife_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}//END OF onPrimaryAttack
-
-
-BOOLEAN weapon_CombatKnife_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-
-BOOLEAN weapon_CombatKnife_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_CombatKnife_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_CombatKnife_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_CombatKnife_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_CombatKnife_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-
-}
-void weapon_CombatKnife_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_CombatKnife_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-
-}
-void weapon_CombatKnife_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-
-}
-
+void weapon_combatknife_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
-weapondata_throwable_t weapon_CombatKnife =
+}
+void weapon_combatknife_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
+}
+void weapon_combatknife_onThink(player pl, weapondynamic_t arg_thisWeapon){
+
+}
+void weapon_combatknife_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
+
+}
+
+weapondata_throwable_t weapon_combatknife =
 {
 	WEAPONDATA_TYPEID_THROWABLE,
 	"Combat Knife",
@@ -68,16 +36,10 @@ weapondata_throwable_t weapon_CombatKnife =
 	"",
 	"models/w_knife.mdl",
 	"sprites/weapons/knife.spr",
-	weapon_CombatKnife_onPrimaryAttack,
-	weapon_CombatKnife_onPrimaryAttackRelease,
-	weapon_CombatKnife_onSecondaryAttack,
-	weapon_CombatKnife_onSecondaryAttackRelease,
-	weapon_CombatKnife_onEquip,
-	weapon_CombatKnife_onUnEquip,
-	weapon_CombatKnife_onThink,
-	weapon_CombatKnife_onDrawHUD,
-	weapon_CombatKnife_onReload,
-	weapon_CombatKnife_onColdCock,
+	weapon_combatknife_onPrimaryAttackRelease,
+	weapon_combatknife_onSecondaryAttackRelease,
+	weapon_combatknife_onThink,
+	weapon_combatknife_onColdCock,
 	weaponseq_combatknife::idle,
 	weaponseq_combatknife::draw,
 	31.0f / 30.0f,
@@ -101,24 +63,16 @@ weapondata_throwable_t weapon_CombatKnife =
 
 
 
-
-
-// TODO!!! Put things relevant the TS glock here, not HL glock
-// Same for the actual sounds to be used, hardcode or put in file formats..  uhhh whatever.
-// Also, different sounds are used than here + precached in <gamemod>/client/precache.qc already,
-// and so are pmodels/vmodels/wmodels.
 void
 w_combatknife_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::COMBATKNIFE]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/knife/knife_hit.wav");
+	precache_sound("weapons/knife/knife_hitbody.wav");
+	precache_sound("weapons/knife/knife_miss.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
@@ -131,13 +85,13 @@ w_combatknife_updateammo(player pl)
 string
 w_combatknife_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::CombatKnife]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::COMBATKNIFE]).sWorldModelPath;
 }
 
 string
 w_combatknife_pmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::CombatKnife]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::COMBATKNIFE]).sPlayerModelPath;
 }
 
 string
@@ -152,7 +106,7 @@ w_combatknife_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::CombatKnife], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::COMBATKNIFE], arg_thisWeapon);
 }
 
 void
@@ -173,19 +127,19 @@ w_combatknife_primary(void)
 	
 	INPUT_PRIMARY_TAP_GATE
 	
-	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::CombatKnife];
-	MELEE_HIT_RESPONSE theReaper =  weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::CombatKnife], arg_thisWeapon, baseRef.fAttackDamage, 58);
+	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::COMBATKNIFE];
+	MELEE_HIT_RESPONSE hitRep =  weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::COMBATKNIFE], arg_thisWeapon, baseRef.fAttackDamage, 58);
 	
 	// Only the server is doing traces so far to get results for this to be worth checking.
 #ifdef SERVER
-	//printfline("melee hit reponse: %d soft? %d", theReaper, (theReaper==MELEE_HIT_RESPONSE::SOFT));
-	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
+	//printfline("melee hit reponse: %d soft? %d", hitRep, (hitRep==MELEE_HIT_RESPONSE::SOFT));
+	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::SOFT){
+	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		//nothin
-	}else if(theReaper == MELEE_HIT_RESPONSE::METAL){
+	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hit.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
+	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
 		arg_thisWeapon.forceBodygroup1Submodel = 2;
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hitbody.wav");
 	}
@@ -221,7 +175,7 @@ w_combatknife_secondary(void)
 	
 	INPUT_SECONDARY_TAP_GATE
 	
-	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::CombatKnife];
+	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::COMBATKNIFE];
 	weapon_base_setWholeAttackDelay(pl, baseRef.fAttackDelay);
 	
 	if(arg_thisWeapon.iCount > 0){
@@ -257,21 +211,17 @@ w_combatknife_secondary(void)
 	
 }
 
-
 void
 w_combatknife_reload(void)
 {
 	// how do you reload a sword
 }
 
-
-// ???
 float
 w_combatknife_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
-
 
 void
 w_combatknife_hud(void)
@@ -279,18 +229,14 @@ w_combatknife_hud(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_throwable_onDrawHUD(pl, (weapondata_throwable_t*)ary_weaponData[WEAPON_ID::CombatKnife], arg_thisWeapon);
+	weapon_throwable_onDrawHUD(pl, (weapondata_throwable_t*)ary_weaponData[WEAPON_ID::COMBATKNIFE], arg_thisWeapon);
 }
 
-
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_combatknife_hudpic(int selected, vector pos, float a)
 {
 	//
 }
-
 
 weapon_t w_combatknife =
 {

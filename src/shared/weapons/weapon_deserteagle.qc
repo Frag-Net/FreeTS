@@ -14,40 +14,20 @@ enum weaponseq_deserteagle{
 	reloadb = 11
 };
 
-
-
-BOOLEAN weapon_DesertEagle_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_deserteagle_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_DesertEagle_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_deserteagle_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_DesertEagle_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_deserteagle_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);
 }
-BOOLEAN weapon_DesertEagle_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_DesertEagle_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_base_onEquip(localPlayer, ary_weaponData[WEAPON_ID::DesertEagle], arg_thisWeapon);
-}
-BOOLEAN weapon_DesertEagle_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_DesertEagle_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::DesertEagle], arg_thisWeapon);
-}
-void weapon_DesertEagle_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onDrawHUD(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::DesertEagle], arg_thisWeapon);
-}
-void weapon_DesertEagle_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_DesertEagle_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_deserteagle_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-	
-weapondata_ironsight_t weapon_DesertEagle =
+weapondata_ironsight_t weapon_deserteagle =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"Desert Eagle",
@@ -56,20 +36,14 @@ weapondata_ironsight_t weapon_DesertEagle =
 	"models/p_desert.mdl",
 	"models/w_desert.mdl",
 	"sprites/weapons/desert.spr",
-	weapon_DesertEagle_onPrimaryAttack,
-	weapon_DesertEagle_onPrimaryAttackRelease,
-	weapon_DesertEagle_onSecondaryAttack,
-	weapon_DesertEagle_onSecondaryAttackRelease,
-	weapon_DesertEagle_onEquip,
-	weapon_DesertEagle_onUnEquip,
-	weapon_DesertEagle_onThink,
-	weapon_DesertEagle_onDrawHUD,
-	weapon_DesertEagle_onReload,
-	weapon_DesertEagle_onColdCock,
+	weapon_deserteagle_onPrimaryAttackRelease,
+	weapon_deserteagle_onSecondaryAttackRelease,
+	weapon_deserteagle_onThink,
+	weapon_deserteagle_onColdCock,
 	weaponseq_deserteagle::idle,
 	weaponseq_deserteagle::draw,
 	31.0f / 50.0f,
-	0.35f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.35f,  //fire delay
 	27.0f,
 	TRUE,
 	BITS_WEAPONOPT_SILENCER | BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_SCOPE,
@@ -82,7 +56,7 @@ weapondata_ironsight_t weapon_DesertEagle =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_SEMI,
-	AMMO_ID::_p50AE,
+	AMMO_ID::_P50AE,
 	7,
 	4096,
 	weaponseq_deserteagle::reload,
@@ -108,24 +82,21 @@ weapondata_ironsight_t weapon_DesertEagle =
 
 
 
-
-
 void
 w_deserteagle_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::DESERTEAGLE]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/deagle/clipin.wav");
+	//precache_sound("weapons/deagle/clipout.wav");
+	precache_sound("weapons/deagle/fire-sil.wav");
+	precache_sound("weapons/deagle/fire.wav");
+	//precache_sound("weapons/deagle/slideback.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_deserteagle_updateammo(player pl)
 {
@@ -136,7 +107,7 @@ w_deserteagle_updateammo(player pl)
 string
 w_deserteagle_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::DesertEagle]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::DESERTEAGLE]).sWorldModelPath;
 }
 
 string
@@ -146,9 +117,9 @@ w_deserteagle_pmodel(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		return (*ary_weaponData[WEAPON_ID::DesertEagle]).sPlayerModelPath;
+		return (*ary_weaponData[WEAPON_ID::DESERTEAGLE]).sPlayerModelPath;
 	} else {
-		return (*ary_weaponData[WEAPON_ID::DesertEagle]).sPlayerSilencerModelPath;
+		return (*ary_weaponData[WEAPON_ID::DESERTEAGLE]).sPlayerSilencerModelPath;
 	}
 }
 
@@ -163,7 +134,7 @@ w_deserteagle_draw(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::DesertEagle];
+	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::DESERTEAGLE];
 	
 	weapon_base_onEquip(pl, basicP, arg_thisWeapon);
 }
@@ -196,9 +167,9 @@ w_deserteagle_primary(void)
 	
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/deagle/fire.wav");
+		SoundPitched_Send(pl, SNDP_DESERTEAGLE_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/deagle/fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_DESERTEAGLE_FIRE_SIL);
 	}
 
 
@@ -227,7 +198,7 @@ w_deserteagle_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::DesertEagle], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -270,7 +241,7 @@ w_deserteagle_secondary(void)
 
 	}else{
 		// no scope?  we use ironsights then.
-		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::DesertEagle], arg_thisWeapon);
+		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);
 	}
 }
 
@@ -280,10 +251,9 @@ w_deserteagle_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::DesertEagle], arg_thisWeapon);
+	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);
 }
 
-// ???
 float
 w_deserteagle_aimanim(void)
 {
@@ -295,19 +265,14 @@ w_deserteagle_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::DesertEagle], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);
 }
 
-
-
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_deserteagle_hudpic(int selected, vector pos, float a)
 {
 	//
 }
-
 
 weapon_t w_deserteagle =
 {

@@ -7,35 +7,18 @@ enum weaponseq_sealknife{
 	slash3
 };
 
-
-BOOLEAN weapon_SealKnife_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_sealknife_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_SealKnife_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_sealknife_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-
-BOOLEAN weapon_SealKnife_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_sealknife_onThink(player pl, weapondynamic_t arg_thisWeapon){
 }
-BOOLEAN weapon_SealKnife_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_SealKnife_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_sealknife_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 }
 
-BOOLEAN weapon_SealKnife_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SealKnife_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SealKnife_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SealKnife_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SealKnife_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-
-weapondata_throwable_t weapon_SealKnife =
+weapondata_throwable_t weapon_sealknife =
 {
 	WEAPONDATA_TYPEID_THROWABLE,
 	"Seal Knife",
@@ -44,20 +27,14 @@ weapondata_throwable_t weapon_SealKnife =
 	"",
 	"models/w_sealknife.mdl",
 	"sprites/weapons/sealknife.spr",
-	weapon_SealKnife_onPrimaryAttack,
-	weapon_SealKnife_onPrimaryAttackRelease,
-	weapon_SealKnife_onSecondaryAttack,
-	weapon_SealKnife_onSecondaryAttackRelease,
-	weapon_SealKnife_onEquip,
-	weapon_SealKnife_onUnEquip,
-	weapon_SealKnife_onThink,
-	weapon_SealKnife_onDrawHUD,
-	weapon_SealKnife_onReload,
-	weapon_SealKnife_onColdCock,
+	weapon_sealknife_onPrimaryAttackRelease,
+	weapon_sealknife_onSecondaryAttackRelease,
+	weapon_sealknife_onThink,
+	weapon_sealknife_onColdCock,
 	weaponseq_sealknife::idle,
 	weaponseq_sealknife::draw,
 	31.0f / 30.0f,
-	0.24,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.24,  //fire delay
 	15.0f,  //dmg
 	FALSE,
 	BITS_WEAPONOPT_FULLLOAD,
@@ -77,19 +54,16 @@ weapondata_throwable_t weapon_SealKnife =
 
 
 
-
 void
 w_sealknife_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::SEALKNIFE]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/knife/knife_miss.wav");
+	precache_sound("weapons/knife/knife_hit.wav");
+	precache_sound("weapons/knife/knife_hitbody.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
@@ -102,13 +76,13 @@ w_sealknife_updateammo(player pl)
 string
 w_sealknife_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::SealKnife]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::SEALKNIFE]).sWorldModelPath;
 }
 
 string
 w_sealknife_pmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::SealKnife]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::SEALKNIFE]).sPlayerModelPath;
 }
 
 string
@@ -123,7 +97,7 @@ w_sealknife_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SealKnife], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SEALKNIFE], arg_thisWeapon);
 }
 
 void
@@ -145,24 +119,23 @@ w_sealknife_primary(void)
 	
 	INPUT_PRIMARY_TAP_GATE
 	
-	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::SealKnife];
-	MELEE_HIT_RESPONSE theReaper =  weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::SealKnife], arg_thisWeapon, baseRef.fAttackDamage, 55);
+	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::SEALKNIFE];
+	MELEE_HIT_RESPONSE hitRep =  weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::SEALKNIFE], arg_thisWeapon, baseRef.fAttackDamage, 55);
 	
 	// Only the server is doing traces so far to get results for this to be worth checking.
 #ifdef SERVER
-	//printfline("melee hit reponse: %d soft? %d", theReaper, (theReaper==MELEE_HIT_RESPONSE::SOFT));
-	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
+	//printfline("melee hit reponse: %d soft? %d", hitRep, (hitRep==MELEE_HIT_RESPONSE::SOFT));
+	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::SOFT){
+	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		//nothin
-	}else if(theReaper == MELEE_HIT_RESPONSE::METAL){
+	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hit.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
+	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
 		arg_thisWeapon.forceBodygroup1Submodel = 2;
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hitbody.wav");
 	}
 #endif
-
 
 	//Animation_ShootWeapon( self );
 	//self.fAttackFinished = time + wptKNIFE.fAttackFinished;
@@ -194,7 +167,7 @@ w_sealknife_secondary(void)
 	
 	INPUT_SECONDARY_TAP_GATE
 	
-	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::SealKnife];
+	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::SEALKNIFE];
 	weapon_base_setWholeAttackDelay(pl, baseRef.fAttackDelay);
 	
 	if(arg_thisWeapon.iCount > 0){
@@ -202,7 +175,7 @@ w_sealknife_secondary(void)
 		arg_thisWeapon.iCount -= 1;
 		pl.updateSlotCountsForEquippedWeapon();
 		arg_thisWeapon.forceBodygroup1Submodel = 1;  //reset, new knife is not bloody.
-		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav", 1);
+		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav");
 #ifdef SERVER
 		TSThrownProjectile::generate2(pl, arg_thisWeapon);
 #endif
@@ -230,13 +203,11 @@ w_sealknife_reload(void)
 	// how do you reload a sword
 }
 
-// ???
 float
 w_sealknife_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
-
 
 void
 w_sealknife_hud(void)
@@ -244,12 +215,9 @@ w_sealknife_hud(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_throwable_onDrawHUD(pl, (weapondata_throwable_t*)ary_weaponData[WEAPON_ID::SealKnife], arg_thisWeapon);
+	weapon_throwable_onDrawHUD(pl, (weapondata_throwable_t*)ary_weaponData[WEAPON_ID::SEALKNIFE], arg_thisWeapon);
 }
 
-
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_sealknife_hudpic(int selected, vector pos, float a)
 {

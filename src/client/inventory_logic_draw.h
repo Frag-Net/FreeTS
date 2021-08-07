@@ -61,7 +61,6 @@ void drawPlayerInventory(BOOL arg_fBuyMode);
 
 void drawPlayerInventory_place(int arg_iSlot, int arg_iRow, string arg_sWeaponSpritePath, string arg_sSelectedWeaponDisplayName, BOOL arg_fBuyMode, optional int ammoCount, optional BOOL hasAnyAmmo, optional int bitsUpgradeOpts);
 
-void drawPlayerCurrentWeaponStats(void);
 void drawPlayerStats(void);
 
 void drawTimer(void);

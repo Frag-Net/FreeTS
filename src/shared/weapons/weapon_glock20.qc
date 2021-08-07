@@ -8,38 +8,20 @@ enum weaponseq_glock20{
 	shootempty
 };
 
-
-BOOLEAN weapon_Glock20_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_glock20_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_Glock20_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_glock20_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_Glock20_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_glock20_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon);
 }
-BOOLEAN weapon_Glock20_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_Glock20_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_Glock20_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_Glock20_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Glock20], arg_thisWeapon);
-}
-void weapon_Glock20_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_Glock20_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_Glock20_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_glock20_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_gun_t weapon_Glock20 =
+weapondata_gun_t weapon_glock20 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Glock-20C",
@@ -48,20 +30,14 @@ weapondata_gun_t weapon_Glock20 =
 	"models/p_glock22_sil.mdl",
 	"models/w_glock22.mdl",
 	"sprites/weapons/glock22.spr",
-	weapon_Glock20_onPrimaryAttack,
-	weapon_Glock20_onPrimaryAttackRelease,
-	weapon_Glock20_onSecondaryAttack,
-	weapon_Glock20_onSecondaryAttackRelease,
-	weapon_Glock20_onEquip,
-	weapon_Glock20_onUnEquip,
-	weapon_Glock20_onThink,
-	weapon_Glock20_onDrawHUD,
-	weapon_Glock20_onReload,
-	weapon_Glock20_onColdCock,
+	weapon_glock20_onPrimaryAttackRelease,
+	weapon_glock20_onSecondaryAttackRelease,
+	weapon_glock20_onThink,
+	weapon_glock20_onColdCock,
 	weaponseq_glock20::idle,
 	weaponseq_glock20::draw,
 	31.0f / 30.0f,
-	0.19f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.19f,  //fire delay
 	15.0f,  //dmg
 	TRUE,
 	BITS_WEAPONOPT_SILENCER | BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_FLASHLIGHT,
@@ -74,7 +50,7 @@ weapondata_gun_t weapon_Glock20 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_SEMI,
-	AMMO_ID::_10mmAUTO,
+	AMMO_ID::_10MMAUTO,
 	15,  //clip
 	4096, //range
 	weaponseq_glock20::reload,
@@ -89,30 +65,24 @@ weapondata_gun_t weapon_Glock20 =
 void
 w_glock20_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::GLOCK20]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/glock22/glock22-fire-sil.wav");
+	precache_sound("weapons/glock22/glock22-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_glock20_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_glock20_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::Glock20]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::GLOCK20]).sWorldModelPath;
 }
 
 string
@@ -122,9 +92,9 @@ w_glock20_pmodel(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		return (*ary_weaponData[WEAPON_ID::Glock20]).sPlayerModelPath;
+		return (*ary_weaponData[WEAPON_ID::GLOCK20]).sPlayerModelPath;
 	} else {
-		return (*ary_weaponData[WEAPON_ID::Glock20]).sPlayerSilencerModelPath;
+		return (*ary_weaponData[WEAPON_ID::GLOCK20]).sPlayerSilencerModelPath;
 	}
 }
 
@@ -140,7 +110,7 @@ w_glock20_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::Glock20], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon);
 }
 
 void
@@ -169,9 +139,9 @@ w_glock20_primary(void)
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/glock22/glock22-fire.wav");
+		SoundPitched_Send(pl, SNDP_GLOCK20_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/glock22/glock22-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_GLOCK20_FIRE_SIL);
 	}
 
 	if(arg_thisWeapon.iClipLeft > 0){
@@ -192,7 +162,7 @@ w_glock20_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::Glock20], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -209,18 +179,15 @@ w_glock20_secondary(void)
 {
 }
 
-
 void
 w_glock20_reload(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Glock20], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_glock20_aimanim(void)
 {
@@ -233,12 +200,10 @@ w_glock20_hud(void)
 	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Glock20], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_glock20_hudpic(int selected, vector pos, float a)
 {

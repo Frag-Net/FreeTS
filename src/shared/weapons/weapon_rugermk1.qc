@@ -7,38 +7,20 @@ enum weaponseq_rugermk1{
 	reload
 };
 
-
-BOOLEAN weapon_RugerMK1_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_rugermk1_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_RugerMK1_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_rugermk1_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_RugerMK1_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_rugermk1_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RUGERMK1], arg_thisWeapon);
 }
-BOOLEAN weapon_RugerMK1_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_RugerMK1_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_RugerMK1_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_RugerMK1_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RugerMK1], arg_thisWeapon);
-}
-void weapon_RugerMK1_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_RugerMK1_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_RugerMK1_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_rugermk1_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_gun_t weapon_RugerMK1 =
+weapondata_gun_t weapon_rugermk1 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Ruger-MK1",
@@ -47,20 +29,14 @@ weapondata_gun_t weapon_RugerMK1 =
 	"models/p_ruger.mdl",   //NOTICE - only ever has a silencer, so this never got a separate model (has it here)
 	"models/w_ruger.mdl",
 	"sprites/weapons/ruger.spr",
-	weapon_RugerMK1_onPrimaryAttack,
-	weapon_RugerMK1_onPrimaryAttackRelease,
-	weapon_RugerMK1_onSecondaryAttack,
-	weapon_RugerMK1_onSecondaryAttackRelease,
-	weapon_RugerMK1_onEquip,
-	weapon_RugerMK1_onUnEquip,
-	weapon_RugerMK1_onThink,
-	weapon_RugerMK1_onDrawHUD,
-	weapon_RugerMK1_onReload,
-	weapon_RugerMK1_onColdCock,
+	weapon_rugermk1_onPrimaryAttackRelease,
+	weapon_rugermk1_onSecondaryAttackRelease,
+	weapon_rugermk1_onThink,
+	weapon_rugermk1_onColdCock,
 	weaponseq_rugermk1::idle,
 	weaponseq_rugermk1::draw,
 	31.0f / 35.0f,
-	0.19f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.19f,  //fire delay
 	15.0f,  //dmg
 	TRUE,
 	BITS_WEAPONOPT_SILENCER | BITS_WEAPONOPT_LASERSIGHT,
@@ -73,7 +49,7 @@ weapondata_gun_t weapon_RugerMK1 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_SEMI,
-	AMMO_ID::_p22LR,
+	AMMO_ID::_P22LR,
 	17,  //clip
 	4096, //range
 	weaponseq_rugermk1::reload,
@@ -89,30 +65,26 @@ weapondata_gun_t weapon_RugerMK1 =
 void
 w_rugermk1_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::RUGERMK1]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/ruger/clipin.wav");
+	//precache_sound("weapons/ruger/clipout.wav");
+	precache_sound("weapons/ruger/fire.wav");
+	//precache_sound("weapons/ruger/slide.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_rugermk1_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_rugermk1_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::RugerMK1]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::RUGERMK1]).sWorldModelPath;
 }
 
 string
@@ -122,9 +94,9 @@ w_rugermk1_pmodel(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	//if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		return (*ary_weaponData[WEAPON_ID::RugerMK1]).sPlayerModelPath;
+		return (*ary_weaponData[WEAPON_ID::RUGERMK1]).sPlayerModelPath;
 	//} else {
-	//	return (*ary_weaponData[WEAPON_ID::RugerMK1]).sPlayerSilencerModelPath;
+	//	return (*ary_weaponData[WEAPON_ID::RUGERMK1]).sPlayerSilencerModelPath;
 	//}
 }
 
@@ -140,7 +112,7 @@ w_rugermk1_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::RugerMK1], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::RUGERMK1], arg_thisWeapon);
 }
 
 void
@@ -169,7 +141,7 @@ w_rugermk1_primary(void)
 	}
 	
 	// silencer only!
-	TS_Weapons_PlaySoundDirect(pl, "weapons/ruger/fire.wav");
+	SoundPitched_Send(pl, SNDP_RUGERMK1_FIRE);
 
 	randomChoice = random();
 	if(randomChoice < 0.5){
@@ -183,7 +155,7 @@ w_rugermk1_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::RugerMK1], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::RUGERMK1], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -207,11 +179,9 @@ w_rugermk1_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RugerMK1], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RUGERMK1], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_rugermk1_aimanim(void)
 {
@@ -224,12 +194,10 @@ w_rugermk1_hud(void)
 	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RugerMK1], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RUGERMK1], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_rugermk1_hudpic(int selected, vector pos, float a)
 {

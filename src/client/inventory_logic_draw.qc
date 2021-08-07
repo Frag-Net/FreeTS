@@ -19,7 +19,7 @@ drawWeaponOptionBar(
 	}else{
 		DRAW_IMAGE_ADDITIVE(img_item_installed, tempVec, clrPaleBlue, arg_opac - 0.50f)
 	}
-}//drawWeaponOptionBar
+}// drawWeaponOptionBar
 
 
 void
@@ -68,7 +68,7 @@ drawPlayerInventory_TopBar(int arg_iSlotSelected, BOOL arg_fBuyMode)
 	vWeaponsBar_drawLoc.y = vWeaponsBar_drawBase.y + 0;
 	DRAW_IMAGE_CROPPED_ADDITIVE(spr_number5, vWeaponsBar_drawLoc, clrPaleBlue, 0.89f)
 	
-}//drawPlayerInventory_TopBar
+}// drawPlayerInventory_TopBar
 
 
 // While in the buy screen, draw each slot according to the current temp config.
@@ -349,24 +349,9 @@ drawPlayerInventory_place
 		DRAW_IMAGE_ADDITIVE(img_weapon, vDrawPos, clrHUDWeaponEmpty, fOpac)
 	}
 	
-}//drawPlayerInventory_place
+}// drawPlayerInventory_place
 
 
-void
-drawPlayerCurrentWeaponStats(void)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	
-	if(pl.inventoryEquippedIndex == -1){
-		return;
-	}
-	
-	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapondata_basic_t* basicPointer = (weapondata_basic_t*) pl.getEquippedWeaponData();
-	weapondata_basic_t basicRef = *(basicPointer);
-	
-	return basicRef.vOnDrawHUD(pl, dynaRef);
-}//drawPlayerCurrentWeaponStats
 
 
 // See screenshots for what the bottom-left corner of the HUD ingame should look like.
@@ -450,7 +435,7 @@ drawPlayerStats(void)
 	offsetRight = drawSpriteNumber(ary_LCD_numberSet, drawerX + 8, drawerY + 20 + 2, getstati(STAT_RULE_MAXWEIGHTSLOTS) - pl.iTotalSlots, 8, BITS_DIGITOPT_NONE, clrPaleBlue, 0.92f);
 	Gfx_Text( [drawerX + 8 + offsetRight + 6, drawerY + 20 + 4], "free slots", vButtonFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 
-}//drawPlayerStats
+}// drawPlayerStats
 
 
 void
@@ -488,6 +473,6 @@ drawTimer(void)
 	Gfx_Text( [drawerX + numberFontWidth*3 + 4, drawerY + 1], ":", vFontSizeNumSlash, clrDraw, fOpac, DRAWFLAG_ADDITIVE, FONT_ARIAL_NUMSLASH );
 	drawSpriteNumber(ary_LCD_numberSet, drawerX + numberFontWidth*4, drawerY, iSeconds, 2, BITS_DIGITOPT_FILLER0, clrDraw, fOpac);
 	
-}//drawTimer
+}// drawTimer
 
 

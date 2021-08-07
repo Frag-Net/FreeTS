@@ -7,23 +7,20 @@ void ClientGame_Precache(void){
 	printfline("***ClientGame_Precache called***");
 	SharedGame_Precache();
 	
+	// these might be redundant with shell sounds being precached, but then
+	// again some are from the valve gamemod
+	Sound_Precache("modelevent_shell.land");
+	Sound_Precache("modelevent_shotgunshell.land");
 	
-	
-	//TAGGG - From FreeHL.  Anything that ends up unused by FreeTS can be removed,
-	// including sound config files that are then unused.
+	//TAGGG - From FreeHL.
+	// Does TS use something else?
 	////////////////////////////////////////////////////////////
-	precache_model("models/shell.mdl");
-	precache_model("models/shotgunshell.mdl");
 	precache_model("sprites/muzzleflash1.spr");
 	precache_model("sprites/muzzleflash2.spr");
 	precache_model("sprites/muzzleflash3.spr");
-	
-	Sound_Precache("modelevent_shell.land");
 	////////////////////////////////////////////////////////////
 	
-	
 	precache_sound("weapons/draw.wav");
-	
 	
 	
 	PART_EXPLOSION = particleeffectnum("explosion.explosion_grenade");
@@ -45,33 +42,9 @@ void ClientGame_Precache(void){
 	precache_model("sprites/player/stand.spr");
 	
 	
-	for(int i = 1; i < WEAPON_ID::LAST_ID; i++){
-		if(ary_weaponData[i] != NULL){
-			weapondata_basic_t* basicPointer = (weapondata_basic_t*) ary_weaponData[i];
-			weapondata_basic_t basicRef = *(basicPointer);
-			
-			if(basicRef.sIconFilePath != NULL){
-				precache_model(basicRef.sIconFilePath);
-			}
-		}
-	}
-	for(int i = 1; i < WEAPON_AKIMBO_UPGRADE_ID::LAST_ID; i++){
-		if(ary_akimboUpgradeData[i] != NULL){
-			weapondata_basic_t* basicPointer = (weapondata_basic_t*) ary_akimboUpgradeData[i];
-			weapondata_basic_t basicRef = *(basicPointer);
-			
-			if(basicRef.sIconFilePath != NULL){
-				precache_model(basicRef.sIconFilePath);
-			}
-		}
-	}
-	
-	
-	
 	
 	precache_model("sprites/weapons/item_installed.spr");
 	precache_model("sprites/weapons/item_not_installed.spr");
-	
 	
 	precache_model("sprites/wires/bwire.spr");
 	precache_model("sprites/wires/bwirecutted.spr");
@@ -161,7 +134,7 @@ void ClientGame_Precache(void){
 	precache_model("sprites/xsmoke1.spr");
 	
 	
-	//  for tga's only.   drop the extension... I think.
+	// for tga's only
 	precache_pic("textures/quarterscope.tga");
 	//precache_pic("textures/scope_cross_plus.tga");
 	precache_pic("textures/scope_cross_plus_odd.tga");
@@ -169,14 +142,13 @@ void ClientGame_Precache(void){
 	//precache_pic("textures/cal_9x18mm.tga");
 	
 	
-	//...do we know what of these we even need?
+	// do we know what of these we even need?
 	precache_model("sprites/fexplo.spr");
 	
 	precache_sound("common/wpn_hudon.wav");
 	precache_sound("common/wpn_hudoff.wav");
 	precache_sound("common/wpn_moveselect.wav");
-	precache_sound("common/wpn_select.wav");
-	
+	// "common/wpn_select.wav" is precached shared according to FreeHL?
 	
 	
 }

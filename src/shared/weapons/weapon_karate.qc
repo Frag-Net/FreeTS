@@ -5,9 +5,7 @@
 // ALSO, weapons that lack world-models will never drop, safe assumption.
 // That is why karate never drops.
 
-
 enum weaponseq_karate{
-	//nothing = 0
 	idle,
 	draw,
 	punch_left,
@@ -22,37 +20,19 @@ enum weaponseq_karate{
 	
 };
 
-
-BOOLEAN weapon_Karate_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_Karate_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_Karate_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_Karate_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_Karate_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_Karate_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_Karate_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_karate_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
-void weapon_Karate_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-
-void weapon_Karate_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_Karate_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-
+void weapon_karate_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
-weapondata_basic_t weapon_Karate =
+}
+void weapon_karate_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	
+}
+void weapon_karate_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
+}
+
+weapondata_basic_t weapon_karate =
 {
 	WEAPONDATA_TYPEID_BASIC,
 	"Karate",
@@ -61,20 +41,14 @@ weapondata_basic_t weapon_Karate =
 	"",
 	"",
 	"sprites/weapons/kungfu.spr",
-	weapon_Karate_onPrimaryAttack,
-	weapon_Karate_onPrimaryAttackRelease,
-	weapon_Karate_onSecondaryAttack,
-	weapon_Karate_onSecondaryAttackRelease,
-	weapon_Karate_onEquip,
-	weapon_Karate_onUnEquip,
-	weapon_Karate_onThink,
-	weapon_Karate_onDrawHUD,
-	weapon_Karate_onReload,
-	weapon_Karate_onColdCock,
+	weapon_karate_onPrimaryAttackRelease,
+	weapon_karate_onSecondaryAttackRelease,
+	weapon_karate_onThink,
+	weapon_karate_onColdCock,
 	weaponseq_karate::idle,
 	weaponseq_karate::draw,
 	31 / 35,   // 31/35 ?
-	0.17f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.17f,  //fire delay
 	20.0f,
 	FALSE,
 	BITS_WEAPONOPT_NONE,
@@ -92,15 +66,13 @@ weapondata_basic_t weapon_Karate =
 void
 w_karate_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::KARATE]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("player/closecombat.wav");
+	precache_sound("player/kungfuhit.wav");
+	precache_sound("player/block.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
@@ -113,13 +85,13 @@ w_karate_updateammo(player pl)
 string
 w_karate_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::Karate]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::KARATE]).sWorldModelPath;
 }
 
 string
 w_karate_pmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::Karate]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::KARATE]).sPlayerModelPath;
 }
 
 string
@@ -134,7 +106,7 @@ w_karate_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::Karate];
+	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::KARATE];
 	weapon_base_onEquip(pl, basicP, arg_thisWeapon);
 }
 
@@ -159,7 +131,7 @@ w_karate_primary(void)
 	INPUT_PRIMARY_TAP_GATE
 	
 	// TODO - base karate melee damage?  I forget.
-	MELEE_HIT_RESPONSE theReaper = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::Karate], arg_thisWeapon, 30 * pl.fKarateStamina, 55);
+	MELEE_HIT_RESPONSE hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 55);
 	
 	//pointsound(vPos, "player/closecombat.wav", impactSoundVolume, ATTN_NORM+0.1);
 
@@ -167,17 +139,17 @@ w_karate_primary(void)
 	weapon_base_setWholeAttackDelay(pl, 0.175f);
 	pl.fMoveBlockDelay = time + 0.09f;
 	//pl.fUncrouchBlockDelay = time + 1.0f;
-	
-	
+		
+			
 #ifdef SERVER
 	// need the fleshhit sound
-	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
+	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::SOFT){
+	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::METAL){
+	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
+	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
 		TS_Weapons_PlaySoundDirect(pl, "player/kungfuhit.wav");
 	}
 #endif
@@ -211,7 +183,7 @@ w_karate_primary(void)
 
 
 // moved to a method so that early termination does not stop too much.
-void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* meleeAnimToPlay){
+void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* hitRep, int* meleeAnimToPlay){
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	float curSpeed;
@@ -222,7 +194,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* melee
 		//crouching?
 		//spin kick
 		(*meleeAnimToPlay) = 1;
-		(*theReaper) = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::Karate], arg_thisWeapon, 40 * pl.fKarateStamina, 72);
+		(*hitRep) = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 40 * pl.fKarateStamina, 72);
 		weapon_base_setWholeAttackDelay(pl, 1);
 		pl.fMoveBlockDelay = time + 1;
 		pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.25, 1);
@@ -243,7 +215,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* melee
 		if(dotproduct(_2d_dir, velocity_dir) <= -0.7 && GET_VIEW_ANGLES.x >= -55 && GET_VIEW_ANGLES.x <= 55){
 			// moving back-kick
 			(*meleeAnimToPlay) = 2;
-			(*theReaper) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 30 * pl.fKarateStamina, 76, -v_forward);
+			(*hitRep) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 76, -v_forward);
 			weapon_base_setWholeAttackDelay(pl, 1);
 			pl.fMoveBlockDelay = time + 1;
 			//TAGGG - NOTE. Why is this stamina-loss in original TS so high?
@@ -254,7 +226,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* melee
 		}else{
 			//moving-kick
 			(*meleeAnimToPlay) = 0;
-			(*theReaper) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 30 * pl.fKarateStamina, 74, v_forward);
+			(*hitRep) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, v_forward);
 			weapon_base_setWholeAttackDelay(pl, 0.53);
 			pl.fMoveBlockDelay = time + 0.46;
 			pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.16, 1);
@@ -267,7 +239,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* melee
 		//standing back-kick.
 		makevectors(GET_VIEW_ANGLES);
 		(*meleeAnimToPlay) = 2;
-		(*theReaper) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 30 * pl.fKarateStamina, 74, -v_forward);
+		(*hitRep) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, -v_forward);
 		weapon_base_setWholeAttackDelay(pl, 1);
 		pl.fMoveBlockDelay = time + 1;
 		pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.3, 1);
@@ -277,7 +249,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* theReaper, int* melee
 	
 	// DEFAULT: nothing special then.
 	(*meleeAnimToPlay) = 0;
-	(*theReaper) = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::Karate], arg_thisWeapon, 30 * pl.fKarateStamina, 66);
+	(*hitRep) = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 66);
 	weapon_base_setWholeAttackDelay(pl, 0.53);
 	pl.fMoveBlockDelay = time + 0.46;
 	
@@ -295,7 +267,7 @@ w_karate_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	float randomChoice;
-	MELEE_HIT_RESPONSE theReaper;
+	MELEE_HIT_RESPONSE hitRep;
 	int meleeAnimToPlay = 0;
 	
 	if(pl.w_attack_next > 0){
@@ -306,26 +278,22 @@ w_karate_secondary(void)
 	
 	pl.fMoveBlockCapSpeed = 35;
 	
-	
 	// TODO - base karate melee damage?  I forget.
 	
-	//pointsound(vPos, "player/closecombat.wav", impactSoundVolume, ATTN_NORM+0.1);
-	
-	w_karate_determineSecondaryAttack(&theReaper, &meleeAnimToPlay);
-	
+	w_karate_determineSecondaryAttack(&hitRep, &meleeAnimToPlay);
 	
 	//pl.fUncrouchBlockDelay = time + 1.0f;
 	//Animation_ShootWeapon( self );
 	
 #ifdef SERVER
 	// need the fleshhit sound
-	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
+	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::SOFT){
+	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::METAL){
+	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
+	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
 		TS_Weapons_PlaySoundDirect(pl, "player/kungfuhit.wav");
 	}
 #endif
@@ -358,8 +326,6 @@ w_karate_secondary(void)
 	
 }
 
-
-
 void
 w_karate_reload(void)
 {
@@ -375,21 +341,18 @@ w_karate_reload(void)
 	if(time >= pl.flKarateBlockCooldown){
 		// allow it.  Whatever 'it' is
 		TS_Weapons_PlaySoundDirect(pl, "player/block.wav");
+		
 		TS_Weapons_ViewAnimation(weaponseq_karate::block_low, (31.0f/30.0f) );
 	}
 	
 	pl.flKarateBlockCooldown = time + 1.3f;
 }
 
-
-// ???
 float
 w_karate_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
-
-
 
 void
 w_karate_hud(void)
@@ -399,7 +362,7 @@ w_karate_hud(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 		
-	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::Karate];
+	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::KARATE];
 	
 	vector vEquippedWeaponInfoDraw = [video_res[0] - 128 - 8, video_res[1] - 19 - 8];
 	
@@ -422,14 +385,11 @@ w_karate_hud(void)
 #endif
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_karate_hudpic(int selected, vector pos, float a)
 {
 	//
 }
-
 
 weapon_t w_karate =
 {

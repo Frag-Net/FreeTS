@@ -1,14 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
 weapon_t w_null = {};
 
 // Populate each slot with a member of the enum early on in runtime instead.
@@ -176,8 +166,6 @@ weapon_base_onPrimaryAttack_melee_fromCustomDirection(
 	if ( trace_ent.takedamage ) {
 		if ( trace_ent.iBleeds == TRUE ) {
 			FX_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
-			//TAGGG - not the sound TS uses at least, this is a counterstrike leftover.
-			//sound( self, CHAN_WEAPON, sprintf( "weapons/knife_hit%d.wav", floor( ( random() * 4 ) + 1 ) ), 1, ATTN_NORM );
 			resultHit = MELEE_HIT_RESPONSE::FLESH;
 		}else{
 			//assume metal then?
@@ -438,32 +426,12 @@ weapon_shotgun_onInterrupt(
 		pl.shotgunReloadIndex = 3;
 	}
 	
-	
-	/*
-	if(pl.shotgunReloadIndex == 0){
-		// nothing to interrupt.
-		return FALSE;
-	}
-	
-	//if(pl.shotgunReloadIndexQueued != 3){
-		if(pl.shotgunReloadIndex == 1){
-			//still on the first?  queue the end.
-			pl.shotgunReloadIndexQueued = 3;
-		}else if(pl.shotgunReloadIndex == 2){
-			//still really.  Do we really care about instantly interrupting this?
-			//  eh, just let it put this bullet in.  why not.
-			pl.shotgunReloadIndexQueued = 3;
-		}
-	//}
-	*/
-	
 	return TRUE;
 }// weapon_shotgun_onInterrupt
 
 
-// Method assumes the player's "shotgunReload1_seq" and "_Duration" for vars Reload1, 2, and 3
-// have been set correctly first, probably in the weapon's "onEquip" method.
-// few others like shotgunReload2_ammoLoadDelay (serverside) too.  nah that's it.
+// Method assumes the player's iShotgunExtraDataID has been set first, most likely
+// in the weapon's draw (equip) method.
 void
 weapon_shotgun_reload(
 	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon
@@ -505,7 +473,6 @@ weapon_shotgun_reload(
 	////if(pl.shotgunReloadIndex == 0 && (pl.shotgunPumpEndTime == -1 || pl.w_attack_next <= 0) ){
 	if(pl.shotgunReloadIndex == 0 ){
 		
-	
 	}else{
 		// no.
 		return;
@@ -517,20 +484,19 @@ weapon_shotgun_reload(
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	
-	//weapon_base_setWholeAttackDelay(pl, baseRef.fAnim_Reload_Duration);
-
-	//printfline("weapon_shotgun_reload %i %d", pl.shotgunReloadIndex, pl.shotgunPumpEndTime);
 	pl.isReloading = TRUE;
+		
+	weapondata_shotgun_extra_t* shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
+
+	TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload1_seq, (*shotgunExtraRef).shotgunReload1_Duration );
+	weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload1_Duration);
 	
-	
-	//printfline("HERES THAT shotgunReload1_Duration %.2f", pl.shotgunReload1_Duration);
-	weapon_base_setWholeAttackDelay(pl, pl.shotgunReload1_Duration);
-	
-	pl.shotgunReloadIndexQueued = 2;
-	
-	TS_Weapons_ViewAnimation(pl.shotgunReload1_seq, pl.shotgunReload1_Duration );
 	pl.shotgunReloadIndex = 1;
 	
+	// In original TS, something about ever starting a reload stops the need
+	// for a pump. Or some part of reloading, good enough I think
+	pl.shotgunWaitingForPump = FALSE;
+		
 }//weapon_shotgun_reload
 
 
@@ -547,12 +513,11 @@ void viewEv_playShotgunInsertShellSound(void){
 // NOTICE - shotguns with typical shotgun reload logic should use this method at all
 // times. It includes checks for whether the shotgun is actually reloading or not
 // (don't do anything if not of course)
+// Also, this is meant to completely replace the weapon_gun_onThink call that most would have used.
 void
 weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
 	weapondata_gun_t baseRef = *basePRef;
-	
-	//printfline("FRAME att: %.2f", pl.w_attack_next);
-	
+	weapondata_shotgun_extra_t* shotgunExtraRef;
 	
 	if(pl.shotgunAddAmmoTime != -1 && pl.w_attack_next <= pl.shotgunAddAmmoTime){
 		// add the ammo!!
@@ -606,28 +571,31 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 			
 			//if(pl.shotgunAddAmmoTime_canSet()){
 			//	pl.shotgunAddAmmoTime_setCooldownSetTime();
-				TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
-				weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
+				
+				shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
+
+				TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
+				weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload3_Duration);
 				pl.shotgunReloadIndex = 0;
 				pl.isReloading = FALSE;
 			//}
 		}else{
-			TS_Weapons_ViewAnimation(pl.shotgunReload2_seq, pl.shotgunReload2_Duration);
-			weapon_base_setWholeAttackDelay(pl, pl.shotgunReload2_Duration);
+			shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
+
+			TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload2_seq, (*shotgunExtraRef).shotgunReload2_Duration);
+			weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload2_Duration);
 			pl.shotgunReloadIndex = 2;
-
-
 
 			//if(pl.shotgunAddAmmoTime_canSet()){
 			//	pl.shotgunAddAmmoTime_setCooldownSetTime();
 				printfline("I SET shotgunAddAmmoTime!");
 				
-				//View_AddEvent(w_ejectshell_pistol, pl.w_attack_next - pl.shotgunReload2_ammoLoadDelay);
+				//pl.shotgunAddAmmoSoundTime = (*shotgunExtraRef).shotgunReload2_Duration - ((*shotgunExtraRef).shotgunReload2_ammoLoadDelay - 0.03f);
 				#ifdef CLIENT
-				View_AddEvent(viewEv_playShotgunInsertShellSound, pl.shotgunReload2_Duration - (pl.shotgunReload2_ammoLoadDelay - 0.03f));
+				View_AddEvent(viewEv_playShotgunInsertShellSound, (*shotgunExtraRef).shotgunReload2_Duration - ((*shotgunExtraRef).shotgunReload2_ammoLoadDelay - 0.03f));
 				#endif
-				pl.shotgunAddAmmoTime = pl.shotgunReload2_Duration - pl.shotgunReload2_ammoLoadDelay;
-				//pl.shotgunAddAmmoSoundTime = pl.shotgunReload2_Duration - (pl.shotgunReload2_ammoLoadDelay - 0.03f);
+				
+				pl.shotgunAddAmmoTime = (*shotgunExtraRef).shotgunReload2_Duration - (*shotgunExtraRef).shotgunReload2_ammoLoadDelay;
 			//}
 			
 			
@@ -638,8 +606,11 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 		
 	}else if(pl.shotgunReloadIndex == 3){
 		// end of reload anim wanted!
-		TS_Weapons_ViewAnimation(pl.shotgunReload3_seq, pl.shotgunReload3_Duration);
-		weapon_base_setWholeAttackDelay(pl, pl.shotgunReload3_Duration);
+		
+		shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
+		
+		TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
+		weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload3_Duration);
 		pl.shotgunReloadIndex = 0;
 		// this will be true when the fire delay expires, but doesn't hurt happening earlier.
 		pl.isReloading = FALSE;
@@ -661,7 +632,7 @@ weapon_akimbo_AttackDualHack(
 		return FALSE;
 	}
 	
-	//printfline("ERE I GO akprev:%i aktest:%i - flagg:%i", pl.akimboFirePrev, pl.akimboTest, arg_flagger);
+	//printfline("here I go akprev:%i aktest:%i - flagg:%i", pl.akimboFirePrev, pl.akimboTest, arg_flagger);
 	
 	if(
 		pl.akimboDualFireToleranceTime > 0 &&
@@ -698,7 +669,7 @@ weapon_akimbo_AttackDualHack(
 		// unpacking the method to call at runtime out of paranoia knowing FTE.
 		// Could make a table to know what to use per akimbo weapon ID, having a table
 		// with one space for every single weapon in the game seems pretty wasteful.
-		// Calls like weapon_SOCOM_MK23_akimbo_attack, etc.
+		// Calls like weapon_socommk23_akimbo_attack, etc.
 		BOOL(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed)* tempRef = arg_akimboFireCallback;
 		(*tempRef)(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
 		
@@ -837,7 +808,6 @@ weapon_akimbo_semiAttackChoice(
 			// because whichever non-empty weapon wasn't ready to fire.
 			// If they are both 0, we stopped because the weapon is empty.
 			//pl.recentAttackHadAmmo = (finalAkimboChoice != BITS_AKIMBOCHOICE_NONE);
-			//pl.recentAkimboAttackChoice = finalAkimboChoice;
 			//return( arg_thisWeapon.iClipLeft == 0 && arg_thisWeapon.iClipAkimboLeft == 0);
 			
 			if(arg_thisWeapon.iClipLeft == 0 && arg_thisWeapon.iClipAkimboLeft == 0){
@@ -946,7 +916,6 @@ weapon_akimbo_semiAttackChoice(
 			
 		}
 		
-		pl.recentAkimboAttackChoice = finalAkimboChoice;
 	}
 		
 	//printfline("EVERYBODY GET DOWN %i - next:%d", finalAkimboChoice, pl.nextAkimboAttackPreference);
@@ -1021,7 +990,6 @@ weapon_akimbo_fullAttackChoice(
 			// because whichever non-empty weapon wasn't ready to fire.
 			// If they are both 0, we stopped because the weapon is empty.
 			//pl.recentAttackHadAmmo = (finalAkimboChoice != BITS_AKIMBOCHOICE_NONE);
-			//pl.recentAkimboAttackChoice = finalAkimboChoice;
 			//return( arg_thisWeapon.iClipLeft == 0 && arg_thisWeapon.iClipAkimboLeft == 0);
 			if(arg_thisWeapon.iClipLeft == 0 && arg_thisWeapon.iClipAkimboLeft == 0){
 				// If both clips have no ammo, we assume the reason for failure is being out of ammo.
@@ -1143,8 +1111,7 @@ weapon_akimbo_fullAttackChoice(
 			*/
 			
 		}
-		
-		pl.recentAkimboAttackChoice = finalAkimboChoice;
+		\
 	}
 
 	return finalAkimboChoice;
@@ -1156,7 +1123,7 @@ weapon_ironsight_ToggleIronsight(
 	player pl, weapondata_ironsight_t* basePRef,
 	weapondynamic_t arg_thisWeapon
 ){
-	//weapondata_ironsight_t* basePRef = (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOM_MK23];
+	//weapondata_ironsight_t* basePRef = (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOMMK23];
 	weapondata_ironsight_t baseRef = *basePRef;
 	
 	// SEARCH ME!!!
@@ -1420,7 +1387,6 @@ weapon_base_onEquip(
 	
 	TS_Weapons_ViewAnimation(baseRef.iAnim_Deploy_Index, baseRef.fAnim_Deploy_Duration);
 	
-	pl.recentAkimboAttackChoice = BITS_AKIMBOCHOICE_NONE;
 	pl.nextAkimboAttackPreference = BITS_AKIMBOCHOICE_LEFT;
 	
 	arg_thisWeapon.iIronSight = 0;   //reset ironsight each time.
@@ -1465,7 +1431,9 @@ weapon_gun_fireBurstBullet(
 	//printfline("What now2 %i m:%i", pl.aryNextBurstShotTime_listenIndex, pl.aryNextBurstShotTime_softLength);
 #endif
 
-	// this lets Weapons_Primary ignore 
+	// this tells my Weapons_Primary to ignore normal delay checks.
+	// The weapon's specific method for this must still check for this firemode
+	// for it to be effective, it's not magic
 	arg_thisWeapon.iFireMode = BITS_FIREMODE_NONE;
 	
 	Weapons_Primary();
@@ -1679,7 +1647,7 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 	
 	// empty box?  ok.
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	// drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 128 - 2 - 11*3, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iCount, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
+	//drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 128 - 2 - 11*3, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iCount, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
 	vEquippedWeaponInfoDraw.y -= 20;
 		
 	// title
@@ -1691,21 +1659,90 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 
 
 
-BOOL
-dummy1(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo){
-	return FALSE;
+// SHELL SOUNDS: 
+// ts/sound/weapons/shell.wav
+// ts/sound/weapons/sshell.wav
+// ts/sound/weapons/sshell1.wav
+// ts/sound/weapons/sshell2.wav
+// ts/sound/weapons/sshell3.wav
+// valve/sound/player/pl_shell1.wav
+// valve/sound/player/pl_shell2.wav
+// valve/sound/player/pl_shell3.wav
+// ----
+// * sshell1, 2, and 3 are also found in the valve folder, these appear to be clones.
+// * pl_shell ones are not cloned but can still be used
+// * unknown if weapons/shell and sshell are used in original TS, may only be the
+//   1,2,3 ones (shell#, sshell#) for most weapons and shotguns accordingly.
+
+//
+
+
+
+
+
+
+// Precache models and the HUD icon given in FreeTS weapondata.
+// Weapon sounds and anything else not in the struct shuold be precached
+// in the weapon's own precache method or globally (precache.qc) if reused
+// between different weapons like shell models/sounds.
+void weapon_precache(weapondata_basic_t* basePRef){
+#ifdef SERVER
+	if((*basePRef).sWorldModelPath != NULL){
+		precache_model((*basePRef).sWorldModelPath);
+	}
+#else //CLIENT
+	if((*basePRef).sIconFilePath != NULL){
+		precache_model((*basePRef).sIconFilePath);
+	}
+	if((*basePRef).sViewModelPath != NULL){
+		precache_model((*basePRef).sViewModelPath);
+	}
+	if((*basePRef).sPlayerModelPath != NULL){
+		precache_model((*basePRef).sPlayerModelPath);
+	}
+	if((*basePRef).sPlayerSilencerModelPath != NULL){
+		precache_model((*basePRef).sPlayerSilencerModelPath);
+	}
+#endif
 }
+
+
+
+// Not sure how to handle the "Weapons_UpdateAmmo" calls for FreeTS.
+// Guessing to leave them dummied as HUD drawing already knows where to grab clip and ammo-pool
+// values from, the Nuclide base_player's ammo1, 2, 3 vars are never used.
+//----------------------
+// More typical way.
+/*
+void weapon_gun_updateAmmo(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
+	Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[(*basePRef).iAmmoDataID], -1);
+}
+*/
+// Easier way for the caller.
+void weapon_gun_updateAmmo(player pl, int weaponTypeID){
+	if(pl.inventoryEquippedIndex != -1){
+		weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+		// no need to hardcode ammo names when they're given by weapondata
+		//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
+		weapondata_gun_t* basicP = (weapondata_gun_t*)ary_weaponData[weaponTypeID];
+		// route to the above method, give a different name?  No, not worth it.
+		//weapon_gun_updateAmmo(pl, basicP, arg_thisWeapon);
+		int myAmmoID = (*basicP).iAmmoDataID;
+		Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[myAmmoID], -1);
+	}else{
+		printfline("!!! weapon_gun_updateAmmo: WARNING: inventoryEquippedIndex was -1");
+	}
+}
+
+
+
 void
-dummy2(player pl, weapondynamic_t arg_thisWeapon){
+weapons_dummyfun(player pl, weapondynamic_t arg_thisWeapon){
 	
-}
-BOOL
-dummy2b(player pl, weapondynamic_t arg_thisWeapon){
-	return FALSE;
 }
 
 //blank weapon.
-weapondata_basic_t weapon_NONE =
+weapondata_basic_t weapon_none =
 {
 	WEAPONDATA_TYPEID_BASIC,
 	"_NONE_",
@@ -1714,20 +1751,14 @@ weapondata_basic_t weapon_NONE =
 	"",
 	"",
 	"",
-	dummy1,
-	dummy1,
-	dummy1,
-	dummy1,
-	dummy2,
-	dummy2b,
-	dummy2,
-	dummy2,
-	dummy2,
-	dummy2,
+	weapons_dummyfun,
+	weapons_dummyfun,
+	weapons_dummyfun,
+	weapons_dummyfun,
 	0,
 	0,
 	0.0f,
-	0.0f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.0f,  //fire delay
 	0.0f,
 	FALSE,
 	BITS_WEAPONOPT_NONE,
@@ -1742,7 +1773,7 @@ weapondata_basic_t weapon_NONE =
 
 
 //blank weapon.
-weapondata_basic_t weapon_NONE_akimbo =
+weapondata_basic_t weapon_none_akimbo =
 {
 	WEAPONDATA_TYPEID_BASIC,
 	"_NONE_",
@@ -1751,16 +1782,10 @@ weapondata_basic_t weapon_NONE_akimbo =
 	"",
 	"",
 	"",
-	dummy1,
-	dummy1,
-	dummy1,
-	dummy1,
-	dummy2,
-	dummy2b,
-	dummy2,
-	dummy2,
-	dummy2,
-	dummy2,
+	weapons_dummyfun,
+	weapons_dummyfun,
+	weapons_dummyfun,
+	weapons_dummyfun,
 	0,
 	0,
 	0.0f,
@@ -1794,53 +1819,53 @@ setupWeaponData(void){
 	// Really just do it by ID's with a new ASSIGN_WEAWPONDATA because init lists for offsets that may skip around sounds hellish
 
 	g_weapons[WEAPON_ID::NONE] = w_null;
-	g_weapons[WEAPON_ID::Karate] = w_karate;
+	g_weapons[WEAPON_ID::KARATE] = w_karate;
 	
-	g_weapons[WEAPON_ID::Glock18] = w_glock18;
-	g_weapons[WEAPON_ID::SOCOM_MK23] = w_socom_mk23;
-	g_weapons[WEAPON_ID::SOCOM_MK23_akimbo] = w_socom_mk23_akimbo;
-	g_weapons[WEAPON_ID::DesertEagle] = w_deserteagle;
+	g_weapons[WEAPON_ID::GLOCK18] = w_glock18;
+	g_weapons[WEAPON_ID::SOCOMMK23] = w_socommk23;
+	g_weapons[WEAPON_ID::SOCOMMK23_AKIMBO] = w_socommk23_akimbo;
+	g_weapons[WEAPON_ID::DESERTEAGLE] = w_deserteagle;
 	
-	g_weapons[WEAPON_ID::FiveSeven] = w_fiveseven;
-	g_weapons[WEAPON_ID::FiveSeven_akimbo] = w_fiveseven_akimbo;
-	g_weapons[WEAPON_ID::Beretta] = w_beretta;
-	g_weapons[WEAPON_ID::Beretta_akimbo] = w_beretta_akimbo;
+	g_weapons[WEAPON_ID::FIVESEVEN] = w_fiveseven;
+	g_weapons[WEAPON_ID::FIVESEVEN_AKIMBO] = w_fiveseven_akimbo;
+	g_weapons[WEAPON_ID::BERETTA] = w_beretta;
+	g_weapons[WEAPON_ID::BERETTA_AKIMBO] = w_beretta_akimbo;
 	
-	g_weapons[WEAPON_ID::AkimboColts] = w_akimbocolts;
+	g_weapons[WEAPON_ID::AKIMBOCOLTS] = w_akimbocolts;
 	
-	g_weapons[WEAPON_ID::Glock20] = w_glock20;
-	g_weapons[WEAPON_ID::RugerMK1] = w_rugermk1;
-	g_weapons[WEAPON_ID::RagingBull] = w_ragingbull;
-	g_weapons[WEAPON_ID::ContenderG2] = w_contenderg2;
+	g_weapons[WEAPON_ID::GLOCK20] = w_glock20;
+	g_weapons[WEAPON_ID::RUGERMK1] = w_rugermk1;
+	g_weapons[WEAPON_ID::RAGINGBULL] = w_ragingbull;
+	g_weapons[WEAPON_ID::CONTENDERG2] = w_contenderg2;
 	
-	g_weapons[WEAPON_ID::MiniUzi] = w_miniuzi;
-	g_weapons[WEAPON_ID::MiniUzi_akimbo] = w_miniuzi_akimbo;
+	g_weapons[WEAPON_ID::MINIUZI] = w_miniuzi;
+	g_weapons[WEAPON_ID::MINIUZI_AKIMBO] = w_miniuzi_akimbo;
 	g_weapons[WEAPON_ID::MP5SD] = w_mp5sd;
 	g_weapons[WEAPON_ID::MP5K] = w_mp5k;
-	g_weapons[WEAPON_ID::STEYR_TMP] = w_steyr_tmp;
-	g_weapons[WEAPON_ID::HK_PDW] = w_hk_pdw;  //MP7-PDW
+	g_weapons[WEAPON_ID::STEYRTMP] = w_steyrtmp;
+	g_weapons[WEAPON_ID::HKPDW] = w_hkpdw;  //MP7-PDW
 	g_weapons[WEAPON_ID::UMP] = w_ump;
-	g_weapons[WEAPON_ID::Skorpion] = w_skorpion;
-	g_weapons[WEAPON_ID::Skorpion_akimbo] = w_skorpion_akimbo;
+	g_weapons[WEAPON_ID::SKORPION] = w_skorpion;
+	g_weapons[WEAPON_ID::SKORPION_AKIMBO] = w_skorpion_akimbo;
 	g_weapons[WEAPON_ID::MAC10] = w_mac10;
 	
 	
 	g_weapons[WEAPON_ID::M4A1] = w_m4a1;
 	g_weapons[WEAPON_ID::AK47] = w_ak47;
-	g_weapons[WEAPON_ID::STEYR_AUG] = w_steyr_aug;
+	g_weapons[WEAPON_ID::STEYRAUG] = w_steyraug;
 	g_weapons[WEAPON_ID::M16A4] = w_m16a4;
-	g_weapons[WEAPON_ID::Barrett_M82] = w_barrett_m82;
+	g_weapons[WEAPON_ID::BARRETTM82] = w_barrettm82;
 	
-	g_weapons[WEAPON_ID::BenelliM3] = w_benellim3;
+	g_weapons[WEAPON_ID::BENELLIM3] = w_benellim3;
 	g_weapons[WEAPON_ID::SPAS12] = w_spas12;
 	g_weapons[WEAPON_ID::USAS12] = w_usas12;
-	g_weapons[WEAPON_ID::Mossberg500] = w_mossberg500;
-	g_weapons[WEAPON_ID::SawedOff] = w_sawedoff;
+	g_weapons[WEAPON_ID::MOSSBERG500] = w_mossberg500;
+	g_weapons[WEAPON_ID::SAWEDOFF] = w_sawedoff;
 	
-	g_weapons[WEAPON_ID::M61Grenade] = w_m61grenade;
-	g_weapons[WEAPON_ID::CombatKnife] = w_combatknife;
-	g_weapons[WEAPON_ID::SealKnife] = w_sealknife;
-	g_weapons[WEAPON_ID::Katana] = w_katana;
+	g_weapons[WEAPON_ID::M61GRENADE] = w_m61grenade;
+	g_weapons[WEAPON_ID::COMBATKNIFE] = w_combatknife;
+	g_weapons[WEAPON_ID::SEALKNIFE] = w_sealknife;
+	g_weapons[WEAPON_ID::KATANA] = w_katana;
 	g_weapons[WEAPON_ID::M60] = w_m60;
 	
 	
@@ -1848,87 +1873,93 @@ setupWeaponData(void){
 /////////////////////////////////////////////////////////
 	
 	ASSIGN_AMMODATA(NONE)
-	ASSIGN_AMMODATA(_9x19mm)
-	ASSIGN_AMMODATA(_45Acp)
-	ASSIGN_AMMODATA(_p50AE)
+	ASSIGN_AMMODATA(_9X19MM)
+	ASSIGN_AMMODATA(_45ACP)
+	ASSIGN_AMMODATA(_P50AE)
 
-	ASSIGN_AMMODATA(_5p7x28)
+	ASSIGN_AMMODATA(_5P7X28)
 	
-	ASSIGN_AMMODATA(_10mmAUTO)
-	ASSIGN_AMMODATA(_p22LR)
-	ASSIGN_AMMODATA(_p454Casull)
-	ASSIGN_AMMODATA(_5p56Nato)
-	ASSIGN_AMMODATA(_7p62x39mm)
+	ASSIGN_AMMODATA(_10MMAUTO)
+	ASSIGN_AMMODATA(_P22LR)
+	ASSIGN_AMMODATA(_P454CASULL)
+	ASSIGN_AMMODATA(_5P56NATO)
+	ASSIGN_AMMODATA(_7P62X39MM)
 	ASSIGN_AMMODATA(_50BMG)
 	ASSIGN_AMMODATA(_SHELLS)
 	ASSIGN_AMMODATA(_32ACP)
-	ASSIGN_AMMODATA(_7p62x51mm)
-	
-	//ary_weaponData[WEAPON_ID::Glock18] = (weapondata_generic_t*) &weapon_Glock18;
-	
-	ASSIGN_WEAPONDATA(NONE)
-	ASSIGN_AKIMBOUPGRADEDATA(NONE)
+	ASSIGN_AMMODATA(_7P62X51MM)
 	
 	
-	ASSIGN_WEAPONDATA(Karate)
-	ASSIGN_WEAPONDATA(Glock18)
+	ASSIGN_WEAPONDATA(NONE, none)
+	ASSIGN_AKIMBOUPGRADEDATA(NONE, none)
 	
-	ASSIGN_WEAPONDATA(SOCOM_MK23)
-	ASSIGN_WEAPONDATA(SOCOM_MK23_akimbo)
-	ASSIGN_AKIMBOUPGRADEDATA(SOCOM_MK23)
+	ASSIGN_WEAPONDATA(KARATE, karate)
+	ASSIGN_WEAPONDATA(GLOCK18, glock18)
 	
-	ASSIGN_WEAPONDATA(DesertEagle)
+	ASSIGN_WEAPONDATA(SOCOMMK23, socommk23)
+	ASSIGN_WEAPONDATA(SOCOMMK23_AKIMBO, socommk23_akimbo)
+	ASSIGN_AKIMBOUPGRADEDATA(SOCOMMK23, socommk23)
 	
-	ASSIGN_WEAPONDATA(FiveSeven)
-	ASSIGN_WEAPONDATA(FiveSeven_akimbo)
-	ASSIGN_AKIMBOUPGRADEDATA(FiveSeven)
-	ASSIGN_WEAPONDATA(Beretta)
-	ASSIGN_WEAPONDATA(Beretta_akimbo)
-	ASSIGN_AKIMBOUPGRADEDATA(Beretta)
+	ASSIGN_WEAPONDATA(DESERTEAGLE, deserteagle)
 	
-	ASSIGN_WEAPONDATA(AkimboColts)
+	ASSIGN_WEAPONDATA(FIVESEVEN, fiveseven)
+	ASSIGN_WEAPONDATA(FIVESEVEN_AKIMBO, fiveseven_akimbo)
+	ASSIGN_AKIMBOUPGRADEDATA(FIVESEVEN, fiveseven)
+	ASSIGN_WEAPONDATA(BERETTA, beretta)
+	ASSIGN_WEAPONDATA(BERETTA_AKIMBO, beretta_akimbo)
+	ASSIGN_AKIMBOUPGRADEDATA(BERETTA, beretta)
 	
-	ASSIGN_WEAPONDATA(Glock20)
-	ASSIGN_WEAPONDATA(RugerMK1)
-	ASSIGN_WEAPONDATA(RagingBull)
-	ASSIGN_WEAPONDATA(ContenderG2)
+	ASSIGN_WEAPONDATA(AKIMBOCOLTS, akimbocolts)
+	
+	ASSIGN_WEAPONDATA(GLOCK20, glock20)
+	ASSIGN_WEAPONDATA(RUGERMK1, rugermk1)
+	ASSIGN_WEAPONDATA(RAGINGBULL, ragingbull)
+	ASSIGN_WEAPONDATA(CONTENDERG2, contenderg2)
 	
 	
-	ASSIGN_WEAPONDATA(MiniUzi)
-	ASSIGN_WEAPONDATA(MiniUzi_akimbo)
-	ASSIGN_AKIMBOUPGRADEDATA(MiniUzi)
+	ASSIGN_WEAPONDATA(MINIUZI, miniuzi)
+	ASSIGN_WEAPONDATA(MINIUZI_AKIMBO, miniuzi_akimbo)
+	ASSIGN_AKIMBOUPGRADEDATA(MINIUZI, miniuzi)
 	
-	ASSIGN_WEAPONDATA(MP5SD)
-	ASSIGN_WEAPONDATA(MP5K)
+	ASSIGN_WEAPONDATA(MP5SD, mp5sd)
+	ASSIGN_WEAPONDATA(MP5K, mp5k)
 	
-	ASSIGN_WEAPONDATA(STEYR_TMP)
-	ASSIGN_WEAPONDATA(HK_PDW)
-	ASSIGN_WEAPONDATA(UMP)
+	ASSIGN_WEAPONDATA(STEYRTMP, steyrtmp)
+	ASSIGN_WEAPONDATA(HKPDW, hkpdw)
+	ASSIGN_WEAPONDATA(UMP, ump)
 	
-	ASSIGN_WEAPONDATA(Skorpion)
-	ASSIGN_WEAPONDATA(Skorpion_akimbo)
-	ASSIGN_AKIMBOUPGRADEDATA(Skorpion)
+	ASSIGN_WEAPONDATA(SKORPION, skorpion)
+	ASSIGN_WEAPONDATA(SKORPION_AKIMBO, skorpion_akimbo)
+	ASSIGN_AKIMBOUPGRADEDATA(SKORPION, skorpion)
 	
-	ASSIGN_WEAPONDATA(MAC10)
+	ASSIGN_WEAPONDATA(MAC10, mac10)
 	
-	ASSIGN_WEAPONDATA(M4A1)
-	ASSIGN_WEAPONDATA(AK47)
-	ASSIGN_WEAPONDATA(STEYR_AUG)
-	ASSIGN_WEAPONDATA(M16A4)
-	ASSIGN_WEAPONDATA(Barrett_M82)
+	ASSIGN_WEAPONDATA(M4A1, m4a1)
+	ASSIGN_WEAPONDATA(AK47, ak47)
+	ASSIGN_WEAPONDATA(STEYRAUG, steyraug)
+	ASSIGN_WEAPONDATA(M16A4, m16a4)
+	ASSIGN_WEAPONDATA(BARRETTM82, barrettm82)
 	
-	ASSIGN_WEAPONDATA(BenelliM3)
-	ASSIGN_WEAPONDATA(USAS12)
-	ASSIGN_WEAPONDATA(SPAS12)
-	ASSIGN_WEAPONDATA(Mossberg500)
-	ASSIGN_WEAPONDATA(SawedOff)
+	ASSIGN_WEAPONDATA(BENELLIM3, benellim3)
+	ASSIGN_WEAPONDATA(USAS12, usas12)
+	ASSIGN_WEAPONDATA(SPAS12, spas12)
+	ASSIGN_WEAPONDATA(MOSSBERG500, mossberg500)
+	ASSIGN_WEAPONDATA(SAWEDOFF, sawedoff)
 	
-	ASSIGN_WEAPONDATA(M61Grenade)
-	ASSIGN_WEAPONDATA(CombatKnife)
-	ASSIGN_WEAPONDATA(M60)
-	ASSIGN_WEAPONDATA(Katana)
-	ASSIGN_WEAPONDATA(SealKnife)
+	ASSIGN_WEAPONDATA(M61GRENADE, m61grenade)
+	ASSIGN_WEAPONDATA(COMBATKNIFE, combatknife)
+	ASSIGN_WEAPONDATA(M60, m60)
+	ASSIGN_WEAPONDATA(KATANA, katana)
+	ASSIGN_WEAPONDATA(SEALKNIFE, sealknife)
 	
+	
+	ary_shotgunExtra[SHOTGUN_EXTRA_ID::BENELLIM3] = &weapon_benellim3_shotgunExtra;
+	ary_shotgunExtra[SHOTGUN_EXTRA_ID::MOSSBERG500] = &weapon_mossberg500_shotgunExtra;
+	ary_shotgunExtra[SHOTGUN_EXTRA_ID::MOSSBERG500_IRONSIGHT] = &weapon_mossberg500_shotgunExtra_ironsight;
+	
+	ary_shotgunExtra[SHOTGUN_EXTRA_ID::SPAS12] = &weapon_spas12_shotgunExtra;
+
+
 }//setupWeaponData
 
 

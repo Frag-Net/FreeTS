@@ -8,40 +8,20 @@ enum weaponseq_ump{
 	reload
 };
 
-
-
-BOOLEAN weapon_UMP_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_ump_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_UMP_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_ump_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_UMP_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_ump_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::UMP], arg_thisWeapon);	
 }
-BOOLEAN weapon_UMP_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_UMP_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_UMP_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_UMP_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::UMP], arg_thisWeapon);	
-}
-void weapon_UMP_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_UMP_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_UMP_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_ump_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-
-weapondata_gun_t weapon_UMP =
+weapondata_gun_t weapon_ump =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"UMP",
@@ -50,16 +30,10 @@ weapondata_gun_t weapon_UMP =
 	"models/p_ump_sil.mdl",
 	"models/w_ump.mdl",
 	"sprites/weapons/ump.spr",
-	weapon_UMP_onPrimaryAttack,
-	weapon_UMP_onPrimaryAttackRelease,
-	weapon_UMP_onSecondaryAttack,
-	weapon_UMP_onSecondaryAttackRelease,
-	weapon_UMP_onEquip,
-	weapon_UMP_onUnEquip,
-	weapon_UMP_onThink,
-	weapon_UMP_onDrawHUD,
-	weapon_UMP_onReload,
-	weapon_UMP_onColdCock,
+	weapon_ump_onPrimaryAttackRelease,
+	weapon_ump_onSecondaryAttackRelease,
+	weapon_ump_onThink,
+	weapon_ump_onColdCock,
 	weaponseq_ump::idle,
 	weaponseq_ump::draw,
 	26.0f / 35.0f,
@@ -76,7 +50,7 @@ weapondata_gun_t weapon_UMP =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_FULL | BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_45Acp,
+	AMMO_ID::_45ACP,
 	25,  //clip
 	4096, //range
 	weaponseq_ump::reload,
@@ -87,30 +61,29 @@ weapondata_gun_t weapon_UMP =
 	4
 };
 
-	
-		
+
 
 void
 w_ump_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::UMP]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/ump/boltpull.wav");
+	//precache_sound("weapons/ump/boltslap.wav");
+	//precache_sound("weapons/ump/clipin.wav");
+	//precache_sound("weapons/ump/clipout.wav");
+	//precache_sound("weapons/ump/clipslap.wav");
+	//precache_sound("weapons/ump/slideback.wav");
+	precache_sound("weapons/ump/ump-fire-sil.wav");
+	precache_sound("weapons/ump/ump-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_ump_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -173,9 +146,9 @@ w_ump_primary(void)
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/ump/ump-fire.wav");
+		SoundPitched_Send(pl, SNDP_UMP_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/ump/ump-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_UMP_FIRE_SIL);
 	}
 	
 	randomChoice = random();
@@ -246,8 +219,6 @@ w_ump_reload(void)
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::UMP], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_ump_aimanim(void)
 {
@@ -264,8 +235,6 @@ w_ump_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_ump_hudpic(int selected, vector pos, float a)
 {

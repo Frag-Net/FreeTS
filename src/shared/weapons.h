@@ -34,18 +34,18 @@ enum MELEE_HIT_RESPONSE{
 //to something that is of WEAPONDATA_TYPEID_AKIMBO type.
 enum WEAPON_AKIMBO_UPGRADE_ID{
 	NONE = 0,
-	SOCOM_MK23 = 1,
-	Beretta = 2,
-	FiveSeven = 3,
-	MiniUzi = 4,
-	Skorpion = 5,
+	SOCOMMK23 = 1,
+	BERETTA = 2,
+	FIVESEVEN = 3,
+	MINIUZI = 4,
+	SKORPION = 5,
 	LAST_ID = 6
 	
 };
 
 
 //For quick reference, singular and akimbo ties:
-//SOKOM_MK23 = 9, SOCOM_MK23_akimbo = 10
+//SOKOM_MK23 = 9, SOCOMMK23_akimbo = 10
 //Beretta = 2, Beretta_akimbo = 8
 //FiveSeven = 14, FiveSeven_akimbo = 30
 //MiniUzi = 4, MiniUzi_akimbo = 16
@@ -55,38 +55,38 @@ enum WEAPON_AKIMBO_UPGRADE_ID{
 //NOTICE - "LAST_WEAPON_ID" must never change.
 enum WEAPON_ID{
 	NONE = 0,
-	Glock18 = 1,
-	Beretta = 2,
+	GLOCK18 = 1,
+	BERETTA = 2,
 	//SLOT2_UNUSED = 2,
-	MiniUzi = 3,
-	BenelliM3 = 4,
+	MINIUZI = 3,
+	BENELLIM3 = 4,
 	M4A1 = 5,
 	MP5SD = 6,
 	MP5K = 7,
 	
-	Beretta_akimbo = 8,
+	BERETTA_AKIMBO = 8,
 	// Berettas will support the singular form and be upgradable into akimbo instead.
 	// ...no, keep akimbo's with their own ID's in here, spawning should know how to handle
 	// this.
 	//Beretta = 8,
 	
-	SOCOM_MK23 = 9,
-	SOCOM_MK23_akimbo = 10,
+	SOCOMMK23 = 9,
+	SOCOMMK23_AKIMBO = 10,
 	
 	USAS12 = 11,
-	DesertEagle = 12,
+	DESERTEAGLE = 12,
 	AK47 = 13,
-	FiveSeven = 14,
-	STEYR_AUG = 15,
+	FIVESEVEN = 14,
+	STEYRAUG = 15,
 	
-	MiniUzi_akimbo = 16,
+	MINIUZI_AKIMBO = 16,
 	
-	STEYR_TMP = 17,
-	Barrett_M82 = 18,
-	HK_PDW = 19,
+	STEYRTMP = 17,
+	BARRETTM82 = 18,
+	HKPDW = 19,
 	SPAS12 = 20,
-	AkimboColts = 21,
-	Glock20 = 22,
+	AKIMBOCOLTS = 21,
+	GLOCK20 = 22,
 	//NOTICE!!! This (below) used to be "MAC10", but we're pretty sure this ID is really for
 	// the UMP. There is no Mac10 in the specialists 2.1, or whatever I've been using.
 	// This weapon likely replaced what used to be the MAC10 and its ID never got updated.
@@ -96,24 +96,24 @@ enum WEAPON_ID{
 	MAC10 = 23,
 	//UMP = 23,
 	
-	M61Grenade = 24,  //There's the grenade!  If it's ever made purchasable.
-	CombatKnife = 25,
-	Mossberg500 = 26,
+	M61GRENADE = 24,  //There's the grenade!  If it's ever made purchasable.
+	COMBATKNIFE = 25,
+	MOSSBERG500 = 26,
 	M16A4 = 27,
-	RugerMK1 = 28,
+	RUGERMK1 = 28,
 	C4 = 29,
 	
-	FiveSeven_akimbo = 30,
+	FIVESEVEN_AKIMBO = 30,
 	
-	RagingBull = 31,
+	RAGINGBULL = 31,
 	M60 = 32,
-	SawedOff = 33,
-	Katana = 34,
-	SealKnife = 35,
+	SAWEDOFF = 33,
+	KATANA = 34,
+	SEALKNIFE = 35,
 	// NEW WEAPONS
-	ContenderG2 = 36,
-	Skorpion = 37,
-	Skorpion_akimbo = 38,
+	CONTENDERG2 = 36,
+	SKORPION = 37,
+	SKORPION_AKIMBO = 38,
 	
 	// could also be MAC10 ?  any order for our unofficial weapon ID's is not regulated by maps
 	// made for the original The Specialists.
@@ -122,12 +122,12 @@ enum WEAPON_ID{
 	// SEPARATE. Contained in the same system for convenience. May not be recognized by the map.
 	
 	//Not pickup-able but has to be stored the same way as other weapons.
-	Karate = 40,
+	KARATE = 40,
 	
 	// These are items that can be purchased in the team-based game mode in original TS
 	// Not weapons, just here for spawn convenience.  Or maybe these ID's will never be used.
-	Kevlar = 41,
-	StealthShoes = 42,
+	KEVLAR = 41,
+	STEALTHSHOES = 42,
 	
 	
 	LAST_ID = 43
@@ -138,11 +138,11 @@ enum WEAPON_ID{
 // For now, a simple way to turn WEAPON_AKIMBO_UPGRADE_ID into WEAPON_ID:
 int ary_AKIMBO_UPGRADE_TO_WEAPON[] = {
 	WEAPON_ID::NONE,
-	WEAPON_ID::SOCOM_MK23_akimbo,
-	WEAPON_ID::Beretta_akimbo,
-	WEAPON_ID::FiveSeven_akimbo,
-	WEAPON_ID::MiniUzi_akimbo,
-	WEAPON_ID::Skorpion_akimbo
+	WEAPON_ID::SOCOMMK23_AKIMBO,
+	WEAPON_ID::BERETTA_AKIMBO,
+	WEAPON_ID::FIVESEVEN_AKIMBO,
+	WEAPON_ID::MINIUZI_AKIMBO,
+	WEAPON_ID::SKORPION_AKIMBO
 };
 
 
@@ -260,12 +260,12 @@ string getAkimboFiremodeName(int firemodeBit){
 
 
 
-#define ASSIGN_WEAPONDATA(arg_constName) ary_weaponData[WEAPON_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_constName;
+#define ASSIGN_WEAPONDATA(arg_constName, arg_weaponName) ary_weaponData[WEAPON_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_weaponName;
 
 // NOTICE - the ID lacks the "_akimbo" suffix.  The actual variable name has the "_akimbo" suffix.
 // Just provide the name of the weapon without the "_akimbo" suffix and it will be added as needed
 // automatically.
-#define ASSIGN_AKIMBOUPGRADEDATA(arg_constName) ary_akimboUpgradeData[WEAPON_AKIMBO_UPGRADE_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_constName##_akimbo;
+#define ASSIGN_AKIMBOUPGRADEDATA(arg_constName, arg_weaponName) ary_akimboUpgradeData[WEAPON_AKIMBO_UPGRADE_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_weaponName##_akimbo;
 
 
 
@@ -411,7 +411,7 @@ typedef struct{
 
 // TODO - PENDING!  Remove vOnPrimaryAttack and vOnSecondaryAttack here and from all weapons,
 // Nudlie's Primary/Secondary fire calls work in place of those.
-// vOnPrimaryAttackRelease and vOnSecondaryAttackRelease are still useless it turns out,
+// funOnPrimaryAttackRelease and funOnSecondaryAttackRelease are still useless it turns out,
 // but they can just lose the "hasAmmo" parameters at least.
 // ALSO: vOnEquip, vOnUnEquip, vOnDrawHUD, and vOnReload will be removed, Nuclide calls mean these are
 // no longer used.
@@ -431,22 +431,17 @@ typedef struct{
 	string sWorldModelPath;  //a pickup that sits in the map; separated from any players.
 	string sIconFilePath;  //icon for the inventory and buy menu.
 	
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnPrimaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnSecondaryAttackRelease;
 	
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;  //picked from inventory; now active weapon
-	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;  //selected a different weapon, use for quick cleanup/resetting. Cleanup. Holster anims themselves not supported or present.
-																		  //Returns whether the current weapon got deleted, which could otherwise be hard to determine.
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;  //Run every frame this weapon is equipped.
-					//See if two think methods, for earlier or later (preframe / postframe) are needed.
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;  //any special behavior for rendering 2D graphics on the player's screen while equipped?
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;  //Called on starting a reload. Sounds to play after a delay?
+	// Run every frame this weapon is equipped.
+	// See if two think methods, for earlier or later (preframe / postframe) are needed.
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
+	
 	// This event is for a gun's melee attack, if supported. Actual melee weapons still use PrimaryAttack.
 	// To see it in The Specialists (original beta 2), use this in console to bind cold cocking to the "c" key:
 	// bind "c" "+alt2"
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
 	
 	// We'll handle firing animations (weapon recoil mainly) in their own methods.
 	// Little too much going on. Number of animations to cylce through (shoot1, shoot2)?
@@ -512,17 +507,11 @@ typedef struct{
 	string sWorldModelPath;
 	string sIconFilePath;
 	
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnPrimaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnSecondaryAttackRelease;
 
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
 	
 	
 	int iAnim_Idle_Index;
@@ -537,7 +526,7 @@ typedef struct{
 	
 	int iBitsUpgrade;
 	int iBitsUpgradeAuto;
-								  
+	
 	//--------------------------------------------------------------------------
 	int iPrice;
 	int iSlots;
@@ -593,17 +582,11 @@ typedef struct{
 	string sWorldModelPath;
 	string sIconFilePath;
 	
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnPrimaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnSecondaryAttackRelease;
 	
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
 	
 	
 	int iAnim_Idle_Index;
@@ -663,17 +646,11 @@ typedef struct{
 	string sWorldModelPath;
 	string sIconFilePath;
 	
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnPrimaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnSecondaryAttackRelease;
 	
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
 	
 	
 	int iAnim_Idle_Index;
@@ -718,17 +695,11 @@ typedef struct{
 	string sWorldModelPath;
 	string sIconFilePath;
 	
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnPrimaryAttackRelease;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttack;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon, BOOL hasAmmo) vOnSecondaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnPrimaryAttackRelease;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnSecondaryAttackRelease;
 	
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnEquip;
-	BOOL(player pl, weapondynamic_t arg_thisWeapon) vOnUnEquip;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnThink;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnDrawHUD;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnReload;
-	void(player pl, weapondynamic_t arg_thisWeapon) vOnColdCock;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
+	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
 	
 	
 	int iAnim_Idle_Index;
@@ -776,6 +747,38 @@ typedef struct{
 
 
 
+
+// arbitrary, unreatled to weaponID's.  Assign to some var in the player
+// at draw (equip) time or send along shotgun-related method calls, no idea
+// what route is best.
+// No need for a NONE choice, leftover choice on weapon changes doesn't matter
+// if the current weapon never does anything that looks at shotgun extra info.
+// Also, shotguns that have ironsight need another entry for that because ironsight has
+// its own set of sequences.  
+enum SHOTGUN_EXTRA_ID{
+	BENELLIM3 = 0,
+	MOSSBERG500,
+	MOSSBERG500_IRONSIGHT,
+	SPAS12,
+	LAST_ID
+};
+
+// There is no 'weapondata_shotgun'.  Instead, shotguns can use some extra
+// stats.  Requires its own enum as there won't be one for every single weaponID.
+typedef struct{
+	int shotgunReload1_seq;
+	float shotgunReload1_Duration;
+	
+	int shotgunReload2_seq;
+	float shotgunReload2_Duration;
+	float shotgunReload2_ammoLoadDelay;
+	
+	int shotgunReload3_seq;
+	float shotgunReload3_Duration;
+} weapondata_shotgun_extra_t;
+
+
+
 //TODO. Is extern'ing these earlier possible?
 ammodata_t* ary_ammoData[AMMO_ID::LAST_ID];
 
@@ -784,6 +787,9 @@ ammodata_t* ary_ammoData[AMMO_ID::LAST_ID];
 //actually make it weapondata_basic_t, which at least includes the typeID and some other basic stuff
 weapondata_basic_t* ary_weaponData[WEAPON_ID::LAST_ID];
 weapondata_basic_t* ary_akimboUpgradeData[WEAPON_AKIMBO_UPGRADE_ID::LAST_ID];
+
+weapondata_shotgun_extra_t* ary_shotgunExtra[SHOTGUN_EXTRA_ID::LAST_ID];
+
 
 
 
@@ -843,7 +849,13 @@ void weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t
 void weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon);
 
+void weapon_precache(weapondata_basic_t* basePRef);
+
+//void weapon_gun_updateAmmo(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
+void weapon_gun_updateAmmo(player pl, int weaponTypeID);
+
 void setupWeaponData(void);
+
 
 
 // simplified form of dynamic weapon info that only records buy upgrades purchased for a weapon.

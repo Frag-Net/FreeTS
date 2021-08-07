@@ -18,40 +18,21 @@ enum weaponseq_mossberg500{
 	reload3b
 };
 
-
-BOOLEAN weapon_Mossberg500_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_mossberg500_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_Mossberg500_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_Mossberg500_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_Mossberg500_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_Mossberg500_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_Mossberg500_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_Mossberg500_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	//weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon);
-	weapon_shotgun_onThink_reloadLogic(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon);
-}
-void weapon_Mossberg500_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onDrawHUD(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon);
-}
-void weapon_Mossberg500_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_Mossberg500_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_mossberg500_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
+void weapon_mossberg500_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_shotgun_onThink_reloadLogic(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
+}
+void weapon_mossberg500_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
-weapondata_ironsight_t weapon_Mossberg500 =
+}
+
+weapondata_ironsight_t weapon_mossberg500 =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"Mossberg 500",
@@ -60,16 +41,10 @@ weapondata_ironsight_t weapon_Mossberg500 =
 	"",
 	"models/w_mossberg.mdl",
 	"sprites/weapons/mossberg.spr",
-	weapon_Mossberg500_onPrimaryAttack,
-	weapon_Mossberg500_onPrimaryAttackRelease,
-	weapon_Mossberg500_onSecondaryAttack,
-	weapon_Mossberg500_onSecondaryAttackRelease,
-	weapon_Mossberg500_onEquip,
-	weapon_Mossberg500_onUnEquip,
-	weapon_Mossberg500_onThink,
-	weapon_Mossberg500_onDrawHUD,
-	weapon_Mossberg500_onReload,
-	weapon_Mossberg500_onColdCock,
+	weapon_mossberg500_onPrimaryAttackRelease,
+	weapon_mossberg500_onSecondaryAttackRelease,
+	weapon_mossberg500_onThink,
+	weapon_mossberg500_onColdCock,
 	weaponseq_mossberg500::idle,
 	weaponseq_mossberg500::draw,
 	31.0f / 35.0f,
@@ -110,37 +85,50 @@ weapondata_ironsight_t weapon_Mossberg500 =
 	}
 };
 
-
+weapondata_shotgun_extra_t weapon_mossberg500_shotgunExtra = 
+{
+	weaponseq_mossberg500::reload1,
+	21.0f/40.0f,
+	weaponseq_mossberg500::reload2,
+	21.0f/50.0f,
+	10.0f/50.0f,
+	weaponseq_mossberg500::reload3,
+	26.0f/30.0f
+};
+weapondata_shotgun_extra_t weapon_mossberg500_shotgunExtra_ironsight = 
+{
+	weaponseq_mossberg500::reload1b,
+	21.0f/40.0f,
+	weaponseq_mossberg500::reload2b,
+	21.0f/50.0f,
+	10.0f/50.0f,
+	weaponseq_mossberg500::reload3b,
+	26.0f/30.0f
+};
 
 
 
 void
 w_mossberg500_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::MOSSBERG500]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/mossberg/fire.wav");
+	// uses the benelli m3's pump sound, but that's precached there.
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_mossberg500_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_mossberg500_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::Mossberg500]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::MOSSBERG500]).sWorldModelPath;
 }
 
 string
@@ -148,7 +136,7 @@ w_mossberg500_pmodel(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return (*ary_weaponData[WEAPON_ID::Mossberg500]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::MOSSBERG500]).sPlayerModelPath;
 }
 
 string
@@ -163,10 +151,10 @@ w_mossberg500_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	// not setting shotgun stats here, save right before reload anims are called
-	// since being ironsight or not each gives its own set of sequences.
+	// not setting shotgun extra data here, done right before reload anims are called
+	// since being ironsight/not each has a set of sequences.
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
 }
 
 
@@ -183,7 +171,7 @@ w_mossberg500_primary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	if(!weapon_shotgun_onInterrupt(pl, ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon)){
+	if(!weapon_shotgun_onInterrupt(pl, ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon)){
 		// no reload to interrupt?  ok.
 	}else{
 		// reload to interrupt?  stop this.
@@ -195,11 +183,6 @@ w_mossberg500_primary(void)
 		return;
 	}
 	
-	/*
-	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_SEMI){
-		INPUT_PRIMARY_TAP_GATE
-	}
-	*/
 	
 	//if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		if(pl.shotgunWaitingForPump){
@@ -208,8 +191,9 @@ w_mossberg500_primary(void)
 			
 			// Sounds like the mossberg just re-uses the benelli m3's sound,
 			// as the mossberg sound folder lacks a pump sound.
+			//SoundPitched_Channel_Send(pl, SNDP_BENELLIM3_PUMP, CHAN_AUTO);
 			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/m3/m3-pump.wav", CHAN_AUTO);
-			
+
 			// these pumps eject shells
 #ifdef CLIENT
 				View_AddEvent(w_ejectshell_pistol, 0.0f);
@@ -237,7 +221,7 @@ w_mossberg500_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/mossberg/fire.wav");
+	SoundPitched_Send(pl, SNDP_MOSSBERG500_FIRE);
 	
 	// the mossberg only has pump action
 
@@ -257,7 +241,7 @@ w_mossberg500_primary(void)
 #endif
 	//}
 	
-	weapon_base_onAttack_multi(pl, ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon, 8, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack_multi(pl, ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon, 8, BITS_AKIMBOCHOICE_LEFT);
 
 	//if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		// use the TS stats for delay.
@@ -292,7 +276,7 @@ w_mossberg500_secondary(void)
 	}
 	*/
 	
-	return weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon);
+	return weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
 }
 
 
@@ -302,33 +286,15 @@ w_mossberg500_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-		
 	if(!arg_thisWeapon.iIronSight){
-		//shotgun reload settings: shared
-		pl.shotgunReload1_seq = weaponseq_mossberg500::reload1;
-		pl.shotgunReload1_Duration = 21/40;
-		pl.shotgunReload2_seq = weaponseq_mossberg500::reload2;
-		pl.shotgunReload2_Duration = 21/50;
-		pl.shotgunReload3_seq = weaponseq_mossberg500::reload3;
-		pl.shotgunReload3_Duration = 26/30;
-		pl.shotgunReload2_ammoLoadDelay = 10/50;
+		pl.iShotgunExtraDataID = SHOTGUN_EXTRA_ID::MOSSBERG500;
 	}else{
-		//shotgun reload settings: shared
-		pl.shotgunReload1_seq = weaponseq_mossberg500::reload1b;
-		pl.shotgunReload1_Duration = 21/40;
-		pl.shotgunReload2_seq = weaponseq_mossberg500::reload2b;
-		pl.shotgunReload2_Duration = 21/50;
-		pl.shotgunReload3_seq = weaponseq_mossberg500::reload3b;
-		pl.shotgunReload3_Duration = 26/30;
-		pl.shotgunReload2_ammoLoadDelay = 10/50;
+		pl.iShotgunExtraDataID = SHOTGUN_EXTRA_ID::MOSSBERG500_IRONSIGHT;
 	}
 	
-	
-	weapon_shotgun_reload(pl, ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon);
+	weapon_shotgun_reload(pl, ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_mossberg500_aimanim(void)
 {
@@ -340,12 +306,10 @@ w_mossberg500_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Mossberg500], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_mossberg500_hudpic(int selected, vector pos, float a)
 {

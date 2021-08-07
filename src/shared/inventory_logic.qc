@@ -1863,7 +1863,7 @@ void deployConfig(void){
 	printfline("deployConfig CALLED !!!  Money? %i", CONFIG_PLAYER_MONEY);
 	
 	// the player always gets karate at a bare minimum
-	sendevent("PlayerBuyWeapon_TS", "ii", (int)WEAPON_ID::Karate, (int)BITS_WEAPONOPT_NONE);
+	sendevent("PlayerBuyWeapon_TS", "ii", (int)WEAPON_ID::KARATE, (int)BITS_WEAPONOPT_NONE);
 		
 	
 	for(int i = 0; i < pSeatLocal->m_clientinfo.weaponconfig_current.ary_myWeapons_softMax; i++){

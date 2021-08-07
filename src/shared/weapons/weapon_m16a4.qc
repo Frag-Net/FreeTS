@@ -1,5 +1,4 @@
 
-
 enum weaponseq_m16a4{
 	idle,
 	reload,
@@ -18,43 +17,21 @@ enum weaponseq_m16a4{
 	reload2
 };
 
-
-
-
-BOOLEAN weapon_M16A4_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_m16a4_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_M16A4_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_m16a4_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_M16A4_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_m16a4_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon);
+	weapon_gun_onThink_burstFireLogic(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon);
 }
-BOOLEAN weapon_M16A4_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	//most weapons don't care about releases.  Also this only happens the one frame the input is detected
-	//not held after being held continuously - further logic should be handled in a think method.
-	return FALSE;
-}
-
-void weapon_M16A4_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_M16A4_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_M16A4_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon);
-	weapon_gun_onThink_burstFireLogic(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon);
-}
-void weapon_M16A4_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_M16A4_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_M16A4_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_m16a4_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_ironsight_t weapon_M16A4 =
+weapondata_ironsight_t weapon_m16a4 =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"M16A4",
@@ -63,16 +40,10 @@ weapondata_ironsight_t weapon_M16A4 =
 	"",
 	"models/w_m16.mdl",
 	"sprites/weapons/m16.spr",
-	weapon_M16A4_onPrimaryAttack,
-	weapon_M16A4_onPrimaryAttackRelease,
-	weapon_M16A4_onSecondaryAttack,
-	weapon_M16A4_onSecondaryAttackRelease,
-	weapon_M16A4_onEquip,
-	weapon_M16A4_onUnEquip,
-	weapon_M16A4_onThink,
-	weapon_M16A4_onDrawHUD,
-	weapon_M16A4_onReload,
-	weapon_M16A4_onColdCock,
+	weapon_m16a4_onPrimaryAttackRelease,
+	weapon_m16a4_onSecondaryAttackRelease,
+	weapon_m16a4_onThink,
+	weapon_m16a4_onColdCock,
 	weaponseq_m16a4::idle,
 	weaponseq_m16a4::draw,
 	31.0f / 35.0f,
@@ -89,7 +60,7 @@ weapondata_ironsight_t weapon_M16A4 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_SEMI | BITS_FIREMODE_BURST,
 	BITS_FIREMODE_SEMI,
-	AMMO_ID::_5p56Nato,
+	AMMO_ID::_5P56NATO,
 	18,  //clip
 	4096, //range
 	weaponseq_m16a4::reload,
@@ -115,24 +86,17 @@ weapondata_ironsight_t weapon_M16A4 =
 void
 w_m16a4_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::M16A4]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/m16/fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_m16a4_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -191,7 +155,7 @@ w_m16a4_primary(void)
 		return;
 	}
 
-	TS_Weapons_PlaySoundDirect(pl, "weapons/m16/fire.wav");
+		SoundPitched_Send(pl, SNDP_M16A4_FIRE);
 
 	if(!arg_thisWeapon.iIronSight){
 		randomChoice = random();
@@ -303,7 +267,6 @@ w_m16a4_secondary(void)
 	
 }
 
-
 void
 w_m16a4_reload(void)
 {
@@ -313,14 +276,11 @@ w_m16a4_reload(void)
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_m16a4_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
-
 
 void
 w_m16a4_hud(void)
@@ -332,15 +292,11 @@ w_m16a4_hud(void)
 
 }
 
-
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_m16a4_hudpic(int selected, vector pos, float a)
 {
 	//
 }
-
 
 weapon_t w_m16a4 =
 {

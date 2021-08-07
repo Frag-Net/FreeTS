@@ -7,38 +7,20 @@ enum weaponseq_ragingbull{
 	reload
 };
 
-
-BOOLEAN weapon_RagingBull_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_ragingbull_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_RagingBull_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_ragingbull_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_RagingBull_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_ragingbull_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RAGINGBULL], arg_thisWeapon);
 }
-BOOLEAN weapon_RagingBull_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_RagingBull_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_RagingBull_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_RagingBull_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RagingBull], arg_thisWeapon);
-}
-void weapon_RagingBull_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_RagingBull_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_RagingBull_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_ragingbull_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-
-weapondata_gun_t weapon_RagingBull =
+weapondata_gun_t weapon_ragingbull =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Raging Bull",
@@ -47,20 +29,14 @@ weapondata_gun_t weapon_RagingBull =
 	"",
 	"models/w_bull.mdl",
 	"sprites/weapons/bull.spr",
-	weapon_RagingBull_onPrimaryAttack,
-	weapon_RagingBull_onPrimaryAttackRelease,
-	weapon_RagingBull_onSecondaryAttack,
-	weapon_RagingBull_onSecondaryAttackRelease,
-	weapon_RagingBull_onEquip,
-	weapon_RagingBull_onUnEquip,
-	weapon_RagingBull_onThink,
-	weapon_RagingBull_onDrawHUD,
-	weapon_RagingBull_onReload,
-	weapon_RagingBull_onColdCock,
+	weapon_ragingbull_onPrimaryAttackRelease,
+	weapon_ragingbull_onSecondaryAttackRelease,
+	weapon_ragingbull_onThink,
+	weapon_ragingbull_onColdCock,
 	weaponseq_ragingbull::idle,
 	weaponseq_ragingbull::draw,
 	31.0f / 33.0f,
-	0.35f,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.35f,  //fire delay
 	27.0f,
 	TRUE,
 	BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_SCOPE,
@@ -73,7 +49,7 @@ weapondata_gun_t weapon_RagingBull =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_SEMI,
-	AMMO_ID::_p454Casull,
+	AMMO_ID::_P454CASULL,
 	5,
 	4096,
 	weaponseq_ragingbull::reload,
@@ -87,34 +63,31 @@ weapondata_gun_t weapon_RagingBull =
 
 
 
-
 void
 w_ragingbull_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::RAGINGBULL]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/bull/cylinderin.wav");
+	//precache_sound("weapons/bull/cylinderout.wav");
+	precache_sound("weapons/bull/fire01.wav");
+	//precache_sound("weapons/bull/hammerback.wav");
+	//precache_sound("weapons/bull/insert-shell.wav");
+	//precache_sound("weapons/bull/shellsout.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_ragingbull_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_ragingbull_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::RagingBull]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::RAGINGBULL]).sWorldModelPath;
 }
 
 string
@@ -122,7 +95,7 @@ w_ragingbull_pmodel(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return (*ary_weaponData[WEAPON_ID::RagingBull]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::RAGINGBULL]).sPlayerModelPath;
 }
 
 string
@@ -137,7 +110,7 @@ w_ragingbull_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::RagingBull], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::RAGINGBULL], arg_thisWeapon);
 }
 
 void
@@ -165,7 +138,8 @@ w_ragingbull_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/bull/fire01.wav");
+	SoundPitched_Send(pl, SNDP_RAGINGBULL_FIRE);
+	
 	if ( random() <= 0.5 ) {
 		TS_Weapons_ViewAnimation(weaponseq_ragingbull::shoot, 31.0f/30.0f);
 	} else {
@@ -177,7 +151,7 @@ w_ragingbull_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::RagingBull], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::RAGINGBULL], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -229,11 +203,9 @@ w_ragingbull_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RagingBull], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RAGINGBULL], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_ragingbull_aimanim(void)
 {
@@ -246,12 +218,10 @@ w_ragingbull_hud(void)
 	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RagingBull], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::RAGINGBULL], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_ragingbull_hudpic(int selected, vector pos, float a)
 {

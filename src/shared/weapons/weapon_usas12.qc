@@ -6,38 +6,19 @@ enum weaponseq_usas12{
 	shootsemi
 };
 
-
-BOOLEAN weapon_USAS12_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_USAS12_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_USAS12_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_USAS12_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_USAS12_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_USAS12_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_USAS12_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::USAS12], arg_thisWeapon);
-}
-void weapon_USAS12_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_USAS12_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_USAS12_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-
-
+void weapon_usas12_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
-weapondata_gun_t weapon_USAS12 =
+}
+void weapon_usas12_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
+}
+void weapon_usas12_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::USAS12], arg_thisWeapon);
+}
+void weapon_usas12_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
+}
+
+weapondata_gun_t weapon_usas12 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"USAS-12",
@@ -46,16 +27,10 @@ weapondata_gun_t weapon_USAS12 =
 	"",
 	"models/w_usas.mdl",
 	"sprites/weapons/usas12.spr",
-	weapon_USAS12_onPrimaryAttack,
-	weapon_USAS12_onPrimaryAttackRelease,
-	weapon_USAS12_onSecondaryAttack,
-	weapon_USAS12_onSecondaryAttackRelease,
-	weapon_USAS12_onEquip,
-	weapon_USAS12_onUnEquip,
-	weapon_USAS12_onThink,
-	weapon_USAS12_onDrawHUD,
-	weapon_USAS12_onReload,
-	weapon_USAS12_onColdCock,
+	weapon_usas12_onPrimaryAttackRelease,
+	weapon_usas12_onSecondaryAttackRelease,
+	weapon_usas12_onThink,
+	weapon_usas12_onColdCock,
 	weaponseq_usas12::idle,
 	weaponseq_usas12::draw,
 	31.0f / 30.0f,
@@ -85,28 +60,23 @@ weapondata_gun_t weapon_USAS12 =
 
 
 
-
 void
 w_usas12_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::USAS12]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/usas/clipin.wav");
+	//precache_sound("weapons/usas/clipout.wav");
+	//precache_sound("weapons/usas/slideback.wav");
+	precache_sound("weapons/usas/usas-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_usas12_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -161,7 +131,7 @@ w_usas12_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/usas/usas-fire.wav");
+	SoundPitched_Send(pl, SNDP_USAS12_FIRE);
 
 	TS_Weapons_ViewAnimation(weaponseq_usas12::shootsemi, 31.0f/35.0f);
 
@@ -183,7 +153,6 @@ w_usas12_primary(void)
 	
 }
 
-
 void
 w_usas12_secondary(void)
 {
@@ -198,15 +167,11 @@ w_usas12_reload(void)
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::USAS12], arg_thisWeapon);
 }
 
-
-
-// ???
 float
 w_usas12_aimanim(void)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
-
 
 void
 w_usas12_hud(void)
@@ -216,17 +181,11 @@ w_usas12_hud(void)
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::USAS12], arg_thisWeapon);
 }
 
-
-
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_usas12_hudpic(int selected, vector pos, float a)
 {
 	//
 }
-
-
 
 weapon_t w_usas12 =
 {

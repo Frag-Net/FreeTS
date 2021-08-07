@@ -1,7 +1,7 @@
 
 
-void TS_Weapon_PrimaryAttackRelease(player pl, BOOL hasAmmo);
-void TS_Weapon_SecondaryAttackRelease(player pl, BOOL hasAmmo);
+void TS_Weapon_PrimaryAttackRelease(player pl);
+void TS_Weapon_SecondaryAttackRelease(player pl);
 
 void TS_Weapon_Draw_extra(void);
 

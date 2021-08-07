@@ -7,38 +7,20 @@ enum weaponseq_katana{
 	slash3
 };
 
-
-BOOLEAN weapon_Katana_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_Katana_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_Katana_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_Katana_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_Katana_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_Katana_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_Katana_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-
-}
-void weapon_Katana_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_Katana_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-
-}
-void weapon_Katana_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-
-}
-
+void weapon_katana_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
-weapondata_melee_t weapon_Katana =
+}
+void weapon_katana_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
+}
+void weapon_katana_onThink(player pl, weapondynamic_t arg_thisWeapon){
+
+}
+void weapon_katana_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
+
+}
+
+weapondata_melee_t weapon_katana =
 {
 	WEAPONDATA_TYPEID_MELEE,
 	"Katana",
@@ -47,20 +29,14 @@ weapondata_melee_t weapon_Katana =
 	"",
 	"models/w_katana.mdl",
 	"sprites/weapons/katana.spr",
-	weapon_Katana_onPrimaryAttack,
-	weapon_Katana_onPrimaryAttackRelease,
-	weapon_Katana_onSecondaryAttack,
-	weapon_Katana_onSecondaryAttackRelease,
-	weapon_Katana_onEquip,
-	weapon_Katana_onUnEquip,
-	weapon_Katana_onThink,
-	weapon_Katana_onDrawHUD,
-	weapon_Katana_onReload,
-	weapon_Katana_onColdCock,
+	weapon_katana_onPrimaryAttackRelease,
+	weapon_katana_onSecondaryAttackRelease,
+	weapon_katana_onThink,
+	weapon_katana_onColdCock,
 	weaponseq_katana::idle,
 	weaponseq_katana::draw,
 	31.0f / 33.0f,
-	0.33,  //fire delay. this is most certainly wrong. find something more accurate later.
+	0.33,  //fire delay
 	80,  //dmg
 	FALSE,
 	BITS_WEAPONOPT_NONE,
@@ -83,15 +59,15 @@ weapondata_melee_t weapon_Katana =
 void
 w_katana_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::KATANA]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/katana/hit-body.wav");
+	precache_sound("weapons/katana/hit.wav");
+	precache_sound("weapons/katana/hit1.wav");
+	precache_sound("weapons/katana/miss.wav");
+	precache_sound("weapons/katana/miss1.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
@@ -104,13 +80,13 @@ w_katana_updateammo(player pl)
 string
 w_katana_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::Katana]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::KATANA]).sWorldModelPath;
 }
 
 string
 w_katana_pmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::Katana]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::KATANA]).sPlayerModelPath;
 }
 
 string
@@ -126,7 +102,7 @@ w_katana_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon);
 }
 
 void
@@ -141,7 +117,7 @@ w_katana_primary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	float randomChoice;
-	MELEE_HIT_RESPONSE theReaper;
+	MELEE_HIT_RESPONSE hitRep;
 	int meleeAnimToPlay = 0;
 	
 	if (pl.w_attack_next > 0.0) {
@@ -163,15 +139,8 @@ w_katana_primary(void)
 		pl.iMeleeCycler = 0;
 		meleeAnimToPlay = 0;
 
-		theReaper = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 80, 72);
+		hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon, 80, 72);
 		
-		/*
-		// ???  Why was this here, did original TS do this noise on crouch-attacks in particular?
-#ifdef CLIENT
-		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-#endif
-		*/
-
 		weapon_base_setWholeAttackDelay(pl, 0.70);
 		pl.fMoveBlockDelay = time + 1.0f;
 		pl.fUncrouchBlockDelay = time + 1.0f;
@@ -183,7 +152,7 @@ w_katana_primary(void)
 			meleeAnimToPlay = 2;
 			
 			makevectors( GET_VIEW_ANGLES );
-			theReaper = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 80, 74, -v_forward);
+			hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon, 80, 74, -v_forward);
 			
 			weapon_base_setWholeAttackDelay(pl, 0.75);
 			pl.fMoveBlockDelay = time + 1.0f;
@@ -195,33 +164,32 @@ w_katana_primary(void)
 			if(pl.iMeleeCycler >= 2 || pl.iMeleeCycler < 0){
 				pl.iMeleeCycler = 0;
 			}
-			theReaper = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon, 80, 66);
+			hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon, 80, 66);
 		}
 	}
 	
 	
-	// Don't check 'theReaper' client side, ray-checks to see what was hit are
+	// Don't check 'hitRep' client side, ray-checks to see what was hit are
 	// ineffective there
 #ifdef SERVER
-	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
+	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
 		randomChoice = randomInRange_i(0, 1);
 		if(randomChoice == 0){
-			TS_Weapons_PlaySoundDirect(pl, "weapons/katana/miss.wav");
+			SoundPitched_Send(pl, SNDP_KATANA_MISS);
 		}else{
-			TS_Weapons_PlaySoundDirect(pl, "weapons/katana/miss1.wav");
+			SoundPitched_Send(pl, SNDP_KATANA_MISS1);
 		}
-	}else if(theReaper == MELEE_HIT_RESPONSE::SOFT){
+	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		//nothin
-	}else if(theReaper == MELEE_HIT_RESPONSE::METAL){
+	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		randomChoice = randomInRange_i(0, 1);
 		if(randomChoice == 0){
 			TS_Weapons_PlaySoundDirect(pl, "weapons/katana/hit.wav");
 		}else{
 			TS_Weapons_PlaySoundDirect(pl, "weapons/katana/hit1.wav");
 		}
-	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
+	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
 		arg_thisWeapon.forceBodygroup1Submodel = 2;
-
 		TS_Weapons_PlaySoundDirect(pl, "weapons/katana/hit-body.wav");
 	}
 #endif
@@ -250,7 +218,6 @@ w_katana_reload(void)
 	// how do you reload a sword
 }
 
-// ???
 float
 w_katana_aimanim(void)
 {
@@ -263,18 +230,15 @@ w_katana_hud(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_melee_onDrawHUD(pl, (weapondata_melee_t*)ary_weaponData[WEAPON_ID::Katana], arg_thisWeapon);
+	weapon_melee_onDrawHUD(pl, (weapondata_melee_t*)ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon);
 	
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_katana_hudpic(int selected, vector pos, float a)
 {
 	//
 }
-
 
 weapon_t w_katana =
 {

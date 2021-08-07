@@ -75,8 +75,8 @@ sound_pitched.qc
 
 weapons/weapon_karate.qc
 weapons/weapon_glock18.qc
-weapons/weapon_socom_mk23.qc
-weapons/weapon_socom_mk23_akimbo.qc
+weapons/weapon_socommk23.qc
+weapons/weapon_socommk23_akimbo.qc
 weapons/weapon_deserteagle.qc
 weapons/weapon_fiveseven.qc
 weapons/weapon_fiveseven_akimbo.qc
@@ -92,8 +92,8 @@ weapons/weapon_miniuzi.qc
 weapons/weapon_miniuzi_akimbo.qc
 weapons/weapon_mp5sd.qc
 weapons/weapon_mp5k.qc
-weapons/weapon_steyr_tmp.qc
-weapons/weapon_hk_pdw.qc
+weapons/weapon_steyrtmp.qc
+weapons/weapon_hkpdw.qc
 weapons/weapon_ump.qc
 weapons/weapon_skorpion.qc
 weapons/weapon_skorpion_akimbo.qc
@@ -101,9 +101,9 @@ weapons/weapon_mac10.qc
 
 weapons/weapon_m4a1.qc
 weapons/weapon_ak47.qc
-weapons/weapon_steyr_aug.qc
+weapons/weapon_steyraug.qc
 weapons/weapon_m16a4.qc
-weapons/weapon_barrett_m82.qc
+weapons/weapon_barrettm82.qc
 
 weapons/weapon_benellim3.qc
 weapons/weapon_usas12.qc

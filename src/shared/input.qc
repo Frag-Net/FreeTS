@@ -106,7 +106,7 @@ Game_Input(void)
 	}else{
 		// held down the previous frame, but not now?  That's a release.
 		if(pl.gflags & GF_SEMI_TOGGLED){
-			TS_Weapon_PrimaryAttackRelease(pl, TRUE);
+			TS_Weapon_PrimaryAttackRelease(pl);
 			pl.gflags &= ~GF_SEMI_TOGGLED;
 		}
 	}
@@ -114,7 +114,7 @@ Game_Input(void)
 		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
 	}else{
 		if(pl.gflags & GF_SEMI_SECONDARY_TOGGLED){
-			TS_Weapon_SecondaryAttackRelease(pl, TRUE);
+			TS_Weapon_SecondaryAttackRelease(pl);
 			pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
 		}
 	}
@@ -143,7 +143,7 @@ Game_Input(void)
 
 
 
-	// better TS way, weapon thinks happen alongside checking inputs
+	// TS way, weapon thinks happen alongside checking inputs
 	pl.callWeaponThink();
 
 
@@ -169,7 +169,7 @@ Game_Input(void)
 	}else{
 		// held down the previous frame, but not now?  That's a release.
 		if(pl.gflags & GF_SEMI_TOGGLED){
-			TS_Weapon_PrimaryAttackRelease(pl, TRUE);
+			TS_Weapon_PrimaryAttackRelease(pl);
 			pl.gflags &= ~GF_SEMI_TOGGLED;
 		}
 	}
@@ -178,7 +178,7 @@ Game_Input(void)
 		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
 	}else{
 		if(pl.gflags & GF_SEMI_SECONDARY_TOGGLED){
-			TS_Weapon_SecondaryAttackRelease(pl, TRUE);
+			TS_Weapon_SecondaryAttackRelease(pl);
 			pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
 		}
 	}
@@ -282,12 +282,12 @@ Game_Input(void)
 	if(pl.inputPrimaryReleasedQueue && pl.inputPrimaryTapFrameCount == 0){
 		pl.inputPrimaryReleasedQueue = FALSE;
 		// TODO - remove 2nd parameter from that!
-		TS_Weapon_PrimaryAttackRelease(pl, TRUE);
+		TS_Weapon_PrimaryAttackRelease(pl);
 	}
 	if(pl.inputSecondaryReleasedQueue && pl.inputSecondaryTapFrameCount == 0){
 		pl.inputSecondaryReleasedQueue = FALSE;
 		// TODO - remove 2nd parameter from that!
-		TS_Weapon_SecondaryAttackRelease(pl, TRUE);
+		TS_Weapon_SecondaryAttackRelease(pl);
 	}
 	
 #endif// INPUT_TAP_DETECT_CHOICE
@@ -422,7 +422,7 @@ void processInputs(void){
 	/*
 	// These SEMI flag removals only happen if this area is reached
 	// (note the 'return' statements above with button presses)
-	// Nuclide already does that first one
+	// Nuclide already does that first one (only if Weapons_Release is called!)
 	//pl.gflags &= ~GF_SEMI_TOGGLED;
 	pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
 	*/

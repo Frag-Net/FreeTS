@@ -1,5 +1,4 @@
 
-
 enum weaponseq_ak47{
 	idle,
 	reload,
@@ -12,39 +11,21 @@ enum weaponseq_ak47{
 	reloadb
 };
 
-
-BOOLEAN weapon_AK47_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_ak47_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_AK47_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_AK47_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_AK47_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_AK47_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_AK47_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_AK47_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AK47], arg_thisWeapon);
-}
-void weapon_AK47_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_AK47_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_AK47_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_ak47_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
+void weapon_ak47_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AK47], arg_thisWeapon);
+}
+void weapon_ak47_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
-weapondata_ironsight_t weapon_AK47 =
+}
+
+weapondata_ironsight_t weapon_ak47 =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"AK47",
@@ -53,16 +34,10 @@ weapondata_ironsight_t weapon_AK47 =
 	"",
 	"models/w_ak47.mdl",
 	"sprites/weapons/ak47.spr",
-	weapon_AK47_onPrimaryAttack,
-	weapon_AK47_onPrimaryAttackRelease,
-	weapon_AK47_onSecondaryAttack,
-	weapon_AK47_onSecondaryAttackRelease,
-	weapon_AK47_onEquip,
-	weapon_AK47_onUnEquip,
-	weapon_AK47_onThink,
-	weapon_AK47_onDrawHUD,
-	weapon_AK47_onReload,
-	weapon_AK47_onColdCock,
+	weapon_ak47_onPrimaryAttackRelease,
+	weapon_ak47_onSecondaryAttackRelease,
+	weapon_ak47_onThink,
+	weapon_ak47_onColdCock,
 	weaponseq_ak47::idle,
 	weaponseq_ak47::draw,
 	31.0f / 35.0f,
@@ -79,7 +54,7 @@ weapondata_ironsight_t weapon_AK47 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_FULL | BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_7p62x39mm,
+	AMMO_ID::_7P62X39MM,
 	30,  //clip
 	4096, //range
 	weaponseq_ak47::reload,
@@ -102,29 +77,23 @@ weapondata_ironsight_t weapon_AK47 =
 
 
 
-
-
 void
 w_ak47_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::AK47]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/ak47/clipin.wav");
+	//precache_sound("weapons/ak47/clipout.wav");
+	precache_sound("weapons/ak47/fire.wav");
+	//precache_sound("weapons/ak47/slideback.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_ak47_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -181,7 +150,7 @@ w_ak47_primary(void)
 		return;
 	}
 
-	SoundPitched_Send(pl, SNDP_AK47); /* get around protocol limits */
+	SoundPitched_Send(pl, SNDP_AK47_FIRE); /* get around protocol limits */
 	
 	if(!arg_thisWeapon.iIronSight){
 		TS_Weapons_ViewAnimation(weaponseq_ak47::shoot, 31.0f/30.0f);
@@ -245,7 +214,6 @@ w_ak47_secondary(void)
 	
 }
 
-
 void
 w_ak47_reload(void)
 {
@@ -255,8 +223,6 @@ w_ak47_reload(void)
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::AK47], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_ak47_aimanim(void)
 {
@@ -273,13 +239,6 @@ w_ak47_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
-void
-w_ak47_hudpic(int selected, vector pos, float a)
-{
-	//
-}
 
 weapon_t w_ak47 =
 {
@@ -306,7 +265,4 @@ weapon_t w_ak47 =
 	.hudpic		= NULL
 	
 };
-
-
-
 

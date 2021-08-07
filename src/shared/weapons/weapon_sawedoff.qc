@@ -16,60 +16,41 @@ enum weaponseq_sawedoff{
 	coldcock
 };
 
-
-BOOLEAN weapon_SawedOff_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_sawedoff_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_SawedOff_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_sawedoff_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_SawedOff_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
+void weapon_sawedoff_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	// not weapon_shotgun_onThink_reloadLogic!  Pushes the clip to max in one go like
+	// any other weapon
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 }
-BOOLEAN weapon_SawedOff_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_SawedOff_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_SawedOff_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_SawedOff_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon);
-	//weapon_shotgun_onThink_reloadLogic(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon);
-}
-void weapon_SawedOff_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SawedOff_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SawedOff_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
-	player pl;
+void weapon_sawedoff_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 	if(pl.w_attack_next > 0){
 		return;
 	}
 	
-	MELEE_HIT_RESPONSE theReaper = weapon_base_coldcock(localPlayer, ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon, 40, 66);
-	weapon_base_setWholeAttackDelay(localPlayer, 0.73f);
+	MELEE_HIT_RESPONSE hitRep = weapon_base_coldcock(pl, ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon, 40, 66);
+	weapon_base_setWholeAttackDelay(pl, 0.73f);
 	TS_Weapons_ViewAnimation_noLaserLock(weaponseq_sawedoff::coldcock, (30.0f/30.0f) );
 	
 	arg_thisWeapon.iIronSight = 0;  // disable, coldcock returns to non-ironsight look
 	
-	// need the fleshhit sound
-	if (theReaper == MELEE_HIT_RESPONSE::NONE ) {
+	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::SOFT){
+	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::METAL){
+	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		TS_Weapons_PlaySoundDirect(pl, "player/closecombat.wav");
-	}else if(theReaper == MELEE_HIT_RESPONSE::FLESH){
+	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hitbody.wav");
 	}
 }
 
-
-	
-weapondata_ironsight_t weapon_SawedOff =
+weapondata_ironsight_t weapon_sawedoff =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"Sawed-off",
@@ -78,16 +59,10 @@ weapondata_ironsight_t weapon_SawedOff =
 	"",
 	"models/w_sawedoff.mdl",
 	"sprites/weapons/sawedoff.spr",
-	weapon_SawedOff_onPrimaryAttack,
-	weapon_SawedOff_onPrimaryAttackRelease,
-	weapon_SawedOff_onSecondaryAttack,
-	weapon_SawedOff_onSecondaryAttackRelease,
-	weapon_SawedOff_onEquip,
-	weapon_SawedOff_onUnEquip,
-	weapon_SawedOff_onThink,
-	weapon_SawedOff_onDrawHUD,
-	weapon_SawedOff_onReload,
-	weapon_SawedOff_onColdCock,
+	weapon_sawedoff_onPrimaryAttackRelease,
+	weapon_sawedoff_onSecondaryAttackRelease,
+	weapon_sawedoff_onThink,
+	weapon_sawedoff_onColdCock,
 	weaponseq_sawedoff::idle,
 	weaponseq_sawedoff::draw,
 	31.0f / 33.0f,
@@ -130,30 +105,33 @@ weapondata_ironsight_t weapon_SawedOff =
 void
 w_sawedoff_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::SAWEDOFF]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/sawedoff/close.wav");
+	precache_sound("weapons/sawedoff/fire.wav");
+	
+	// the ak47 fire sound is copied in the as-is files. Why?
+	//precache_sound("weapons/sawedoff/fire1.wav");
+	
+	//precache_sound("weapons/sawedoff/insert-shell.wav");
+	//precache_sound("weapons/sawedoff/open.wav");
+	//precache_sound("weapons/sawedoff/shelldrop.wav");
+	//precache_sound("weapons/sawedoff/shellout.wav");
+	//precache_sound("weapons/sawedoff/tapspan.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_sawedoff_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];	
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_sawedoff_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::SawedOff]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::SAWEDOFF]).sWorldModelPath;
 }
 
 string
@@ -161,7 +139,7 @@ w_sawedoff_pmodel(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return (*ary_weaponData[WEAPON_ID::SawedOff]).sPlayerModelPath;
+	return (*ary_weaponData[WEAPON_ID::SAWEDOFF]).sPlayerModelPath;
 }
 
 string
@@ -176,7 +154,7 @@ w_sawedoff_draw(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 }
 
 void
@@ -205,7 +183,7 @@ w_sawedoff_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/sawedoff/fire.wav");
+	SoundPitched_Send(pl, SNDP_SAWEDOFF_FIRE);
 
 	if(!arg_thisWeapon.iIronSight){
 		randomChoice = random();
@@ -227,7 +205,7 @@ w_sawedoff_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -245,7 +223,7 @@ w_sawedoff_secondary(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon);
+	return weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 }
 
 // need custom reload logic, works more like a typical weapon
@@ -257,7 +235,7 @@ w_sawedoff_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	//weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon);
+	//weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 	
 	// CHECK - we have two reload anims for ordinary and ironsight mode each.
 	// One for if we have 1 clip left, another for if we have 0 clip left.
@@ -279,11 +257,9 @@ w_sawedoff_reload(void)
 	
 	reloadDur = 61.0f/30.0f;
 	
-	weapon_gun_Reload_CustomSequence(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon, reloadSeq, reloadDur);
+	weapon_gun_Reload_CustomSequence(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon, reloadSeq, reloadDur);
 }
 
-
-// ???
 float
 w_sawedoff_aimanim(void)
 {
@@ -295,12 +271,10 @@ w_sawedoff_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SawedOff], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_sawedoff_hudpic(int selected, vector pos, float a)
 {

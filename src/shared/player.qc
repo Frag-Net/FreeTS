@@ -172,7 +172,6 @@ player::ReceiveEntity(float new, float fl)
 	isReloading = readbyte();
 	isChangingIronsight = readbyte();
 	flTargetZoom = readfloat();
-	recentAkimboAttackChoice = readbyte();
 	nextAkimboAttackPreference = readbyte();
 	akimboDualFireToleranceTime = readfloat();
 	grenadeFireIndex = readbyte() - 1;
@@ -198,9 +197,7 @@ player::ReceiveEntity(float new, float fl)
 	
 	
 	shotgunReloadIndex = readbyte();
-	shotgunReloadIndexQueued = readbyte();
 	shotgunWaitingForPump = readbyte();
-	//shotgunReload2_ammoLoadDelay = readbyte();
 	shotgunAddAmmoTime = readfloat();
 	shotgunAddAmmoSoundTime = readfloat();
 	
@@ -349,14 +346,12 @@ player::PredictPreFrame(void)
 	SAVE_STATE(isReloading);
 	SAVE_STATE(isChangingIronsight);
 	SAVE_STATE(flTargetZoom);
-	SAVE_STATE(recentAkimboAttackChoice);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
 	SAVE_STATE(grenadeFireIndex);
 	SAVE_STATE(grenadeToss);
 	
 	SAVE_STATE(shotgunReloadIndex);
-	SAVE_STATE(shotgunReloadIndexQueued);
 	SAVE_STATE(shotgunWaitingForPump);
 	
 	SAVE_STATE(shotgunAddAmmoTime);
@@ -449,14 +444,12 @@ player::PredictPostFrame(void)
 	ROLL_BACK(isReloading);
 	ROLL_BACK(isChangingIronsight);
 	ROLL_BACK(flTargetZoom);
-	ROLL_BACK(recentAkimboAttackChoice);
 	ROLL_BACK(nextAkimboAttackPreference);
 	ROLL_BACK(akimboDualFireToleranceTime);
 	ROLL_BACK(grenadeFireIndex);
 	ROLL_BACK(grenadeToss);
 	
 	ROLL_BACK(shotgunReloadIndex);
-	ROLL_BACK(shotgunReloadIndexQueued);
 	ROLL_BACK(shotgunWaitingForPump);
 	
 	ROLL_BACK(shotgunAddAmmoTime);
@@ -637,7 +630,6 @@ player::EvaluateEntity(void)
 	SAVE_STATE(isReloading);
 	SAVE_STATE(isChangingIronsight);
 	SAVE_STATE(flTargetZoom);
-	SAVE_STATE(recentAkimboAttackChoice);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
 	SAVE_STATE(grenadeFireIndex);
@@ -645,7 +637,6 @@ player::EvaluateEntity(void)
 	
 	
 	SAVE_STATE(shotgunReloadIndex);
-	SAVE_STATE(shotgunReloadIndexQueued);
 	SAVE_STATE(shotgunWaitingForPump);
 	
 	SAVE_STATE(shotgunAddAmmoTime);
@@ -793,7 +784,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, isReloading );
 	WriteByte(MSG_ENTITY, isChangingIronsight );
 	WriteFloat(MSG_ENTITY, flTargetZoom);
-	WriteByte(MSG_ENTITY, recentAkimboAttackChoice);
 	WriteByte(MSG_ENTITY, nextAkimboAttackPreference);
 	WriteFloat(MSG_ENTITY, akimboDualFireToleranceTime);
 	WriteByte(MSG_ENTITY, grenadeFireIndex + 1);
@@ -819,9 +809,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	
 	
 	WriteByte(MSG_ENTITY, shotgunReloadIndex );
-	WriteByte(MSG_ENTITY, shotgunReloadIndexQueued );
 	WriteByte(MSG_ENTITY, shotgunWaitingForPump );
-	//WriteByte(MSG_ENTITY, shotgunReload2_ammoLoadDelay );
 	WriteFloat(MSG_ENTITY, shotgunAddAmmoTime );
 	WriteFloat(MSG_ENTITY, shotgunAddAmmoSoundTime );
 	
@@ -1096,21 +1084,11 @@ player::reset(BOOL resetInventory){
 	//NOTICE - all networked now, testing.
 	
 	shotgunReloadIndex = 0;
-	shotgunReloadIndexPrev = 0;
-	shotgunReloadIndexQueued = 0;
-	shotgunWaitingForPump = FALSE;
-	shotgunReload2_ammoLoadDelay = -1;
 	shotgunAddAmmoTime = -1;
 	shotgunAddAmmoSoundTime = -1;
 #ifdef CLIENT
-	shotgunAddAmmoTime_cooldownSetTime = -1;
+	//shotgunAddAmmoTime_cooldownSetTime = -1;
 #endif
-	shotgunReload1_seq = -1;
-	shotgunReload1_Duration = -1;
-	shotgunReload2_seq = -1;
-	shotgunReload2_Duration = -1;
-	shotgunReload3_seq = -1;
-	shotgunReload3_Duration = -1;
 	
 	doFiremodeChange = FALSE;
 	
@@ -1133,7 +1111,6 @@ player::reset(BOOL resetInventory){
 	
 #endif
 	
-	recentAkimboAttackChoice = BITS_AKIMBOCHOICE_NONE;
 	nextAkimboAttackPreference = BITS_AKIMBOCHOICE_LEFT;
 	recentAttackHadAmmo = FALSE;
 	
@@ -1158,6 +1135,8 @@ player::reset(BOOL resetInventory){
 	
 		setInventoryEquippedIndex(-1);
 		
+		shotgunWaitingForPump = FALSE;
+	
 #ifdef SERVER
 		// other projects do that so sure?
 		weapon = 0;
@@ -1420,7 +1399,7 @@ player::callWeaponThink(void){
 		weapondata_basic_t* basicPointer = (weapondata_basic_t*) this.getEquippedWeaponData();
 		weapondata_basic_t basicRef = *(basicPointer);
 		
-		basicRef.vOnThink(this, dynaRef);
+		basicRef.funOnThink(this, dynaRef);
 		
 	}// weaponEquipped check
 }

@@ -1,13 +1,7 @@
 
 
 void
-TS_Weapon_PrimaryAttackRelease(player pl, BOOL hasAmmo){
-	// WARNING!  This comment is really out of date, fWeaponEventPlayer is no longer a thing
-	// ------------------------------
-	// what are "fWeaponEventPlayer" and "player_localentnum"? 
-	// we need to figure this shizz out
-	// "fWeaponEventPlayer" is in "ts/client/defs.h". its assigned a lot in "ts/client/event.c".
-	// at least "player_localentnum" is part of the builtins.
+TS_Weapon_PrimaryAttackRelease(player pl){
 	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
@@ -15,12 +9,12 @@ TS_Weapon_PrimaryAttackRelease(player pl, BOOL hasAmmo){
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = pl.getEquippedWeaponData();
 	
-	(*basicP).vOnPrimaryAttackRelease(pl, dynaRef, hasAmmo);
+	(*basicP).funOnPrimaryAttackRelease(pl, dynaRef);
 }
 
 
 void
-TS_Weapon_SecondaryAttackRelease(player pl, BOOL hasAmmo){	
+TS_Weapon_SecondaryAttackRelease(player pl){
 	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
@@ -28,7 +22,7 @@ TS_Weapon_SecondaryAttackRelease(player pl, BOOL hasAmmo){
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = pl.getEquippedWeaponData();
 	
-	(*basicP).vOnSecondaryAttackRelease(pl, dynaRef, hasAmmo);
+	(*basicP).funOnSecondaryAttackRelease(pl, dynaRef);
 }
 
 
@@ -801,7 +795,7 @@ _TS_playerCallAlt2(void){
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = pl.getEquippedWeaponData();
 	if(basicP != NULL){
-		(*basicP).vOnColdCock(pl, dynaRef);
+		(*basicP).funOnColdCock(pl, dynaRef);
 	}else{
 		// what.  how.
 		printfline("WHAT.  HOW.");
@@ -813,13 +807,13 @@ _TS_playerCallAlt2(void){
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
-//!!!! SERVER EVENTS ONLY BELOW HERE
+// SERVER EVENTS ONLY BELOW HERE
 #ifdef SERVER
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
-// !!! DEBUG STUFF?
+// DEBUG STUFF?
 
 void
 CSEv_TS_Debug_getOrigin_(void ) {

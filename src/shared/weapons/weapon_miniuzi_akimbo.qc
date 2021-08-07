@@ -1,7 +1,5 @@
 
-
 enum weaponseq_miniuzi_akimbo{
-	//...
 	akimbo_idle = 0,
 	side_idle = 1,
 	left_idle = 2,
@@ -30,39 +28,21 @@ enum weaponseq_miniuzi_akimbo{
 	akimbo_left_shoot = 25
 };
 
-
-
-BOOLEAN weapon_MiniUzi_akimbo_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_miniuzi_akimbo_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_MiniUzi_akimbo_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_miniuzi_akimbo_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_MiniUzi_akimbo_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_miniuzi_akimbo_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon);
 }
-BOOLEAN weapon_MiniUzi_akimbo_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-void weapon_MiniUzi_akimbo_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_MiniUzi_akimbo_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_MiniUzi_akimbo_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MiniUzi_akimbo], arg_thisWeapon);
-}
-void weapon_MiniUzi_akimbo_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MiniUzi_akimbo_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MiniUzi_akimbo_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_miniuzi_akimbo_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-	
-//weapondata_ironsight_t weapon_MiniUzi_akimbo =
-weapondata_gun_t weapon_MiniUzi_akimbo =
+//weapondata_ironsight_t weapon_miniuzi_akimbo =
+weapondata_gun_t weapon_miniuzi_akimbo =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Akimbo Mini-Uzi",
@@ -71,16 +51,10 @@ weapondata_gun_t weapon_MiniUzi_akimbo =
 	"models/p_uzi_akimbo_sil.mdl",
 	"models/w_uzi.mdl",
 	"sprites/weapons/uzi_akimbo.spr",
-	weapon_MiniUzi_akimbo_onPrimaryAttack,
-	weapon_MiniUzi_akimbo_onPrimaryAttackRelease,
-	weapon_MiniUzi_akimbo_onSecondaryAttack,
-	weapon_MiniUzi_akimbo_onSecondaryAttackRelease,
-	weapon_MiniUzi_akimbo_onEquip,
-	weapon_MiniUzi_akimbo_onUnEquip,
-	weapon_MiniUzi_akimbo_onThink,
-	weapon_MiniUzi_akimbo_onDrawHUD,
-	weapon_MiniUzi_akimbo_onReload,
-	weapon_MiniUzi_akimbo_onColdCock,
+	weapon_miniuzi_akimbo_onPrimaryAttackRelease,
+	weapon_miniuzi_akimbo_onSecondaryAttackRelease,
+	weapon_miniuzi_akimbo_onThink,
+	weapon_miniuzi_akimbo_onColdCock,
 	weaponseq_miniuzi_akimbo::akimbo_idle,
 	weaponseq_miniuzi_akimbo::akimbo_draw,
 	31.0f / 35.0f,
@@ -94,10 +68,10 @@ weapondata_gun_t weapon_MiniUzi_akimbo =
 	BUYCATEGORY_SMGS,
 	5,
 	{0.030000, 2.000000, 0.005000},
-	-WEAPON_ID::MiniUzi,
+	-WEAPON_ID::MINIUZI,
 	BITS_FIREMODE_AKIMBO_FULL_AUTO | BITS_FIREMODE_AKIMBO_FREE_FULL,
 	BITS_FIREMODE_AKIMBO_FULL_AUTO,
-	AMMO_ID::_9x19mm,
+	AMMO_ID::_9X19MM,
 	32,  //clip
 	4096, //range
 	weaponseq_miniuzi_akimbo::akimbo_reload,
@@ -124,30 +98,23 @@ weapondata_gun_t weapon_MiniUzi_akimbo =
 void
 w_miniuzi_akimbo_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	// assume the singular variant has handled sounds.
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_miniuzi_akimbo_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
 w_miniuzi_akimbo_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::MiniUzi_akimbo]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO]).sWorldModelPath;
 }
 
 string
@@ -157,9 +124,9 @@ w_miniuzi_akimbo_pmodel(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		return (*ary_weaponData[WEAPON_ID::MiniUzi_akimbo]).sPlayerModelPath;
+		return (*ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO]).sPlayerModelPath;
 	} else {
-		return (*ary_weaponData[WEAPON_ID::MiniUzi_akimbo]).sPlayerSilencerModelPath;
+		return (*ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO]).sPlayerSilencerModelPath;
 	}
 }
 
@@ -174,7 +141,7 @@ w_miniuzi_akimbo_draw(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::MiniUzi_akimbo], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon);
 }
 
 void
@@ -191,9 +158,8 @@ w_miniuzi_akimbo_holster(void)
 // Akimbo weapons consistently.
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
-BOOLEAN weapon_MiniUzi_akimbo_attack(player localPlayer, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+BOOLEAN weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
 	float randomChoice;
-	player pl = localPlayer;
 	int finalAkimboChoice = BITS_AKIMBOCHOICE_NONE;  //default
 	
 	// NOTE! weapon_akimbo_semiAttackChoice already handles telling to skip firing if
@@ -204,7 +170,7 @@ BOOLEAN weapon_MiniUzi_akimbo_attack(player localPlayer, weapondynamic_t arg_thi
 	// Muzzle flashes and shell ejections for akimbo pending!
 	
 	//because I am not copy/pasting this monstrosity 5 times.
-	finalAkimboChoice = weapon_akimbo_fullAttackChoice(localPlayer, ary_weaponData[WEAPON_ID::MiniUzi_akimbo], arg_thisWeapon, attackTypeUsed);
+	finalAkimboChoice = weapon_akimbo_fullAttackChoice(pl, ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon, attackTypeUsed);
 	
 	SAVE_STATE(pl.nextAkimboAttackPreference);
 	
@@ -245,21 +211,21 @@ BOOLEAN weapon_MiniUzi_akimbo_attack(player localPlayer, weapondynamic_t arg_thi
 	// sudden dual-fire request though.
 	int effectiveAkimboChoice = finalAkimboChoice & ~pl.akimboTest;  //finalAkimboChoice;//BITS_AKIMBOCHOICE_NONE & ~pl.akimboTest
 	
-	weapon_base_onAttack(localPlayer, ary_weaponData[WEAPON_ID::MiniUzi_akimbo], arg_thisWeapon, effectiveAkimboChoice);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon, effectiveAkimboChoice);
 	
 	
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_LEFT){
 		if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-			TS_Weapons_PlaySoundDirect(pl, "weapons/uzi/uzi-fire.wav");
+			SoundPitched_Send(pl, SNDP_MINIUZI_FIRE);
 		} else {
-			TS_Weapons_PlaySoundDirect(pl, "weapons/uzi/uzi-fire-sil.wav");
+			SoundPitched_Send(pl, SNDP_MINIUZI_FIRE_SIL);
 		}
 	}
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_RIGHT){
 		if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-			TS_Weapons_PlaySoundDirect(pl, "weapons/uzi/uzi-fire.wav");
+			SoundPitched_Send(pl, SNDP_MINIUZI_FIRE);
 		} else {
-			TS_Weapons_PlaySoundDirect(pl, "weapons/uzi/uzi-fire-sil.wav");
+			SoundPitched_Send(pl, SNDP_MINIUZI_FIRE_SIL);
 		}
 	}
 	
@@ -314,7 +280,7 @@ BOOLEAN weapon_MiniUzi_akimbo_attack(player localPlayer, weapondynamic_t arg_thi
 	}
 	
 	return TRUE;
-}//END OF weapon_MiniUzi_akimbo_attack
+}//END OF weapon_miniuzi_akimbo_attack
 
 
 void
@@ -326,9 +292,9 @@ w_miniuzi_akimbo_primary(void)
 	pl.akimboTest = 0;
 	
 	if(input_buttons & INPUT_BUTTON3){
-		weapon_MiniUzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
+		weapon_miniuzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
 	}else{
-		weapon_MiniUzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+		weapon_miniuzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	}
 }
 
@@ -344,7 +310,7 @@ w_miniuzi_akimbo_secondary(void)
 	pl.akimboTest = 0;
 	
 	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FREE_FULL){
-		weapon_MiniUzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+		weapon_miniuzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
 		//pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
 	}
 }
@@ -356,12 +322,11 @@ w_miniuzi_akimbo_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MiniUzi_akimbo], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon);
 
 }
 
 
-// ???
 float
 w_miniuzi_akimbo_aimanim(void)
 {
@@ -374,12 +339,10 @@ w_miniuzi_akimbo_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MiniUzi_akimbo], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_miniuzi_akimbo_hudpic(int selected, vector pos, float a)
 {

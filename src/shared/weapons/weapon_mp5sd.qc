@@ -8,41 +8,21 @@ enum weaponseq_mp5sd{
 	reload
 };
 
-
-
-BOOLEAN weapon_MP5SD_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_MP5SD_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_MP5SD_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_MP5SD_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_MP5SD_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_MP5SD_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_MP5SD_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
-	weapon_gun_onThink_burstFireLogic(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
+void weapon_mp5sd_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
-void weapon_MP5SD_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_mp5sd_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-void weapon_MP5SD_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_mp5sd_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
+	weapon_gun_onThink_burstFireLogic(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
 }
-void weapon_MP5SD_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_mp5sd_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-	
-weapondata_gun_t weapon_MP5SD =
+weapondata_gun_t weapon_mp5sd =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"MP5 SD",
@@ -51,16 +31,10 @@ weapondata_gun_t weapon_MP5SD =
 	"",
 	"models/w_mp5sd.mdl",
 	"sprites/weapons/mp5sd.spr",
-	weapon_MP5SD_onPrimaryAttack,
-	weapon_MP5SD_onPrimaryAttackRelease,
-	weapon_MP5SD_onSecondaryAttack,
-	weapon_MP5SD_onSecondaryAttackRelease,
-	weapon_MP5SD_onEquip,
-	weapon_MP5SD_onUnEquip,
-	weapon_MP5SD_onThink,
-	weapon_MP5SD_onDrawHUD,
-	weapon_MP5SD_onReload,
-	weapon_MP5SD_onColdCock,
+	weapon_mp5sd_onPrimaryAttackRelease,
+	weapon_mp5sd_onSecondaryAttackRelease,
+	weapon_mp5sd_onThink,
+	weapon_mp5sd_onColdCock,
 	weaponseq_mp5sd::idle,
 	weaponseq_mp5sd::draw,
 	31.0f / 30.0f,
@@ -77,7 +51,7 @@ weapondata_gun_t weapon_MP5SD =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_FULL | BITS_FIREMODE_SEMI | BITS_FIREMODE_BURST,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_9x19mm,
+	AMMO_ID::_9X19MM,
 	30,  //clip
 	4096, //range
 	weaponseq_mp5sd::reload,
@@ -90,28 +64,20 @@ weapondata_gun_t weapon_MP5SD =
 
 
 
-
 void
 w_mp5sd_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::MP5SD]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/mp5sd/mp5sd-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_mp5sd_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -175,7 +141,7 @@ w_mp5sd_primary(void)
 	}
 	
 	// silencer only!
-	TS_Weapons_PlaySoundDirect(pl, "weapons/mp5sd/mp5sd-fire.wav");
+	SoundPitched_Send(pl, SNDP_MP5SD_FIRE);
 
 
 	randomChoice = random();
@@ -257,8 +223,6 @@ w_mp5sd_reload(void)
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_mp5sd_aimanim(void)
 {
@@ -275,8 +239,6 @@ w_mp5sd_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_mp5sd_hudpic(int selected, vector pos, float a)
 {

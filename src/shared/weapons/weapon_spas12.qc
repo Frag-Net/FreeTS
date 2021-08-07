@@ -1,5 +1,4 @@
 
-
 enum weaponseq_spas12{
 	idle,
 	idle2,
@@ -13,38 +12,20 @@ enum weaponseq_spas12{
 	pump2
 };
 
-
-BOOLEAN weapon_SPAS12_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_spas12_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_SPAS12_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_spas12_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_SPAS12_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_spas12_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_shotgun_onThink_reloadLogic(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon);
 }
-BOOLEAN weapon_SPAS12_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_SPAS12_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_SPAS12_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_SPAS12_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_shotgun_onThink_reloadLogic(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon);
-}
-void weapon_SPAS12_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SPAS12_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_SPAS12_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_spas12_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_gun_t weapon_SPAS12 =
+weapondata_gun_t weapon_spas12 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"SPAS-12",
@@ -53,16 +34,10 @@ weapondata_gun_t weapon_SPAS12 =
 	"",
 	"models/w_spas12.mdl",
 	"sprites/weapons/spas12.spr",
-	weapon_SPAS12_onPrimaryAttack,
-	weapon_SPAS12_onPrimaryAttackRelease,
-	weapon_SPAS12_onSecondaryAttack,
-	weapon_SPAS12_onSecondaryAttackRelease,
-	weapon_SPAS12_onEquip,
-	weapon_SPAS12_onUnEquip,
-	weapon_SPAS12_onThink,
-	weapon_SPAS12_onDrawHUD,
-	weapon_SPAS12_onReload,
-	weapon_SPAS12_onColdCock,
+	weapon_spas12_onPrimaryAttackRelease,
+	weapon_spas12_onSecondaryAttackRelease,
+	weapon_spas12_onThink,
+	weapon_spas12_onColdCock,
 	weaponseq_spas12::idle,
 	weaponseq_spas12::draw,
 	31.0f / 30.0f,
@@ -93,32 +68,35 @@ weapondata_gun_t weapon_SPAS12 =
 	-1
 };
 
-
-
+weapondata_shotgun_extra_t weapon_spas12_shotgunExtra = 
+{
+	weaponseq_spas12::reload1,
+	// cut the time a little
+	18.0f/30.0f, //31.0f/30.0f,
+	weaponseq_spas12::reload2,
+	21.0f/40.0f,
+	9.0f/40.0f,
+	weaponseq_spas12::reload3,
+	31.0f/30.0f
+};
 
 
 
 void
 w_spas12_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::SPAS12]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/spas12/spas12-fire.wav");
+	precache_sound("weapons/spas12/spas12-pump.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_spas12_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -147,16 +125,7 @@ w_spas12_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	//shotgun reload settings: shared
-	pl.shotgunReload1_seq = weaponseq_spas12::reload1;
-	// cut the time a little
-	pl.shotgunReload1_Duration = 18.0f/30.0f; //31.0f/30.0f;
-	pl.shotgunReload2_seq = weaponseq_spas12::reload2;
-	pl.shotgunReload2_Duration = 21.0f/40.0f;
-	pl.shotgunReload3_seq = weaponseq_spas12::reload3;
-	pl.shotgunReload3_Duration = 31.0f/30.0f;
-	
-	pl.shotgunReload2_ammoLoadDelay = 9.0f/40.0f;
+	pl.iShotgunExtraDataID = SHOTGUN_EXTRA_ID::SPAS12;
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon);
 }
@@ -196,8 +165,9 @@ w_spas12_primary(void)
 			// pump instead!
 			pl.shotgunWaitingForPump = FALSE;
 			
+			//SoundPitched_Channel_Send(pl, SNDP_SPAS12_PUMP, CHAN_AUTO);
 			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/spas12/spas12-pump.wav", CHAN_AUTO);
-			
+
 			// these pumps eject shells
 #ifdef CLIENT
 				View_AddEvent(w_ejectshell_pistol, 0.0f);
@@ -223,7 +193,7 @@ w_spas12_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/spas12/spas12-fire.wav");
+	SoundPitched_Send(pl, SNDP_SPAS12_FIRE);
 
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		TS_Weapons_ViewAnimation(weaponseq_spas12::shootpump, (31.0f/35.0f) );
@@ -275,8 +245,6 @@ w_spas12_reload(void)
 	weapon_shotgun_reload(pl, ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_spas12_aimanim(void)
 {
@@ -292,8 +260,6 @@ w_spas12_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_spas12_hudpic(int selected, vector pos, float a)
 {

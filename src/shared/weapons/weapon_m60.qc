@@ -7,47 +7,18 @@ enum weaponseq_m60{
 	reload
 };
 
-
-BOOLEAN weapon_M60_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_m60_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 }
-BOOLEAN weapon_M60_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	//most weapons don't care about releases.  Also this only happens the one frame the input is detected
-	//not held after being held continuously - further logic should be handled in a think method.
-	return FALSE;
+void weapon_m60_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 }
-BOOLEAN weapon_M60_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	
-	return FALSE;
+void weapon_m60_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
 }
-BOOLEAN weapon_M60_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	//most weapons don't care about releases.  Also this only happens the one frame the input is detected
-	//not held after being held continuously - further logic should be handled in a think method.
-	return FALSE;
-}
-
-void weapon_M60_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_base_onEquip(localPlayer, ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
-}
-BOOLEAN weapon_M60_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_M60_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
-	
-}
-void weapon_M60_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onDrawHUD(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
-}
-void weapon_M60_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_Reload(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
-}
-void weapon_M60_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_m60_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_gun_t weapon_M60 =
+weapondata_gun_t weapon_m60 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"M60E3",
@@ -56,16 +27,10 @@ weapondata_gun_t weapon_M60 =
 	"",
 	"models/w_m60.mdl",
 	"sprites/weapons/m60.spr",
-	weapon_M60_onPrimaryAttack,
-	weapon_M60_onPrimaryAttackRelease,
-	weapon_M60_onSecondaryAttack,
-	weapon_M60_onSecondaryAttackRelease,
-	weapon_M60_onEquip,
-	weapon_M60_onUnEquip,
-	weapon_M60_onThink,
-	weapon_M60_onDrawHUD,
-	weapon_M60_onReload,
-	weapon_M60_onColdCock,
+	weapon_m60_onPrimaryAttackRelease,
+	weapon_m60_onSecondaryAttackRelease,
+	weapon_m60_onThink,
+	weapon_m60_onColdCock,
 	weaponseq_m60::idle,
 	weaponseq_m60::draw,
 	31.0f / 33.0f,
@@ -82,7 +47,7 @@ weapondata_gun_t weapon_M60 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_FULL,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_5p56Nato,
+	AMMO_ID::_5P56NATO,
 	100,  //clip
 	4096, //range
 	weaponseq_m60::reload,
@@ -95,28 +60,24 @@ weapondata_gun_t weapon_M60 =
 
 
 
-
 void
 w_m60_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::M60]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/m60/ammo_belt.wav");
+	//precache_sound("weapons/m60/boltpull.wav");
+	//precache_sound("weapons/m60/close.wav");
+	precache_sound("weapons/m60/m60-fire.wav");
+	//precache_sound("weapons/m60/open.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_m60_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -169,7 +130,7 @@ w_m60_primary(void)
 		return;
 	}
 	
-	TS_Weapons_PlaySoundDirect(pl, "weapons/m60/m60-fire.wav");
+		SoundPitched_Send(pl, SNDP_M60_FIRE);
 	
 	randomChoice = random();
 	if(randomChoice < 0.5){
@@ -212,7 +173,6 @@ w_m60_reload(void)
 }
 
 
-// ???
 float
 w_m60_aimanim(void)
 {
@@ -229,8 +189,6 @@ w_m60_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_m60_hudpic(int selected, vector pos, float a)
 {

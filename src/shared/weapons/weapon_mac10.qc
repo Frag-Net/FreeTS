@@ -18,41 +18,23 @@ enum weaponseq_mac10{
 	sshootb,
 	sshootb2,
 	sshootb3,
-	reload_2   //RENAMED... really guys, identical name.
+	reload_2   //RENAMED. Identical sequence name in model
 };
 
-
-BOOLEAN weapon_MAC10_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_mac10_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_MAC10_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_mac10_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_MAC10_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_mac10_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MAC10], arg_thisWeapon);
 }
-BOOLEAN weapon_MAC10_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_MAC10_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_MAC10_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_MAC10_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MAC10], arg_thisWeapon);
-}
-void weapon_MAC10_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MAC10_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MAC10_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_mac10_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_ironsight_t weapon_MAC10 =
+weapondata_ironsight_t weapon_mac10 =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"MAC10",
@@ -61,16 +43,10 @@ weapondata_ironsight_t weapon_MAC10 =
 	"models/p_mac10_sil.mdl",
 	"models/w_mac10.mdl",
 	"sprites/weapons/mac10.spr",
-	weapon_MAC10_onPrimaryAttack,
-	weapon_MAC10_onPrimaryAttackRelease,
-	weapon_MAC10_onSecondaryAttack,
-	weapon_MAC10_onSecondaryAttackRelease,
-	weapon_MAC10_onEquip,
-	weapon_MAC10_onUnEquip,
-	weapon_MAC10_onThink,
-	weapon_MAC10_onDrawHUD,
-	weapon_MAC10_onReload,
-	weapon_MAC10_onColdCock,
+	weapon_mac10_onPrimaryAttackRelease,
+	weapon_mac10_onSecondaryAttackRelease,
+	weapon_mac10_onThink,
+	weapon_mac10_onColdCock,
 	weaponseq_mac10::idle,
 	weaponseq_mac10::draw,
 	31.0f / 30.0f,
@@ -87,7 +63,7 @@ weapondata_ironsight_t weapon_MAC10 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_FULL | BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_45Acp,
+	AMMO_ID::_45ACP,
 	32,  //clip
 	4096, //range
 	weaponseq_mac10::reload,
@@ -110,30 +86,24 @@ weapondata_ironsight_t weapon_MAC10 =
 
 
 
-
-
-
 void
 w_mac10_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::MAC10]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/mac10/clipin.wav");
+	//precache_sound("weapons/mac10/clipout.wav");
+	precache_sound("weapons/mac10/mac10-fire-sil.wav");
+	precache_sound("weapons/mac10/mac10-fire.wav");
+	//precache_sound("weapons/mac10/slideback.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_mac10_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -196,9 +166,9 @@ w_mac10_primary(void)
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/mac10/mac10-fire.wav");
+		SoundPitched_Send(pl, SNDP_MAC10_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/mac10/mac10-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_MAC10_FIRE_SIL);
 	}
 
 	if(!arg_thisWeapon.iIronSight){
@@ -277,8 +247,6 @@ w_mac10_reload(void)
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MAC10], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_mac10_aimanim(void)
 {
@@ -295,8 +263,6 @@ w_mac10_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_mac10_hudpic(int selected, vector pos, float a)
 {

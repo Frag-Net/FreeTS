@@ -8,37 +8,20 @@ enum weaponseq_glock18{
 	shootempty = 5
 };
 
-
-BOOLEAN weapon_Glock18_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_Glock18_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
+void weapon_glock18_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	return FALSE;
 }
-BOOLEAN weapon_Glock18_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
-}
-BOOLEAN weapon_Glock18_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
+void weapon_glock18_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	return FALSE;
 }
-void weapon_Glock18_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_glock18_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon);
 }
-BOOLEAN weapon_Glock18_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_Glock18_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Glock18], arg_thisWeapon);
-}
-void weapon_Glock18_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_Glock18_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_Glock18_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_glock18_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-weapondata_gun_t weapon_Glock18 =
+weapondata_gun_t weapon_glock18 =
 {
 	WEAPONDATA_TYPEID_GUN,
 	"Glock-18",
@@ -47,16 +30,10 @@ weapondata_gun_t weapon_Glock18 =
 	"models/p_glock18_sil.mdl",
 	"models/w_glock18.mdl",
 	"sprites/weapons/glock18.spr",
-	weapon_Glock18_onPrimaryAttack,
-	weapon_Glock18_onPrimaryAttackRelease,
-	weapon_Glock18_onSecondaryAttack,
-	weapon_Glock18_onSecondaryAttackRelease,
-	weapon_Glock18_onEquip,
-	weapon_Glock18_onUnEquip,
-	weapon_Glock18_onThink,
-	weapon_Glock18_onDrawHUD,
-	weapon_Glock18_onReload,
-	weapon_Glock18_onColdCock,
+	weapon_glock18_onPrimaryAttackRelease,
+	weapon_glock18_onSecondaryAttackRelease,
+	weapon_glock18_onThink,
+	weapon_glock18_onColdCock,
 	weaponseq_glock18::idle,
 	weaponseq_glock18::draw,
 	31.0f / 30.0f,
@@ -74,7 +51,7 @@ weapondata_gun_t weapon_Glock18 =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_SEMI | BITS_FIREMODE_FULL,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_9x19mm,
+	AMMO_ID::_9X19MM,
 	17,
 	4096,
 	weaponseq_glock18::reload,
@@ -87,38 +64,39 @@ weapondata_gun_t weapon_Glock18 =
 
 
 
-// WEAPON_GLOCK -> WEAPON_ID::Glock18
+// WEAPON_GLOCK -> WEAPON_ID::GLOCK18
 // .glockmag -> .ary_ammoTotal[AMMO_ID::_9x19mm]
 
 
 void
 w_glock18_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::GLOCK18]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/glock/clipin.wav");
+	//precache_sound("weapons/glock/clipout.wav");
+	precache_sound("weapons/glock/glock-fire-sil.wav");
+	precache_sound("weapons/glock/glock-fire.wav");
+	//precache_sound("weapons/glock/slideback.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
+// Should FreeTS even use updateammo?  Example of how to use it if so:
 void
 w_glock18_updateammo(player pl)
 {
+	// FreeHL's way for reference:
 	//Weapons_UpdateAmmo(pl, pl.glock_mag, pl.ammo_9mm, -1);
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
+	// FreeTS way to use weapondata stats to make that call:
+	//weapon_gun_updateAmmo(pl, WEAPON_ID::GLOCK18);
 }
 
 string
 w_glock18_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::Glock18]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::GLOCK18]).sWorldModelPath;
 }
 
 string
@@ -128,9 +106,9 @@ w_glock18_pmodel(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		return (*ary_weaponData[WEAPON_ID::Glock18]).sPlayerModelPath;
+		return (*ary_weaponData[WEAPON_ID::GLOCK18]).sPlayerModelPath;
 	} else {
-		return (*ary_weaponData[WEAPON_ID::Glock18]).sPlayerSilencerModelPath;
+		return (*ary_weaponData[WEAPON_ID::GLOCK18]).sPlayerSilencerModelPath;
 	}
 }
 
@@ -147,7 +125,7 @@ w_glock18_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::Glock18], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon);
 }
 
 void
@@ -178,9 +156,9 @@ w_glock18_primary(void)
 	
 	//TAGGG - TODO - make sndshd files to contain lists for these instead.
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/glock/glock-fire.wav");
+		SoundPitched_Send(pl, SNDP_GLOCK18_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/glock/glock-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_GLOCK18_FIRE_SIL);
 	}
 	
 	if(arg_thisWeapon.iClipLeft > 1){
@@ -204,7 +182,7 @@ w_glock18_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::Glock18], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	// nothing too special for that.
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
@@ -224,7 +202,7 @@ w_glock18_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Glock18], arg_thisWeapon);
+	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon);
 
 }
 
@@ -243,13 +221,12 @@ w_glock18_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::Glock18], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon);
 
 }
 
-
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
+// NOPE! Handled by the buysidemenu, could make this give the instructions for drawing the
+// button with the icon if really wanted
 void
 w_glock18_hudpic(int selected, vector pos, float a)
 {

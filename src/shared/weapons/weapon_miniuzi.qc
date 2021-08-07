@@ -7,54 +7,33 @@ enum weaponseq_miniuzi{
 	shoot2 = 4,
 	sshoot = 5,
 	sshoot2 = 6,
-	//idle for ironsight fire (holding from left).  why not "idleb"? who knows
+	// idle for ironsight fire (holding from left).  why not "idleb"?
 	idle2 = 7,
 	change = 8,
 	rechange = 9,
-	//names further given "b"'s for separation, lacking in the actual sequence names
+	// names further given "b"'s for separation, lacking in model sequence names
 	shootb = 10,
 	shootb2 = 11,
 	sshootb = 12,
 	sshootb2 = 13,
-	//except this, came with the "b"
+	// except this, came with the "b"
 	reloadb = 14
 };
 
-
-
-
-BOOLEAN weapon_MiniUzi_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_miniuzi_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_MiniUzi_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
+void weapon_miniuzi_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_MiniUzi_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return weapon_ironsight_ToggleIronsight(localPlayer, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MiniUzi], arg_thisWeapon);
+void weapon_miniuzi_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MINIUZI], arg_thisWeapon);
 }
-BOOLEAN weapon_MiniUzi_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_MiniUzi_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_MiniUzi_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_MiniUzi_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MiniUzi], arg_thisWeapon);
-}
-void weapon_MiniUzi_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MiniUzi_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MiniUzi_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_miniuzi_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
-
-	
-weapondata_ironsight_t weapon_MiniUzi =
+weapondata_ironsight_t weapon_miniuzi =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"Mini-Uzi",
@@ -63,16 +42,10 @@ weapondata_ironsight_t weapon_MiniUzi =
 	"models/p_uzi_sil.mdl",
 	"models/w_uzi.mdl",
 	"sprites/weapons/uzi.spr",
-	weapon_MiniUzi_onPrimaryAttack,
-	weapon_MiniUzi_onPrimaryAttackRelease,
-	weapon_MiniUzi_onSecondaryAttack,
-	weapon_MiniUzi_onSecondaryAttackRelease,
-	weapon_MiniUzi_onEquip,
-	weapon_MiniUzi_onUnEquip,
-	weapon_MiniUzi_onThink,
-	weapon_MiniUzi_onDrawHUD,
-	weapon_MiniUzi_onReload,
-	weapon_MiniUzi_onColdCock,
+	weapon_miniuzi_onPrimaryAttackRelease,
+	weapon_miniuzi_onSecondaryAttackRelease,
+	weapon_miniuzi_onThink,
+	weapon_miniuzi_onColdCock,
 	weaponseq_miniuzi::idle,
 	weaponseq_miniuzi::draw,
 	31.0f / 30.0f,
@@ -86,10 +59,10 @@ weapondata_ironsight_t weapon_MiniUzi =
 	BUYCATEGORY_SMGS,
 	3,
 	{0.030000, 2.000000, 0.005000},
-	WEAPON_AKIMBO_UPGRADE_ID::MiniUzi,
+	WEAPON_AKIMBO_UPGRADE_ID::MINIUZI,
 	BITS_FIREMODE_FULL | BITS_FIREMODE_SEMI,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_9x19mm,
+	AMMO_ID::_9X19MM,
 	32,  //clip
 	4096, //range
 	weaponseq_miniuzi::reload,
@@ -115,30 +88,27 @@ weapondata_ironsight_t weapon_MiniUzi =
 void
 w_miniuzi_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::MINIUZI]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	//precache_sound("weapons/uzi/clipin.wav");
+	//precache_sound("weapons/uzi/clipout.wav");
+	//precache_sound("weapons/uzi/slideback.wav");
+	precache_sound("weapons/uzi/uzi-fire-sil.wav");
+	precache_sound("weapons/uzi/uzi-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_miniuzi_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);	
 }
 
 string
 w_miniuzi_wmodel(void)
 {
-	return (*ary_weaponData[WEAPON_ID::MiniUzi]).sWorldModelPath;
+	return (*ary_weaponData[WEAPON_ID::MINIUZI]).sWorldModelPath;
 }
 
 string
@@ -148,9 +118,9 @@ w_miniuzi_pmodel(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		return (*ary_weaponData[WEAPON_ID::MiniUzi]).sPlayerModelPath;
+		return (*ary_weaponData[WEAPON_ID::MINIUZI]).sPlayerModelPath;
 	} else {
-		return (*ary_weaponData[WEAPON_ID::MiniUzi]).sPlayerSilencerModelPath;
+		return (*ary_weaponData[WEAPON_ID::MINIUZI]).sPlayerSilencerModelPath;
 	}
 }
 
@@ -166,7 +136,7 @@ w_miniuzi_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::MiniUzi], arg_thisWeapon);
+	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::MINIUZI], arg_thisWeapon);
 }
 
 void
@@ -196,9 +166,9 @@ w_miniuzi_primary(void)
 	}
 
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/uzi/uzi-fire.wav");
+		SoundPitched_Send(pl, SNDP_MINIUZI_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/uzi/uzi-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_MINIUZI_FIRE_SIL);
 	}
 
 	if(!arg_thisWeapon.iIronSight){
@@ -230,7 +200,7 @@ w_miniuzi_primary(void)
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
-	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::MiniUzi], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::MINIUZI], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
 	weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[arg_thisWeapon.weaponID]).fAttackDelay);
 
@@ -255,7 +225,7 @@ w_miniuzi_secondary(void)
 	
 	INPUT_SECONDARY_TAP_GATE
 	
-	weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MiniUzi], arg_thisWeapon);
+	weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MINIUZI], arg_thisWeapon);
 }
 
 
@@ -265,11 +235,10 @@ w_miniuzi_reload(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
-	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MiniUzi], arg_thisWeapon);
+	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MINIUZI], arg_thisWeapon);
 
 }
 
-// ???
 float
 w_miniuzi_aimanim(void)
 {
@@ -281,12 +250,10 @@ w_miniuzi_hud(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MiniUzi], arg_thisWeapon);
+	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MINIUZI], arg_thisWeapon);
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_miniuzi_hudpic(int selected, vector pos, float a)
 {

@@ -13,41 +13,22 @@ enum weaponseq_mp5k{
 	reload2
 };
 
-
-
-
-BOOLEAN weapon_MP5K_onPrimaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return TRUE;
+void weapon_mp5k_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
+	
 }
-BOOLEAN weapon_MP5K_onPrimaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_MP5K_onSecondaryAttack(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-BOOLEAN weapon_MP5K_onSecondaryAttackRelease(player localPlayer, weapondynamic_t arg_thisWeapon, BOOLEAN hasAmmo){
-	return FALSE;
-}
-
-void weapon_MP5K_onEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-BOOLEAN weapon_MP5K_onUnEquip(player localPlayer, weapondynamic_t arg_thisWeapon){
-	return FALSE;
-}
-void weapon_MP5K_onThink(player localPlayer, weapondynamic_t arg_thisWeapon){
-	weapon_gun_onThink(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5K], arg_thisWeapon);
-	weapon_gun_onThink_burstFireLogic(localPlayer, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5K], arg_thisWeapon);
-}
-void weapon_MP5K_onDrawHUD(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MP5K_onReload(player localPlayer, weapondynamic_t arg_thisWeapon){
-}
-void weapon_MP5K_onColdCock(player localPlayer, weapondynamic_t arg_thisWeapon){
+void weapon_mp5k_onSecondaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
 
+void weapon_mp5k_onThink(player pl, weapondynamic_t arg_thisWeapon){
+	weapon_gun_onThink(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5K], arg_thisWeapon);
+	weapon_gun_onThink_burstFireLogic(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5K], arg_thisWeapon);
+}
+void weapon_mp5k_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
+	
+}
 
-weapondata_ironsight_t weapon_MP5K =
+weapondata_ironsight_t weapon_mp5k =
 {
 	WEAPONDATA_TYPEID_IRONSIGHT,
 	"MP5K",
@@ -56,16 +37,10 @@ weapondata_ironsight_t weapon_MP5K =
 	"models/p_mp5k_sil.mdl",
 	"models/w_mp5k.mdl",
 	"sprites/weapons/mp5k.spr",
-	weapon_MP5K_onPrimaryAttack,
-	weapon_MP5K_onPrimaryAttackRelease,
-	weapon_MP5K_onSecondaryAttack,
-	weapon_MP5K_onSecondaryAttackRelease,
-	weapon_MP5K_onEquip,
-	weapon_MP5K_onUnEquip,
-	weapon_MP5K_onThink,
-	weapon_MP5K_onDrawHUD,
-	weapon_MP5K_onReload,
-	weapon_MP5K_onColdCock,
+	weapon_mp5k_onPrimaryAttackRelease,
+	weapon_mp5k_onSecondaryAttackRelease,
+	weapon_mp5k_onThink,
+	weapon_mp5k_onColdCock,
 	weaponseq_mp5k::idle,
 	weaponseq_mp5k::draw,
 	31.0f / 30.0f,
@@ -82,7 +57,7 @@ weapondata_ironsight_t weapon_MP5K =
 	WEAPON_AKIMBO_UPGRADE_ID::NONE,
 	BITS_FIREMODE_FULL | BITS_FIREMODE_SEMI | BITS_FIREMODE_BURST,
 	BITS_FIREMODE_FULL,
-	AMMO_ID::_9x19mm,
+	AMMO_ID::_9X19MM,
 	30,  //clip
 	4096, //range
 	weaponseq_mp5k::reload,
@@ -105,30 +80,21 @@ weapondata_ironsight_t weapon_MP5K =
 
 
 
-
-
-
 void
 w_mp5k_precache(void)
 {
+	weapon_precache(ary_weaponData[WEAPON_ID::MP5K]);
 #ifdef SERVER
-	//Sound_Precache("weapon_glock.fire");
-	//precache_model("models/w_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
+	precache_sound("weapons/mp5k/mp5k-fire-sil.wav");
+	precache_sound("weapons/mp5k/mp5k-fire.wav");
 #else
-	//precache_model("models/v_9mmhandgun.mdl");
-	//precache_model("models/p_9mmhandgun.mdl");
-	//precache_model("models/shell.mdl");
-	//Sound_Precache("modelevent_shell.land");
+	
 #endif
 }
 
-// I guess?  I don't know if we really benefit from doing this.
 void
 w_mp5k_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -191,9 +157,9 @@ w_mp5k_primary(void)
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/mp5k/mp5k-fire.wav");
+		SoundPitched_Send(pl, SNDP_MP5K_FIRE);
 	} else {
-		TS_Weapons_PlaySoundDirect(pl, "weapons/mp5k/mp5k-fire-sil.wav");
+		SoundPitched_Send(pl, SNDP_MP5K_FIRE_SIL);
 	}
 	
 	if(!arg_thisWeapon.iIronSight){
@@ -286,8 +252,6 @@ w_mp5k_reload(void)
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MP5K], arg_thisWeapon);
 }
 
-
-// ???
 float
 w_mp5k_aimanim(void)
 {
@@ -304,8 +268,6 @@ w_mp5k_hud(void)
 
 }
 
-// NOPE!  Handled by the buysidemenu, could make this give the instructions for drawing the button
-// with the icon if really wanted
 void
 w_mp5k_hudpic(int selected, vector pos, float a)
 {

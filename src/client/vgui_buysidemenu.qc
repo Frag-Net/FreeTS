@@ -124,50 +124,49 @@ var CBuySideMenu_BasicButton buysidemenu_btn_Buy_Rifles;
 var CBuySideMenu_BasicButton buysidemenu_btn_Buy_Shotguns;
 var CBuySideMenu_BasicButton buysidemenu_btn_Buy_SpecialPurpose;
 
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Glock18;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SOCOM_MK23;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_DesertEagle;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_FiveSeven;
-//var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_AkimboBerettas;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Beretta;
-//var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_GoldenColts;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_AkimboColts;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_GLOCK18;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SOCOMMK23;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_DESERTEAGLE;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_FIVESEVEN;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_BERETTA;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_AKIMBOCOLTS;
 
-//var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Glock20C;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Glock20;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_GLOCK20;
 
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_RugerMK1;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_RagingBull;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_ContenderG2;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_RUGERMK1;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_RAGINGBULL;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_CONTENDERG2;
 
 
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_MiniUzi;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_MINIUZI;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_MP5SD;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_MP5K;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_STEYR_TMP;
-// called the MP7PDW ingame?
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_HK_PDW;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_STEYRTMP;
+
+// called the MP7PDW ingame?  ts_fgd refers to it as "HK Pdw" though
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_HKPDW;
+
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_MAC10;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_UMP;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Skorpion;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SKORPION;
 
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_M4A1;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_AK47;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_STEYR_AUG;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_STEYRAUG;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_M16A4;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Barrett_M82;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_BARRETTM82;
 
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_BenelliM3;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_BENELLIM3;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_USAS12;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SPAS12;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Mossberg500;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SawedOff;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_MOSSBERG500;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SAWEDOFF;
 
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_M61Grenade;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_CombatKnife;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_M61GRENADE;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_COMBATKNIFE;
 var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_M60;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_Katana;
-var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SealKnife;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_KATANA;
+var CBuySideMenu_WeaponButton buysidemenu_btn_Buy_SEALKNIFE;
 
 
 
@@ -1351,51 +1350,51 @@ VGUI_BuySideMenu_OnInit(void)
 	weapondata_basic_t tempWeapRef;
 	
 	
-	INITIALIZE_WEAPONBUTTON(Glock18, "1", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(SOCOM_MK23, "2", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(DesertEagle, "3", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(FiveSeven, "4", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(Beretta, "5", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(AkimboColts, "6", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(Glock20, "7", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(RugerMK1, "8", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(RagingBull, "9", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(ContenderG2, "A", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(GLOCK18, "1", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(SOCOMMK23, "2", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(DESERTEAGLE, "3", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(FIVESEVEN, "4", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(BERETTA, "5", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(AKIMBOCOLTS, "6", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(GLOCK20, "7", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(RUGERMK1, "8", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(RAGINGBULL, "9", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(CONTENDERG2, "A", clrPaleBlue, NULL, Handguns)
 	
 	
-	INITIALIZE_WEAPONBUTTON(MiniUzi, "1", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(MINIUZI, "1", clrPaleBlue, NULL, SMGs)
 	INITIALIZE_WEAPONBUTTON(MP5SD, "2", clrPaleBlue, NULL, SMGs)
 	INITIALIZE_WEAPONBUTTON(MP5K, "3", clrPaleBlue, NULL, SMGs)
 	
-	INITIALIZE_WEAPONBUTTON(STEYR_TMP, "4", clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON(HK_PDW, "5", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(STEYRTMP, "4", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(HKPDW, "5", clrPaleBlue, NULL, SMGs)
 	INITIALIZE_WEAPONBUTTON(UMP, "6", clrPaleBlue, NULL, SMGs)
 	
-	INITIALIZE_WEAPONBUTTON(Skorpion, "7", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(SKORPION, "7", clrPaleBlue, NULL, SMGs)
 	INITIALIZE_WEAPONBUTTON(MAC10, "8", clrPaleBlue, NULL, SMGs)
 	
 	
 	INITIALIZE_WEAPONBUTTON(M4A1, "1", clrPaleBlue, NULL, Rifles)
 	INITIALIZE_WEAPONBUTTON(AK47, "2", clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON(STEYR_AUG, "3", clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(STEYRAUG, "3", clrPaleBlue, NULL, Rifles)
 	INITIALIZE_WEAPONBUTTON(M16A4, "4", clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON(Barrett_M82, "5", clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(BARRETTM82, "5", clrPaleBlue, NULL, Rifles)
 	
 	
-	INITIALIZE_WEAPONBUTTON(BenelliM3, "1", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(BENELLIM3, "1", clrPaleBlue, NULL, Shotguns)
 	INITIALIZE_WEAPONBUTTON(USAS12, "2", clrPaleBlue, NULL, Shotguns)
 	INITIALIZE_WEAPONBUTTON(SPAS12, "3", clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON(Mossberg500, "4", clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON(SawedOff, "5", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(MOSSBERG500, "4", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(SAWEDOFF, "5", clrPaleBlue, NULL, Shotguns)
 
 
 	// LATER - make purchaseable only if the gamemode is team/scenario. (mercs vs specialists)
-	INITIALIZE_WEAPONBUTTON(M61Grenade, "1", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(M61GRENADE, "1", clrPaleBlue, NULL, SpecialPurpose)
 	
-	INITIALIZE_WEAPONBUTTON(CombatKnife, "2", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(COMBATKNIFE, "2", clrPaleBlue, NULL, SpecialPurpose)
 	INITIALIZE_WEAPONBUTTON(M60, "3", clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON(Katana, "4", clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON(SealKnife, "5", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(KATANA, "4", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(SEALKNIFE, "5", clrPaleBlue, NULL, SpecialPurpose)
 
 	//TODO - set these up.  items are simpler than weapons and have no default behavior.
 	// in fact the kevlar just puts armor on the player at spawn, stealthshoes may as well
@@ -1403,8 +1402,8 @@ VGUI_BuySideMenu_OnInit(void)
 	// Last parameter is the cost instead of the buy category, since we don't have
 	// any weapondata to get the cost from.
 	// ...we still need the category too though.
-	//INITIALIZE_ITEMBUTTON_ADV(Kevlar, "1", 48+1, clrPaleBlue, NULL, PlayerAccessory, 1900);
-	//INITIALIZE_ITEMBUTTON_ADV(StealthShoes, "2", 48+2, clrPaleBlue, NULL, PlayerAccessory, 700);
+	//INITIALIZE_ITEMBUTTON_ADV(KEVLAR, "1", 48+1, clrPaleBlue, NULL, PlayerAccessory, 1900);
+	//INITIALIZE_ITEMBUTTON_ADV(STEALTHSHOES, "2", 48+2, clrPaleBlue, NULL, PlayerAccessory, 700);
 	
 	buysidemenu_btn_Back_updateText(); //just in case.
 	
