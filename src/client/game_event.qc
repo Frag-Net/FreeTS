@@ -26,8 +26,8 @@ ClientGame_EventParse(float fHeader)
 	
 	// !
 	// Any need for a m_ePlayer classname check here?
-	// I think none apply for being an authentic "spectator", most don't for being a buymenu spectator
-	// (player with that is not PLAYER_STATE::SPAWNED)
+	// I think none apply for being an authentic "spectator", most don't for being a
+	// buymenu spectator (player with that is not PLAYER_STATE::SPAWNED)
 	
 	switch(fHeader){
 	case EV_OBITUARY:
@@ -162,7 +162,7 @@ ClientGame_EventParse(float fHeader)
 		deployConfig();
 		
 		// Just in case.
-		VGUI_ChangeScreen(VGUI_SCREEN::NONE);
+		UI_ChangeScreen(UI_SCREEN::NONE);
 
 		// so that any choice of weapon, same as before or even nothing, will still
 		// let client/view.qc do the whole viewmodel routine again
@@ -178,9 +178,6 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::PLAYER_DEATH:
 		EV_PlayerDeath();
 		break;
-	//case EVENT_TS::PLAY_INSERT_SHELL_SND:
-	//	EV_TS_PlayInsertShellSound(pl);
-	//	break;
 	case EVENT_TS::EFFECT_EXPLOSION:
 		vecOrigin[0] = readcoord();
 		vecOrigin[1] = readcoord();

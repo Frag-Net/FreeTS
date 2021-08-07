@@ -235,35 +235,6 @@ CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOL useAkimbo){
 
 
 
-#ifdef SERVER
-// Send a request to change the animation of the viewmodel directly.
-void
-TS_PlayInsertShellSound(player pl){
-	/*
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EVENT_TS::PLAY_INSERT_SHELL_SND );
-	msg_entity = pl;
-	multicast( [0,0,0], MULTICAST_ONE );
-	*/
-}
-
-#else
-void
-TS_PlayInsertShellSound(player pl){
-	EV_TS_PlayInsertShellSound(pl);
-}
-//CLIENTSIDE.  now what do I do over here?
-void
-EV_TS_PlayInsertShellSound(player pl){
-	//TODO - lower attenuation maybe?
-	// Nevermind, this is a client-only sound for now anyway.
-	localsound("weapons/insert-shell.wav", CHAN_AUTO, 1.0f);
-}
-#endif
-
-
-
-
 // The server may want to tell the client to reset its viewmodel.
 // DUMMIED - nevermind that for now, assuming the logic is called from server/client
 // individually like a lot of weapon's logic.
@@ -334,19 +305,22 @@ EV_TS_resetPlayer(player pl, BOOL resetInventory){
 #ifdef CLIENT
 // Called by the GameRules, PlayerDeath, for the client to do something as soon as
 // possible.
+// WHOOPS.  All vars since have been dummied or changes here are ineffective,
+// keeping the event in case it has some use later.
 void
 EV_PlayerDeath(void){
 	printfline("EV_PlayerDeath");
+	
 	// Require a tiny amount of time and a mouse release before a respawn, so that
 	// dying with the mouse held down isn't enough to trigger a respawn request.
-	pSeatLocal->m_bNeedPrimaryRelease = TRUE;
-	pSeatLocal->m_flReleaseTime = time + 0.15;
+	//pSeatLocal->m_bNeedPrimaryRelease = TRUE;
+	//pSeatLocal->m_flReleaseTime = time + 0.15;
 	
 	// Unfortunately not as effective as it may look. 
 	// On the player using "kill" in console, a CSQC_Parse_Damage call happens shortly
 	// after this PlayerDeath one, somehow.  Stopping damage-drawing on the "*dead" key
 	// being 1 works.
-	pSeat->m_flDamageAlpha = 0;
+	//pSeat->m_flDamageAlpha = 0;
 }
 #endif
 

@@ -25,14 +25,6 @@ void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOL useAkimbo);
 
 
 #ifdef SERVER
-void TS_PlayInsertShellSound(player pl);
-#else
-void TS_PlayInsertShellSound(player pl);
-void EV_TS_PlayInsertShellSound(player pl);
-#endif
-
-
-#ifdef SERVER
 void TS_resetViewModel(player pl);
 #else
 void TS_resetViewModel(player pl);

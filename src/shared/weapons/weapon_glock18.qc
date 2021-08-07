@@ -225,7 +225,7 @@ w_glock18_hud(void)
 
 }
 
-// NOPE! Handled by the buysidemenu, could make this give the instructions for drawing the
+// NOPE! Handled by the BuyMenu, could make this give the instructions for drawing the
 // button with the icon if really wanted
 void
 w_glock18_hudpic(int selected, vector pos, float a)

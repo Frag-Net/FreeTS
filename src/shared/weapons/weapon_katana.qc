@@ -53,9 +53,6 @@ weapondata_melee_t weapon_katana =
 
 
 
-
-
-
 void
 w_katana_precache(void)
 {

@@ -108,7 +108,7 @@ Draws a button, returns whether or not a mouse is hovering over it (for inherita
 ====================
 */
 
-//*** NOTE! Buysidemenu buttons don't use this!  Only the MoTD close button, at least so far.
+//*** NOTE! BuyMenu buttons don't use this!  Only the MoTD close button, at least so far.
 float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSize) {
 	vector vLabelPos;
 	
@@ -125,7 +125,7 @@ float VGUI_Button( string sLabel, void() vFunction, vector vPosition, vector vSi
 	
 	
 	if ( VGUI_CheckMouse( vPosition, vSize ) ) {
-		//pSeatLocal->fVGUI_Display
+		//pSeatLocal->m_flUI_Display
 	
 		if (pSeatLocal->m_inputMouseClicked == TRUE) {
 			vFunction();

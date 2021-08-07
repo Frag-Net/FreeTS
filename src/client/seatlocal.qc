@@ -5,9 +5,8 @@
 void
 pSeatLocal_init(void)
 {
-	pSeatLocal->m_flPrevVGUI = VGUI_SCREEN::NONE;
-	pSeatLocal->m_bNeedPrimaryRelease = FALSE;
-	pSeatLocal->m_flReleaseTime = 0;
+	pSeatLocal->m_flUI_Display = UI_SCREEN::NONE;
+	
 	
 	pSeatLocal->m_inputKeyTapped = 0;
 	pSeatLocal->m_inputKeyDown = 0;

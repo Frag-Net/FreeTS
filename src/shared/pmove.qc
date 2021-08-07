@@ -301,9 +301,9 @@ player::Physics_MaxSpeed(void)
 		return targetSpeed;
 	}
 	
-	//FL_CROUCHING
+	// Sneak?
 	if (input_buttons & INPUT_BUTTON7) {
-		//sneak forgets slot limits.
+		// sneak forgets slot limits.
 		targetSpeed *= 0.38;
 	}else{
 		// speed factor of 0 means 55% speed.

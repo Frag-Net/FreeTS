@@ -531,7 +531,6 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 	
 	if(pl.shotgunAddAmmoSoundTime != -1 && pl.w_attack_next <= pl.shotgunAddAmmoSoundTime){
 		
-		//TS_PlayInsertShellSound(pl);
 		//TS_Weapons_PlaySoundChannelDirect(pl, "weapons/insert-shell.wav", CHAN_AUTO);
 		
 		// TODO: if you want other players to hear this, the server should play it for all players

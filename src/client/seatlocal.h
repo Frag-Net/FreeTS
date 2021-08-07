@@ -23,16 +23,13 @@ struct
 	int m_iHUDWeaponSelected;
 	float m_flHUDWeaponSelectTime;
 	
-	float m_flPrevVGUI;
-	BOOL m_bNeedPrimaryRelease;
-	float m_flReleaseTime;
 	
 	
 	//TAGGG - assuming this is a fine place to put this
 	// It's the slower movement from holding shift down.
-	int iInputSpeed;
+	int m_iInputSpeed;
 	// Keeping for now, remove later
-	float fVGUI_Display;
+	float m_flUI_Display;
 	
 	// CRITICAL:
 	// Should these be per pSeat instead?  Unsure if that makes sense.

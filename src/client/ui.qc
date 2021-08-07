@@ -26,25 +26,25 @@
 // be set in an init method instead.
 
 
-// Keep in synch with vgui.h's VGUI_SCREEN enum choices, besides the NONE choice.
+// Keep in synch with vgui.h's UI_SCREEN enum choices, besides the NONE choice.
 // That isn't represented, not even by a dummy.
 var vguiwindow_t vguiMenus[] = {
 	//{ _("VGUI_TITLE_MOTD"), VGUI_MessageOfTheDay },
 	{ "", TRUE, VGUI_MessageOfTheDay, NULL },
-	{ "", FALSE, VGUI_BuySideMenu_Update, VGUI_BuySideMenu_OnInit}
+	{ "", FALSE, UI_BuyMenu_Update, UI_BuyMenu_OnInit}
 };
 
 //var float nextPrintoutTime = -1;
 
 
 void
-VGUI_ChangeScreen(VGUI_SCREEN arg_NewScreenID)
+UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 {
-	pSeatLocal->fVGUI_Display = (float)arg_NewScreenID;
+	pSeatLocal->m_flUI_Display = (float)arg_NewScreenID;
 	
-	printfline("VGUI_ChangeScreen:: arg_NewScreenID? %d", arg_NewScreenID);
+	printfline("UI_ChangeScreen:: arg_NewScreenID? %d", arg_NewScreenID);
 	
-	if(arg_NewScreenID <= VGUI_SCREEN::NONE){
+	if(arg_NewScreenID <= UI_SCREEN::NONE){
 		// If at NONE or below, also do nothing. This has no "vOnInit" behavior.
 		// Besides obligatory cleanup if we choose (which may as well be done right here)
 		// And turn the cursor lock off.
@@ -75,16 +75,16 @@ VGUI_ChangeScreen(VGUI_SCREEN arg_NewScreenID)
 
 /*
 =================
-CSQC_VGUI_Draw
+UI_Draw
 
 This is the entry point for FreeTS's (cloned from FreeCS) own "VGUI" implementation
 Run every frame
 =================
 */
 float
-CSQC_VGUI_Draw( player arg_player)
+UI_Draw(player arg_player)
 {
-	if ( pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE ) {
+	if ( pSeatLocal->m_flUI_Display == UI_SCREEN::NONE ) {
 		setcursormode( FALSE );
 		return FALSE;
 	}
@@ -160,19 +160,19 @@ CSQC_VGUI_Draw( player arg_player)
 	vVGUIWindowSiz[1] = window_height_y;
 	
 	// draw the window only if this screen says to.
-	if(vguiMenus[ pSeatLocal->fVGUI_Display - 1 ].fDrawMainWindowAuto){
-		VGUI_Window( vVGUIWindowPos, vVGUIWindowSiz, vguiMenus[ pSeatLocal->fVGUI_Display - 1 ].sTitle, [fontSizeMulti*32,fontSizeMulti*32] );
+	if(vguiMenus[ pSeatLocal->m_flUI_Display - 1 ].fDrawMainWindowAuto){
+		VGUI_Window( vVGUIWindowPos, vVGUIWindowSiz, vguiMenus[ pSeatLocal->m_flUI_Display - 1 ].sTitle, [fontSizeMulti*32,fontSizeMulti*32] );
 	}
 	
 	// Display the contents of whatever we have selected
-	vguiMenus[ pSeatLocal->fVGUI_Display - 1 ].vDraw( arg_player, vVGUIWindowPos, vVGUIWindowSiz, fontSizeMulti );
+	vguiMenus[ pSeatLocal->m_flUI_Display - 1 ].vDraw( arg_player, vVGUIWindowPos, vVGUIWindowSiz, fontSizeMulti );
 
 	return TRUE;
 }
 
 /*
 =================
-CSQC_VGUI_Init
+UI_Init
 
 Initialize all there is
 =================
@@ -181,7 +181,7 @@ Initialize all there is
 // ALSO - this means once for the entire client, so handle all pSeat choices
 // individually as it does.
 void
-CSQC_VGUI_Init(void)
+UI_Init(void)
 {
 	string sTemp;
 	int iMOTDLength;
@@ -238,14 +238,14 @@ CSQC_VGUI_Init(void)
 		for (s = 0; s < g_seats.length; s++){
 			pSeat = &g_seats[s];
 			pSeatLocal = &g_seatslocal[s];
-			VGUI_ChangeScreen(VGUI_SCREEN::MOTD);
+			UI_ChangeScreen(UI_SCREEN::MOTD);
 		}
 	}else{
 		// make all pSeats start at the NONE screen instead
 		for (s = 0; s < g_seats.length; s++){
 			pSeat = &g_seats[s];
 			pSeatLocal = &g_seatslocal[s];
-			VGUI_ChangeScreen(VGUI_SCREEN::NONE);
+			UI_ChangeScreen(UI_SCREEN::NONE);
 		}
 	}
 }

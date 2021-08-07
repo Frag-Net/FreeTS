@@ -83,9 +83,7 @@ HUD_Draw(void)
 		}
 		//////////////////////////////////////////////////////////////
 		
-		GameClient_PlayerInputRaw();
-
-		//TAGGG - NEw
+		//TAGGG - new
 		//////////////////////////////////////////////////////////////
 		drawTimer();
 		drawPlayerStats();  
@@ -94,8 +92,9 @@ HUD_Draw(void)
 		//////////////////////////////////////////////////////////////
 		
 		
-		// TEST!  Just for nuclide, doesn't matter what m_iHUDWeaponSelected is exactly,
-		// just 0 or non-zero has significance in it.  
+		// Just for nuclide, doesn't matter what m_iHUDWeaponSelected is exactly,
+		// just 0 or non-zero has significance in it for denying game-related inputs
+		// in Nuclide, which is all we need.
 		pSeat->m_iHUDWeaponSelected = (pl.weaponSelectHighlightID != -1);
 		
 		
@@ -123,21 +122,11 @@ HUD_Draw(void)
 		
 		pSeat->m_iHUDWeaponSelected = 0;
 		
-		// is this necessary?  With or without the if-then too.
-		/*
-		if(g_vguiWidgetCount > 0){
-			GameClient_SpectatorInputRaw();
-		}
-		*/
-		
 		
 		drawTimer();
 		
-		//TAGGG - Moved over!  Is it wise for this to go here?
 		// Links to drawing the MoTD and buymenu when appropriate
-		//TAGGG - CRITICAL.  "self" is a spectator, not a player!!
-		// Send over the above "spec" instead too!
-		CSQC_VGUI_Draw(pl);
+		UI_Draw(pl);
 		
 	}// pl.iState check
 	

@@ -9,12 +9,9 @@
 
 
 // Simple UIWidget to absorb mouse-click and key-press events while in
-// the MoTD or the buysidemenu screens.
+// the MoTD or the buymenu screens.
 // Do not give me child elements!  Behavior for handling children removed.
 
-// assuming these are provided elsewhere, works for now.
-extern var BOOL VGUI_BuySideMenu_InitDone;
-void BuySideMenu_onInputEvent(void);
 
 
 class CUIEventGrabber:CUIWidget
@@ -52,8 +49,8 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 		// TODO TODO TODO!  Check for mouse-clicks (K_MOUSE1) and key presses by separate methods?
 		// Checking for keypresses on a mouse-click or for mouse-coords on a keypress on every
 		// single button (even a mouse, yes/no check every time) is unnecessary.
-		if(pSeatLocal->fVGUI_Display == BUYSIDEMENU){
-			BuySideMenu_onInputEvent();
+		if(pSeatLocal->m_flUI_Display == UI_SCREEN::BUYMENU){
+			UI_BuyMenu_onInputEvent();
 		}
 		
 		break;

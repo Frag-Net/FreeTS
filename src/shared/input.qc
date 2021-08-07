@@ -36,12 +36,11 @@ Game_Input(void)
 	// If not, grab pSeat->m_ePlayer instead!
 	player pl = (player)self;
 	
-	
 	if(pl.iState != PLAYER_STATE::SPAWNED){
 		// not ingame (fake spectator)?  Do another check instead: spawning.
 #ifdef CLIENT
 		if((input_buttons & INPUT_BUTTON0) && !(pl.gflags & GF_SEMI_TOGGLED) ){
-			if(pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE && pl.iState != PLAYER_STATE::SPAWNED){				
+			if(pSeatLocal->m_flUI_Display == UI_SCREEN::NONE && pl.iState != PLAYER_STATE::SPAWNED){				
 				sendevent( "GamePlayerSpawn", "");
 			}
 		}
@@ -52,12 +51,55 @@ Game_Input(void)
 			pl.gflags &= ~GF_SEMI_TOGGLED;
 		}
 #endif
+		// client or server, don't pay attention to the rest of this file if not spawned
 		return;
 	}
+#ifdef CLIENT
+	else{
+		// not spawned?  Some notes on possible things to involve, all dummied for now
+
+		
+		// This was removed?  Legacy VGUI
+		// If we are inside a UI, don't let the client do stuff outside
+		// (looks like this is no longer necessary)
+		/*
+		if (pl.iState != PLAYER_STATE::SPAWNED && pSeatLocal->m_flUI_Display != UI_SCREEN::NONE){
+			pSeat->m_flInputBlockTime = time + 0.2;
+		}
+		*/
+		
+		// No need to check for calling TS_HUD_DrawWeaponSelect_CheckClick or
+		// HUD_DrawWeaponSelect_Trigger here, Nuclide calls the latter which works
+		// fine.
+		
+		// CRITICAL.
+		// DISABLED.
+		// This is trying to close weaponselect on detecting a right-click, but it 
+		// has issues.
+		// Idea is, this needs to *absorb* the right-click, and stop it from reaching
+		// the rest of the client and server to work with weapons, like a change-ironsight
+		// order.
+		// This might stop the client weapon logic from seeing the right click, but not
+		// the server.
+		// It appears there is no way to stop that without the FTE built-in event method 
+		// CSQC_Input_Frame (defined by Nuclide) letting the gamemod block right-click
+		// inputs per some condition, like weapon-select being up.
+		/*
+		if(pSeat->m_iInputAttack2){   //input_buttons & INPUT_BUTTON3){
+			if(HUD_CloseWeaponSelect(TRUE)){
+				pSeat->m_flInputBlockTime = time + 0.2;
+				input_impulse = 0;
+				input_buttons = 0;
+				pSeat->m_iInputAttack2 = FALSE;
+			}else{
+				//pSeat->m_iInputAttack2 = TRUE;
+			}
+		}
+		*/
+	}// pi.iState checks
+#endif
 	
 	// Must be ingame to reach beyond here
-	
-	
 	
 	
 	//TAGGG - good place for this?  Cloned from w_attack_next as a separate counter
@@ -139,8 +181,18 @@ Game_Input(void)
 #endif
 
 
-	
-
+	// !!!
+	// An override for this to go in CSQC_Input_Frame would be very nice I think,
+	// unless there is some other way that I'm missing.
+	/*
+	if (pSeatLocal->m_iInputSpeed == TRUE) {
+		//input_buttons |= INPUT_BUTTON9;
+		input_buttons |= INPUT_BUTTON7;
+		//self.flags |= FL_SNEAK;
+	}else{
+		//self.flags &= ~FL_SNEAK;
+	}
+	*/
 
 
 	// TS way, weapon thinks happen alongside checking inputs

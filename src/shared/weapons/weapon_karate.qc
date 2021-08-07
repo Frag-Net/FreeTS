@@ -62,7 +62,6 @@ weapondata_basic_t weapon_karate =
 
 
 
-
 void
 w_karate_precache(void)
 {

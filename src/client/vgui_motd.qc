@@ -63,8 +63,8 @@ Colors_RGB8_to_HEX(vector color)
 void VGUI_MessageOfTheDay(player arg_player, vector vPos, vector vWindowSiz, float fFontSizeMulti ) {
 	
 	static void MessageOfTheDay_ButtonOK( void ) {		
-		printfline("HEY ButtonOK got CLICKED!!!");
-		VGUI_ChangeScreen(VGUI_SCREEN::BUYSIDEMENU);
+		printfline("HEY ButtonOK got CLICKED");
+		UI_ChangeScreen(UI_SCREEN::BUYMENU);
 	}
 	
 	//TAGGG - start from this location instead.

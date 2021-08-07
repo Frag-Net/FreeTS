@@ -104,7 +104,7 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	// using the new VGUI approach.
 	// That also includes mentions of fonts in ts/src/client/vgui.qc
 	
-	// Also see ts/src/client/vgui.qc where CSQC_VGUI_Draw checks to see if the screen
+	// Also see ts/src/client/vgui.qc where UI_Draw checks to see if the screen
 	// size has been changed or this is the first time drawing (some FONTs having ID -1).
 	// In either case, they're loaded and sized per screen height over there.
 	FONT_ARIAL = -1;  //specify me at draw startup instead, if this is safe.
@@ -136,7 +136,7 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	drawfont = FONT_CON;
 	//////////////////////////////////////////////////////////////////
 	
-	CSQC_VGUI_Init();
+	UI_Init();
 	
 }
 

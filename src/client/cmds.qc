@@ -25,10 +25,10 @@ ClientGame_ConsoleCommand(void)
 		
 	//TAGGG - is that ok?
 	case "+speedcustom":
-		pSeatLocal->iInputSpeed = TRUE;
+		pSeatLocal->m_iInputSpeed = TRUE;
 		break;
 	case "-speedcustom":
-		pSeatLocal->iInputSpeed = FALSE;
+		pSeatLocal->m_iInputSpeed = FALSE;
 		break;
 		
 	//TAGGG - NEW ONES
@@ -85,12 +85,12 @@ ClientGame_ConsoleCommand(void)
 	*/
 	case "motd":
 		if(getplayerkeyvalue( player_localnum, "*spec" ) != "0"){
-			VGUI_ChangeScreen(VGUI_SCREEN::MOTD);
+			UI_ChangeScreen(UI_SCREEN::MOTD);
 		}
 		break;
 	case "buy":
 		//If we're in spectator mode we can do this
-		//  no-screen check, not necessary probably:  pSeatLocal->fVGUI_Display == VGUI_SCREEN::NONE && 
+		//  no-screen check, not necessary probably:  pSeatLocal->m_flUI_Display == UI_SCREEN::NONE && 
 		pl = (player)pSeat->m_ePlayer;
 		
 		printfline("CMD: BUY COMMAND RECEIVED!  Should I react?  %s (1=yes) : %d", getplayerkeyvalue( player_localnum, "*spec" ), pl.iState);
@@ -99,7 +99,7 @@ ClientGame_ConsoleCommand(void)
 		//if(getplayerkeyvalue( player_localnum, "*spec" ) != "0"){
 		if(pl.iState != PLAYER_STATE::SPAWNED){
 			//we can show it!
-			VGUI_ChangeScreen(VGUI_SCREEN::BUYSIDEMENU);
+			UI_ChangeScreen(UI_SCREEN::BUYMENU);
 		}
 		
 		break;
