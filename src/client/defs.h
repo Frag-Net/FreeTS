@@ -32,8 +32,7 @@ vector g_hudres;
 // Yes using old VGUI is kinda crappy but good for now.
 vector vHUDColor; // Defined in HUD_Draw (HUD.c)
 */
-vector vVGUIColor; // Defined in HUD_Draw (VGUI.c)
-vector vCrossColor; // Defined in HUD_Draw (HUDCrosshair.c)
+vector g_UI_Color;
 
 // Global var to store the current screen size. If it changes, the font should be re-loaded to fit it.
 var vector g_videoResPrev;

@@ -1722,7 +1722,6 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 		// be dropped.  Throwables with a count of 0 (?) would prefer to be drop-less.
 		deletedCurrentWeapon = inventoryWeaponDeleteCheck(arg_weaponID);
 	}
-	//(*basicP).vOnUnEquip(this, dynaRefPRE);
 	
 	// back to using the singular form unless otherwise noted.
 	// CRITICAL.  Should still be able to use the akimbo version for stats all the same,

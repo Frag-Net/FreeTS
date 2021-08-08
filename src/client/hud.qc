@@ -126,7 +126,7 @@ HUD_Draw(void)
 		drawTimer();
 		
 		// Links to drawing the MoTD and buymenu when appropriate
-		UI_Draw(pl);
+		UI_Draw();
 		
 	}// pl.iState check
 	

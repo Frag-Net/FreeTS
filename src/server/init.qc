@@ -191,7 +191,7 @@ Game_Worldspawn(void)
 
 	// The message of the day.
 	// This saves the contents of the MoTD text file (path given by CVar motdfile) to a series of
-	// serverinfo entries named motdline0, 1, 2, ...  for reading back in client/vgui.c from the server
+	// serverinfo entries named motdline0, 1, 2, ...  for reading back in client/ui.qc from the server
 	// at client-connect time (UI_Init) to go in the MoTD window whenever needed.
 	localcmd(sprintf("echo [MOTD] Loading %s.\n", autocvar_motdfile));
 	filestream fmMOTD = fopen(autocvar_motdfile, FILE_READ);

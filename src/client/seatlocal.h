@@ -39,6 +39,8 @@ struct
 
 	ClientInfo_t m_clientinfo;
 	
+	float flBlockSpawnTime;
+	
 } g_seatslocal[4], *pSeatLocal;
 
 void pSeatLocal_init(void);

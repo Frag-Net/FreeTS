@@ -32,14 +32,9 @@
 
 
 
-
-
 #ifdef CLIENT
 	// has the player purchased anything? Used to tell whether to print "order canceled" on exiting.
 	var BOOL boughtAnything;
-	
-	// this must be set by the client at the start of the buymenu.
-	// It might look strange to have to set this and rely on this every time instead of just fetching the player by "player something = (player)self" the usual way, but this is because "self" will lead to some VGUI button instead clientside... straaaaange stuff. Just leave this this way
 	
 // These mirror the macros from earlier, but are for methods dealing with the local player config instead.
 

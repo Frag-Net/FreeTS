@@ -108,10 +108,11 @@ drawSpriteNumber(
 
 
 
-// Convenience methods for drawing without any font-related struct, just some font's load ID.
-// Otherwise close to the engine-provided drawstring and drawtextfield methods.
-// "drawfont" is a global provided by the engine (fteextensions.qc)
-// Compare with vgui/font.cpp's "Font_DrawText" and "Font_DrawField" which take a font struct.
+// Convenience methods for drawing without any font-related struct, just some font's
+// load ID. Otherwise close to the engine-provided drawstring and drawtextfield
+// methods. "drawfont" is a global provided by the engine (fteextensions.qc).
+// Compare with src/vgui/font.cpp's "Font_DrawText" and "Font_DrawField" which take a
+// font struct.
 void
 Gfx_Text(vector vPos, string sText, vector vSize, vector vRGB, float flAlpha, float flDrawFlag, float flFont)
 {
@@ -174,3 +175,42 @@ Gfx_ScalePicPreserveBounds(string sImage, vector arg_vDrawPos, vector vSize, vec
 	drawsubpic(arg_vDrawPos + vecOff, sz, sImage, srcpos, srcsz, vRGB, flOpac);  //, 0
 }
 
+
+
+// Cloned from src/menu-fn/w_label.qc
+string
+Colors_RGB8_to_HEX(vector color)
+{
+	string out = "^x";
+	//string out = "";
+
+	for (int i = 0; i < 3; i++) {
+		string a = "";
+		float b = rint(color[i] * 15);
+
+		switch (b) {
+		case 10:
+			a = "A";
+			break;
+		case 11:
+			a = "B";
+			break;
+		case 12:
+			a = "C";
+			break;
+		case 13:
+			a = "D";
+			break;
+		case 14:
+			a = "E";
+			break;
+		case 15:
+			a = "F";
+			break;
+		default:
+			a = ftos(b);
+		}
+		out = sprintf("%s%s", out, a);
+	}
+	return out;
+}

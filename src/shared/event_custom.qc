@@ -52,14 +52,8 @@ TS_Weapon_Draw(player pl, int weaponEquipped, BOOL useAkimbo ) {
 	//weapondynamic_t dynaRef;
 	//weapondynamic_t dynaRefPRE;
 	
-	// Anything equipped already?  Call vOnUnEquip of that weapon first
+	// Anything equipped already?
 	if(pl.inventoryEquippedIndex != -1){
-		/*
-		dynaRefPRE = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-		weapondata_basic_t* basicP = pl.getEquippedWeaponData();
-			
-		(*basicP).vOnUnEquip(pl, dynaRefPRE);
-		*/
 		// How about Nuclide's 'Holster' instead?
 		Weapons_Holster();
 		pl.equippedWeaponDeleteCheck();
@@ -116,23 +110,13 @@ TS_Weapon_Draw(player pl, int weaponEquipped, BOOL useAkimbo ) {
 void
 TS_Weapon_Drop() {
 	player pl = (player)self;
-	
 	if(pl.inventoryEquippedIndex == -1){
-		//stop.  nothing to drop.. ?
+		// stop.  nothing to drop?
 		return;
 	}
-	
-	// in case vOnUnEquip alters the weapon equipped, like a grenade switching out.
-	int currentWeaponMem = pl.inventoryEquippedIndex;
-	
-	// like equipping a new weapon, we have to let the existing equipped
-	// weapon know that it's about to be unequipped.
-	if(currentWeaponMem != -1){
-		pl.dropWeapon(currentWeaponMem, FALSE);
+	if(pl.inventoryEquippedIndex != -1){
+		pl.dropWeapon(pl.inventoryEquippedIndex, FALSE);
 	}
-	////////////////////////////////////
-	
-	
 }//TS_Weapon_Drop
 #endif
 

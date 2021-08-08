@@ -22,6 +22,13 @@ class CUIEventGrabber:CUIWidget
 };
 
 
+// Could include this a lot earlier, but no point as it's useless without being
+// able to call methods of it until CUIEventGrabber is defined (which requires
+// UIWidget, which requires all nuclide stuff to be included, which happens late
+// into the compile)
+var CUIEventGrabber g_UI_EventGrabber;
+
+
 void
 CUIEventGrabber::Draw(void)
 {
@@ -40,17 +47,17 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 		
 	case IE_KEYDOWN:
 		printf("CUIEventGrabber::Input %d time:%.2f\n", flKey, time);
-		if (flKey == K_MOUSE1) {
-			pSeatLocal->m_inputMouseClicked = TRUE;
-		}
+		
 		pSeatLocal->m_inputKeyDown = flKey;
 		pSeatLocal->m_inputKeyTapped = flKey;  //lasts only this frame
 		
-		// TODO TODO TODO!  Check for mouse-clicks (K_MOUSE1) and key presses by separate methods?
-		// Checking for keypresses on a mouse-click or for mouse-coords on a keypress on every
-		// single button (even a mouse, yes/no check every time) is unnecessary.
-		if(pSeatLocal->m_flUI_Display == UI_SCREEN::BUYMENU){
-			UI_BuyMenu_onInputEvent();
+		if (flKey == K_MOUSE1) {
+			// mouse click event!
+			pSeatLocal->m_inputMouseClicked = TRUE;
+			UI_MouseClick();
+		}else{
+			// key press event!
+			UI_KeyDown();
 		}
 		
 		break;
@@ -63,14 +70,8 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 	}
 	
 	
-	
 }
 
-// Could include this a lot earlier, but no point as it's useless without being
-// able to call methods of it until CUIEventGrabber is defined (which requires
-// UIWidget, which requires all nuclide stuff to be included, which happens late
-// into the compile)
-var CUIEventGrabber g_UI_EventGrabber;
 
 
 void gFun_UI_EventGrabber_Initialize(void){

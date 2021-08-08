@@ -8,6 +8,9 @@
 #define CLASSIC_VGUI
 #define GS_RENDERFX
 
+// NEW.  If defined, uses the new VGUI system.
+// By default, the old pseudo-way made of primitive draw calls is used
+#define MOTD_NEW_VGUI
 
 // NEW.  When present, the origin is exactly at the center of the player, no further offsets.
 // Keeps the view identical on the player dying and becoming spectator in place.
@@ -58,10 +61,7 @@ hud.h
 ../shared/inventory_logic.qc
 
 //TAGGG - NEW
-vguiobjects.qc
-vgui_motd.qc
-ui_buymenu.qc
-ui.qc
+// old location of UI draw stuff
 
 hud_crosshair.qc
 hud_scope.qc
@@ -107,6 +107,10 @@ precache.qc
 ../../../src/client/include.src
 ../../../src/shared/include.src
 
+vguiobjects.qc
 ui_eventgrabber.qc
+ui_motd.qc
+ui_buymenu.qc
+ui.qc
 
 #endlist

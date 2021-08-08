@@ -10,6 +10,6 @@ pSeatLocal_init(void)
 	
 	pSeatLocal->m_inputKeyTapped = 0;
 	pSeatLocal->m_inputKeyDown = 0;
-	pSeatLocal->m_inputMouseClicked = 0;
+	pSeatLocal->m_inputMouseClicked = FALSE;
 }
 

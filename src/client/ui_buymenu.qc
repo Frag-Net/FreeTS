@@ -37,9 +37,6 @@
 class CBuyMenu_BasicButton;
 
 
-// set to TRUE if this screen has ever been brought up before.
-var BOOL UI_BuyMenu_InitDone = FALSE;
-
 var int iWeaponTempID = -1;
 
 //What upgrades has the player purchased for the currently open weapon in the buy menu?
@@ -75,15 +72,15 @@ float determineHotkeyFromChar(string arg_sHotkeyDisplay);
 
 
 
-//Each button ever created must be added to this list. Can be one automatically...
-//struct's don't have constructors though.  Call for this at startup I suppose.
+// Each button ever created must be added to this list. Can be one automatically.
+// struct's don't have constructors though.  Call for this at startup I suppose.
 var CBuyMenu_BasicButton* ary_btnTotal[128];
 var int ary_btnTotal_softLength = 0;
 
 var CBuyMenu_BasicButton* ary_layerButtonChoice[16];  //16 layers max.  Not that nearly this many should be used.
 //var int ary_layerButtonChoiceIndex[16i]; //alternative approach.
 
-//Any buttons in the first layer must be recorded here.
+// Any buttons in the first layer must be recorded here.
 var CBuyMenu_BasicButton* ary_layerFirstButton[16];
 var int ary_layerFirstButton_softLength = 0;
 
@@ -174,6 +171,8 @@ var CBuyMenu_WeaponButton buymenu_btn_Buy_SEALKNIFE;
 // Notice that the buttons do not have location/size information. They are
 // drawn wherever as needed, checks for clicks need that supplied to know where
 // to check.
+// NOTE: any method names involving "click" also happen when the button's hotkey
+// is pressed.
 class CBuyMenu_BasicButton{
 	
 	// yes. really.  
@@ -274,11 +273,32 @@ CBuyMenu_RemoveWeaponButton::CBuyMenu_RemoveWeaponButton(void)
 	
 }
 
-
+// Being called implies the mouse was clicked.  Calls OnClick_Base if the mouse is
+// within the button bounds.
 BOOL
 checkBuyMenuButtonClicked(
-	CBuyMenu_BasicButton* arg_someBtn, vector vPosition,
-	vector vSize
+	CBuyMenu_BasicButton* arg_someBtn, vector vPosition, vector vSize
+)
+{
+	CBuyMenu_BasicButton deref = *arg_someBtn;
+	
+	if(UI_CheckMouse( vPosition, vSize )){
+		// What button is being hovered over?
+		iHoveredButtonIndex = deref.iGlobalIndex;
+
+		(*arg_someBtn).vOnClick_Base();
+		
+		pSeatLocal->m_inputMouseClicked = FALSE;
+		return TRUE;
+	}
+	
+	return FALSE;
+}// checkBuyMenuButtonClicked
+
+// Is the recent input key a match for this button's hotkey?
+BOOL
+checkBuyMenuButtonHotKeyPressed(
+	CBuyMenu_BasicButton* arg_someBtn
 )
 {
 	CBuyMenu_BasicButton deref = *arg_someBtn;
@@ -290,52 +310,26 @@ checkBuyMenuButtonClicked(
 		return TRUE;
 	}
 	
-	if ( pSeatLocal->m_inputMouseClicked == TRUE ) {
-		if(VGUI_CheckMouse( vPosition, vSize )){
-			// What button is being hovered over?
-			iHoveredButtonIndex = deref.iGlobalIndex;
-
-			(*arg_someBtn).vOnClick_Base();
-			
-			pSeatLocal->m_inputMouseClicked = FALSE;
-			return TRUE;
-		}
-	}
-	
 	return FALSE;
-}// checkBuyMenuButtonClicked
+}// checkBuyMenuButtonHotKeyPressed
 
 
 
-// Called by ui_eventgrabber on detecting input from a keypress or mouse.
-// TODO - still a little sloppy to check for both the recently pressed key
-// matching the hotkey and a mouse-click for coords when each event can only be
-// either of these things, not both.
-// But that would mean cloning this method with the only difference being 
-// checkBuyMenuButtonClicked for "checkBuyMenuButtonHotKey" insetad,
-// and Clicked loses the hotkey check.
-void UI_BuyMenu_onInputEvent(void){
-	if(!UI_BuyMenu_InitDone){
-		// Not allowed yet!
-		return;
-	}
-	
+void
+UI_BuyMenu_OnMouseClick(void)
+{
+	int i2;
+	// Generate the button bounds to be checked on each click call.
 	vector vButtonPos = [video_mins[0] + 5, video_mins[1] + video_res[1]/2, 0];
 	vector vBtnPos = [0,0,0];
-	int currentLayerSelectedIndex;
 	int btnToRender_index_global;
-	CBuyMenu_BasicButton someThing;
 	CBuyMenu_BasicButton previousLayerButton;
-	BOOL fIsSelected;
 	
 	if(iActiveLayer == 0){
 		vBtnPos.x = (int)vButtonPos.x; //default pos.
 		vBtnPos.y = (int)vButtonPos.y;
 		
-		
-		for(int i2 = 0i; i2 < ary_layerFirstButton_softLength; i2++){
-			CBuyMenu_BasicButton tempButton = *ary_layerFirstButton[i2];
-			
+		for(i2 = 0i; i2 < ary_layerFirstButton_softLength; i2++){			
 			checkBuyMenuButtonClicked(ary_layerFirstButton[i2], vBtnPos, vButtonSizStandard);
 			vBtnPos.y += (vButtonSizStandard.y + 1);
 		}
@@ -347,17 +341,22 @@ void UI_BuyMenu_onInputEvent(void){
 		
 		previousLayerButton = *ary_layerButtonChoice[iActiveLayer - 1i];
 		
+		for(i2 = 0i; i2 < previousLayerButton.ary_btn_softLength; i2 = i2+1i){
 			
-		for(int i2 = 0i; i2 < previousLayerButton.ary_btn_softLength; i2 = i2+1i){
-			
-			// CONCLUSION... maybe.
-			// So much as this local var, "btnCheck", being set to a dereferenced ary_btnTotal element,
-			// and this btnCheck being used in checkBuyMenubuttonClicked instead of just that ary_btnTotal element (a pointer already)
-			// is enough to trigger this odd error, where the next frame (or if this for loop gets so much as an extra iteration
-			// that resets btnCheck... test with the "if(theThingHappened)continue;" bit above moved to after these lines below too...
-			// Anyways, this makes the difference between whether the real thing the ary_btnTotal element links to stays
-			// consistent between at least loop iterations or not even those.  Staying consistent between frames is definitely out.
-			// When this method ends, or really this scope (?), that thing the ary_btnTotal element is pointing at blanks out.
+			// CONCLUSION
+			// So much as this local var, "btnCheck", being set to a dereferenced
+			// ary_btnTotal element, and this btnCheck being used in
+			// checkBuyMenubuttonClicked instead of just that ary_btnTotal element
+			// (a pointer already) is enough to trigger this odd error, where the next
+			// frame (or if this for loop gets so much as an extra iteration that resets
+			// btnCheck... test with the "if(theThingHappened)continue;" bit above moved
+			// to after these lines below too...
+			// Anyways, this makes the difference between whether the real thing the
+			// ary_btnTotal element links to stays consistent between at least loop
+			// iterations or not even those.  Staying consistent between frames is
+			// definitely out.
+			// When this method ends, or really this scope (?), that thing the
+			// ary_btnTotal element is pointing at blanks out.
 			
 			btnToRender_index_global = previousLayerButton.ary_btn_index[i2];
 			
@@ -379,8 +378,44 @@ void UI_BuyMenu_onInputEvent(void){
 	
 	// Check the "0. Cancel" button.
 	checkBuyMenuButtonClicked(&buymenu_btn_Back, vBtnPos, vButtonSizStandard);
-	vBtnPos.y += (vButtonSizStandard.y + 1);
-}// UI_BuyMenu_onInputEvent
+	// no point on bumping Y, end of method
+	//vBtnPos.y += (vButtonSizStandard.y + 1);
+}// UI_BuyMenu_OnMouseClick
+
+
+// Check for the hotkey of any buttons in existence instead.
+// No need to involve button bounds for that
+void
+UI_BuyMenu_OnKeyDown(void)
+{
+	int i2;
+	int btnToRender_index_global;
+	CBuyMenu_BasicButton previousLayerButton;
+	
+	if(iActiveLayer == 0){		
+		for(i2 = 0i; i2 < ary_layerFirstButton_softLength; i2++){
+			checkBuyMenuButtonHotKeyPressed(ary_layerFirstButton[i2]);
+		}
+	}else{
+		// All other layers only render buttons that the previous layer (selected button there) tells them to.
+		previousLayerButton = *ary_layerButtonChoice[iActiveLayer - 1i];
+		
+		for(i2 = 0i; i2 < previousLayerButton.ary_btn_softLength; i2 = i2+1i){
+			btnToRender_index_global = previousLayerButton.ary_btn_index[i2];
+			
+			CBuyMenu_BasicButton tempButton2 = *ary_btnTotal[btnToRender_index_global];
+			if(tempButton2.bActive == FALSE){
+				// let the next button be tried instead.
+				continue;
+			}
+			
+			checkBuyMenuButtonHotKeyPressed(ary_btnTotal[btnToRender_index_global]);
+		}// for i2 in this layer's buttons.
+	}
+	
+	// Check the "0. Cancel" button.
+	checkBuyMenuButtonHotKeyPressed(&buymenu_btn_Back);
+}//UI_BuyMenu_OnKeyDown
 
 
 
@@ -485,16 +520,6 @@ drawBuyButton(
 		//This button is the chosen one!!!
 		mouseHovered = TRUE;
 	}
-	
-	/*
-	// NO BORDERS FOR THE WICKED.
-	// last two parameters were these constants before:   vVGUIColor, VGUI_WINDOW_FGALPHA
-	//Now the draw stuff.
-	drawfill( vPosition, [vSize[0], 1], '255 0 0', 1.0 );
-	drawfill( [vPosition[0], vPosition[1] + vSize[1] - 1], [vSize[0], 1], '255 0 0', 1.0 );
-	drawfill( vPosition, [1, vSize[1]], '255 0 0', 1.0 );
-	drawfill( [vPosition[0] + vSize[0] - 1, vPosition[1]], [1, vSize[1]], '255 0 0', 1.0 );
-	*/
 	
 	//iActiveLayer == iLayer && 
 	if(mouseHovered){
@@ -1265,42 +1290,43 @@ buymenu_btn_FullLoad_clicked(CBuyMenu_BasicButton* arg_this)
 
 
 void
-UI_BuyMenu_OnInit(void)
+UI_BuyMenu_Show(void)
 {
-	// for macros below.
-	float flDeterminedHotkey;
-
-	//safety.
+	// safety.
 	UI_BuyMenu_ResetTempVariables();
 	
-	//haven't yet.
+	// haven't yet.
 	boughtAnything = FALSE;
 	
-	if(UI_BuyMenu_InitDone == FALSE){
-		//looks like we need to do this. proceed.
-	}else{
-		//nevermind.
-		//Keep in mind some stuff (what's above) can run on any init call, even subsequent ones (re-opening the buy menu), since we might want to default some stuff
-		//like what was selected, temp buyopts clicked, etc.
-		return;
-	}
-	
 	iActiveLayer = 0i;
-	ary_btnTotal_softLength = 0i;
-	ary_layerFirstButton_softLength = 0i;
+	buymenu_btn_Back_updateText();
 	
 	// just in case?
 	for(int i = 0i; i < ary_layerButtonChoice.length; i+=1i){
 		ary_layerButtonChoice[i] = NULL;
 	}
+}
+
+void
+UI_BuyMenu_Hide(void)
+{
+	// nothing to do
+}
+
+void
+UI_BuyMenu_Init(void)
+{
+	// for macros below.
+	float flDeterminedHotkey;
 	
+	ary_btnTotal_softLength = 0i;
+	ary_layerFirstButton_softLength = 0i;
 	
 	// buymenu_btn_Back = spawn(CBuyMenu_BasicButton);
 	// if the 1st layer is active (drawn to that one). Says "Cancel" there, but if on any deeper layer it reads "Go Back".
 	//buymenu_btn_Back.create("0 Cancel", 48, NULL, buymenu_btn_Back_clicked);
 	
 	INITIALIZE_BASICBUTTON(Back, "Cancel", "0", clrPaleBluePurple, &buymenu_btn_Back_clicked)
-	
 	
 	//INITIALIZE_BASICBUTTON(Buy, "2 Buy", 48+2, NULL, 0, NULL)
 	INITIALIZE_BASICBUTTON(Recentconfig, "Use New Config", "1", clrGreen, &buymenu_btn_UseNewConfig_clicked)
@@ -1424,17 +1450,14 @@ UI_BuyMenu_OnInit(void)
 	
 	setupRemoveButtonList();
 	
-	// don't do this init process again.
-	UI_BuyMenu_InitDone = TRUE;
-	
-}// UI_BuyMenu_OnInit
+}// UI_BuyMenu_Init
 
 
 
 //var float lastPrintoutTime = 0.0f;
 
 void
-UI_BuyMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float fFontSizeMulti)
+UI_BuyMenu_Draw(void)
 {
 	// If we leave spectator view (spawned and walking/aiming), disallow the buy menu.
 	// (could also check for "player.iState == PLAYER_STATE::SPAWNED" )
@@ -1453,8 +1476,6 @@ UI_BuyMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float fFont
 	CBuyMenu_BasicButton previousLayerButton;
 	BOOL fIsSelected;
 	
-	// VGUI_Text( sprintf("%s - %s", "Free Specialists", serverkey("hostname") ), vPos + '16 64 0', '12 12', FONT_CON );
-	
 	
 	// Checks for clicks be done separately
 	// Only check for buttons from the active layer. 
@@ -1469,8 +1490,6 @@ UI_BuyMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float fFont
 		// anything routine?
 	}
 	*/
-	
-	//UI_BuyMenu_onInputEvent();
 	
 	drawPlayerInventory(TRUE);
 	
@@ -1565,7 +1584,7 @@ UI_BuyMenu_Update(player arg_player, vector vPos, vector vWindowSiz, float fFont
 	
 	drawPlayerInventory_TopBar(-1, TRUE);
 	
-}//UI_BuyMenu_Update
+}//UI_BuyMenu_Draw
 
 
 // Given a single-character string, like "3" or "A", determine the keycode that

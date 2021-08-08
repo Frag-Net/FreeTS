@@ -94,5 +94,5 @@ void Gfx_Text(vector vPos, string sText, vector vSize, vector vRGB, float flAlph
 void Gfx_TextLineWrap( vector vPos, vector vSize, float fAlignFlags, string sText, float flFont );
 void Gfx_RotScalePic( string sImage, vector arg_vDrawPos, vector arg_vDrawPivot, vector vSize, float flAngle, vector vScale, vector vRGB, float flOpac );
 void Gfx_ScalePicPreserveBounds(string sImage, vector arg_vDrawPos, vector vSize, vector vScale, vector vInset, vector vRGB, float flOpac);
-
+string Colors_RGB8_to_HEX(vector color);
 

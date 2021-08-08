@@ -1,22 +1,22 @@
 
 
 #define VGUI_WINDOW_BGCOLOR '0.0 0.0 0.0'
-#define VGUI_WINDOW_FGCOLOR '1.0 0.5 0.0'
 #define VGUI_WINDOW_BGALPHA 0.76
 #define VGUI_WINDOW_FGALPHA 1.0
 
-vector vVGUIWindowPos;
-vector vVGUIWindowSiz;
+var vector g_UI_WindowPos;
+var vector g_UI_WindowSize;
+var float g_fontSizeMulti;
+var BOOL g_UI_queueInit = FALSE;
 
 string sMOTDString[25];
 string sMapString[35];
 
 var string sMOTD_total;
+var string sMapString_total;
 
-class player;
 
-
-// Keep in synch with the vguiMenus array of vgui.c
+// Keep in synch with the ary_UI_Screen array of ui.qc
 enum UI_SCREEN{
 	NONE = 0,
 	MOTD,
@@ -24,24 +24,32 @@ enum UI_SCREEN{
 };
 
 typedef struct {
-	string sTitle;
+	// start at FALSE, set to TRUE if done before
+	BOOL bInitializedYet;
+	
 	// Whether to do a VGUI_Window call to draw a window.
 	// Not very customizable for now, intended only for the MoTD, but adapts to different screen sizes.
 	// Could have other settings added later, or even be handled per screen's draw call too for completely re-doing
+	// ---This will be removed on the move to the new VGUI.
 	BOOLEAN fDrawMainWindowAuto;
 	
-	// Custom draw script for a particular screen choice
-	//TAGGG - now accepts how much to change the font size (and adjust other things) by.
-	// Also accepts the player for getting other info from.
-	void(player arg_player, vector vPos, vector vWindowSiz, float fFontSizeMulti ) vDraw;
+	void(void) funInit;
+	void(void) funShow;
+	void(void) funHide;
+	void(void) funDraw;
+	void(void) funOnMouseClick;
+	void(void) funOnKeyDown;
 	// What to do the moment the screen is changed to this.
-	void(void) vOnInit;
-} vguiwindow_t;
+} ui_screen_t;
 
 
 
 void UI_Init(void);
-float UI_Draw( player arg_player);
+void UI_Draw(void);
+void UI_MouseClick(void);
+void UI_KeyDown(void);
 void UI_ChangeScreen(UI_SCREEN fNewScreenID);
+BOOL UI_CheckMouse(vector vPos, vector vReg);
 
+void UI_determineDrawGlobals(void);
 

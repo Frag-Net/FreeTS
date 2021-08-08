@@ -22,29 +22,83 @@
 // The identifier and value for that language will show up.
 // In this case, VGUI_TITLE_MODT won't be used. This new way mimicks the original The
 // Specialists initial screen a little more.
-// We can't use logic stuff in a global scope like this. This (vguiMenus[0].sTitle) can
-// be set in an init method instead.
 
 
-// Keep in synch with vgui.h's UI_SCREEN enum choices, besides the NONE choice.
+
+//font_s FONT_ARIAL_TITLE_EX;
+
+
+// Keep in synch with ui.h's UI_SCREEN enum choices, besides the NONE choice.
 // That isn't represented, not even by a dummy.
-var vguiwindow_t vguiMenus[] = {
-	//{ _("VGUI_TITLE_MOTD"), VGUI_MessageOfTheDay },
-	{ "", TRUE, VGUI_MessageOfTheDay, NULL },
-	{ "", FALSE, UI_BuyMenu_Update, UI_BuyMenu_OnInit}
+var ui_screen_t ary_UI_Screen[] = {
+	{
+		FALSE,
+		TRUE,
+		UI_MOTD_Init,
+		UI_MOTD_Show,
+		UI_MOTD_Hide,
+		UI_MOTD_Draw,
+		UI_MOTD_OnMouseClick,
+		UI_MOTD_OnKeyDown
+	},
+	{
+		FALSE,
+		FALSE,
+		UI_BuyMenu_Init,
+		UI_BuyMenu_Show,
+		UI_BuyMenu_Hide,
+		UI_BuyMenu_Draw,
+		UI_BuyMenu_OnMouseClick,
+		UI_BuyMenu_OnKeyDown
+	 }
+	
 };
 
 //var float nextPrintoutTime = -1;
 
 
+// Actually sees if funInit should be called (first time going to that screen),
+// also calls funShow.
+void
+UI_InitCheck(void){
+	if(
+		!ary_UI_Screen[pSeatLocal->m_flUI_Display-1].bInitializedYet &&
+		ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funInit != NULL
+	){
+		ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funInit();
+	}
+	ary_UI_Screen[pSeatLocal->m_flUI_Display-1].bInitializedYet = TRUE;
+	if(
+		ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funShow != NULL
+	){
+		ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funShow();
+	}
+	g_UI_queueInit = FALSE;
+}
+
 void
 UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 {
+	g_UI_queueInit = FALSE;
+	
+	if(
+		pSeatLocal->m_flUI_Display != UI_SCREEN::NONE &&
+		arg_NewScreenID != pSeatLocal->m_flUI_Display
+	){
+		// First, check the existing m_flUI_Display.  If valid, call funHide for it
+		// (does not apply to setting the screen to the same choice)
+		if(
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funHide != NULL
+		){
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funHide();
+		}
+	}
+	
 	pSeatLocal->m_flUI_Display = (float)arg_NewScreenID;
 	
 	printfline("UI_ChangeScreen:: arg_NewScreenID? %d", arg_NewScreenID);
 	
-	if(arg_NewScreenID <= UI_SCREEN::NONE){
+	if(arg_NewScreenID == UI_SCREEN::NONE){
 		// If at NONE or below, also do nothing. This has no "vOnInit" behavior.
 		// Besides obligatory cleanup if we choose (which may as well be done right here)
 		// And turn the cursor lock off.
@@ -52,6 +106,14 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 		// And don't let Nuclide's src/client/entry.qc try to re-lock the mouse!
 		printfline("TURN SCREEN OFF.");
 		gFun_UI_EventGrabber_Hide();
+		
+		// Don't allow the same click to spawn the player, likely not intentional.
+		// Unless we want to deviate from original TS and let buymenu-closing orders
+		// count as spawn requests.
+		// Questionably effective but better than nothing maybe.
+		player pl = (player)pSeat->m_ePlayer;
+		pl.gflags |= GF_SEMI_TOGGLED;
+		pSeatLocal->flBlockSpawnTime = time + 0.20;
 		return;
 	}
 	
@@ -66,30 +128,112 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 	// And let the event grabber be shown so that entry.qc doesn't try to undo the mouse lock.
 	gFun_UI_EventGrabber_Show();
 	
-	printfline("TURN SCREEN ON?? WHy. %d", arg_NewScreenID);
-	if(vguiMenus[arg_NewScreenID - 1].vOnInit != NULL){
-		vguiMenus[arg_NewScreenID - 1].vOnInit();
+	if(video_res[0] == 0){
+		// haven't set the screen resolution vars yet?
+		// STOP: handle this as soon as possible.
+		g_UI_queueInit = TRUE;
+		return;
 	}
-}//changeScreen
+	
+	UI_InitCheck();
+	
+}
 
 
-/*
-=================
-UI_Draw
-
-This is the entry point for FreeTS's (cloned from FreeCS) own "VGUI" implementation
-Run every frame
-=================
-*/
-float
-UI_Draw(player arg_player)
+void
+UI_Init(void)
 {
-	if ( pSeatLocal->m_flUI_Display == UI_SCREEN::NONE ) {
-		setcursormode( FALSE );
-		return FALSE;
+	string sTemp;
+	int iMOTDLength;
+	int i;
+	int s;
+	
+	filestream fmMapDescr;
+	
+	// First load the MESSAGE OF THE DAY from the sever
+	//sMOTD_total = serverkey("motd_total");
+	
+	sMOTD_total = "";
+	
+	iMOTDLength = stof( serverkey( "motdlength" ) );
+	for (i = 0; i < iMOTDLength; i++ ) {
+		sMOTDString[ i ] = serverkey( sprintf( "motdline%i", i ) );
+		
+		if ( sMOTDString[ i ] == "/" ) {
+			sMOTD_total = strcat(sMOTD_total, "\n" );
+		}else{
+			sMOTD_total = strcat(sMOTD_total, sprintf("%s\n", sMOTDString[ i ]) );
+		}
 	}
-	//int geh = vguiMenus.length;
-	//vTextPos[1] += 14;
+	// color it
+	// NOPE!  Let this be handled elsewhere in case of a different color choice!
+	//sMOTD_total = strcat("^xFA0", sMOTD_total);
+	
+	
+	// Now load the MAP DESCRIPTION
+	// TAGGG
+	// Do we have any use for this though?  Check original TS, the "Select Team"
+	// screen does (press enter to close or after closing the MoTD, probably)
+	
+	sMapString_total = "";
+	
+	//printfline("MAPNAME READS: %s", mapname);
+	// TODO!  If the mapname ends in .bsp, remove that portion, that causes
+	// the appended ".txt" to work wrongly, "mymap.bsp.txt" instead of "mymap.txt"
+	
+	fmMapDescr = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ );
+	if ( fmMapDescr != -1 ) {
+		for (i = 0; i < 35; i++ ) {
+			sTemp = fgets( fmMapDescr );
+			if not ( sTemp ) {
+				break;
+			}
+			sMapString[ i ] = sTemp;
+			
+			/*
+			if (sMapString[ i ] == "/" ) {
+				sMapString_total = strcat(sMOTD_total, "\n" );
+			}else{
+				sMapString_total = strcat(sMapString_total, sprintf("%s\n", sMapString[ i ]) );
+			}
+			*/
+			sMapString_total = strcat(sMapString_total, sprintf("%s\n", sMapString[ i ]) );
+
+		}
+		fclose( fmMapDescr );
+	}
+	
+	//printfline("MAP DESCRIPTOR?");
+	//printfline("%s", sMapString_total);
+	
+	
+	gFun_UI_EventGrabber_Initialize();
+	
+	////////////////////////////////////////////////////
+	// FOR NOW, a lazy way of init for all seats.
+	// Apply to all seats, not worrying about what numclientseats is because this is tiny.
+	if (serverkeyfloat("slots") != 1) {
+		// We start on the MOTD, always
+		for (s = 0; s < g_seats.length; s++){
+			pSeat = &g_seats[s];
+			pSeatLocal = &g_seatslocal[s];
+			UI_ChangeScreen(UI_SCREEN::MOTD);
+		}
+	}else{
+		// make all pSeats start at the NONE screen instead
+		for (s = 0; s < g_seats.length; s++){
+			pSeat = &g_seats[s];
+			pSeatLocal = &g_seatslocal[s];
+			UI_ChangeScreen(UI_SCREEN::NONE);
+		}
+	}
+}
+
+
+
+// big ugly method
+void
+UI_determineDrawGlobals(void){
 	
 	float fontSizeMulti;
 	
@@ -115,7 +259,7 @@ UI_Draw(player arg_player)
 		fontSizeMulti = 0.1429 + 0.001 * 1.0 * video_res[1];
 		
 		
-	}//END OF screen height check
+	}// screen height check
 	
 	//
 	if(FONT_ARIAL == -1 || g_videoResPrev != video_res){
@@ -135,6 +279,21 @@ UI_Draw(player arg_player)
 		FONT_ARIAL = loadfont( "game", "arial", str_font_arial_size, -1 );
 		FONT_ARIAL_TITLE = loadfont( "game", "arial", str_font_arial_title_size, -1 );
 		
+		
+		// NEW!!!
+		// TODO - use Font_Load to properly fill these fields from some kind of
+		// font script file most likely, see examples in other codebaes.
+		//Font_Load("folder/some_file.ext", &FONT_ARIAL_TITLE_TEST);
+		
+		// This works, but not completely.  Want some things to have differnet fonts,
+		// like the _title and normal variants of FONT_ARIAL above.
+		/*
+		Font_Load_Easy("arial", (int)font_arial_title_size, FONT_ARIAL_TITLE_EX);
+		g_fntDefault = FONT_ARIAL_TITLE_EX;
+		*/
+		
+		
+		
 		//print( sprintf("CHANGE height:%i fontm:%.2f fontref:%i match:(%i, %i) totalmatch:%i\n", (int)video_res[1], fontSizeMulti, (int)FONT_ARIAL, (int)(g_videoResPrev[0]==video_res[0]), (int)(g_videoResPrev[1]==video_res[1]), (int)(g_videoResPrev==video_res))  );
 	}
 	
@@ -146,106 +305,126 @@ UI_Draw(player arg_player)
 	}
 	*/
 	
-	vVGUIColor = autocvar_vgui_color * ( 1 / 255 );
+	// Oh, there is a Nuclide-provided CVar called 'vgui_color'.
+	// Keep this as it is?
+	g_UI_Color = autocvar_vgui_color * ( 1 / 255 );
 	
 	// Align the window to the center
-	vVGUIWindowPos = video_mins;
-	//vVGUIWindowPos[0] += ( video_res[0] / 2 ) - 320;
-	//vVGUIWindowPos[1] += ( video_res[1] / 2 ) - 240;
-	vVGUIWindowPos[0] += window_pad_x;
-	vVGUIWindowPos[1] += window_pad_y;
+	g_UI_WindowPos = video_mins;
+	g_UI_WindowPos[0] += window_pad_x;
+	g_UI_WindowPos[1] += window_pad_y;
 	
+	g_UI_WindowSize[0] = window_width_x;
+	g_UI_WindowSize[1] = window_height_y;
 	
-	vVGUIWindowSiz[0] = window_width_x;
-	vVGUIWindowSiz[1] = window_height_y;
-	
-	// draw the window only if this screen says to.
-	if(vguiMenus[ pSeatLocal->m_flUI_Display - 1 ].fDrawMainWindowAuto){
-		VGUI_Window( vVGUIWindowPos, vVGUIWindowSiz, vguiMenus[ pSeatLocal->m_flUI_Display - 1 ].sTitle, [fontSizeMulti*32,fontSizeMulti*32] );
+	g_fontSizeMulti = fontSizeMulti;
+}
+
+
+
+void
+UI_Draw(void)
+{
+	if ( pSeatLocal->m_flUI_Display == UI_SCREEN::NONE ) {
+		setcursormode( FALSE );
+		return FALSE;
 	}
 	
+	if(g_UI_queueInit){
+		// do it then!
+		UI_InitCheck();
+	}
+	
+	if(!ary_UI_Screen[pSeatLocal->m_flUI_Display-1].bInitializedYet){
+		// no drawing uninitialized UI.  Is this even possible?
+		return FALSE;
+	}
+	
+	UI_determineDrawGlobals();
+	//printfline("UI SIZE B! %.1f %.1f", g_UI_WindowSize[0], g_UI_WindowSize[1]);
+
+#ifndef MOTD_NEW_VGUI
+	// draw the window only if this screen says to.
+	if(ary_UI_Screen[pSeatLocal->m_flUI_Display-1].fDrawMainWindowAuto){
+		VGUI_Window( g_UI_WindowPos, g_UI_WindowSize, [g_fontSizeMulti*32,g_fontSizeMulti*32] );
+	}
+#endif
+	
+	
 	// Display the contents of whatever we have selected
-	vguiMenus[ pSeatLocal->m_flUI_Display - 1 ].vDraw( arg_player, vVGUIWindowPos, vVGUIWindowSiz, fontSizeMulti );
+	ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funDraw();
 
 	return TRUE;
 }
 
-/*
-=================
-UI_Init
 
-Initialize all there is
-=================
-*/
-// NOTE!  Not a built-in method, manually called by client init (ClientGame_Init).
-// ALSO - this means once for the entire client, so handle all pSeat choices
-// individually as it does.
 void
-UI_Init(void)
+UI_MouseClick(void)
 {
-	string sTemp;
-	int iMOTDLength;
-	int i;
-	int s;
+	if(pSeatLocal->m_flUI_Display != UI_SCREEN::NONE){
+		if(
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].bInitializedYet &&
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funOnMouseClick != NULL
+		){
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funOnMouseClick();
+		}
+	}
+}
 	
-	filestream fmMapDescr;
-	
-	// only the first screen choice will use its 'sTitle'
-	vguiMenus[0].sTitle = sprintf("%s - %s", "Free Specialists", serverkey("hostname"));
-	
-	// First load the MESSAGE OF THE DAY
-	// TODO: Move this to the server and put strings into infokeys
+void
+UI_KeyDown(void)
+{
+	if(pSeatLocal->m_flUI_Display != UI_SCREEN::NONE){
+		if(
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].bInitializedYet &&
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funOnKeyDown != NULL)
+		{
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funOnKeyDown();
+		}
+	}
+}
 
-	//sMOTD_total = serverkey("motd_total");
+
+
+/*
+====================
+UI_CheckMouse
+
+Returns whether or not our mouse cursor hovers over a region
+====================
+*/
+BOOL
+UI_CheckMouse(vector vPos, vector vReg)
+{
+	vector vSMins, vSMaxs;
 	
-	sMOTD_total = "";
-	
-	iMOTDLength = stof( serverkey( "motdlength" ) );
-	for (i = 0; i < iMOTDLength; i++ ) {
-		sMOTDString[ i ] = serverkey( sprintf( "motdline%i", i ) );
-		
-		if ( sMOTDString[ i ] == "/" ) {
-			sMOTD_total = strcat(sMOTD_total, "\n" );
-		}else{
-			sMOTD_total = strcat(sMOTD_total, sprintf("%s\n", sMOTDString[ i ]) );
+	vSMins = vPos;
+	vSMaxs = vPos;
+	vSMins[0] = vPos[0];
+	vSMaxs[1] = vPos[1] - 1;
+
+	vSMaxs[0] = vPos[0] + vReg[0];
+	vSMaxs[1] = vPos[1] + vReg[1];
+
+	if ( mouse_pos[0] >= vSMins[0] && mouse_pos[0] <= vSMaxs[0] ) {
+		if (mouse_pos[1] >= vSMins[1] && mouse_pos[1] <= vSMaxs[1] ) {
+			return TRUE;
 		}
 	}
-	
-	// color it
-	// NOPE!  Let this be handled elsewhere in case of a different VGUI color!
-	//sMOTD_total = strcat("^xFA0", sMOTD_total);
-	
-	// Now load the MAP DESCRIPTION
-	fmMapDescr = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ );
-	if ( fmMapDescr != -1 ) {
-		for (i = 0; i < 35; i++ ) {
-			sTemp = fgets( fmMapDescr );
-			if not ( sTemp ) {
-				break;
-			} 
-			sMapString[ i ] = sTemp;
-		}
-		fclose( fmMapDescr );
-	}
-	
-	gFun_UI_EventGrabber_Initialize();
-	
-	////////////////////////////////////////////////////
-	// FOR NOW, a lazy way of init for all seats.
-	// Apply to all seats, not worrying about what numclientseats is because this is tiny.
-	if (serverkeyfloat("slots") != 1) {
-		// We start on the MOTD, always
-		for (s = 0; s < g_seats.length; s++){
-			pSeat = &g_seats[s];
-			pSeatLocal = &g_seatslocal[s];
-			UI_ChangeScreen(UI_SCREEN::MOTD);
-		}
-	}else{
-		// make all pSeats start at the NONE screen instead
-		for (s = 0; s < g_seats.length; s++){
-			pSeat = &g_seats[s];
-			pSeatLocal = &g_seatslocal[s];
-			UI_ChangeScreen(UI_SCREEN::NONE);
-		}
-	}
+
+	return FALSE;
+}
+
+
+
+// convenience method for now.  Based off of Nuclide's src/vgui Font_Load method,
+// uses its font_s type
+void
+Font_Load_Easy(string strFontPath, int iFontScale, font_s &fntNew)
+{
+	fntNew.iScale = iFontScale;
+	fntNew.vecColor = [1,1,1];
+	fntNew.flAlpha = 1.0f;
+	fntNew.iFlags = 0;
+	fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScale), -1, 0, 0);
 }

@@ -32,18 +32,34 @@ void processInputs(void);
 void
 Game_Input(void)
 {
-	// We can trust "self" here, right?
-	// If not, grab pSeat->m_ePlayer instead!
 	player pl = (player)self;
 	
 	if(pl.iState != PLAYER_STATE::SPAWNED){
 		// not ingame (fake spectator)?  Do another check instead: spawning.
 #ifdef CLIENT
-		if((input_buttons & INPUT_BUTTON0) && !(pl.gflags & GF_SEMI_TOGGLED) ){
-			if(pSeatLocal->m_flUI_Display == UI_SCREEN::NONE && pl.iState != PLAYER_STATE::SPAWNED){				
-				sendevent( "GamePlayerSpawn", "");
-			}
+
+		
+		if(
+			pSeatLocal->m_flUI_Display == UI_SCREEN::NONE &&
+			(input_buttons & INPUT_BUTTON0) &&
+			!(pl.gflags & GF_SEMI_TOGGLED) &&
+			pSeatLocal->flBlockSpawnTime <= time
+		){
+			sendevent( "GamePlayerSpawn", "");
 		}
+		
+		/*
+		if(
+			((input_buttons & INPUT_BUTTON0) && pSeatLocal->flBlockSpawnTime > time) ||
+		    pSeat->m_flInputBlockTime > time
+		)
+		{
+			pSeatLocal->flBlockSpawnTime = time + 0.20f;
+			pl.gflags |= GF_SEMI_TOGGLED;
+			return;
+		}
+		*/
+		
 		// since the rest of this method is about to be skipped.
 		if(input_buttons & INPUT_BUTTON0){
 			pl.gflags |= GF_SEMI_TOGGLED;
@@ -185,6 +201,7 @@ Game_Input(void)
 	// An override for this to go in CSQC_Input_Frame would be very nice I think,
 	// unless there is some other way that I'm missing.
 	/*
+	#ifdef CSQC
 	if (pSeatLocal->m_iInputSpeed == TRUE) {
 		//input_buttons |= INPUT_BUTTON9;
 		input_buttons |= INPUT_BUTTON7;
@@ -192,8 +209,9 @@ Game_Input(void)
 	}else{
 		//self.flags &= ~FL_SNEAK;
 	}
+	#endif
+	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
 	*/
-
 
 	// TS way, weapon thinks happen alongside checking inputs
 	pl.callWeaponThink();

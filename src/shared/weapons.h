@@ -408,15 +408,6 @@ typedef struct{
 } ironsightdata_t;
 
 
-
-// TODO - PENDING!  Remove vOnPrimaryAttack and vOnSecondaryAttack here and from all weapons,
-// Nudlie's Primary/Secondary fire calls work in place of those.
-// funOnPrimaryAttackRelease and funOnSecondaryAttackRelease are still useless it turns out,
-// but they can just lose the "hasAmmo" parameters at least.
-// ALSO: vOnEquip, vOnUnEquip, vOnDrawHUD, and vOnReload will be removed, Nuclide calls mean these are
-// no longer used.
-// AND: remove BOOL return types from the remaining methods, those will never be used.
-
 // This struct only contains the bare minimum variables a class needs. Any other behavior should be
 // handled by the custom methods.
 // But note that weapondata_melee_t is identical for adding absolutely nothing.

@@ -10,8 +10,6 @@ drawWeaponOptionBar(
 	drawfill( arg_vDrawOrigin, [128, 19], clrPaleBlue, arg_opac - 0.55f );
 	Gfx_Text( [arg_vDrawOrigin.x + 2, arg_vDrawOrigin.y + 4], arg_sOptionName, vButtonFontSize, clrPaleBlue, 0.90f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	
-	//arg_vDrawOrigin.y -= 20;
-	//will not work.
 	vector tempVec = [arg_vDrawOrigin.x + 112, arg_vDrawOrigin.y + 1];
 	
 	if(arg_fBrightLight){
@@ -247,8 +245,8 @@ drawPlayerInventory(BOOL arg_fBuyMode)
 			drawPlayerInventory_place(akimboRef.iInventorySlot-1, ary_slotRowYet[akimboRef.iInventorySlot-1], akimboRef.sIconFilePath, sWeaponDisplayName, arg_fBuyMode, ammoCount, hasAnyAmmo, bitsUpgradeOpts );
 			ary_slotRowYet[akimboRef.iInventorySlot-1]++;  //ditto for the akimbo slot.
 		}
-	}//END OF for all ary_myWeapons (within softMax)
-}//END OF drawPlayerInveotry_buy
+	}// for all ary_myWeapons (within softMax)
+}// drawPlayerInveotry_buy
 
 
 // "hasAnyAmmo" is, whether this weapon has any ammo in the clip or the ammo pool.

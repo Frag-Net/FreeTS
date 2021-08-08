@@ -104,7 +104,7 @@ ClientGame_ConsoleCommand(void)
 		
 		break;
 	case "chooseteam":
-		//VGUI_ChooseTeam();
+		
 		break;
 	
 	//TAGGG - CRITICAL

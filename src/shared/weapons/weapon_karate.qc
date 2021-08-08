@@ -372,7 +372,7 @@ w_karate_hud(void)
 	
 	//draw the stamina bar
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	// oh no.  not minus 0, it is my weakness.	.......... ???????????????????
+	
 	//drawfill( vEquippedWeaponInfoDraw + [0,0], [(128-0) * pl.fKarateStamina, 19-2], clrPaleBlue, 0.86f - 0.55f );
 	drawfill( vEquippedWeaponInfoDraw + [0,0], [(128) * pl.fKarateStamina, 19-2], clrPaleBlue, 0.86f - 0.45f );
 	vEquippedWeaponInfoDraw.y -= 20;
