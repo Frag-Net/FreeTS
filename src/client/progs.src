@@ -14,6 +14,7 @@
 
 // NEW.  When present, the origin is exactly at the center of the player, no further offsets.
 // Keeps the view identical on the player dying and becoming spectator in place.
+// Requires some hack-ins to Nuclide in order to work, but hey, it is a debug feature
 //#define DEBUG_FORCE_NO_VIEW_OFFSET
 
 

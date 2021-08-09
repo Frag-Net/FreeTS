@@ -152,7 +152,7 @@ var int rightCount = 0;
 // Akimbo weapons consistently.
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
-BOOLEAN weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
 	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	//special case
@@ -168,13 +168,10 @@ BOOLEAN weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon
 	// because I am not copy/pasting this monstrosity 5 times.
 	finalAkimboChoice = weapon_akimbo_semiAttackChoice(pl, ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO], arg_thisWeapon, attackTypeUsed);
 	
-#ifdef CLIENT
-	SAVE_STATE(pl.nextAkimboAttackPreference);
-#endif
 	
 	if(finalAkimboChoice == -1){
 		//pl.akimboFirePrev = 0;
-		return FALSE;
+		return;
 	}
 	
 	
@@ -191,16 +188,14 @@ BOOLEAN weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon
 		if((finalAkimboChoice & BITS_AKIMBOCHOICE_RIGHT)){
 			PLAY_CLICK_SOUND_RIGHT
 		}
-		return FALSE;
+		return;
 	}
-	
 	
 	// ??  Is this even possible?
 	if(finalAkimboChoice == 0){
 		//pl.akimboFirePrev = 0;
-		return FALSE;
+		return;
 	}
-	
 	
 	// DEBUG!!!
 	if((finalAkimboChoice & BITS_AKIMBOCHOICE_LEFT)){
@@ -315,65 +310,20 @@ BOOLEAN weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);
 	}
 	
-	return TRUE;
-}//END OF weapon_socommk23_akimbo_attack
+}// weapon_socommk23_akimbo_attack
 
 
 void
 w_socommk23_akimbo_primary(void)
 {
-	player pl = (player)self;
-	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	
-	// reset
-	pl.akimboTest = 0;
-	
-	// in addition to the primary input, which lead to '_primary' being called at all.
-	if(input_buttons & INPUT_BUTTON3){
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH, &weapon_socommk23_akimbo_attack)){
-			// nothing unusual here.
-			pl.akimboTest = 0;
-			weapon_socommk23_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
-		}else{
-		}
-	}else{
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT, &weapon_socommk23_akimbo_attack)){
-			weapon_socommk23_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
-			pl.akimboFirePrev = BITS_AKIMBOCHOICE_LEFT;
-		}
-		
-	}
-	
+	weapon_gun_akimbo_semi_primaryAttack(weapon_socommk23_akimbo_attack);
 }
 
 
 void
 w_socommk23_akimbo_secondary(void)
 {
-	player pl = (player)self;
-	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	
-	// reset
-	pl.akimboTest = 0;
-	
-	// NOTE - holding primary is impossible, would've called _primary above if so.
-	// Only secondary could possibly be held (and, is).
-	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
-		// since secondary fire does nothing in semi-auto, we let it do ironsight stuff here
-		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO], arg_thisWeapon);
-		
-	}else{
-		// fires the right weapon always
-		
-		//weapon_socommk23_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
-		//return;
-		
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, &weapon_socommk23_akimbo_attack)){
-			weapon_socommk23_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
-			pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
-		}
-	}
-	
+	weapon_ironsight_akimbo_semi_secondaryAttack(weapon_socommk23_akimbo_attack, WEAPON_ID::SOCOMMK23_AKIMBO);
 }
 
 

@@ -131,7 +131,7 @@ w_akimbocolts_holster(void)
 // Akimbo weapons consistently.
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
-BOOLEAN weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+void weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
 	float randomChoice;
 	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
@@ -148,15 +148,10 @@ BOOLEAN weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeap
 	// because I am not copy/pasting this monstrosity 5 times.
 	finalAkimboChoice = weapon_akimbo_semiAttackChoice(pl, ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon, attackTypeUsed);
 	
-#ifdef CLIENT
-	SAVE_STATE(pl.nextAkimboAttackPreference);
-#endif
-	
 	if(finalAkimboChoice == -1){
 		//pl.akimboFirePrev = 0;
-		return FALSE;
+		return;
 	}
-	
 	
 	if(pl.recentAttackHadAmmo == FALSE){
 		if((finalAkimboChoice & BITS_AKIMBOCHOICE_LEFT)){
@@ -165,14 +160,14 @@ BOOLEAN weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeap
 		if((finalAkimboChoice & BITS_AKIMBOCHOICE_RIGHT)){
 			PLAY_CLICK_SOUND_RIGHT
 		}
-		return FALSE;
+		return;
 	}
 	
 	
 	// ??  Is this even possible?
 	if(finalAkimboChoice == 0){
 		//pl.akimboFirePrev = 0;
-		return FALSE;
+		return;
 	}
 	
 	// Use me for things the recent firing round already did to avoid redundancy.
@@ -185,16 +180,12 @@ BOOLEAN weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeap
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon, effectiveAkimboChoice);
 	
-#if 0
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_LEFT){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/gold/gold-fire.wav");
+		SoundPitched_Send(pl, SNDP_AKIMBOCOLTS_FIRE);
 	}
 	if(effectiveAkimboChoice & BITS_AKIMBOCHOICE_RIGHT){
-		TS_Weapons_PlaySoundDirect(pl, "weapons/gold/gold-fire.wav");
+		SoundPitched_Send(pl, SNDP_AKIMBOCOLTS_FIRE);
 	}
-#else
-	SoundPitched_Send(pl, SNDP_AKIMBOCOLTS_FIRE);
-#endif
 	
 	
 	if(pl.akimboTest == 0 && !(finalAkimboChoice == BITS_AKIMBOCHOICE_BOTH)){
@@ -262,62 +253,20 @@ BOOLEAN weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeap
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);
 	}
 	
-	return TRUE;
-}//END OF weapon_akimbocolts_akimbo_attack
+}// weapon_akimbocolts_akimbo_attack
 
 
 void
 w_akimbocolts_primary(void)
 {
-	player pl = (player)self;
-	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	
-	// reset
-	pl.akimboTest = 0;
-	
-	// in addition to the primary input, which lead to '_primary' being called at all.
-	if(input_buttons & INPUT_BUTTON3){
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH, &weapon_akimbocolts_akimbo_attack)){
-			// nothing unusual here.
-			pl.akimboTest = 0;
-			weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
-		}else{
-		}
-	}else{
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT, &weapon_akimbocolts_akimbo_attack)){
-			weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
-			pl.akimboFirePrev = BITS_AKIMBOCHOICE_LEFT;
-		}
-		
-	}
-	
+	weapon_gun_akimbo_semi_primaryAttack(weapon_akimbocolts_akimbo_attack);
 }
 
 
 void
 w_akimbocolts_secondary(void)
 {
-	player pl = (player)self;
-	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	
-	// reset
-	pl.akimboTest = 0;
-	
-	// NOTE - holding primary is impossible, would've called _primary above if so.
-	// Only secondary could possibly be held (and, is).
-	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
-		// no ironsights, nothing to do here.
-	}else{
-		// fires the right weapon always
-		
-		//weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
-		//return;
-		
-		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, &weapon_akimbocolts_akimbo_attack)){
-			weapon_akimbocolts_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
-			pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
-		}
-	}
+	weapon_gun_akimbo_semi_secondaryAttack(weapon_akimbocolts_akimbo_attack);
 	
 }
 

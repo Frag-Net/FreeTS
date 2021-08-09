@@ -99,7 +99,7 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 	printfline("UI_ChangeScreen:: arg_NewScreenID? %d", arg_NewScreenID);
 	
 	if(arg_NewScreenID == UI_SCREEN::NONE){
-		// If at NONE or below, also do nothing. This has no "vOnInit" behavior.
+		// If at NONE or below, also do nothing. This has no "funInit" behavior.
 		// Besides obligatory cleanup if we choose (which may as well be done right here)
 		// And turn the cursor lock off.
 		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
@@ -117,7 +117,7 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 		return;
 	}
 	
-	// If this screen has a vOnInit, do it!
+	// If this screen has a funInit, do it!
 	// This is done for the new screen once as soon as it becomes the active one.
 	// Also, turn the cursor lock on, clearly this needs user input.
 	// src/client/entry.qc already has this check too for having any UI widget, but 
@@ -327,7 +327,7 @@ UI_Draw(void)
 {
 	if ( pSeatLocal->m_flUI_Display == UI_SCREEN::NONE ) {
 		setcursormode( FALSE );
-		return FALSE;
+		return;
 	}
 	
 	if(g_UI_queueInit){
@@ -337,7 +337,7 @@ UI_Draw(void)
 	
 	if(!ary_UI_Screen[pSeatLocal->m_flUI_Display-1].bInitializedYet){
 		// no drawing uninitialized UI.  Is this even possible?
-		return FALSE;
+		return;
 	}
 	
 	UI_determineDrawGlobals();
@@ -354,7 +354,7 @@ UI_Draw(void)
 	// Display the contents of whatever we have selected
 	ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funDraw();
 
-	return TRUE;
+	return;
 }
 
 

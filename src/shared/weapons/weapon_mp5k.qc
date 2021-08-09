@@ -151,6 +151,15 @@ w_mp5k_primary(void)
 		INPUT_PRIMARY_TAP_GATE
 	}
 	
+	if(
+		pl.aryNextBurstShotTime_listenIndex != -1 &&
+		arg_thisWeapon.iFireMode != BITS_FIREMODE_NONE
+	){
+		// the player is trying to manually fire while burst-fire is in the middle
+		// of sending shots?  STOP
+		return;
+	}
+	
 	if (!arg_thisWeapon.iClipLeft || WEAPON_UNDERWATER_CHECK) {
 		PLAY_CLICK_SOUND
 		return;
@@ -185,7 +194,7 @@ w_mp5k_primary(void)
 	
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_BURST)
 	{
-		weapon_base_burstFire(pl, ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.02);
+		weapon_gun_burstFire(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.02, 0.18);
 	}
 	else if(arg_thisWeapon.iFireMode == BITS_FIREMODE_SEMI || arg_thisWeapon.iFireMode == BITS_FIREMODE_FULL)
 	{

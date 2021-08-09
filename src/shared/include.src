@@ -1,4 +1,18 @@
- #includelist
+
+
+
+// If enabled, pressing left and right fire within a small amount of time
+// (more forgiving than the default "same-frame only" timing) lets firing
+// immediately change into the akimbo dual-fire animation.
+// Should not cause any more than the net number of bullets expected for
+// firing both weapons.  That is, left-fire, 80 milliseconds, right-fire will
+// mean the left-play anim plays (fired once), then the dual-fire anim plays,
+// but it should remember that the left weapon already fired, and so only fire
+// the right weapon on the tolerance-allowed dual-fire anim.  2 bullet holes,
+// not 3.
+//#define AKIMBO_SEMI_DUAL_TOLERANCE
+
+#includelist
 
 
 //TAGGG - NEW

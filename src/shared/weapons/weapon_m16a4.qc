@@ -150,12 +150,21 @@ w_m16a4_primary(void)
 		INPUT_PRIMARY_TAP_GATE
 	}
 	
+	if(
+		pl.aryNextBurstShotTime_listenIndex != -1 &&
+		arg_thisWeapon.iFireMode != BITS_FIREMODE_NONE
+	){
+		// the player is trying to manually fire while burst-fire is in the middle
+		// of sending shots?  STOP
+		return;
+	}
+	
 	if (!arg_thisWeapon.iClipLeft || WEAPON_UNDERWATER_CHECK) {
 		PLAY_CLICK_SOUND
 		return;
 	}
 
-		SoundPitched_Send(pl, SNDP_M16A4_FIRE);
+	SoundPitched_Send(pl, SNDP_M16A4_FIRE);
 
 	if(!arg_thisWeapon.iIronSight){
 		randomChoice = random();
@@ -190,17 +199,7 @@ w_m16a4_primary(void)
 	
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_BURST)
 	{
-		/*
-#ifdef SERVER
-		weapon_base_burstFire(pl, ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.11);
-		// signal for server logic... for now.
-		return FALSE;
-#else
-		weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
-#endif
-		*/
-		
-		weapon_base_burstFire(pl, ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.02);
+		weapon_gun_burstFire(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.02, 0.18);
 	}
 	else if(arg_thisWeapon.iFireMode == BITS_FIREMODE_SEMI)
 	{

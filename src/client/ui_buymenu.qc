@@ -15,18 +15,18 @@
 
 
 
-#define INITIALIZE_BASICBUTTON(arg_varName, arg_sName, arg_sHotkeyDisplay, arg_clr, arg_vOnClick_Custom) buymenu_btn_##arg_varName = spawn(CBuyMenu_BasicButton);\
+#define INITIALIZE_BASICBUTTON(arg_varName, arg_sName, arg_sHotkeyDisplay, arg_clr, arg_funOnClick_Custom) buymenu_btn_##arg_varName = spawn(CBuyMenu_BasicButton);\
 	flDeterminedHotkey = determineHotkeyFromChar(arg_sHotkeyDisplay);\
 	buymenu_btn_##arg_varName.setThisPointer(&buymenu_btn_##arg_varName);\
-	buymenu_btn_##arg_varName.create(sprintf("%s %s", arg_sHotkeyDisplay, arg_sName), flDeterminedHotkey, arg_clr, arg_vOnClick_Custom);\
+	buymenu_btn_##arg_varName.create(sprintf("%s %s", arg_sHotkeyDisplay, arg_sName), flDeterminedHotkey, arg_clr, arg_funOnClick_Custom);\
 	buymenu_addbuttonToTotal(&buymenu_btn_##arg_varName);
 
 
-#define INITIALIZE_WEAPONBUTTON(arg_varName, arg_sHotkeyDisplay, arg_clr, arg_vOnClick_Custom, arg_parentName) buymenu_btn_Buy_##arg_varName = spawn(CBuyMenu_WeaponButton);\
+#define INITIALIZE_WEAPONBUTTON(arg_varName, arg_sHotkeyDisplay, arg_clr, arg_parentName) buymenu_btn_Buy_##arg_varName = spawn(CBuyMenu_WeaponButton);\
 	flDeterminedHotkey = determineHotkeyFromChar(arg_sHotkeyDisplay);\
 	buymenu_btn_Buy_##arg_varName.setThisPointer(&buymenu_btn_Buy_##arg_varName);\
 	tempWeapRef = *ary_weaponData[WEAPON_ID::##arg_varName];\
-	buymenu_btn_Buy_##arg_varName.create_WeaponButton(sprintf("%s %s", arg_sHotkeyDisplay, tempWeapRef.sDisplayName), flDeterminedHotkey, arg_clr, arg_vOnClick_Custom, tempWeapRef.sIconFilePath, tempWeapRef.iPrice, tempWeapRef.iSlots, tempWeapRef.iBitsUpgrade & ~tempWeapRef.iBitsUpgradeAuto);\
+	buymenu_btn_Buy_##arg_varName.create_WeaponButton(sprintf("%s %s", arg_sHotkeyDisplay, tempWeapRef.sDisplayName), flDeterminedHotkey, arg_clr, NULL, tempWeapRef.sIconFilePath, tempWeapRef.iPrice, tempWeapRef.iSlots, tempWeapRef.iBitsUpgrade & ~tempWeapRef.iBitsUpgradeAuto);\
 	buymenu_addbuttonToTotal(&buymenu_btn_Buy_##arg_varName);\
 	buymenu_btn_Buy_##arg_varName.iWeaponPurchaseID = WEAPON_ID::##arg_varName;\
 	buymenu_addbutton(&buymenu_btn_Buy_##arg_parentName, &buymenu_btn_Buy_##arg_varName);
@@ -201,22 +201,22 @@ class CBuyMenu_BasicButton{
 	// Special behavior for this button (optional).  Good for buttons that will interact
 	// with something in the game like adding a weapon or adding an accessory (Silencer) to an existing one.
 	
-	//virtual void(CBuyMenu_BasicButton* arg_this) vOnClick_Custom = NULL;
-	int* vOnClick_Custom;
-	//virtual void(CBuyMenu_BasicButton* arg_this) vOnShow_Custom = NULL;
-	int* vOnShow_Custom;
+	virtual void(CBuyMenu_BasicButton* arg_this) funOnClick_Custom = NULL;
+	//int* funOnClick_Custom;
+	virtual void(CBuyMenu_BasicButton* arg_this) funOnShow_Custom = NULL;
+	//int* funOnShow_Custom;
 	
 	void(void) CBuyMenu_BasicButton;
 	
 	virtual void(CBuyMenu_BasicButton* arg_this) setThisPointer;
 	
-	virtual void(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuyMenu_BasicButton* arg_this)* arg_vOnClick_Custom ) create;
+	virtual void(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuyMenu_BasicButton* arg_this) arg_funOnClick_Custom ) create;
 	
-	virtual void(vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow, BOOL arg_fIsSelected) vOnRender_Base;
-	virtual void(void) vOnClick_Base;
+	virtual void(vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow, BOOL arg_fIsSelected) funOnRender_Base;
+	virtual void(void) funOnClick_Base;
 	
 	
-	virtual void(void) vOnShow_Base;
+	virtual void(void) funOnShow_Base;
 	
 	// This is set separately from any "create" methods or constructors since it is rarely used.
 	// If set, this method will run anytime this button is shown. This lets it do a quick calculation
@@ -243,14 +243,13 @@ class CBuyMenu_WeaponButton : CBuyMenu_BasicButton{
 	void(void) CBuyMenu_WeaponButton;
 	
 	// after arg_clr: int arg_ary_btn_index[16]
-	virtual void(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuyMenu_BasicButton* arg_this)* arg_vOnClick_Custom, string arg_sWeaponImagePath, int arg_iWeaponPrice, int arg_iWeaponSlots, int arg_iBitsWeaponOpt ) create_WeaponButton;
+	virtual void(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuyMenu_BasicButton* arg_this) arg_funOnClick_Custom, string arg_sWeaponImagePath, int arg_iWeaponPrice, int arg_iWeaponSlots, int arg_iBitsWeaponOpt ) create_WeaponButton;
 	
-	virtual void(vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow, BOOL arg_fIsSelected) vOnRender_Base;
-	virtual void(void) vOnClick_Base;
+	virtual void(vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow, BOOL arg_fIsSelected) funOnRender_Base;
+	virtual void(void) funOnClick_Base;
 	
 	
-	virtual void(void) vOnShow_Base;
-	//virtual void(CBuyMenu_BasicButton* arg_this) vOnShow_Custom = NULL;
+	virtual void(void) funOnShow_Base;
 	
 };
 
@@ -282,11 +281,11 @@ checkBuyMenuButtonClicked(
 {
 	CBuyMenu_BasicButton deref = *arg_someBtn;
 	
-	if(UI_CheckMouse( vPosition, vSize )){
+	if(UI_CheckMouse(vPosition, vSize)){
 		// What button is being hovered over?
 		iHoveredButtonIndex = deref.iGlobalIndex;
 
-		(*arg_someBtn).vOnClick_Base();
+		(*arg_someBtn).funOnClick_Base();
 		
 		pSeatLocal->m_inputMouseClicked = FALSE;
 		return TRUE;
@@ -305,7 +304,7 @@ checkBuyMenuButtonHotKeyPressed(
 	
 	// Check for the button's hotkey.
 	if(deref.flHotkey != -1 && pSeatLocal->m_inputKeyDown == deref.flHotkey){
-		(*arg_someBtn).vOnClick_Base();
+		(*arg_someBtn).funOnClick_Base();
 		pSeatLocal->m_inputKeyDown = 0;
 		return TRUE;
 	}
@@ -550,8 +549,8 @@ CBuyMenu_BasicButton::CBuyMenu_BasicButton(void)
 {
 	iType = BUTTON_TYPEID_BASIC;
 	bActive = TRUE;
-	vOnClick_Custom = NULL;
-	vOnShow_Custom = NULL;
+	funOnClick_Custom = NULL;
+	funOnShow_Custom = NULL;
 }
 void
 CBuyMenu_BasicButton::setThisPointer(CBuyMenu_BasicButton* arg_this)
@@ -559,46 +558,48 @@ CBuyMenu_BasicButton::setThisPointer(CBuyMenu_BasicButton* arg_this)
 	_this = arg_this;
 }
 void
-CBuyMenu_BasicButton::create(string arg_sName, float arg_flHotkey, vector arg_clr, void(CBuyMenu_BasicButton* arg_this)* arg_vOnClick_Custom )
-{
+CBuyMenu_BasicButton::create(
+	string arg_sName, float arg_flHotkey, vector arg_clr,
+	void(CBuyMenu_BasicButton* arg_this) arg_funOnClick_Custom
+){
 	sName = arg_sName;
 	
 	flHotkey = arg_flHotkey;
 	clr = arg_clr;
 	clr_render = arg_clr; //good default.
 	
-	vOnClick_Custom = arg_vOnClick_Custom; //(int*)&arg_vOnClick_Custom;
-	vOnShow_Custom = NULL;
+	funOnClick_Custom = arg_funOnClick_Custom; //(int*)&arg_funOnClick_Custom;
+	funOnShow_Custom = NULL;
 }//create
 
 
 void
-CBuyMenu_BasicButton::vOnRender_Base
+CBuyMenu_BasicButton::funOnRender_Base
 (
 	vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow, BOOL arg_fIsSelected
 )
 {
 	drawBuyButton(this.iGlobalIndex, this.sName, arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected, this.clr_render);
-}//vOnRender_Base
+}//funOnRender_Base
 
 
 
 void
-CBuyMenu_BasicButton::vOnShow_Base(void)
+CBuyMenu_BasicButton::funOnShow_Base(void)
 {
 	
-	if(vOnShow_Custom != NULL){
-		void(CBuyMenu_BasicButton* arg_this)* tempRef = vOnShow_Custom;
-		(*tempRef)(_this);
-		//vOnShow_Custom(_this);
+	if(funOnShow_Custom != NULL){
+		//void(CBuyMenu_BasicButton* arg_this)* tempRef = funOnShow_Custom;
+		//(*tempRef)(_this);
+		funOnShow_Custom(_this);
 	}
 	
-}// vOnShow_Base
+}// funOnShow_Base
 
 
 // When this button is clicked, what does it do?
 void
-CBuyMenu_BasicButton::vOnClick_Base(void)
+CBuyMenu_BasicButton::funOnClick_Base(void)
 {
 	
 	// basic button behavior. Only if our array has a non-zero length.
@@ -620,7 +621,7 @@ CBuyMenu_BasicButton::vOnClick_Base(void)
 		
 		// Also: go through each button that I'm going to show and set its "bAtive" to TRUE
 		// (all buttons like weapon upgrades are visible
-		// unless purchased in that showing of the weapon).  And call each one's "vOnShow"
+		// unless purchased in that showing of the weapon).  And call each one's "funOnShow"
 		// since there may be some logic such as
 		// coloring the text red if the player can't afford that upgrade or weapon (in the
 		// case of entire weapons by name buttons too).
@@ -630,27 +631,27 @@ CBuyMenu_BasicButton::vOnClick_Base(void)
 			if(someButton.iType == BUTTON_TYPEID_WEAPON){
 				CBuyMenu_WeaponButton someButto = *((CBuyMenu_WeaponButton*)ary_btnTotal[nextButtonIndex]);
 				someButto.bActive = TRUE;
-				someButto.vOnShow_Base();
+				someButto.funOnShow_Base();
 			}else{
 				someButton.bActive = TRUE;
-				someButton.vOnShow_Base();
+				someButton.funOnShow_Base();
 			}
 		}
 		
 	}// button length check
 	
-	if(vOnClick_Custom != NULL){
+	if(funOnClick_Custom != NULL){
 		// If we have a custom click method, do it.
-		void(CBuyMenu_BasicButton* arg_this)* tempRef = vOnClick_Custom;
-		(*tempRef)(_this);
-		//vOnClick_Custom(_this);
+		//void(CBuyMenu_BasicButton* arg_this)* tempRef = funOnClick_Custom;
+		//(*tempRef)(_this);
+		funOnClick_Custom(_this);
 	}
 	
 	//Regardless, most buttons are bound to change the current layer and
 	//possibly what the Cancel/Go Back button says (one of those two).
 	buymenu_btn_Back_updateText();
 	
-}//vOnClick_Base
+}//funOnClick_Base
 
 
 void
@@ -664,11 +665,10 @@ void
 CBuyMenu_WeaponButton::create_WeaponButton
 (
 	string arg_sName, float arg_flHotkey, vector arg_clr,
-	void(CBuyMenu_BasicButton* arg_this)* arg_vOnClick_Custom,
+	void(CBuyMenu_BasicButton* arg_this) arg_funOnClick_Custom,
 	string arg_sWeaponImagePath, int arg_iWeaponPrice, int arg_iWeaponSlots,
 	int arg_iBitsWeaponOpt
-)
-{
+){
 	
 	//defaults.
 	//_this_deref.iLayer = 0i;
@@ -681,8 +681,8 @@ CBuyMenu_WeaponButton::create_WeaponButton
 	clr = arg_clr;
 	clr_render = arg_clr; //good default.
 	
-	vOnClick_Custom = arg_vOnClick_Custom; //(int*)&arg_vOnClick_Custom;
-	vOnShow_Custom = NULL; //paranoia?
+	funOnClick_Custom = arg_funOnClick_Custom; //(int*)&arg_funOnClick_Custom;
+	funOnShow_Custom = NULL; //paranoia?
 	
 	// Why do we add "_0.tga" to a .spr reference for the draw to work?
 	// The world may never know.
@@ -727,13 +727,13 @@ CBuyMenu_WeaponButton::create_WeaponButton
 	
 	
 void
-CBuyMenu_WeaponButton::vOnRender_Base
+CBuyMenu_WeaponButton::funOnRender_Base
 (
 	vector arg_suggestedDrawPos, int arg_iLayer, int arg_iButtonRow,
 	BOOL arg_fIsSelected
 )
 {
-	CBuyMenu_BasicButton::vOnRender_Base(
+	CBuyMenu_BasicButton::funOnRender_Base(
 		arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected
 	); //call the parent's.
 	
@@ -766,7 +766,7 @@ CBuyMenu_WeaponButton::vOnRender_Base
 		Gfx_Text( [textDrawOrigin.x, textDrawOrigin.y + (vButtonSizStandard.y+1) ], drawString2, vButtonFontSize, this.clr * 0.98f, (1.0f-(1.0f - arg_opac)*0.88) - 0.02f, DRAWFLAG_NORMAL, FONT_ARIAL_STD );
 		
 	}
-}//vOnRender_Base
+}//funOnRender_Base
 
 
 // convenient way to reset these globals for keeping track of a purchase in progress.
@@ -783,9 +783,9 @@ UI_BuyMenu_ResetTempVariables(void)
 
 
 void
-CBuyMenu_WeaponButton::vOnShow_Base(void)
+CBuyMenu_WeaponButton::funOnShow_Base(void)
 {
-	CBuyMenu_BasicButton::vOnShow_Base();
+	CBuyMenu_BasicButton::funOnShow_Base();
 	// See if this weapon can be afforded.
 	if(canBuyWeapon(iWeaponPurchaseID, 0, 0, 1)){
 		clr_render = clr;
@@ -793,10 +793,10 @@ CBuyMenu_WeaponButton::vOnShow_Base(void)
 		// same, but draw it red to show we can't afford it at a glance.
 		clr_render = clrRed;
 	}
-}//vOnShow_Base
+}//funOnShow_Base
 
 void
-CBuyMenu_WeaponButton::vOnClick_Base(void)
+CBuyMenu_WeaponButton::funOnClick_Base(void)
 {
 	weapondata_basic_t weaponRef;
 	// Just one thing. Let's reset this to be safe (new weapon opened for seeing
@@ -810,7 +810,7 @@ CBuyMenu_WeaponButton::vOnClick_Base(void)
 	if(!(iBitsWeaponOpt & BITS_WEAPONOPT_INSTANT)){
 		// normal behavior.
 		iWeaponTempID = iWeaponPurchaseID;
-		CBuyMenu_BasicButton::vOnClick_Base();
+		CBuyMenu_BasicButton::funOnClick_Base();
 	}else{
 		// has the instant flag? that's it, apply it if we can.
 		if(canBuyWeapon(iWeaponPurchaseID, 0, 0, 1) ){
@@ -822,7 +822,7 @@ CBuyMenu_WeaponButton::vOnClick_Base(void)
 			}
 		}
 	}
-}//vOnClick_Base
+}//funOnClick_Base
 
 
 void
@@ -954,7 +954,7 @@ buymenu_btn_RemoveItem_clicked(CBuyMenu_BasicButton* arg_this)
 		}
 		
 		//INITIALIZE_BASICBUTTON(ary_btn_removeButton[i], "7 Buy Random", 48+7,clrGreen, NULL)
-		ary_btn_removeButton[i].create(buttonDisplayText, hotKeyCode, clrPaleBlue, &buymenu_btn_removeButton_clicked);
+		ary_btn_removeButton[i].create(buttonDisplayText, hotKeyCode, clrPaleBlue, buymenu_btn_removeButton_clicked);
 		ary_btn_removeButton[i].bActive = TRUE;
 		
 		//CBuyMenu_RemoveWeaponButton removeWeaponButtonRef2 = (CBuyMenu_RemoveWeaponButton)ary_btn_removeButton[i];
@@ -968,8 +968,8 @@ buymenu_btn_RemoveItem_clicked(CBuyMenu_BasicButton* arg_this)
 
 
 
-// Take all buttons and call their "vOnShow". See what we can and can't afford
-// (color red when we can't).  vOnShow should handle this appropriately per button.
+// Take all buttons and call their "funOnShow". See what we can and can't afford
+// (color red when we can't).  funOnShow should handle this appropriately per button.
 void
 refreshButtons(void)
 {
@@ -983,7 +983,7 @@ refreshButtons(void)
 			//CBuyMenu_BasicButton tempButton = *ary_layerFirstButton[i2];
 			for(i2 = 0; i2 < ary_layerFirstButton_softLength; i2++){
 				tempButton = *ary_layerFirstButton[i2];
-				tempButton.vOnShow_Base();
+				tempButton.funOnShow_Base();
 			}// for i2 in ary_layerFirstButton
 				
 		}else{
@@ -993,7 +993,7 @@ refreshButtons(void)
 				//btnToRender = &previousLayerButton.ary_btn[i2];
 				int btnToRender_index_global = previousLayerButton.ary_btn_index[i2];
 				tempButton = *ary_btnTotal[btnToRender_index_global];
-				tempButton.vOnShow_Base();
+				tempButton.funOnShow_Base();
 			}
 		}
 	}
@@ -1326,12 +1326,12 @@ UI_BuyMenu_Init(void)
 	// if the 1st layer is active (drawn to that one). Says "Cancel" there, but if on any deeper layer it reads "Go Back".
 	//buymenu_btn_Back.create("0 Cancel", 48, NULL, buymenu_btn_Back_clicked);
 	
-	INITIALIZE_BASICBUTTON(Back, "Cancel", "0", clrPaleBluePurple, &buymenu_btn_Back_clicked)
+	INITIALIZE_BASICBUTTON(Back, "Cancel", "0", clrPaleBluePurple, buymenu_btn_Back_clicked)
 	
 	//INITIALIZE_BASICBUTTON(Buy, "2 Buy", 48+2, NULL, 0, NULL)
-	INITIALIZE_BASICBUTTON(Recentconfig, "Use New Config", "1", clrGreen, &buymenu_btn_UseNewConfig_clicked)
+	INITIALIZE_BASICBUTTON(Recentconfig, "Use New Config", "1", clrGreen, buymenu_btn_UseNewConfig_clicked)
 	INITIALIZE_BASICBUTTON(Buy, "Buy", "2", clrPaleBlue, NULL)
-	INITIALIZE_BASICBUTTON(RemoveItem, "Remove Item", "3", clrPaleBlue, &buymenu_btn_RemoveItem_clicked)
+	INITIALIZE_BASICBUTTON(RemoveItem, "Remove Item", "3", clrPaleBlue, buymenu_btn_RemoveItem_clicked)
 	INITIALIZE_BASICBUTTON(ResetConfig, "Reset Config", "4", clrPaleBlue, NULL)
 	INITIALIZE_BASICBUTTON(SaveConfig, "Save Config", "5", clrPaleBlue, NULL)
 	INITIALIZE_BASICBUTTON(LoadConfig, "Load Config", "6", clrPaleBlue, NULL)
@@ -1344,27 +1344,27 @@ UI_BuyMenu_Init(void)
 	
 	
 	// !!! INITIALIZE THE WEAPON-UPGRADE BUTTONS BEFORE THE WEAPONS THEMSELVES. Or else these will be missing at that point.
-	INITIALIZE_BASICBUTTON(WeaponOpt_Buy, "Buy", "1", clrGreen, &buymenu_btn_Buy_Weapon_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Silencer, sprintf("Silencer %i", WEAPONOPT_SILENCER_COST), "2", clrPaleBlue, &buymenu_btn_Silencer_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Lasersight, sprintf("Lasersight %i", WEAPONOPT_LASERSIGHT_COST), "3", clrPaleBlue, &buymenu_btn_Lasersight_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Flashlight, sprintf("Flashlight %i", WEAPONOPT_FLASHLIGHT_COST), "4", clrPaleBlue, &buymenu_btn_Flashlight_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_Scope, sprintf("Scope %i", WEAPONOPT_SCOPE_COST), "5", clrPaleBlue, &buymenu_btn_Scope_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Buy, "Buy", "1", clrGreen, buymenu_btn_Buy_Weapon_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Silencer, sprintf("Silencer %i", WEAPONOPT_SILENCER_COST), "2", clrPaleBlue, buymenu_btn_Silencer_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Lasersight, sprintf("Lasersight %i", WEAPONOPT_LASERSIGHT_COST), "3", clrPaleBlue, buymenu_btn_Lasersight_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Flashlight, sprintf("Flashlight %i", WEAPONOPT_FLASHLIGHT_COST), "4", clrPaleBlue, buymenu_btn_Flashlight_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Scope, sprintf("Scope %i", WEAPONOPT_SCOPE_COST), "5", clrPaleBlue, buymenu_btn_Scope_clicked)
 	
 	// Yes, Akimbo and FullLoad use the same hotkey (number 6). They never appear on the same weapon,
 	// since Akimbo is only meant for some guns, and FullLoad is only meant for some melee weapons.
 	// TODO? And if these two were to support flexible prices (show what it costs for the currently selected weapon... akimbo & fullLoad can't be fixed to
 	// one constant for all weapons), their display text + prices would have to be shown as they're shown to the user.
-	INITIALIZE_BASICBUTTON(WeaponOpt_Akimbo, "Akimbo", "6", clrPaleBlue, &buymenu_btn_Akimbo_clicked)
-	INITIALIZE_BASICBUTTON(WeaponOpt_FullLoad, "FullLoad", "6", clrGreen, &buymenu_btn_FullLoad_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_Akimbo, "Akimbo", "6", clrPaleBlue, buymenu_btn_Akimbo_clicked)
+	INITIALIZE_BASICBUTTON(WeaponOpt_FullLoad, "FullLoad", "6", clrGreen, buymenu_btn_FullLoad_clicked)
 	
-	buymenu_btn_WeaponOpt_Buy.vOnShow_Custom = &buymenu_btn_Buy_onShow;
+	buymenu_btn_WeaponOpt_Buy.funOnShow_Custom = buymenu_btn_Buy_onShow;
 	
-	buymenu_btn_WeaponOpt_Silencer.vOnShow_Custom = &buymenu_btn_Silencer_onShow;
-	buymenu_btn_WeaponOpt_Lasersight.vOnShow_Custom = &buymenu_btn_Lasersight_onShow;
-	buymenu_btn_WeaponOpt_Flashlight.vOnShow_Custom = &buymenu_btn_Flashlight_onShow;
-	buymenu_btn_WeaponOpt_Scope.vOnShow_Custom = &buymenu_btn_Scope_onShow;
-	buymenu_btn_WeaponOpt_Akimbo.vOnShow_Custom = &buymenu_btn_Akimbo_onShow;
-	buymenu_btn_WeaponOpt_FullLoad.vOnShow_Custom = &buymenu_btn_FullLoad_onShow;
+	buymenu_btn_WeaponOpt_Silencer.funOnShow_Custom = buymenu_btn_Silencer_onShow;
+	buymenu_btn_WeaponOpt_Lasersight.funOnShow_Custom = buymenu_btn_Lasersight_onShow;
+	buymenu_btn_WeaponOpt_Flashlight.funOnShow_Custom = buymenu_btn_Flashlight_onShow;
+	buymenu_btn_WeaponOpt_Scope.funOnShow_Custom = buymenu_btn_Scope_onShow;
+	buymenu_btn_WeaponOpt_Akimbo.funOnShow_Custom = buymenu_btn_Akimbo_onShow;
+	buymenu_btn_WeaponOpt_FullLoad.funOnShow_Custom = buymenu_btn_FullLoad_onShow;
 	
 	
 	// TODO - ONGOING.  As more weapons are entered, use this new condensed way
@@ -1376,51 +1376,51 @@ UI_BuyMenu_Init(void)
 	weapondata_basic_t tempWeapRef;
 	
 	
-	INITIALIZE_WEAPONBUTTON(GLOCK18, "1", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(SOCOMMK23, "2", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(DESERTEAGLE, "3", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(FIVESEVEN, "4", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(BERETTA, "5", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(AKIMBOCOLTS, "6", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(GLOCK20, "7", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(RUGERMK1, "8", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(RAGINGBULL, "9", clrPaleBlue, NULL, Handguns)
-	INITIALIZE_WEAPONBUTTON(CONTENDERG2, "A", clrPaleBlue, NULL, Handguns)
+	INITIALIZE_WEAPONBUTTON(GLOCK18, "1", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(SOCOMMK23, "2", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(DESERTEAGLE, "3", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(FIVESEVEN, "4", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(BERETTA, "5", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(AKIMBOCOLTS, "6", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(GLOCK20, "7", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(RUGERMK1, "8", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(RAGINGBULL, "9", clrPaleBlue, Handguns)
+	INITIALIZE_WEAPONBUTTON(CONTENDERG2, "A", clrPaleBlue, Handguns)
 	
 	
-	INITIALIZE_WEAPONBUTTON(MINIUZI, "1", clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON(MP5SD, "2", clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON(MP5K, "3", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(MINIUZI, "1", clrPaleBlue, SMGs)
+	INITIALIZE_WEAPONBUTTON(MP5SD, "2", clrPaleBlue, SMGs)
+	INITIALIZE_WEAPONBUTTON(MP5K, "3", clrPaleBlue, SMGs)
 	
-	INITIALIZE_WEAPONBUTTON(STEYRTMP, "4", clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON(HKPDW, "5", clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON(UMP, "6", clrPaleBlue, NULL, SMGs)
+	INITIALIZE_WEAPONBUTTON(STEYRTMP, "4", clrPaleBlue, SMGs)
+	INITIALIZE_WEAPONBUTTON(HKPDW, "5", clrPaleBlue, SMGs)
+	INITIALIZE_WEAPONBUTTON(UMP, "6", clrPaleBlue, SMGs)
 	
-	INITIALIZE_WEAPONBUTTON(SKORPION, "7", clrPaleBlue, NULL, SMGs)
-	INITIALIZE_WEAPONBUTTON(MAC10, "8", clrPaleBlue, NULL, SMGs)
-	
-	
-	INITIALIZE_WEAPONBUTTON(M4A1, "1", clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON(AK47, "2", clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON(STEYRAUG, "3", clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON(M16A4, "4", clrPaleBlue, NULL, Rifles)
-	INITIALIZE_WEAPONBUTTON(BARRETTM82, "5", clrPaleBlue, NULL, Rifles)
+	INITIALIZE_WEAPONBUTTON(SKORPION, "7", clrPaleBlue, SMGs)
+	INITIALIZE_WEAPONBUTTON(MAC10, "8", clrPaleBlue, SMGs)
 	
 	
-	INITIALIZE_WEAPONBUTTON(BENELLIM3, "1", clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON(USAS12, "2", clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON(SPAS12, "3", clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON(MOSSBERG500, "4", clrPaleBlue, NULL, Shotguns)
-	INITIALIZE_WEAPONBUTTON(SAWEDOFF, "5", clrPaleBlue, NULL, Shotguns)
+	INITIALIZE_WEAPONBUTTON(M4A1, "1", clrPaleBlue, Rifles)
+	INITIALIZE_WEAPONBUTTON(AK47, "2", clrPaleBlue, Rifles)
+	INITIALIZE_WEAPONBUTTON(STEYRAUG, "3", clrPaleBlue, Rifles)
+	INITIALIZE_WEAPONBUTTON(M16A4, "4", clrPaleBlue, Rifles)
+	INITIALIZE_WEAPONBUTTON(BARRETTM82, "5", clrPaleBlue, Rifles)
+	
+	
+	INITIALIZE_WEAPONBUTTON(BENELLIM3, "1", clrPaleBlue, Shotguns)
+	INITIALIZE_WEAPONBUTTON(USAS12, "2", clrPaleBlue, Shotguns)
+	INITIALIZE_WEAPONBUTTON(SPAS12, "3", clrPaleBlue, Shotguns)
+	INITIALIZE_WEAPONBUTTON(MOSSBERG500, "4", clrPaleBlue, Shotguns)
+	INITIALIZE_WEAPONBUTTON(SAWEDOFF, "5", clrPaleBlue, Shotguns)
 
 
 	// LATER - make purchaseable only if the gamemode is team/scenario. (mercs vs specialists)
-	INITIALIZE_WEAPONBUTTON(M61GRENADE, "1", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(M61GRENADE, "1", clrPaleBlue, SpecialPurpose)
 	
-	INITIALIZE_WEAPONBUTTON(COMBATKNIFE, "2", clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON(M60, "3", clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON(KATANA, "4", clrPaleBlue, NULL, SpecialPurpose)
-	INITIALIZE_WEAPONBUTTON(SEALKNIFE, "5", clrPaleBlue, NULL, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(COMBATKNIFE, "2", clrPaleBlue, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(M60, "3", clrPaleBlue, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(KATANA, "4", clrPaleBlue, SpecialPurpose)
+	INITIALIZE_WEAPONBUTTON(SEALKNIFE, "5", clrPaleBlue, SpecialPurpose)
 
 	//TODO - set these up.  items are simpler than weapons and have no default behavior.
 	// in fact the kevlar just puts armor on the player at spawn, stealthshoes may as well
@@ -1428,8 +1428,8 @@ UI_BuyMenu_Init(void)
 	// Last parameter is the cost instead of the buy category, since we don't have
 	// any weapondata to get the cost from.
 	// ...we still need the category too though.
-	//INITIALIZE_ITEMBUTTON_ADV(KEVLAR, "1", 48+1, clrPaleBlue, NULL, PlayerAccessory, 1900);
-	//INITIALIZE_ITEMBUTTON_ADV(STEALTHSHOES, "2", 48+2, clrPaleBlue, NULL, PlayerAccessory, 700);
+	//INITIALIZE_ITEMBUTTON_ADV(KEVLAR, "1", 48+1, clrPaleBlue, PlayerAccessory, 1900);
+	//INITIALIZE_ITEMBUTTON_ADV(STEALTHSHOES, "2", 48+2, clrPaleBlue, PlayerAccessory, 700);
 	
 	buymenu_btn_Back_updateText(); //just in case.
 	
@@ -1474,7 +1474,7 @@ UI_BuyMenu_Draw(void)
 	int btnToRender_index_global;
 	CBuyMenu_BasicButton someThing;
 	CBuyMenu_BasicButton previousLayerButton;
-	BOOL fIsSelected;
+	BOOL fIsSelected = FALSE;
 	
 	
 	// Checks for clicks be done separately
@@ -1514,7 +1514,7 @@ UI_BuyMenu_Draw(void)
 				CBuyMenu_BasicButton tempButton = *ary_layerFirstButton[i2];
 				fIsSelected = (tempButton.iGlobalIndex == currentLayerSelectedIndex);
 				
-				(*ary_layerFirstButton[i2]).vOnRender_Base(vBtnPos, i, i2, fIsSelected);
+				(*ary_layerFirstButton[i2]).funOnRender_Base(vBtnPos, i, i2, fIsSelected);
 				
 				vBtnPos.y += (vButtonSizStandard.y + 1);
 				
@@ -1548,7 +1548,7 @@ UI_BuyMenu_Draw(void)
 				
 				fIsSelected = (btnToRender_index_global == currentLayerSelectedIndex);
 				
-				(*ary_btnTotal[btnToRender_index_global]).vOnRender_Base(vBtnPos, i, i2, fIsSelected);
+				(*ary_btnTotal[btnToRender_index_global]).funOnRender_Base(vBtnPos, i, i2, fIsSelected);
 				vBtnPos.y += (vButtonSizStandard.y + 1);
 				
 			}// for i2 in this layer's buttons.
@@ -1568,7 +1568,7 @@ UI_BuyMenu_Draw(void)
 				backButtonRow = ary_layerFirstButton_softLength;
 			}
 			
-			buymenu_btn_Back.vOnRender_Base(vBtnPos, i, backButtonRow, fIsSelected);
+			buymenu_btn_Back.funOnRender_Base(vBtnPos, i, backButtonRow, fIsSelected);
 			vBtnPos.y += (vButtonSizStandard.y + 1);
 		}
 		

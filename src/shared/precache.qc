@@ -18,6 +18,9 @@ void SharedGame_Precache(void){
 	
 	precache_model("models/powerup.mdl");
 	
+	// In FreeTS, looks like shell eject effects are precached both client & serverside
+	// (so here in shared/precache.qc is good).
+	
 	// nearly identical..?
 	precache_model("models/56_shell.mdl");
 	precache_model("models/556_shell.mdl");
@@ -34,7 +37,8 @@ void SharedGame_Precache(void){
 	// physics-related / slow-mo?
 	precache_model("models/bullet.mdl");
 	precache_model("models/long_bullet.mdl");
-
+	
+	
 	// some model for dirt effects?
 	precache_model("models/pellet.mdl");
 

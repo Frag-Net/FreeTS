@@ -13,3 +13,15 @@ DECLARE_AMMODATA(_50BMG, "50BMG", 100, 20)
 DECLARE_AMMODATA(_SHELLS, "SHELLS", 16, 60)
 DECLARE_AMMODATA(_32ACP, ".32 ACP", 0.5, 300)
 DECLARE_AMMODATA(_7P62X51MM, "7.62 x 51mm", 30, 35)
+
+
+DECLARE_SHELLEJECTDATA(NONE, "", "")
+DECLARE_SHELLEJECTDATA(_56, "models/56_shell.mdl", "modelevent_shell.land")
+DECLARE_SHELLEJECTDATA(_556, "models/556_shell.mdl", "modelevent_shell.land")
+DECLARE_SHELLEJECTDATA(_22, "models/22_shell.mdl", "modelevent_shell.land")
+DECLARE_SHELLEJECTDATA(_9MM, "models/9mm_shell.mdl", "modelevent_shell.land")
+DECLARE_SHELLEJECTDATA(_GENERIC, "models/shell.mdl", "modelevent_shell.land")
+DECLARE_SHELLEJECTDATA(_SHOTGUN, "models/shotgun_shell.mdl", "modelevent_shotgunshell.land")
+DECLARE_SHELLEJECTDATA(_SHOTGUN_BLUE, "models/shotgun_shell_blue.mdl", "modelevent_shotgunshell.land")
+DECLARE_SHELLEJECTDATA(_SHOTGUN_GOLD, "models/shotgun_shell_gold.mdl", "modelevent_shotgunshell.land")
+

@@ -276,7 +276,7 @@ w_mossberg500_secondary(void)
 	}
 	*/
 	
-	return weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
+	weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
 }
 
 

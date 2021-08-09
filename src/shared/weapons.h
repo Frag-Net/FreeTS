@@ -772,6 +772,7 @@ typedef struct{
 
 //TODO. Is extern'ing these earlier possible?
 ammodata_t* ary_ammoData[AMMO_ID::LAST_ID];
+shellejectdata_t* ary_shellEjectData[SHELLEJECT_ID::LAST_ID];
 
 //weapondata_normal_t* ary_weaponData[WEAPON_ID::LAST_ID];
 //Void pointer should be fine, right? Cast to the right weapondata_ struct above (typeID tells what that is).
@@ -804,22 +805,28 @@ void weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic
 void weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed);
 
 
-void weapon_base_burstFire(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed, int shotCount, float shotDelay);
+void weapon_gun_burstFire(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed, int shotCount, float shotDelay, float attackDelay);
 
 BOOL weapon_shotgun_onInterrupt(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_shotgun_reload(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
 
+void weapon_gun_akimbo_semi_primaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+void weapon_gun_akimbo_semi_secondaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+void weapon_ironsight_akimbo_semi_secondaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack, int arg_weaponTypeID);
 
-BOOL weapon_akimbo_semiAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback);
-BOOL weapon_akimbo_fullAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback);
-BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, int* arg_akimboFireCallback);
+void weapon_gun_akimbo_full_primaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+void weapon_gun_akimbo_full_secondaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+
+BOOL weapon_akimbo_semiAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+BOOL weapon_akimbo_fullAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
 
 int weapon_akimbo_semiAttackChoice(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
 int weapon_akimbo_fullAttackChoice(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
 
 
-BOOL weapon_ironsight_ToggleIronsight(player pl, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon);
+void weapon_ironsight_ToggleIronsight(player pl, weapondata_ironsight_t* basePRef, weapondynamic_t arg_thisWeapon);
 
 
 void weapon_gun_Reload(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon );
@@ -839,6 +846,8 @@ void weapon_gun_onThink_burstFireLogic(player pl, weapondata_gun_t* basePRef, we
 void weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon);
+
+void weapon_ejectShell(int arg_shellEjectType);
 
 void weapon_precache(weapondata_basic_t* basePRef);
 

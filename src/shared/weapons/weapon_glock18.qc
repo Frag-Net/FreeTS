@@ -176,11 +176,13 @@ w_glock18_primary(void)
 	
 #ifdef CLIENT
 	View_ShowMuzzleflash(MUZZLE_SMALL);
-	// Why even be an event?  Sometimes it happens, sometimes it doesn't?
-	// shell ejection can happen instantly in the weapon_base_onAttack call
-	// further down anyway
+	
 	View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
+	
+	// TODO: replace View_AddEvent
+	weapon_ejectShell(SHELLEJECT_ID::_9MM);
+	
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

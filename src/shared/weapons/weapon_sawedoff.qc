@@ -193,6 +193,7 @@ w_sawedoff_primary(void)
 			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot2, 31.0f/33.0f);
 		}
 	}else{
+		randomChoice = random();
 		if(randomChoice < 0.5){
 			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot1b, 31.0f/33.0f);
 		}else{
@@ -202,7 +203,7 @@ w_sawedoff_primary(void)
 	
 #ifdef CLIENT
 	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
+	//View_AddEvent(w_ejectshell_pistol, 0.0f);
 #endif
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
@@ -223,7 +224,7 @@ w_sawedoff_secondary(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	return weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
+	weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 }
 
 // need custom reload logic, works more like a typical weapon
@@ -240,14 +241,14 @@ w_sawedoff_reload(void)
 	// CHECK - we have two reload anims for ordinary and ironsight mode each.
 	// One for if we have 1 clip left, another for if we have 0 clip left.
 	if(arg_thisWeapon.iClipLeft == 0){
-		//do the both-empty reload anim.
+		// do the both-empty reload anim.
 		if(!arg_thisWeapon.iIronSight){
 			reloadSeq = weaponseq_sawedoff::reload;
 		}else{
 			reloadSeq = weaponseq_sawedoff::reloadb;
 		}
 	}else{
-		//wasn't 0? must be 1.  Otherwise we wouldn't have reached this point.
+		// wasn't 0? must be 1.  Otherwise we wouldn't have reached this point.
 		if(!arg_thisWeapon.iIronSight){
 			reloadSeq = weaponseq_sawedoff::reload_sigle;
 		}else{

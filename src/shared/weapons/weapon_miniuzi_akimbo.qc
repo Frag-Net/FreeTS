@@ -41,7 +41,6 @@ void weapon_miniuzi_akimbo_onColdCock(player pl, weapondynamic_t arg_thisWeapon)
 	
 }
 
-//weapondata_ironsight_t weapon_miniuzi_akimbo =
 weapondata_gun_t weapon_miniuzi_akimbo =
 {
 	WEAPONDATA_TYPEID_GUN,
@@ -79,18 +78,7 @@ weapondata_gun_t weapon_miniuzi_akimbo =
 	1,
 	-1,
 	-1,
-	-1/*,
-	{
-		weaponseq_miniuzi_akimbo::change,
-		21.0f/60.0f,
-		weaponseq_miniuzi_akimbo::rechange,
-		21.0f/60.0f,
-		weaponseq_miniuzi_akimbo::idleb,
-		weaponseq_miniuzi_akimbo::reloadb,
-		76.0f/30.0f,
-		{0.030000, 2.000000, 0.005000}
-	}
-	*/
+	-1
 };
 
 
@@ -150,15 +138,13 @@ w_miniuzi_akimbo_holster(void)
 }
 
 
-
-
 // General attack method to be called by primary or secondary fire as needed.
 // The firemode used determines whether only pressing primary fire works (alternate b/w
 // the Akimbo weapons with each shot), or primary & secondary control the left/right
 // Akimbo weapons consistently.
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
-BOOLEAN weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
 	float randomChoice;
 	int finalAkimboChoice = BITS_AKIMBOCHOICE_NONE;  //default
 	
@@ -172,11 +158,9 @@ BOOLEAN weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, 
 	//because I am not copy/pasting this monstrosity 5 times.
 	finalAkimboChoice = weapon_akimbo_fullAttackChoice(pl, ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon, attackTypeUsed);
 	
-	SAVE_STATE(pl.nextAkimboAttackPreference);
-	
 	if(finalAkimboChoice == -1){
 		//pl.akimboFirePrev = 0;
-		return FALSE;
+		return;
 	}
 	
 	/*
@@ -193,13 +177,13 @@ BOOLEAN weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, 
 		if((finalAkimboChoice & BITS_AKIMBOCHOICE_RIGHT)){
 			PLAY_CLICK_SOUND_RIGHT
 		}
-		return FALSE;
+		return;
 	}
 	
 	// ??  Is this even possible?
 	if(finalAkimboChoice == 0){
 		//pl.akimboFirePrev = 0;
-		return FALSE;
+		return;
 	}
 	
 	
@@ -279,23 +263,13 @@ BOOLEAN weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, 
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);
 	}
 	
-	return TRUE;
-}//END OF weapon_miniuzi_akimbo_attack
+}// weapon_miniuzi_akimbo_attack
 
 
 void
 w_miniuzi_akimbo_primary(void)
 {
-	player pl = (player)self;
-	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	
-	pl.akimboTest = 0;
-	
-	if(input_buttons & INPUT_BUTTON3){
-		weapon_miniuzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
-	}else{
-		weapon_miniuzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
-	}
+	weapon_gun_akimbo_full_primaryAttack(weapon_miniuzi_akimbo_attack);
 }
 
 
@@ -303,16 +277,7 @@ w_miniuzi_akimbo_primary(void)
 void
 w_miniuzi_akimbo_secondary(void)
 {
-	player pl = (player)self;
-	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	
-	// reset
-	pl.akimboTest = 0;
-	
-	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FREE_FULL){
-		weapon_miniuzi_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
-		//pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
-	}
+	weapon_gun_akimbo_full_secondaryAttack(weapon_miniuzi_akimbo_attack);
 }
 
 

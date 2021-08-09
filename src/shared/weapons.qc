@@ -383,20 +383,21 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 }// weapon_base_onAttack
 
 
+// shotCount is how many consecutive shots to fire (no more than 3 expected),
+// shotDelay is the time between them, and
+// attackDelay is the time that must pass before firing is allowed again
+// (as in left-click), not including the delays between shots after the 1st.
 void
-weapon_base_burstFire(
-	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
-	int attackTypeUsed, int shotCount, float shotDelay
+weapon_gun_burstFire(
+	player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon,
+	int attackTypeUsed, int shotCount, float shotDelay, float attackDelay
 ){
-	weapondata_basic_t baseRef = *basePRef;
-
-	float thatStuff = shotDelay * (shotCount-1) + baseRef.fAttackDelay;
-	weapon_base_setWholeAttackDelay(pl, thatStuff);
+	float totalAttackDelay = shotDelay * (shotCount-1) + attackDelay;
+	weapon_base_setWholeAttackDelay(pl, totalAttackDelay);
 	
-	//printfline("??? %.2f ", thatStuff);
 	pl.aryNextBurstShotTime_softLength = shotCount;
 	for(int i = 0; i < shotCount; i++){
-		pl.aryNextBurstShotTime[i] = thatStuff - shotDelay*(i);
+		pl.aryNextBurstShotTime[i] = totalAttackDelay - shotDelay*(i);
 		//printfline("WELL #%i: %.2f", i, pl.aryNextBurstShotTime[i]);
 	}
 	
@@ -405,7 +406,7 @@ weapon_base_burstFire(
 	
 	// and fire this very first frame.
 	weapon_gun_fireBurstBullet(pl, basePRef, arg_thisWeapon);
-}//weapon_base_burstFire
+}//weapon_gun_burstFire
 
 
 
@@ -620,10 +621,172 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 
 
 
+// Handles the primaryAttack method for akimbo weapons, mostly checking whether to 
+// use the semiAttackDualHack or skip straight to funAttack.
+// arg_funAttack is what handles firing for the akimbo weapon, something like 
+// "weapon_socommk23_akimbo_attack".
+// No need for a separate version for ironsight for primary, nothing different
+// happens there.
+void
+weapon_gun_akimbo_semi_primaryAttack(
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+){
+	player pl = (player)self;
+	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+	
+	// reset
+	pl.akimboTest = 0;
+	
+#ifndef AKIMBO_SEMI_DUAL_TOLERANCE
+	if(input_buttons & INPUT_BUTTON3){
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
+	}else{
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	}
+#else
+	
+	// in addition to the primary input, which lead to '_primary' being called at all.
+	if(input_buttons & INPUT_BUTTON3){
+		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH, arg_funAttack)){
+			// nothing unusual here.
+			pl.akimboTest = 0;
+			arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
+		}else{
+		}
+	}else{
+		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT, arg_funAttack)){
+			arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+			pl.akimboFirePrev = BITS_AKIMBOCHOICE_LEFT;
+		}
+	}
+#endif
+}
+
+// Same as above but for akimbo semi secondary, has a separate ironsight version that
+// needs to be used by ironsights.
+// That version also needs the weapon type ID given for the ironsight-toggle call
+void
+weapon_gun_akimbo_semi_secondaryAttack(
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+){
+	player pl = (player)self;
+	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+	
+	// reset
+	pl.akimboTest = 0;
+	
+#ifndef AKIMBO_SEMI_DUAL_TOLERANCE
+	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
+		// no ironsights, nothing to do here.
+	}else{
+		// fires the right weapon always
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+	}
+#else
+	
+	// NOTE - holding primary is impossible, would've called _primary above if so.
+	// Only secondary could possibly be held (and, is).
+	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
+		// no ironsights, nothing to do here.
+	}else{
+		// fires the right weapon always
+		
+		//weapon_socommk23_akimbo_attack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+		//return;
+		
+		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, arg_funAttack)){
+			arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+			pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
+		}
+	}
+#endif
+}
+
+void
+weapon_ironsight_akimbo_semi_secondaryAttack(
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack,
+	int arg_weaponTypeID
+){
+	player pl = (player)self;
+	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+	
+	// reset
+	pl.akimboTest = 0;
+	
+#ifndef AKIMBO_SEMI_DUAL_TOLERANCE
+	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
+		// since secondary fire does nothing in semi-auto, we let it do ironsight stuff here
+		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[arg_weaponTypeID], arg_thisWeapon);
+	}else{
+		// fires the right weapon always
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+	}
+#else
+	// NOTE - holding primary is impossible, would've called _primary above if so.
+	// Only secondary could possibly be held (and, is).
+	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
+		// since secondary fire does nothing in semi-auto, we let it do ironsight stuff here
+		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[arg_weaponTypeID], arg_thisWeapon);
+		
+	}else{
+		// fires the right weapon always
+		if(!weapon_akimbo_semiAttackDualHack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, arg_funAttack)){
+			arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+			pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
+		}
+	}
+#endif
+}
+
+
+
+
+
+// And now for full semi weapons (holding down the mouse fires continuously)
+// They don't use the DUAL_TOLERANCE system regardless of the constant.
+// Also, no ironsight version, that combo never happens.
+void
+weapon_gun_akimbo_full_primaryAttack(
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+){
+	player pl = (player)self;
+	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+	
+	pl.akimboTest = 0;
+	
+	if(input_buttons & INPUT_BUTTON3){
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
+	}else{
+		// Only intent given inputs, firing both will still happen in
+		// the "Full-auto" firemode
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
+	}
+}
+
+void
+weapon_gun_akimbo_full_secondaryAttack(
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+){
+	player pl = (player)self;
+	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+	
+	pl.akimboTest = 0;
+	
+	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FREE_FULL){
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
+		//pl.akimboFirePrev = BITS_AKIMBOCHOICE_RIGHT;
+	}
+}
+
+
+
+
+
+
 BOOL
 weapon_akimbo_AttackDualHack(
 	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
-	int* arg_akimboFireCallback
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
 ){
 	//printfline("WELL WHAT. %.2f, %i, %i", pl.akimboDualFireToleranceTime, pl.akimboFirePrev, arg_flagger);
 	if(arg_flagger == 0){
@@ -669,8 +832,10 @@ weapon_akimbo_AttackDualHack(
 		// Could make a table to know what to use per akimbo weapon ID, having a table
 		// with one space for every single weapon in the game seems pretty wasteful.
 		// Calls like weapon_socommk23_akimbo_attack, etc.
-		BOOL(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed)* tempRef = arg_akimboFireCallback;
-		(*tempRef)(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
+		//BOOL(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed)* tempRef = arg_akimboFireCallback;
+		//(*tempRef)(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
+		
+		arg_funAttack(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_BOTH);
 		
 		//printfline("I WENT, akprev:%i aktest:%i - flagg:%i", pl.akimboFirePrev, pl.akimboTest, arg_flagger);
 		
@@ -694,12 +859,12 @@ weapon_akimbo_AttackDualHack(
 BOOL
 weapon_akimbo_semiAttackDualHack(
 	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
-	int* arg_akimboFireCallback
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
 ){
 	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
 		return FALSE;
 	}
-	return weapon_akimbo_AttackDualHack(pl, arg_thisWeapon, arg_flagger, arg_akimboFireCallback);
+	return weapon_akimbo_AttackDualHack(pl, arg_thisWeapon, arg_flagger, arg_funAttack);
 }
 
 // WARNING!  Don't do this, full-firing akimbos really don't need this,
@@ -708,12 +873,12 @@ weapon_akimbo_semiAttackDualHack(
 BOOL
 weapon_akimbo_fullAttackDualHack(
 	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
-	int* arg_akimboFireCallback
+	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
 ){
 	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FULL_AUTO){
 		return FALSE;
 	}
-	return weapon_akimbo_AttackDualHack(pl, arg_thisWeapon, arg_flagger, arg_akimboFireCallback);
+	return weapon_akimbo_AttackDualHack(pl, arg_thisWeapon, arg_flagger, arg_funAttack);
 }
 
 
@@ -1117,7 +1282,7 @@ weapon_akimbo_fullAttackChoice(
 }//weapon_akimbo_fullAttackChoice
 
 
-BOOL
+void
 weapon_ironsight_ToggleIronsight(
 	player pl, weapondata_ironsight_t* basePRef,
 	weapondynamic_t arg_thisWeapon
@@ -1125,7 +1290,6 @@ weapon_ironsight_ToggleIronsight(
 	//weapondata_ironsight_t* basePRef = (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOMMK23];
 	weapondata_ironsight_t baseRef = *basePRef;
 	
-	// SEARCH ME!!!
 	//arg_thisWeapon.iIronSight = 0; 
 
 	if(pl.isReloading == FALSE && pl.isChangingIronsight == FALSE){
@@ -1154,13 +1318,12 @@ weapon_ironsight_ToggleIronsight(
 		//arg_thisWeapon.iIronSight = pl.recentAttackHadAmmo;
 		//arg_thisWeapon.iIronSight = !arg_thisWeapon.iIronSight;
 		
-		return TRUE;
+		return;
 	}else{
 		
 		printfline("time: %.2f weapon_ironsight_ToggleIronsight FAILED (%d, %d).  current:%i", time, pl.isReloading, pl.isChangingIronsight, arg_thisWeapon.iIronSight);
 	}
-		
-	return FALSE;
+	
 }// weapon_ironsight_ToggleIronsight
 
 
@@ -1658,27 +1821,24 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 
 
 
-// SHELL SOUNDS: 
-// ts/sound/weapons/shell.wav
-// ts/sound/weapons/sshell.wav
-// ts/sound/weapons/sshell1.wav
-// ts/sound/weapons/sshell2.wav
-// ts/sound/weapons/sshell3.wav
-// valve/sound/player/pl_shell1.wav
-// valve/sound/player/pl_shell2.wav
-// valve/sound/player/pl_shell3.wav
-// ----
-// * sshell1, 2, and 3 are also found in the valve folder, these appear to be clones.
-// * pl_shell ones are not cloned but can still be used
-// * unknown if weapons/shell and sshell are used in original TS, may only be the
-//   1,2,3 ones (shell#, sshell#) for most weapons and shotguns accordingly.
-
-//
-
-
-
-
-
+// Not to be confused with the clientside-only event "weapon_ejectShell_event".
+// This is called by weapons to add the event, handles setting the shell-type global
+// for it to see.  If shell-ejects are done serverside, that would not be an amazing
+// idea. Per-player would be better.
+void weapon_ejectShell(int arg_shellEjectType){
+	//ary_shellEjectData[arg_shellEjectType]...
+	
+#ifdef CLIENT
+	player pl = (player)self;
+	pl.iShellEjectType = arg_shellEjectType;
+	View_AddEvent(w_ejectshell_pistol, 0.0f);
+#else
+	// anything for the playermodel?  Also only do that for all players except the 
+	// localplayer if using a viewmodel.
+	// ...and already this is sounding more like a job for predraw, which does handle
+	// players rendering players other than themselves.  And yes, still clientside.
+#endif
+}
 
 // Precache models and the HUD icon given in FreeTS weapondata.
 // Weapon sounds and anything else not in the struct shuold be precached
@@ -1871,22 +2031,6 @@ setupWeaponData(void){
 	
 /////////////////////////////////////////////////////////
 	
-	ASSIGN_AMMODATA(NONE)
-	ASSIGN_AMMODATA(_9X19MM)
-	ASSIGN_AMMODATA(_45ACP)
-	ASSIGN_AMMODATA(_P50AE)
-
-	ASSIGN_AMMODATA(_5P7X28)
-	
-	ASSIGN_AMMODATA(_10MMAUTO)
-	ASSIGN_AMMODATA(_P22LR)
-	ASSIGN_AMMODATA(_P454CASULL)
-	ASSIGN_AMMODATA(_5P56NATO)
-	ASSIGN_AMMODATA(_7P62X39MM)
-	ASSIGN_AMMODATA(_50BMG)
-	ASSIGN_AMMODATA(_SHELLS)
-	ASSIGN_AMMODATA(_32ACP)
-	ASSIGN_AMMODATA(_7P62X51MM)
 	
 	
 	ASSIGN_WEAPONDATA(NONE, none)
@@ -1955,10 +2099,39 @@ setupWeaponData(void){
 	ary_shotgunExtra[SHOTGUN_EXTRA_ID::BENELLIM3] = &weapon_benellim3_shotgunExtra;
 	ary_shotgunExtra[SHOTGUN_EXTRA_ID::MOSSBERG500] = &weapon_mossberg500_shotgunExtra;
 	ary_shotgunExtra[SHOTGUN_EXTRA_ID::MOSSBERG500_IRONSIGHT] = &weapon_mossberg500_shotgunExtra_ironsight;
-	
 	ary_shotgunExtra[SHOTGUN_EXTRA_ID::SPAS12] = &weapon_spas12_shotgunExtra;
 
 
+	ASSIGN_AMMODATA(NONE)
+	ASSIGN_AMMODATA(_9X19MM)
+	ASSIGN_AMMODATA(_45ACP)
+	ASSIGN_AMMODATA(_P50AE)
+
+	ASSIGN_AMMODATA(_5P7X28)
+	
+	ASSIGN_AMMODATA(_10MMAUTO)
+	ASSIGN_AMMODATA(_P22LR)
+	ASSIGN_AMMODATA(_P454CASULL)
+	ASSIGN_AMMODATA(_5P56NATO)
+	ASSIGN_AMMODATA(_7P62X39MM)
+	ASSIGN_AMMODATA(_50BMG)
+	ASSIGN_AMMODATA(_SHELLS)
+	ASSIGN_AMMODATA(_32ACP)
+	ASSIGN_AMMODATA(_7P62X51MM)
+	
+	
+	
+	ASSIGN_SHELLEJECTDATA(NONE)
+	ASSIGN_SHELLEJECTDATA(_56)
+	ASSIGN_SHELLEJECTDATA(_556)
+	ASSIGN_SHELLEJECTDATA(_22)
+	ASSIGN_SHELLEJECTDATA(_9MM)
+	ASSIGN_SHELLEJECTDATA(_GENERIC)
+	ASSIGN_SHELLEJECTDATA(_SHOTGUN)
+	ASSIGN_SHELLEJECTDATA(_SHOTGUN_BLUE)
+	ASSIGN_SHELLEJECTDATA(_SHOTGUN_GOLD)
+	
+	
 }//setupWeaponData
 
 
@@ -2042,10 +2215,8 @@ getAmmoTypeOfWeapon(int arg_weaponID)
 
 
 
-// check for being redundant with the events_custom.qc (whatever) ejectshell - like
-// method!
-// Could likely combine this better with that alternate way, but both should
-// effectively do the exact same thing.
+
+
 // This is based off what the HL glock does, adjust with custom shell-choices per
 // different weapons that use them.
 // Is HL's "w_shotgun_ejectshell" even any different from this besides shell-model
@@ -2056,20 +2227,33 @@ getAmmoTypeOfWeapon(int arg_weaponID)
 // Try testing FreeHL or FreeCS, do you see your own shells in thirdperson on firing
 // and (multiplayer) do other players see your shells on firing?
 
-// (based off w_glock_ejectshell)
+// TODO: rename to weapon_ejectShell_event
 #ifdef CLIENT
 void
 w_ejectshell_pistol(void)
 {
-	static void w_glock_ejectshell_death(void) {
+	
+	player pl = (player)pSeat->m_ePlayer;
+	
+	static void weapon_ejectshell_remove(void) {
 		remove(self);
 	}
-	static void w_glock_ejectshell_touch(void) {
-		if (other == world)
+	static void weapon_ejectshell_touch(void) {
+		if(other == world){
+			// TODO, use custom
 			Sound_Play(self, CHAN_BODY, "modelevent_shell.land");
+			//shellejectdata_t* mySED = aryShellEjectData[pl.iShellEjectType];
+			//Sound_Play(self, CHAN_BODY, (*mySED).sTouchSound);
+		}
 	}
+	vector vOrigin;
 	entity eShell = spawn();
+	
+	// TODO, use custom
 	setmodel(eShell, "models/shell.mdl");
+	//shellejectdata_t* mySED2 = aryShellEjectData[pl.iShellEjectType];
+	//setmodel(eShell, (*mySED2).sModelPath);
+	
 	eShell.solid = SOLID_BBOX;
 	eShell.movetype = MOVETYPE_BOUNCE;
 	eShell.drawmask = MASK_ENGINE;
@@ -2080,14 +2264,50 @@ w_ejectshell_pistol(void)
 	eShell.velocity += (v_forward * 0);
 	eShell.velocity += (v_right * 80);
 	eShell.velocity += (v_up * 100);
-	eShell.touch = w_glock_ejectshell_touch;
+	
+	eShell.touch = weapon_ejectshell_touch;
 
 	eShell.avelocity = [0,45,900];
-	eShell.think = w_glock_ejectshell_death;
+	eShell.think = weapon_ejectshell_remove;
 	eShell.nextthink = time + 2.5f;
 	setsize(eShell, [0,0,0], [0,0,0]);
-	setorigin(eShell, pSeat->m_eViewModel.origin + (v_forward * 26) + (v_right * 8) + (v_up * -4));
-}
+	
+	
+	
+	// TODO:  I think attachments supply a direction too, fuzzy on the details,
+	// player predraw (client/player.qc) definitely has something like that to put the
+	// viewmodel laser-start or flashlight sprite glow effect in the right place.
+	
+	// FreeHL way (forget all the rest if so)
+	vOrigin = pSeat->m_eViewModel.origin + (v_forward * 26) + (v_right * 8) + (v_up * -4);
+	
+	 /*
+	 // way #1
+	//vOrigin = pSeat->m_eViewModel.origin;
+	// way #2: old codebase way?
+	//vOrigin = pSeat->m_vecPredictedOrigin + [0, 0, getstatf(STAT_VIEWHEIGHT)];
+	
+	// way #3
+	// "pSeat->m_iVMBones + 1" gets the first attachment, add more to get other
+	// attachments, or places on the model that can be helpful to tie into
+	// Although this is still making shell ejections happen at the end of the muzzle
+	// and the other attachments just go further out?
+	vector vOffset = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 1);
+	printfline("WHAT?! %.2f %.2f %.2f", vOffset[0], vOffset[1], vOffset[2]);
+	
+	// way #3a
+	// assumes a vOrigin provided by earlier
+	//vOrigin += (v_forward * vOffset[0]);
+	//vOrigin += (v_right * -vOffset[1]);
+	//vOrigin += (v_up * vOffset[2]) ;
+	
+	// way #3b
+	// or only be vOffset
+	vOrigin = vOffset;
+	*/
+	setorigin(eShell, vOrigin);
+	
+}//weapon_ejectShell_event
 
 
 // also clientside only, dealing with configs

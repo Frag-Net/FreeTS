@@ -141,7 +141,8 @@ w_barrettm82_primary(void)
 	}
 
 	SoundPitched_Send(pl, SNDP_BARRETTM82_FIRE);
-
+	
+	randomChoice = random();
 	if(randomChoice < 0.5){
 		TS_Weapons_ViewAnimation(weaponseq_barrettm82::shoot, 31.0f/30.0f);
 	}else{

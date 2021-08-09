@@ -75,21 +75,11 @@ enum TS_Team{
 //TAGGG - Still need to remove some irrelevant ones like BUYZONE,, ESCAPEZONE, WON_T, etc.
 // Also starting at stat 34?  Feel some constant would be more comfortable for that, might not be an option though.
 enum { 
-	STAT_BUYZONE = STAT_BUILTIN_SEPARATOR,
+	STAT_MONEY = STAT_BUILTIN_SEPARATOR,
 	
-	STAT_MONEY,
-	STAT_FLAGS,
-	
-	STAT_PROGRESS,
-	STAT_TEAM,
+	//STAT_TEAM, // will we ever need that?
 	STAT_GAMETIME,
 	STAT_GAMESTATE,
-	/*
-	STAT_WON_T,
-	STAT_WON_CT,
-	*/
-
-	// NEW.
 	STAT_RULE_MONEYALLOWED,
 	STAT_RULE_MAXWEIGHTSLOTS
 

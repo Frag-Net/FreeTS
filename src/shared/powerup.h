@@ -53,7 +53,7 @@ typedef struct{
 	int typeID;
 	string sDisplayName;
 	int iSubmodelChoice;
-	void(void) vOnTouch;
+	void(void) funOnTouch;
 	
 	// SPECIFIC TO INSTANT EFFECT
 	// ...nothing.  Think about it, it's touched and it's gone.
@@ -69,17 +69,17 @@ typedef struct{
 	int typeID;
 	string sDisplayName;
 	int iSubmodelChoice;
-	void(void) vOnTouch;
+	void(void) funOnTouch;
 	
 	// SPECIFIC TO USABLE
 	// How long do I last once used?
 	float fActiveDuration;
 	// What do I do when used?  Generally set some stat(s)/flag(s) to get the effect,
 	// like telling bullets, player movement, etc. how much to be slowed down by for instance.
-	void(player pl) vOnUse;
+	void(player pl) funOnUse;
 	// At the end of my duration, how do I reset the things I set to act as though nothing happened?
 	// Should run on player death or disconnect (if necessary) too as to not leave lingering effects.
-	void(player pl) vOnEnd;
+	void(player pl) funOnEnd;
 	// Note that we have no think effect.  Nothing could be done frame-by-frame that would help
 	// any of the powerups do what it needs to.  Speed modifiers of any sort (slow-mo) can't force
 	// nearby stuff to move slower directly, it sets a flag on use that tells physics to move that stuff

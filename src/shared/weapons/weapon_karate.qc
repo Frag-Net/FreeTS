@@ -182,7 +182,7 @@ w_karate_primary(void)
 
 
 // moved to a method so that early termination does not stop too much.
-void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* hitRep, int* meleeAnimToPlay){
+void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAnimToPlay){
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	float curSpeed;
@@ -192,8 +192,8 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* hitRep, int* meleeAni
 	if(input_buttons & INPUT_BUTTON8){
 		//crouching?
 		//spin kick
-		(*meleeAnimToPlay) = 1;
-		(*hitRep) = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 40 * pl.fKarateStamina, 72);
+		meleeAnimToPlay = 1;
+		hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 40 * pl.fKarateStamina, 72);
 		weapon_base_setWholeAttackDelay(pl, 1);
 		pl.fMoveBlockDelay = time + 1;
 		pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.25, 1);
@@ -213,8 +213,8 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* hitRep, int* meleeAni
 		
 		if(dotproduct(_2d_dir, velocity_dir) <= -0.7 && GET_VIEW_ANGLES.x >= -55 && GET_VIEW_ANGLES.x <= 55){
 			// moving back-kick
-			(*meleeAnimToPlay) = 2;
-			(*hitRep) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 76, -v_forward);
+			meleeAnimToPlay = 2;
+			hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 76, -v_forward);
 			weapon_base_setWholeAttackDelay(pl, 1);
 			pl.fMoveBlockDelay = time + 1;
 			//TAGGG - NOTE. Why is this stamina-loss in original TS so high?
@@ -224,8 +224,8 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* hitRep, int* meleeAni
 			pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.40, 1);
 		}else{
 			//moving-kick
-			(*meleeAnimToPlay) = 0;
-			(*hitRep) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, v_forward);
+			meleeAnimToPlay = 0;
+			hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, v_forward);
 			weapon_base_setWholeAttackDelay(pl, 0.53);
 			pl.fMoveBlockDelay = time + 0.46;
 			pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.16, 1);
@@ -237,8 +237,8 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* hitRep, int* meleeAni
 	if(input_movevalues.x < -40 && GET_VIEW_ANGLES.x >= -55 && GET_VIEW_ANGLES.x <= 55){
 		//standing back-kick.
 		makevectors(GET_VIEW_ANGLES);
-		(*meleeAnimToPlay) = 2;
-		(*hitRep) = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, -v_forward);
+		meleeAnimToPlay = 2;
+		hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, -v_forward);
 		weapon_base_setWholeAttackDelay(pl, 1);
 		pl.fMoveBlockDelay = time + 1;
 		pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.3, 1);
@@ -247,8 +247,8 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE* hitRep, int* meleeAni
 	
 	
 	// DEFAULT: nothing special then.
-	(*meleeAnimToPlay) = 0;
-	(*hitRep) = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 66);
+	meleeAnimToPlay = 0;
+	hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 66);
 	weapon_base_setWholeAttackDelay(pl, 0.53);
 	pl.fMoveBlockDelay = time + 0.46;
 	
@@ -266,7 +266,10 @@ w_karate_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	float randomChoice;
-	MELEE_HIT_RESPONSE hitRep;
+	// a warning if this isn't defaulted, really?
+	// The whole point of being sent as a reference in determineSecondaryAttack is
+	// to give it a value though, I think this FTE warning is wrong, but satisfying anyway
+	MELEE_HIT_RESPONSE hitRep = MELEE_HIT_RESPONSE::NONE;
 	int meleeAnimToPlay = 0;
 	
 	if(pl.w_attack_next > 0){
@@ -279,7 +282,7 @@ w_karate_secondary(void)
 	
 	// TODO - base karate melee damage?  I forget.
 	
-	w_karate_determineSecondaryAttack(&hitRep, &meleeAnimToPlay);
+	w_karate_determineSecondaryAttack(hitRep, meleeAnimToPlay);
 	
 	//pl.fUncrouchBlockDelay = time + 1.0f;
 	//Animation_ShootWeapon( self );

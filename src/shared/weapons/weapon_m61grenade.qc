@@ -7,8 +7,8 @@ enum weaponseq_m61grenade{
 	throw_slide
 };
 
-BOOL weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
-//BOOL weapon_grenade_onInputRelease(player pl, weapondynamic_t arg_thisWeapon);
+void weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
+//void weapon_grenade_onInputRelease(player pl, weapondynamic_t arg_thisWeapon);
 
 
 void weapon_m61grenade_onPrimaryAttackRelease(player pl, weapondynamic_t arg_thisWeapon){
@@ -269,7 +269,7 @@ weapondata_throwable_t weapon_m61grenade =
 
 
 
-BOOL weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+void weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
 	
 	if(arg_thisWeapon.iCount == 0){
 		// what.  how.
@@ -302,7 +302,7 @@ BOOL weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int 
 		}
 	}
 	
-	return TRUE;
+	return;
 }
 
 
@@ -315,7 +315,7 @@ BOOL weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int 
 // It makes far more sense to just check for either input still being held-down in the think
 // method during the pullpin grenade phase.
 /*
-BOOLEAN weapon_grenade_onInputRelease(player pl, weapondynamic_t arg_thisWeapon){
+void weapon_grenade_onInputRelease(player pl, weapondynamic_t arg_thisWeapon){
 	if(pl.w_attack_next > 0){
 		// wait for w_attack_next to expire before doing logic against grenadeFireIndex choice
 		// (except above, checks a bit differently for spawning the grenade)
