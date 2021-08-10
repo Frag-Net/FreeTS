@@ -5,9 +5,10 @@
 #define SERVER
 #define TS
 
-//TAGGG - NEW.  TS definitely has penetration, and so should this then.
+// TS definitely has penetration, and so should this then.
 #define BULLETPENETRATION
-//TAGGG - NEW.  FreeCS also has this.  Do we want/need it?  Keeping for now.
+
+// NEW.  FreeCS also has this.  Do we want/need it?  Keeping for now.
 // NEVERMIND, requires a new var "cs_shotmultiplier" and any other prediction-related tie-ins as seen
 // in freeCS's shared/player.qc.
 // Would like to know what BULLETPATTERNS even does to see if FreeTS had anything like that.
@@ -49,7 +50,7 @@
 ../../../src/gs-entbase/server.src
 ../../../src/gs-entbase/shared.src
 
-//TAGGG - NEW
+
 ../shared/util.h
 ../shared/defs.h
 defs.h
@@ -66,13 +67,10 @@ entity/ts_powerup.h
 
 entity/TSWorldGun.h
 entity/TSThrownProjectile.h
-
+entity/TSGrenadeProjectile.h
 
 ../shared/include.src
 
-// <HL monster includes were here>
-
-//TAGGG - NEW
 entity/ts_bomb.qc
 entity/ts_dmhill.qc
 entity/ts_groundweapon.qc
@@ -90,6 +88,7 @@ entity/ts_wingiver.qc
 entity/TSWorldGun.qc
 entity/TSThrownProjectile.qc
 entity/TSAmmoPack.qc
+entity/TSGrenadeProjectile.qc
 
 ../shared/player.qc
 ../shared/inventory_logic.qc
@@ -118,9 +117,6 @@ spawn.qc
 
 
 
-//TAGGG - NEW
-// no server util.h/.qc, yet?
-//util.qc
 precache.qc
 //money.qc
 //spectator.qc

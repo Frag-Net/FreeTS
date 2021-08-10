@@ -316,7 +316,7 @@ TSMultiplayerRules::PlayerDeath(base_player pp)
 	}// excess negative health gib check
 	
 	
-	
+	printfline("setInventoryEquippedIndex Flag Z");
 	TS_resetViewModel(pl);
 	pl.setInventoryEquippedIndex(-1);
 

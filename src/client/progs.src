@@ -4,7 +4,6 @@
 #define CSQC
 #define CLIENT
 #define TS
-//TAGGG - do we want this?  FreeHL had it I think, FreeCS definitely does
 #define CLASSIC_VGUI
 #define GS_RENDERFX
 
@@ -23,7 +22,6 @@
 ../../../src/shared/defs.h
 ../../../src/client/defs.h
 
-//TAGGG - NEW
 ../shared/util.h
 util.h
 ../shared/defs.h
@@ -33,11 +31,11 @@ defs.h
 ../shared/weapons.h
 ../shared/player.h
 ../shared/powerup.h
+entity/shelleject.h
 
 clientinfo.h
 seatlocal.h
 
-//TAGGG - NEW
 precache.h
 ui.h
 ui_eventgrabber.h
@@ -60,8 +58,8 @@ hud.h
 
 ../shared/player.qc
 ../shared/inventory_logic.qc
+entity/shelleject.qc
 
-//TAGGG - NEW
 // old location of UI draw stuff
 
 hud_crosshair.qc
@@ -95,7 +93,6 @@ scoreboard.qc
 ../../../base/src/client/modelevent.qc
 
 
-//TAGGG - NEW
 util.qc
 precache.qc
 //../_base/client/voice.c

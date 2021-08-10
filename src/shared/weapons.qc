@@ -156,97 +156,114 @@ weapon_base_onPrimaryAttack_melee_fromCustomDirection(
 	
 	
 	if ( trace_fraction == 1.0 ) {
-		//did not hit anything
+		// did not hit anything
 		return MELEE_HIT_RESPONSE::NONE;
 	}
 
 	// ?   For what purpose now?
 	//vOrigin = trace_endpos - vTraceDirection * 2;
 
-	if ( trace_ent.takedamage ) {
+	
+	if ( trace_ent.takedamage ){
 		if ( trace_ent.iBleeds == TRUE ) {
 			FX_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
 			resultHit = MELEE_HIT_RESPONSE::FLESH;
+			// end early!
+			
+			//TAGGG - other Damage_Apply examples:
+			// snark hit
+			//Damage_Apply(this, world, 1, 0, DMG_GENERIC);
+			// crossbow bolt touch
+			//Damage_Apply(other, self.owner, Skill_GetValue("plr_xbow_bolt_monster", 50), WEAPON_CROSSBOW, DMG_BLUNT);
+			
+			// Also calling the damage type 'SLASH' for now, all dedicated melee weapons are knife or sword-like
+			Damage_Apply( trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_SLASH);
+			return resultHit;
 		}else{
-			//assume metal then?
-			resultHit = MELEE_HIT_RESPONSE::METAL;
+			// let the logic run as normal below, don't assume metal
+			// resultHit = MELEE_HIT_RESPONSE::METAL;
+			// return resultHit;
 		}
+	}
+
+	// Not very useful
+	//FX_Impact( IMPACT_MELEE, trace_endpos, trace_plane_normal );
+	
+	float surf;
+	string tex;
+	string texFilter;
+	
+	surf = getsurfacenearpoint(trace_ent, trace_endpos);
+	tex = getsurfacetexture(trace_ent, surf);
+	
+	// no strtolower needed on tex first?  Nuclide's shared/src/traceattack.qc doesn't
+	texFilter = Materials_FixName(tex);
+	
+	//--- HELPFUL PRINTOUT ---
+	//printfline("I hit: %s ::: %s", floatToChar((float)hash_get(hashMaterials, texFilter)), texFilter );
+	//printfline("weapon_base_onPrimaryAttack_melee_fromCustomDirection - I hit: %s", chr2str((float)hash_get(hashMaterials, texFilter)) );
+	
+	
+	// FLESH, BLOODYFLESH, SLOSH, FOLIAGE, ALIEN, and CONCRETE are all guesses.
+	// Several others might be anyway, just extra unsure of these, if any TS map
+	// even uses them.
+	switch ((float)hash_get(hashMaterials, texFilter)) {
 		
-		//TAGGG - other Damage_Apply examples:
-		// snark hit
-		//Damage_Apply(this, world, 1, 0, DMG_GENERIC);
-		// crossbow bolt touch
-		//Damage_Apply(other, self.owner, Skill_GetValue("plr_xbow_bolt_monster", 50), WEAPON_CROSSBOW, DMG_BLUNT);
-		
-		// Also calling the damage type 'SLASH' for now, all dedicated melee weapons are knife or sword-like
+	case MATID_FLESH:
+	case MATID_BLOODYFLESH:
+	case MATID_SLOSH:
+	case MATID_FOLIAGE:
+		FX_Impact_Melee(IMPACT_METAL, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::SOFT;
+		break;
+	case MATID_ALIEN:
+	case MATID_CONCRETE:
+	case MATID_GRATE:
+	case MATID_VENT:
+		FX_Impact_Melee(IMPACT_METAL, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::METAL;
+		break;
+	case MATID_METAL:
+		FX_Impact_Melee(IMPACT_METAL, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::METAL;
+		break;
+	case MATID_COMPUTER:
+		FX_Impact_Melee(IMPACT_COMPUTER, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::METAL;
+		break;
+	case MATID_DIRT:
+		FX_Impact_Melee(IMPACT_DIRT, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::SOFT;
+		break;
+	case MATID_WOOD:
+		FX_Impact_Melee(IMPACT_WOOD, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::SOFT;
+		break;
+	case MATID_GLASS:
+		FX_Impact_Melee(IMPACT_GLASS, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::METAL;
+		break;
+	case MATID_SNOW:
+		//'N' means snow apparently.
+		FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::SOFT;
+		break;
+	case MATID_TILE:
+		FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::METAL;
+		break;
+	default:
+		FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
+		resultHit = MELEE_HIT_RESPONSE::METAL;
+		break;
+	}
+	
+	
+	if ( trace_ent.takedamage ){
+		// Deal it now then
 		Damage_Apply( trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_SLASH);
-	} else {
-		// not a damage-able?  okay.
-		//FX_Impact( IMPACT_MELEE, trace_endpos, trace_plane_normal );
-		
-		float surf;
-		string tex;
-		
-		surf = getsurfacenearpoint(trace_ent, trace_endpos);
-		tex = getsurfacetexture(trace_ent, surf);
-		
-		
-#ifndef TEXTURE_LENGTH_LIMIT
-			//nothing to do here.
-#else
-			//Enforce the cutoff.
-			//...I know texture names above weren't enforced to be lowercase,
-			// but isn't it a good idea to do it here anyway?
-			tex = strtolower(substring(tex, 0, TEXTURE_LENGTH_LIMIT));
-#endif
-		
-		//printfline("I hit: %s ::: %s", floatToChar((float)hash_get(hashMaterials, tex)), tex );
-		printfline("weapon_base_onPrimaryAttack_melee_fromCustomDirection - I hit: %s", chr2str((float)hash_get(hashMaterials, tex)) );
-		
-		switch ((float)hash_get(hashMaterials, tex)) {
-		case 'G':
-		case 'V':
-			FX_Impact_Melee(IMPACT_METAL, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::METAL;
-			break;
-		case 'M':
-			FX_Impact_Melee(IMPACT_METAL, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::METAL;
-			break;   //...why did we forget to put a break here?  no reason, right?
-		//TAGGG - handling computers separately.
-		case 'P':
-			FX_Impact_Melee(IMPACT_COMPUTER, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::METAL;
-			break;
-		//TAGGG - handle dirt separately.
-		case 'D':
-			FX_Impact_Melee(IMPACT_DIRT, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::SOFT;
-			break;
-		case 'W':
-			FX_Impact_Melee(IMPACT_WOOD, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::SOFT;
-			break;
-		case 'Y':
-			FX_Impact_Melee(IMPACT_GLASS, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::METAL;
-			break;
-		case 'N':
-			//'N' means snow apparently.
-			FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::SOFT;
-			break;
-		case 'T':
-			FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::METAL;
-			break;
-		default:
-			FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
-			resultHit = MELEE_HIT_RESPONSE::METAL;
-			break;
-		}
-		
-	}// trace_ent.takedamage check
+	}
+	
 #endif
 
 	return resultHit;
@@ -502,13 +519,6 @@ weapon_shotgun_reload(
 
 
 
-
-#ifdef CLIENT
-void viewEv_playShotgunInsertShellSound(void){
-	player pl = (player)self;
-	sound(pl, CHAN_AUTO, "weapons/insert-shell.wav", 1, ATTN_NONE);
-}
-#endif
 
 
 // NOTICE - shotguns with typical shotgun reload logic should use this method at all
@@ -1821,17 +1831,15 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 
 
 
-// Not to be confused with the clientside-only event "weapon_ejectShell_event".
+// Not to be confused with the clientside-only event "viewEv_weapon_ejectShell".
 // This is called by weapons to add the event, handles setting the shell-type global
 // for it to see.  If shell-ejects are done serverside, that would not be an amazing
 // idea. Per-player would be better.
 void weapon_ejectShell(int arg_shellEjectType){
-	//ary_shellEjectData[arg_shellEjectType]...
-	
 #ifdef CLIENT
 	player pl = (player)self;
 	pl.iShellEjectType = arg_shellEjectType;
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
+	View_AddEvent(viewEv_weapon_ejectShell, 0.0f);
 #else
 	// anything for the playermodel?  Also only do that for all players except the 
 	// localplayer if using a viewmodel.
@@ -2217,6 +2225,7 @@ getAmmoTypeOfWeapon(int arg_weaponID)
 
 
 
+
 // This is based off what the HL glock does, adjust with custom shell-choices per
 // different weapons that use them.
 // Is HL's "w_shotgun_ejectshell" even any different from this besides shell-model
@@ -2227,87 +2236,24 @@ getAmmoTypeOfWeapon(int arg_weaponID)
 // Try testing FreeHL or FreeCS, do you see your own shells in thirdperson on firing
 // and (multiplayer) do other players see your shells on firing?
 
-// TODO: rename to weapon_ejectShell_event
 #ifdef CLIENT
+
 void
-w_ejectshell_pistol(void)
+viewEv_playShotgunInsertShellSound(void)
 {
-	
+	// is it wise to trust 'self' in events?  No idea
+	//player pl = (player)self;
 	player pl = (player)pSeat->m_ePlayer;
 	
-	static void weapon_ejectshell_remove(void) {
-		remove(self);
-	}
-	static void weapon_ejectshell_touch(void) {
-		if(other == world){
-			// TODO, use custom
-			Sound_Play(self, CHAN_BODY, "modelevent_shell.land");
-			//shellejectdata_t* mySED = aryShellEjectData[pl.iShellEjectType];
-			//Sound_Play(self, CHAN_BODY, (*mySED).sTouchSound);
-		}
-	}
-	vector vOrigin;
-	entity eShell = spawn();
-	
-	// TODO, use custom
-	setmodel(eShell, "models/shell.mdl");
-	//shellejectdata_t* mySED2 = aryShellEjectData[pl.iShellEjectType];
-	//setmodel(eShell, (*mySED2).sModelPath);
-	
-	eShell.solid = SOLID_BBOX;
-	eShell.movetype = MOVETYPE_BOUNCE;
-	eShell.drawmask = MASK_ENGINE;
-	eShell.angles = [pSeat->m_eViewModel.angles[0], pSeat->m_eViewModel.angles[1], 0];
-	eShell.velocity = pSeat->m_vecPredictedVelocity;
+	sound(pl, CHAN_AUTO, "weapons/insert-shell.wav", 1, ATTN_NONE);
+}
 
-	makevectors(pSeat->m_eViewModel.angles);
-	eShell.velocity += (v_forward * 0);
-	eShell.velocity += (v_right * 80);
-	eShell.velocity += (v_up * 100);
-	
-	eShell.touch = weapon_ejectshell_touch;
-
-	eShell.avelocity = [0,45,900];
-	eShell.think = weapon_ejectshell_remove;
-	eShell.nextthink = time + 2.5f;
-	setsize(eShell, [0,0,0], [0,0,0]);
-	
-	
-	
-	// TODO:  I think attachments supply a direction too, fuzzy on the details,
-	// player predraw (client/player.qc) definitely has something like that to put the
-	// viewmodel laser-start or flashlight sprite glow effect in the right place.
-	
-	// FreeHL way (forget all the rest if so)
-	vOrigin = pSeat->m_eViewModel.origin + (v_forward * 26) + (v_right * 8) + (v_up * -4);
-	
-	 /*
-	 // way #1
-	//vOrigin = pSeat->m_eViewModel.origin;
-	// way #2: old codebase way?
-	//vOrigin = pSeat->m_vecPredictedOrigin + [0, 0, getstatf(STAT_VIEWHEIGHT)];
-	
-	// way #3
-	// "pSeat->m_iVMBones + 1" gets the first attachment, add more to get other
-	// attachments, or places on the model that can be helpful to tie into
-	// Although this is still making shell ejections happen at the end of the muzzle
-	// and the other attachments just go further out?
-	vector vOffset = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 1);
-	printfline("WHAT?! %.2f %.2f %.2f", vOffset[0], vOffset[1], vOffset[2]);
-	
-	// way #3a
-	// assumes a vOrigin provided by earlier
-	//vOrigin += (v_forward * vOffset[0]);
-	//vOrigin += (v_right * -vOffset[1]);
-	//vOrigin += (v_up * vOffset[2]) ;
-	
-	// way #3b
-	// or only be vOffset
-	vOrigin = vOffset;
-	*/
-	setorigin(eShell, vOrigin);
-	
-}//weapon_ejectShell_event
+void
+viewEv_weapon_ejectShell(void)
+{
+	player pl = (player)pSeat->m_ePlayer;
+	CShellEject::generate(pl.iShellEjectType);
+}//viewEv_weapon_ejectShell
 
 
 // also clientside only, dealing with configs

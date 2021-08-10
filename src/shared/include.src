@@ -21,11 +21,9 @@ init.h
 entities.h
 flags.h
 // old player.h location
-//TAGGG - weapon_common REMOVAL.
 ../../../base/src/shared/weapon_common.h
 
 
-//TAGGG - NEW
 //gamerules.h
 precache.h
 
@@ -38,16 +36,12 @@ precache.h
 
 
 
-
-
-//TAGGG - NEW
 //player.h
 //animations.h
 inventory_logic.h
 event_enum.h
 event_custom.h
 //init.h
-effects.h
 
 
 // Nope!  Leave this one up to per-project.
@@ -59,21 +53,26 @@ animations.qc
 pmove.qc
 pmove_water.qc
 
-fx_blood.qc
-fx_breakmodel.qc
-fx_explosion.qc
-fx_gibhuman.qc
+//TAGGG
+// refer to the FreeHL fx_ files instead of forking
+// (remove any that turn out to never be involved)
+../../../valve/src/shared/fx_blood.qc
+../../../valve/src/shared/fx_breakmodel.qc
+../../../valve/src/shared/fx_explosion.qc
+../../../valve/src/shared/fx_gibhuman.qc
 ../../../base/src/shared/fx_spark.qc
+// except that one
 fx_impact.qc
+// NEW
+fx_ts_explosion_grenade.qc
+
 
 // Nope!  Leave this one up to per-project.
 //inventory_logic.qc
 event_custom.qc
-effects.qc
 
 
 
-//TAGGG - NEW
 util.qc
 precache.qc
 sound_pitched.qc
@@ -135,7 +134,6 @@ weapons/weapon_sealknife.qc
 ammo.qc
 weapons.qc
 powerup.qc
-//TAGGG - weapon_common REMOVAL.
 ../../../base/src/shared/weapon_common.qc
 input.qc
 

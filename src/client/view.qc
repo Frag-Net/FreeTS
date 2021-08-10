@@ -15,17 +15,15 @@
  */
 
 
-
 // Also, Nuclide offers Weapons_SetGeomset for calling "setcustomskin" too, but one string
 // at a time.  Don't really know if that way or the current way (cumulative string for
 // many commands delimited in one setcustomskin call) is any better, so leaving this as
 // it is for now.
 
 
-
-// NEW
-void TS_SetViewModelFromStats(){
-	
+void
+TS_SetViewModelFromStats(void)
+{
 	player pl = (player)pSeat->m_ePlayer;
 	entity vm = pSeat->m_eViewModel;
 	entity mflash = pSeat->m_eMuzzleflash;
@@ -112,8 +110,9 @@ void TS_SetViewModelFromStats(){
 
 
 // On any frame, see if something about the current viewmodel needs to be changed
-void View_RoutineCheck(void){
-	
+void
+View_RoutineCheck(void)
+{
 	
 	player pl = (player)pSeat->m_ePlayer;
 	entity vm = pSeat->m_eViewModel;
@@ -126,7 +125,6 @@ void View_RoutineCheck(void){
 	
 	dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	
 	if(pl.prev_forceBodygroup1Submodel != dynaRef.forceBodygroup1Submodel){
 		
 		if(dynaRef.forceBodygroup1Submodel > 0){
@@ -137,10 +135,7 @@ void View_RoutineCheck(void){
 		pl.prev_forceBodygroup1Submodel = dynaRef.forceBodygroup1Submodel;
 	}
 	
-	
-	
 }//View_RoutineCheck
-
 
 
 // vm is pSeat->m_eViewModel passed along from Nuclide's View_DrawViewModel
@@ -148,14 +143,32 @@ void
 View_UpdateWeapon(entity vm, entity mflash)
 {
 	player pl = (player)pSeat->m_ePlayer;
+	
+	
+	if(autocvar_cl_printoutspam == 1){
+		printfline("STATUS: %i==%d - %i", pSeat->m_iLastWeapon, pl.activeweapon, pl.inventoryEquippedIndex);
+	}
+
+	
 
 	/* only bother upon change */
 	if (pSeat->m_iLastWeapon == pl.activeweapon) {
 		
+		/*
+		if(pl.activeweapon == 0 && pl.inventoryEquippedIndex != -1){
+			// what??
+			pl.setInventoryEquippedIndex(pl.inventoryEquippedIndex);
+		}else{
+			View_RoutineCheck();
+			return;
+		}
+		*/
 		View_RoutineCheck();
 		return;
 	}
 	printfline("View_UpdateWeapon: change detected: %i -> %d", pSeat->m_iLastWeapon, pl.activeweapon);
+	printfline("and how about the others %d %i", pl.activeweapon, pl.inventoryEquippedIndex);
+	
 	
 	pSeat->m_iOldWeapon = pSeat->m_iLastWeapon;
 	pSeat->m_iLastWeapon = pl.activeweapon;
@@ -166,7 +179,6 @@ View_UpdateWeapon(entity vm, entity mflash)
 		return;
 	}
 
-	
 	//printfline("View_UpdateWeapon: change: %d vs %d", pSeat->m_iLastWeapon, pl.activeweapon);
 	
 	// Call this to do a few other things for any weapon change
@@ -177,6 +189,8 @@ View_UpdateWeapon(entity vm, entity mflash)
 	if(pl.inventoryEquippedIndex != -1){
 		Weapons_Draw();
 	}
+	
+	
 	
 	//No longer a var!  Oops
 	//pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1;
@@ -193,6 +207,10 @@ View_UpdateWeapon(entity vm, entity mflash)
 	//TAGGG - NEW VAR.
 	SAVE_STATE(pl.w_attack_akimbo_next);
 	
+	//TAGGG - also new line.  It is a good idea to reset the event
+	// on changing models, right?
+	pSeat->m_pEventCall = NULL;
+	
 	skel_delete( mflash.skeletonindex );
 	mflash.skeletonindex = skel_create( vm.modelindex );
 	pSeat->m_iVMBones = skel_get_numbones( mflash.skeletonindex ) + 1;
@@ -202,18 +220,9 @@ View_UpdateWeapon(entity vm, entity mflash)
 }
 
 
-
-
-
-//TAGGG - NEW METHODS
 void
 resetViewModel(void)
 {
-	
-	//TAGGG - CRITICAL. NOT ANYMORE!!!
-	//return;
-	
-	
 	printfline("resetViewModel called.");
 	
 	if(pSeat->m_ePlayer == NULL){
@@ -237,7 +246,7 @@ resetViewModel(void)
 	pl.setInventoryEquippedIndex(-1);  //do we have to?
 	*/
 	
-}//END OF resetViewModel
+}// resetViewModel
 
 
 
@@ -248,33 +257,6 @@ void View_HandleZoom(void){
 	if(pl == NULL){
 		return;
 	}
-	
-	/*
-	if(getplayerkeyvalue(player_localnum, "*spec") != "0"){
-		
-		//TAGGG - CRITICAL.
-		// WAIT!  This is a spectator, so...?  can we even trust pSeat->ePlayer to be a player?
-		// Confusing.
-		// That leads me to believe that either zoom-related vars should be
-		// pSeat-><clienttdata> - specific, or not handled here at all.
-		
-		// If our FOV was anything but 1, force it so.
-		// Spectator mode instantly forgets any scope-related FOV mods.
-		// Nuclide might not be calling setsensitivityscaler, so doing it here.
-		// No problem if the setproperty is a little redundant as that might be happening.
-		if(pl.flZoomLevel < 1.0 || pl.viewzoom < 1.0){
-			pl.flZoomLerp = 0;
-			pl.flZoomLevel = 1;
-			pl.viewzoom = 1;
-			setproperty(VF_AFOV, cvar("fov") * pl.flZoomLevel);
-			setsensitivityscaler(pl.flZoomLevel);
-		}
-		// No further zoom logic
-		
-		return;
-	}
-		*/
-	
 	
 	//TAGGG - any references to STAT_VIEWZOOM are now garbage.
 	// Rely on pl.flTargetZoom instead, it's sent to the client every frame
@@ -319,34 +301,6 @@ void View_HandleZoom(void){
 	//setsensitivityscaler(pl.viewzoom);
 }
 
-
-vector
-View_ShakeCalculate(vector vecInputAngles)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	if(pl == NULL)return vecInputAngles; //forget this
-	
-	// you might not want to force this every frame unless you like vomiting.
-	//pl.flViewShake = 2;
-	
-	if (pl.flViewShake > 0.0f) {
-		vecInputAngles[0] += (random() * pl.flViewShake) * 3;
-		vecInputAngles[1] += (random() * pl.flViewShake) * 3;
-		vecInputAngles[2] += (random() * pl.flViewShake) * 3;
-		pl.flViewShake -= clframetime;
-	}
-
-	return vecInputAngles;
-}
-
-
-
-void
-View_ShakeCreate(int iLevel)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	pl.flViewShake = iLevel / 128;
-}
 
 
 

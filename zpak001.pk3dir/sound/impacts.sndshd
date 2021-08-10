@@ -1,0 +1,204 @@
+
+// Volume modifiers for most of these, up to taste.
+
+sfx_impact.default
+{
+	volume 0.65
+	attenuation normal
+	sample debris/cement1.wav
+	sample debris/cement2.wav
+	sample debris/cement3.wav
+	sample debris/cement4.wav
+	sample debris/cement5.wav
+	sample debris/cement6.wav
+}
+
+// Half-life leftover but using the TS default anyway
+sfx_impact.alien
+{
+	volume 0.65
+	attenuation normal
+	sample debris/cement1.wav
+	sample debris/cement2.wav
+	sample debris/cement3.wav
+	sample debris/cement4.wav
+	sample debris/cement5.wav
+	sample debris/cement6.wav
+}
+
+// Half-Life leftover, I doubt any TS maps even use this
+sfx_impact.flesh
+{
+	volume 0.65
+	attenuation normal
+	sample debris/flesh1.wav
+	sample debris/flesh2.wav
+	sample debris/flesh3.wav
+	sample debris/flesh5.wav
+	sample debris/flesh6.wav
+	sample debris/flesh7.wav
+}
+
+// A guess?
+sfx_impact.foliage
+{
+	volume 0.50
+	attenuation normal
+	sample debris/gravel1.wav
+	sample debris/gravel2.wav
+	sample debris/gravel3.wav
+	sample debris/gravel4.wav
+}
+
+// Strangely, some surfaces like the remote control and some stereo faces in ts_bikini sound
+// like glass when hit, and use the computer material.  So we'll treat that as a rule.
+sfx_impact.computer
+{
+	volume 0.65
+	attenuation normal
+	sample debris/glass1.wav
+	sample debris/glass2.wav
+	sample debris/glass3.wav
+	sample debris/glass4.wav
+}
+
+sfx_impact.dirt
+{
+	volume 0.65
+	attenuation normal
+	sample debris/gravel1.wav
+	sample debris/gravel2.wav
+	sample debris/gravel3.wav
+	sample debris/gravel4.wav
+}
+
+sfx_impact.vent
+{
+	volume 0.75
+	attenuation normal
+	sample debris/metal1.wav
+	sample debris/metal2.wav
+	sample debris/metal3.wav
+	sample debris/metal4.wav
+	sample debris/metal5.wav
+}
+
+sfx_impact.grate
+{
+	volume 0.75
+	attenuation normal
+	sample debris/metal1.wav
+	sample debris/metal2.wav
+	sample debris/metal3.wav
+	sample debris/metal4.wav
+	sample debris/metal5.wav
+}
+
+sfx_impact.metal
+{
+	volume 0.65
+	attenuation normal
+	sample debris/metal1.wav
+	sample debris/metal2.wav
+	sample debris/metal3.wav
+	sample debris/metal4.wav
+	sample debris/metal5.wav
+}
+
+sfx_impact.glass
+{
+	volume 0.75
+	attenuation normal
+	sample debris/glass1.wav
+	sample debris/glass2.wav
+	sample debris/glass3.wav
+	sample debris/glass4.wav
+}
+
+// guess?  This type is never even referred to
+sfx_impact.sand
+{
+	volume 0.65
+	attenuation normal
+	sample debris/gravel1.wav
+	sample debris/gravel2.wav
+	sample debris/gravel3.wav
+	sample debris/gravel4.wav
+}
+
+sfx_impact.slosh
+{
+	volume 0.50
+	attenuation normal
+	sample debris/cement1.wav
+	sample debris/cement2.wav
+	sample debris/cement3.wav
+	sample debris/cement4.wav
+	sample debris/cement5.wav
+	sample debris/cement6.wav
+}
+
+sfx_impact.snow
+{
+	volume 0.65
+	attenuation normal
+	sample debris/gravel1.wav
+	sample debris/gravel2.wav
+	sample debris/gravel3.wav
+	sample debris/gravel4.wav
+}
+
+sfx_impact.tile
+{
+	volume 0.65
+	attenuation normal
+	sample debris/cement1.wav
+	sample debris/cement2.wav
+	sample debris/cement3.wav
+	sample debris/cement4.wav
+	sample debris/cement5.wav
+	sample debris/cement6.wav
+}
+
+sfx_impact.wood
+{
+	volume 0.65
+	attenuation normal
+	sample debris/wood1.wav
+	sample debris/wood2.wav
+	sample debris/wood3.wav
+}
+
+sfx_impact.concrete
+{
+	volume 0.65
+	attenuation normal
+	sample debris/cement1.wav
+	sample debris/cement2.wav
+	sample debris/cement3.wav
+	sample debris/cement4.wav
+	sample debris/cement5.wav
+	sample debris/cement6.wav
+}
+
+
+sfx_impact_melee.default
+{
+	volume 0.65
+	attenuation normal
+	sample player/pl_step1.wav
+	sample player/pl_step2.wav
+	sample player/pl_step3.wav
+	sample player/pl_step4.wav
+}
+sfx_impact_melee.dirt
+{
+	volume 0.65
+	attenuation normal
+	sample player/pl_dirt1.wav
+	sample player/pl_dirt2.wav
+	sample player/pl_dirt3.wav
+	sample player/pl_dirt4.wav
+}
+
+

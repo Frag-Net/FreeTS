@@ -19,12 +19,9 @@ enum pwuptype_choice{
 
 
 
-
-
 #ifdef SERVER
 
 class ts_powerup:CBaseEntity{
-	
 	
 	//key values?
 	pwuptype_choice m_ePwuptype;
@@ -45,19 +42,22 @@ class ts_powerup:CBaseEntity{
 	vector mem_origin;
 	
 	void(void) ts_powerup;
+	static void(void) precache;
 	virtual void(void) CustomInit;
 	//virtual void(void) restartAnim;
 	virtual float(entity pvsent, float cflags) send;
 	virtual void(void) Respawn;
-	virtual void(void) Think;
-	virtual void(void) Touch;
+	virtual void(void) think;
+	virtual void(void) touch;
 	virtual void(void) determineDataID;
 	virtual void(void) declareDisposable;
 };
 
 
 
-void ts_powerup::ts_powerup(void){
+void
+ts_powerup::ts_powerup(void)
+{
 	
 	// And why don't we just receive these as name/value pairs like clientside does?
 	// I HAVE NO CLUE.
@@ -96,10 +96,18 @@ void ts_powerup::ts_powerup(void){
 	
 	//gflags |= GF_CANRESPAWN;
 	
-}//END OF constructor
+}// constructor
+
+void
+ts_powerup::precache(void)
+{
+	precache_model(POWERUP_MODEL_PATH);
+}
 
 
-void ts_powerup::CustomInit(void){
+void
+ts_powerup::CustomInit(void)
+{
 	
 	
 	expireTime = -1;  //assumption.
@@ -184,8 +192,8 @@ void ts_powerup::CustomInit(void){
 	this.SendEntity = send;
 	this.SendFlags = 1;
 	
-	this.touch = ts_powerup::Touch;
-	think = ts_powerup::Think;
+	//this.touch = ts_powerup::Touch;
+	//this.think = ts_powerup::Think;
 	this.nextthink = time + 0;
 	
 	// ??? SERVERTEST
@@ -194,7 +202,7 @@ void ts_powerup::CustomInit(void){
 	//m_oldModel = POWERUP_MODEL_PATH;
 	//RendermodeUpdate();
 	
-}//END OF CustomInit
+}// CustomInit
 
 
 
@@ -223,16 +231,20 @@ float ts_powerup::send(entity pvsent, float cflags)
 
 
 
-void ts_powerup::Respawn(void){
+void
+ts_powerup::Respawn(void)
+{
 	
 	CustomInit();
 	
-}//END OF Respawn
+}// Respawn
 
 
 
 
-void ts_powerup::Think(void){
+void
+ts_powerup::think(void)
+{
 	
 	//TAGGG - CRITICAL.  DISCUSS.
 	// Is it ok to resend the entity to the client(s) just because our position changed?
@@ -258,10 +270,12 @@ void ts_powerup::Think(void){
 	
 	this.nextthink = time + 0.01;
 	
-}//END OF think
+}// think
 
 
-void ts_powerup::Touch(void){
+void
+ts_powerup::touch(void)
+{
 	
 	
 	if(other.classname != "player"){
@@ -289,15 +303,17 @@ void ts_powerup::Touch(void){
 		this.SendFlags = 1;
 	}else{
 		//We were going to expire at some point?  Do so now then, no need to hide to never be respawned and deleted later.
-		remove(self);
+		remove(this);
 	}
 	
-}//END OF Touch
+}// touch
 
 
 
 
-void ts_powerup::determineDataID(void){
+void
+ts_powerup::determineDataID(void)
+{
 	int bitsToChoose[9];
 	
 	// really.. this is just setting bitsToChoose[0] to 0.  Stops a 'uninitialized variable'
@@ -409,10 +425,12 @@ void ts_powerup::determineDataID(void){
 	}
 	
 	
-}//END OF determineDataID
+}// determineDataID
 
 
-void ts_powerup::declareDisposable(void){
+void
+ts_powerup::declareDisposable(void)
+{
 	
 	// Since we clearly weren't spawned by the map for this method to be called,
 	// we need to do what "Respawn" would.  The would-be constructor stuff.
@@ -438,7 +456,7 @@ void ts_powerup::declareDisposable(void){
 	entityRemoveRespawnFlag(this);
 	
 	
-}//END OF declareDisposable
+}// declareDisposable
 
 
 
@@ -464,19 +482,26 @@ class ts_powerup:CBaseEntity{
 	virtual void(string strField, string strKey) SpawnKey;
 	
 	virtual float(void) predraw;
+	
+	// Change to customphysics to override that without needing to hook it up
+	// at startup, if this is ever needed?
 	//virtual void(void)Physics;
-	//virtual void(void)Think;
+	
+	//virtual void(void)think;
 };
 
 
 
-void ts_powerup::ts_powerup(void){
-	
-}//END OF constructor
+void
+ts_powerup::ts_powerup(void)
+{
+}
 
 
 // Use me instead for startup stuff expected after reading spawnflags.
-void ts_powerup::Initialized(void){
+void
+ts_powerup::Initialized(void)
+{
 	//base method is empty, this is pointless
 	//CBaseEntity::Initialized();
 	
@@ -506,12 +531,14 @@ void ts_powerup::Initialized(void){
 	
 	//ts_powerup selfRef = this;
 	
-}//END OF Initialized
+}// Initialized
 
 
 
 
-void ts_powerup::updateAnim(void){
+void
+ts_powerup::updateAnim(void)
+{
 	
 	//this.lerpfrac = 1;
 	//this.baseframe1time = 0;
@@ -534,12 +561,14 @@ void ts_powerup::updateAnim(void){
 	//this.nextthink = time + 0.017;
 	//this.nextthink = time + 0.0;
 	
-}//END OF restartAnim
+}// restartAnim
 
 
 
 
-void Powerup_Parse(void){
+void
+Powerup_Parse(void)
+{
 	
 	ts_powerup selfRef;
 
@@ -641,11 +670,12 @@ void Powerup_Parse(void){
 	selfRef.drawmask = MASK_ENGINE;
 	
 	
-}//END OF Powerup_Parse
+}// Powerup_Parse
 
 
 
-float ts_powerup::predraw(void)
+float
+ts_powerup::predraw(void)
 {
 	ts_powerup selfRef = (ts_powerup)self;
 	
@@ -663,19 +693,20 @@ void ts_powerup::Physics(void){
 	
 	this.frame1time += clframetime;
 	
-}//END OF Physics
+}// Physics
 
 void ts_powerup::Think(void){
 	
 	this.frame1time += clframetime;
 	this.nextthink = time + 0;
 	
-}//END OF Physics
+}// Physics
 */
 
 
 
-void ts_powerup::SpawnKey(string strField, string strKey)
+void
+ts_powerup::SpawnKey(string strField, string strKey)
 {
 	//printfline("SpawnKey:: ts_powerup: (%s: %s)", strField, strKey);
 

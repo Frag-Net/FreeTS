@@ -73,6 +73,15 @@ ClientGame_EventParse(float fHeader)
 
 		FX_Explosion(vExploPos);
 		break;
+	case EVENT_TS::FX_TS_EXPLOSION_GRENADE:
+		vector vExploPos2;
+
+		vExploPos2[0] = readcoord();
+		vExploPos2[1] = readcoord();
+		vExploPos2[2] = readcoord();
+
+		FX_TS_Explosion_Grenade(vExploPos2);
+		break;
 	case EV_MODELGIB:
 		vector vecPos;
 		vecPos[0] = readcoord();
@@ -178,20 +187,6 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::PLAYER_DEATH:
 		EV_PlayerDeath();
 		break;
-	case EVENT_TS::EFFECT_EXPLOSION:
-		vecOrigin[0] = readcoord();
-		vecOrigin[1] = readcoord();
-		vecOrigin[2] = readcoord();
-		EV_Effect_Explosion( vecOrigin );
-		break;
-	case EVENT_TS::EFFECT_SHAKE:
-		iType = readbyte();
-		EV_Effect_ScreenShake( iType );
-		break;
-	case EVENT_TS::TEST:
-		//printfline("EVENT_TS::TEST HAPPENED");
-		//clearscene();
-		break;
 	case EVENT_TS::SOUNDPITCHED:
 		SoundPitched_Receive();
 		break;
@@ -200,12 +195,16 @@ ClientGame_EventParse(float fHeader)
 		break;
 	/*
 	// can this even happen anymore?
-	// If a drop-weapon call can be signaled by the server, not shared with the client & server
-	// reaching a drop call independently, then yes.
+	// If a drop-weapon call can be signaled by the server, not shared with th
+	// client and server reaching a drop call independently, then yes.
 	case EVENT_TS::DROP_WEAPON:
 		EV_TS_playerDropWeapon(pl);
 		break;
 	*/
+	case EVENT_TS::TEST:
+		//printfline("EVENT_TS::TEST HAPPENED");
+		//clearscene();
+		break;
 	}
 		
 }

@@ -60,7 +60,7 @@ TS_Weapon_Draw(player pl, int weaponEquipped, BOOL useAkimbo ) {
 	}
 	
 	
-	
+	printfline("setInventoryEquipped Flag E");
 	pl.setInventoryEquippedIndex_Akimbo(weaponEquipped, useAkimbo);
 	// actually no, I guess we just let rendering pick up on this to know when to call draw
 	// MMMMMmmmmmm sounds odd if Draw containts non-rendering-related startup script,
@@ -122,8 +122,8 @@ TS_Weapon_Drop() {
 
 
 
-// CRITICAL!  TS_playerEquippedWeapon methods dummied out to stop conflicts with
-// the new Nuclide way
+// This version does not send a message to the client.  It assumes the server and client
+// are running the same commands so there is no need for that.
 void
 TS_playerEquippedWeapon_Shared(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	/*
@@ -197,8 +197,8 @@ TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	_TS_playerEquippedWeapon(pl, newWeaponEquipped, useAkimbo);
 	
 	// force a sendoff soon!
-	pl.activeweapon_net = 255;
-	pl.inventoryEquippedIndex_net = 255;
+	//pl.activeweapon_net = 255;
+	//pl.inventoryEquippedIndex_net = 255;
 	
 }
 
@@ -316,9 +316,7 @@ EV_PlayerDeath(void){
 // This needs no clientside logic equivalent to be mirrored.
 /*
 void _TS_playerDropWeapon(player pl){
-	
 	TS_Weapon_Drop();
-	
 }
 */
 // TODO.  Do anything clientside here too, maybe?  Unsure.
@@ -327,13 +325,10 @@ void _TS_playerDropWeapon(player pl){
 void
 TS_playerDropWeapon(void){
 	sendevent("TS_playerDropWeapon", "");
-}// TS_playerDropWeapon
+}
 /*
-//This is a received call from the server - no need to update it back
-//NOTICE - this is the callback telling us to do something.  Yes do something.
 void EV_TS_playerDropWeapon(player pl){
 	//pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
-	
 	_TS_playerDropWeapon(pl);
 }
 */
@@ -348,31 +343,30 @@ _TS_playerDropWeapon(void){
 	
 }//_TS_playerDropWeapon
 
-//The server set the equippedWeapon, and needs to tell the client to keep it in synch
+// Will this ever be needed?  When weapons can be knocked out of other player's
+// hands by some karate attacks and possibly cold-cocking (I forget), probably.
 void
 TS_playerDropWeapon(void){
 	player pl = (player)self;
 	//pSeat->ePlayer = self = findfloat(world, entnum, player_localentnum);
 	_TS_playerDropWeapon();
 	
-	
+	// No need for this message, the changed weapon value should be 
+	// cause for an update that handles that.
+	// Unless there were anything special about losing a weapon that way
+	// that the client neets to be aware of?  Can't think of anything though.
+	/*
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EVENT_TS::DROP_WEAPON );
 	msg_entity = pl;
 	multicast( [0,0,0], MULTICAST_ONE );
+	*/
 }
 
-//This is a received call from the client.
-//We do need to let the server update first, which then tells the client
-//of the updated state.  Even though the client initiated the call in this case.
-//The server can initiate the call too.
-//Either side can call "TS_playerEquippedWeapon" to get the orders right.
+// This is a received call from the client.
 void
 CSEv_TS_playerDropWeapon_(){
-	player pl = (player)self;
-	
-	TS_playerDropWeapon();
-	
+	_TS_playerDropWeapon();
 }
 #endif
 
@@ -978,6 +972,7 @@ playerEquipIdeal(player pl){
 	// Could anywhere else benefit from TS_playerEquippedWeapon being changed to
 	// TS_playerEquippedWeapon_Shared ?
 	
+	printfline("setInventoryEquippedIndex: FLAG D");
 	TS_playerEquippedWeapon_Shared(pl, weaponDynamicID_toEquip, TRUE);
 	
 }//playerEquipIdeal
@@ -987,6 +982,7 @@ playerEquipIdeal(player pl){
 void
 playerEquipIdealSafe(player pl){
 	TS_resetViewModel(pl);
+	printfline("setInventoryEquippedIndex: FLAG C");
 	pl.setInventoryEquippedIndex(-1);
 	playerEquipIdeal(pl);
 	

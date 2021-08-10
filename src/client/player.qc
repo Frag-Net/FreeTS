@@ -472,7 +472,7 @@ Player_PreDraw(base_player pp, int thirdperson)
 					makevectors(angView);
 					
 					//trace_endpos += trace_plane_normal * fsizeDot[0]/6;
-					R_BeginPolygon("sprites/new/glow02.spr_0.tga", 1, 0);
+					R_BeginPolygon("sprites/glow02.spr_0.tga", 1, 0);
 					R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [1,1], [1,1,1], 0.45f);
 					R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [0,1], [1,1,1], 0.45f);
 					R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [0,0], [1,1,1], 0.45f);
@@ -547,7 +547,7 @@ Player_PreDraw(base_player pp, int thirdperson)
 						makevectors(angView);
 						
 						//trace_endpos += trace_plane_normal * fsizeDot[0]/6;
-						R_BeginPolygon("sprites/new/glow02.spr_0.tga", 1, 0);
+						R_BeginPolygon("sprites/glow02.spr_0.tga", 1, 0);
 						R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [1,1], [1,1,1], 0.45f);
 						R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [0,1], [1,1,1], 0.45f);
 						R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [0,0], [1,1,1], 0.45f);

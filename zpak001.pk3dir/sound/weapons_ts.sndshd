@@ -1,0 +1,8 @@
+
+weapon_m61grenade.bounce
+{
+	sample weapons/grenbounce1.wav
+	sample weapons/grenbounce2.wav
+	sample weapons/grenbounce3.wav
+	sample weapons/grenbounce4.wav
+}

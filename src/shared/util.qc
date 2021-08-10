@@ -140,9 +140,6 @@ float safeRandom(void){
 
 
 
-static void entity_removeSelf(void);
-
-
 // Called for some things, like grenades, that don't behave as well
 // when removed instantly by "remove(self)".
 // This gives a slight delay so that the pain logic still receives
@@ -150,7 +147,7 @@ static void entity_removeSelf(void);
 // As for why we couldn't just send the coords of the grenade from the
 // server's end, no idea.
 // Only lets you specify the entity to GET a location from, and if the
-// entity disappears to soon, no location gets sent.
+// entity disappears too soon, no location gets sent.
 #ifdef SERVER
 void removeSelfDelayed(entity entTarget){
 	
@@ -180,7 +177,7 @@ void removeSelfDelayed(entity entTarget){
 }
 #endif
 
-static void entity_removeSelf(void){
+void entity_removeSelf(void){
 	remove(self);  //that's it.
 }
 

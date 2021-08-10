@@ -1,8 +1,5 @@
 
 
-var int PART_EXPLOSION;
-
+//var int MUZZLE_CUSTOM;
 
 void ClientGame_Precache(void);
-
-

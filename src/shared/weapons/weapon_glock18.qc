@@ -176,11 +176,10 @@ w_glock18_primary(void)
 	
 #ifdef CLIENT
 	View_ShowMuzzleflash(MUZZLE_SMALL);
-	
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
+	// TODO:
+	//weapon_showMuzzleFlash(MUZZLE_SMALL);
 #endif
 	
-	// TODO: replace View_AddEvent
 	weapon_ejectShell(SHELLEJECT_ID::_9MM);
 	
 	

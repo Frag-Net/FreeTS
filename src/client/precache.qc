@@ -7,10 +7,12 @@ void ClientGame_Precache(void){
 	printfline("***ClientGame_Precache called***");
 	SharedGame_Precache();
 	
-	// these might be redundant with shell sounds being precached, but then
-	// again some are from the valve gamemod
-	Sound_Precache("modelevent_shell.land");
-	Sound_Precache("modelevent_shotgunshell.land");
+	
+	// Example of loading a muzzle flash sprite
+	//MUZZLE_CUSTOM = (int)getmodelindex("sprites/muzzleCUSTOM.spr");
+	
+	
+	CShellEject::precache();
 	
 	//TAGGG - From FreeHL.
 	// Does TS use something else?
@@ -21,10 +23,6 @@ void ClientGame_Precache(void){
 	////////////////////////////////////////////////////////////
 	
 	precache_sound("weapons/draw.wav");
-	
-	
-	PART_EXPLOSION = particleeffectnum("explosion.explosion_grenade");
-	
 	
 	precache_model("sprites/mapsprites/ts_gpc1.spr");
 	precache_model("sprites/mapsprites/ts_gpc2.spr");

@@ -1,15 +1,25 @@
+
+//TAGGG - reducing volume all around a little
+
+// from the Valve folder
 modelevent_shell.land
 {
+	volume 0.65
 	attenuation idle
 	sample player/pl_shell1.wav
 	sample player/pl_shell2.wav
 	sample player/pl_shell3.wav
 }
 
+//TAGGG - should we throw shell.wav and sshell.wav in there
+//        from the TS files?  Doing so for now.
 modelevent_shotgunshell.land
 {
+	volume 0.4
 	attenuation idle
 	sample weapons/sshell1.wav
 	sample weapons/sshell2.wav
 	sample weapons/sshell3.wav
+	sample weapons/sshell.wav
+	sample weapons/shell.wav
 }

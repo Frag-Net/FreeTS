@@ -13,6 +13,11 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+ 
+// NOTE - unlike the other Half-Life borrowed effects, this one is staying forked.
+// For sounds, yes, but I can't imagine TS's hit-effects being replicated by re-using
+// FreeHL's fx_impact.qc file.
+ 
 
 #ifdef CLIENT
 var int FX_IMPACT_BLACKBITS;
@@ -131,18 +136,18 @@ FX_Impact(impactType_t iType, vector vecPos, vector vNormal)
 		}
 	}
 
+	//TAGGG - NOTE.  In original TS, hit dirt makes a smoke effect too
+	
 	switch (iType) {
 	case IMPACT_MELEE:
 	case IMPACT_EXPLOSION:
 		break;
+	// !!!
+	//case IMPACT_DIRT:
+	// ...
+	//	break;
 	case IMPACT_GLASS:
 		pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
-		break;
-	//TAGGG - NEW.  Clone of wood for now as it used to be...
-	case IMPACT_DIRT:
-		pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
-		pointparticles(FX_IMPACT_BLACKBITS, vecPos, vNormal, 1);
-		pointparticles(FX_IMPACT_SMOKE_BROWN, vecPos, vNormal, 1);
 		break;
 	case IMPACT_WOOD:
 		pointparticles(FX_IMPACT_SPARK, vecPos, vNormal, 1);
@@ -164,15 +169,6 @@ FX_Impact(impactType_t iType, vector vecPos, vector vNormal)
 	}
 
 	switch (iType) {
-		
-	//TAGGG - NEW.  Just to be dummied out, but see the new way nelow if putting back in
-	case IMPACT_MELEE:
-		//oh... pointsound doesn't support pitchshift.  of... course. What ever was I thinking.
-		//pointsound(vecPos, "player/closecombat.wav", impactSoundVolume, ATTN_NORM+0.1, randomInRange_f(92, 100), SOUNDFLAG_FOLLOW);
-		//pointsound(vecPos, "player/closecombat.wav", impactSoundVolume, ATTN_NORM+0.1);
-
-		break;
-			
 	case IMPACT_ALIEN:
 		Sound_PlayAt(vecPos, "sfx_impact.alien");
 		break;
@@ -219,37 +215,30 @@ FX_Impact(impactType_t iType, vector vecPos, vector vNormal)
 		Sound_PlayAt(vecPos, "sfx_impact.default");
 		break;
 	}
-	
-	//TAGGG - NEW
-	/*
-	if(iType != IMPACT_FLESH && iType != IMPACT_MELEE){
-		if(random() < 0.53){
-			//TAGGG - TODO! Meant to depend on player sound factor... whatever var.
-			pointsound(vecPos, sprintf("debris/ric%i.wav", randomInRange_i(1, 5)), impactSoundVolume-0.12, ATTN_NORM+0.1);
-		}
-	}
-	*/
-	
 #endif
 } 
 
 
 
-
-
-
-
+//TAGGG - NEW.
+// Version of FX_Impact for melee weapons to use instead, some get different sounds on
+// some surfaces.
+#ifdef CLIENT
+void
+FX_Impact_Melee_Init(void)
+{
+	Sound_Precache("sfx_impact_melee.default");
+	Sound_Precache("sfx_impact_melee.dirt");
+	
+}
+#endif
 
 void
 FX_Impact_Melee(int iType, vector vecPos, vector vNormal)
 {
-	
-	
-	//TAGGG - NOTE YOUR CHANGES SWEET CHRIST.
-	// (this is a note to myself)
 #ifdef SERVER
 	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
-	WriteByte(MSG_MULTICAST, EV_IMPACT_MELEE);
+	WriteByte(MSG_MULTICAST, EVENT_TS::EV_IMPACT_MELEE);
 	WriteByte(MSG_MULTICAST, (float)iType);
 	WriteCoord(MSG_MULTICAST, vecPos[0]); 
 	WriteCoord(MSG_MULTICAST, vecPos[1]); 
@@ -267,26 +256,26 @@ FX_Impact_Melee(int iType, vector vecPos, vector vNormal)
 	float impactSoundVolume = 0.55;
 
 	switch (iType) {
+		// Too generic, don't use this, use any other IMPACT.
 		case IMPACT_MELEE:
-			//oh... pointsound doesn't support pitchshift.  of... course. What ever was I thinking.
+			// oh, pointsound doesn't support pitchshift.
 			//pointsound(vecPos, "player/closecombat.wav", impactSoundVolume, ATTN_NORM+0.1, randomInRange_f(92, 100), SOUNDFLAG_FOLLOW);
 			//pointsound(vecPos, "player/closecombat.wav", impactSoundVolume, ATTN_NORM+0.1);
 
 			break;
 		case IMPACT_COMPUTER:
+			Sound_PlayAt(vecPos, "sfx_impact.computer");
+			break;
 		case IMPACT_GLASS:
 			Sound_PlayAt(vecPos, "sfx_impact.glass");
-			
 			break;
 		case IMPACT_FLESH:
+			// should something else be used?  Leave it up to specific melee weapons to play their
+			// own sound?  Don't know, this is HL flesh sounds
+			Sound_PlayAt(vecPos, "sfx_impact.flesh");
 			break;
 		case IMPACT_DIRT:
-			//pointsound(vecPos, sprintf("debris/gravel%i.wav", randomInRange_i(1, 4)), impactSoundVolume, ATTN_NORM+0.1);
-			//sound(self, CHAN_BODY, sprintf("player/pl_%s1.wav", sMaterial), fVol, ATTN_STATIC)
-			
-			// Unique?  Keep to the old way for now
-			pointsound(vecPos, sprintf("player/pl_dirt%i.wav", randomInRange_i(1, 4)), impactSoundVolume, ATTN_NORM+0.1);
-
+			Sound_PlayAt(vecPos, "sfx_impact_melee.dirt");
 			break;
 		case IMPACT_WOOD:
 			Sound_PlayAt(vecPos, "sfx_impact.wood");
@@ -295,16 +284,9 @@ FX_Impact_Melee(int iType, vector vecPos, vector vNormal)
 			Sound_PlayAt(vecPos, "sfx_impact.metal");
 			break;
 		default:
-			//cement...  yes, the default if no other is specified. Stated right in materials.txt, even.
-			//pointsound(vecPos, sprintf("weapons/ric%d.wav", floor((random() * 5) + 1)), 1, ATTN_STATIC);
-			//pointsound(vecPos, sprintf("debris/cement%i.wav", randomInRange_i(1, 6)), impactSoundVolume, ATTN_NORM+0.1);
-			
-			// Unique?  Keep to the old way for now
-			pointsound(vecPos, sprintf("player/pl_step%i.wav", randomInRange_i(1, 4)), impactSoundVolume, ATTN_NORM+0.1);
-
+			Sound_PlayAt(vecPos, "sfx_impact_melee.default");
 			break;
-	}//END OF switch
-	
+	}// switch
 	
 	/*
 	if(iType != IMPACT_FLESH && iType != IMPACT_MELEE){
@@ -319,6 +301,4 @@ FX_Impact_Melee(int iType, vector vecPos, vector vNormal)
 	
 #endif
 }
-
-
 

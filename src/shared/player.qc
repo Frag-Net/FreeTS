@@ -165,8 +165,17 @@ player::ReceiveEntity(float new, float fl)
 	//	printfline("WELL hey WHAT:%i new:%i", oldPlayerWeapEq, inventoryEquippedIndex);
 	//}
 	
-	//setInventoryEquippedIndex(inventoryEquippedIndex_temp);
+	// important to keep pl.activeweapon in sync
 	inventoryEquippedIndex = inventoryEquippedIndex_temp;
+	//setInventoryEquippedIndex(inventoryEquippedIndex_temp);
+	
+	// Somehow this is atrocious.
+	/*
+	if(inventoryEquippedIndex_temp != inventoryEquippedIndex){
+		setInventoryEquippedIndex(inventoryEquippedIndex_temp);
+	}
+	*/
+	
 	weaponEquippedAkimbo = readbyte();
 	w_attack_akimbo_next = readfloat();
 	isReloading = readbyte();
@@ -210,6 +219,10 @@ player::ReceiveEntity(float new, float fl)
 	
 	
 	this.completeInventorySend = readbyte();
+	
+#ifdef FORCE_NETWORK_ALL_INVENTORY
+	completeInventorySend = TRUE;
+#endif
 	
 	if(this.completeInventorySend){
 		for(i = 0; i < ary_myWeapons_softMax; i++){
@@ -825,6 +838,10 @@ player::SendEntity(entity ePEnt, float fChanged)
 	
 	WriteByte(MSG_ENTITY, this.completeInventorySend );
 	
+#ifdef FORCE_NETWORK_ALL_INVENTORY
+	completeInventorySend = TRUE;
+#endif
+	
 	if(this.completeInventorySend){
 		for(i = 0; i < ary_myWeapons_softMax; i++){
 			SendEntity_ary_myWeapons(i);
@@ -1132,7 +1149,8 @@ player::reset(BOOL resetInventory){
 	
 		// sure?  Not used for this game though.
 		g_items = 0x0;
-	
+		
+		printfline("setInventoryEquippedIndex: FLAG A");
 		setInventoryEquippedIndex(-1);
 		
 		shotgunWaitingForPump = FALSE;
@@ -1240,7 +1258,6 @@ player::setInventoryEquippedIndex(int arg_newIndex)
 
 
 // Extra version supplied 'useAkimbo'.
-// Also, setting to hte 
 void
 player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 {
@@ -1281,6 +1298,7 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 		weaponEquippedAkimbo = FALSE;  // I guess?
 	}
 	
+	// - OLD COMMENT
 	// NOTE, IMPORTANT.
 	// Is this necessary?
 	// Makes a decent example for paying attention to SAVE and ROLLBACKs in player script
@@ -1300,10 +1318,36 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 	// If this is the wrong way to go thinking about this, I need to know more.
 	// ALSO - see other uses of SAVE_STATE, most are for both client & server,
 	// especially the w_attack_next, or w_next_attack, in ts/shared/weapons.qc.
-#ifdef CLIENT
+	/////////////////////////////////////
+	
+	// - NEW COMMENTs
+	// Looks like we at least want to do SAVE_STATE(activeweapon) to stop a rollback
+	// from being undone that causes it to flicker back to what's about to be received.
+	
+	// and we get 'iilegible server message' on very high pings.
+	// S T E L L A R .  although it's happenin without this too.
+	// Although this can cause the weapon info to glich out, like a host of other stuff
+	// needs to be sent / know not to change just yet too I'm guessing, a clientside SAVE_STATE
+	// of all the next equipped weapon's stuff I'm guessing?
+	// Make a method and test, with equippedID set to the new
+	// (inventoryEquippedIndex and activeweapon as they are here)!  TODO TODO TODO
+	// #ifdef CLIENT    saveWeaponState(inventoryEquippedIndex)   ...   ary_myWeapons ...  #endif
+	
+	// And the network-crash is from ... not sending the entire inventory every single frame.
+	// ...  Marvelous.  But at least that's a completely separate issue, again with or without below.
+	
+	// (force a sendoff, expect it area)
+	/*
+#ifdef SERVER
+	// Force a sendoff!
+	//SendFlags |= PLAYER_WEAPON;
+#else
 	SAVE_STATE(activeweapon);
-	SAVE_STATE(inventoryEquippedIndex);
+	// unsure if this one's needed
+	//SAVE_STATE(inventoryEquippedIndex);
 #endif
+	*/
+
 }
 
 
@@ -1447,7 +1491,9 @@ player::frameThink_fromServer(void){
 	
 	if(autocvar_sv_printoutspam == 1){
 		printfline("My state: %d", iState);
+		printfline("STATUS: %d, %i", activeweapon, inventoryEquippedIndex);
 	}
+	
 	
 	if(fKarateStamina < 1.0){
 		fKarateStamina = bound(0, fKarateStamina + frametime * 0.1667, 1);
@@ -1779,6 +1825,8 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 				}
 			
 				// playerEquipIdealSafe ?  Not quite.
+				
+				printfline("setInventoryEquippedIndex: FLAG B");
 				TS_resetViewModel(this);
 				setInventoryEquippedIndex(-1);
 				weaponEquippedAkimbo = FALSE;

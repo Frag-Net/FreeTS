@@ -66,12 +66,13 @@ typedef enum
 	SNDP_STEYRTMP_FIRE_SIL,
 	SNDP_UMP_FIRE,
 	SNDP_UMP_FIRE_SIL,
-	SNDP_USAS12_FIRE,
+	SNDP_USAS12_FIRE/*,
 	SNDP_EXPLODE,
 	SNDP_EXPLODE1,
 	SNDP_EXPLODE2,
 	SNDP_EXPLODE3,
 	SNDP_EXPLODE4
+	*/
 } sfx_pitched_t;
 
 
@@ -155,12 +156,13 @@ const string sfx_pitched_s[] =
 	"weapons/tmp/fire-sil.wav",
 	"weapons/ump/ump-fire.wav",
 	"weapons/ump/ump-fire-sil.wav",
-	"weapons/usas/usas-fire.wav",
+	"weapons/usas/usas-fire.wav"/*,
 	"explo/explode.wav",
 	"explo/explode1.wav",
 	"explo/explode2.wav",
 	"explo/explode3.wav",
 	"explo/explode4.wav"
+	*/
 };
 
 void

@@ -946,8 +946,12 @@ int getAmmoTypeOfWeapon(int arg_weaponID);
 
 
 #ifdef CLIENT
+void viewEv_playShotgunInsertShellSound(void);
 
-void w_ejectshell_pistol(void);
+// TEMP DUMMY
+void w_ejectshell_pistol(void){};
+
+void viewEv_weapon_ejectShell(void);
 
 void copyWeaponConfig(weaponconfig_weapon_t* arg_dest, weaponconfig_weapon_t* arg_src);
 void copyConfig(weaponconfig_data_t* arg_dest, weaponconfig_data_t* arg_src);

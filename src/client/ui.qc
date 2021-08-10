@@ -325,8 +325,12 @@ UI_determineDrawGlobals(void){
 void
 UI_Draw(void)
 {
-	if ( pSeatLocal->m_flUI_Display == UI_SCREEN::NONE ) {
-		setcursormode( FALSE );
+	if(pSeatLocal->m_flUI_Display == UI_SCREEN::NONE ){
+		// Not effective for the new version of game executable fteglqw64.exe?
+		// Well that's just dandy
+		// (this is supposed to let clicking after closing the buy menu without moving the
+		// mouse mouse work).
+		setcursormode(FALSE, "gfx/cursor", [0,0,0], 1.0f);
 		return;
 	}
 	

@@ -1,0 +1,56 @@
+
+// TS-grenade explosion, not to be confused with the default HL one
+// (FX_Explosion).  Referring to the Valve one instead by file, no
+// need to fork that.
+
+
+#ifdef CLIENT
+var int FX_TS_EXPLOSION_PARTICLE;
+
+void
+FX_TS_Explosion_Grenade_Init(void)
+{
+	Sound_Precache("fx.ts_explosion_grenade");
+	FX_TS_EXPLOSION_PARTICLE = particleeffectnum("ts_fx_explosion_grenade.explosion_grenade");
+}
+#endif
+
+
+// TS uses a unique explosion for grenades, but still retains the default
+// HL explosion + sound for other things like map-driven events
+// (see shooting the explosives barrel in the basement of ts_bikini.bsp).
+// Unsure if anything else uses this same effect.
+void
+FX_TS_Explosion_Grenade(vector vecPos)
+{
+#ifdef SERVER
+	WriteByte(MSG_MULTICAST, SVC_CGAMEPACKET);
+	WriteByte(MSG_MULTICAST, EVENT_TS::FX_TS_EXPLOSION_GRENADE);
+	WriteCoord(MSG_MULTICAST, vecPos[0]); 
+	WriteCoord(MSG_MULTICAST, vecPos[1]); 
+	WriteCoord(MSG_MULTICAST, vecPos[2]);
+	msg_entity = self;
+	multicast(vecPos, MULTICAST_PVS);
+#else
+	pointparticles(FX_TS_EXPLOSION_PARTICLE, vecPos, [0,0,0], 1);
+	// uh-oh, no generated entity to play the sound on.
+	// Leaving it up to the greande itself to do that then
+	
+	// oh wait would this work?
+	// The FTE built-in method pointsound that this leads to does not support pitch-shift.
+	// Because... FTE.  So, no.  Grenade explosion sounds come pitch-shifted and have
+	// to be adjusted to play normally
+	//Sound_PlayAt(vecPos, "fx.ts_explosion_grenade");
+	
+#endif
+}
+
+
+#ifdef SERVER
+// call me around a FX_TS_Explosion_Grenade call in TSGrenadeProjectile
+void
+FX_TS_Explosion_Grenade_PlaySound(entity ePlayer){
+	Sound_Play(ePlayer, CHAN_WEAPON, "fx.ts_explosion_grenade");
+}
+#endif
+

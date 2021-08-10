@@ -435,10 +435,8 @@ class player:base_player
 	float ignoreFiremodeReceiveTime;
 #endif
 	
-	//TAGGG - NEW, constructor
 	void(void) player;
 	
-	//TAGGG - NEW.
 	virtual void(void) preThink;
 	virtual void(void) postThink;
 	

@@ -100,6 +100,11 @@
 // NOTE - if you do indeed want the current entity to become of the new type,
 // then moving around 'self' like this is unnecessary, just call the 'pawnfunc_'
 // as usual.
+// I'm fuzzy on the details between 'spawn(CLASSNAME)' and 'spawnfunc_CLASSNAME'.
+// If you don't know what you're doing just spawn a clean entity like the former
+// approach, this is actually for changing something already spawened into another
+// type.  Parse functions may do this to turn a default entity they receive into
+// whatever their custom type is, as seen in ts_powerup
 #define SPAWN_ENTITY_SAFE(arg_dest, arg_class) \
     eold = self;\
     self = arg_dest;\
@@ -266,6 +271,7 @@ float safeRandom(void);
 #ifdef SERVER
 void removeSelfDelayed(entity entTarget);
 #endif
+void entity_removeSelf(void);
 
 string floatToChar(float someFloat);
 

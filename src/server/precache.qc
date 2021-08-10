@@ -17,6 +17,8 @@ void ServerGame_Precache(void){
 	precache_model("models/player.mdl");
 	////////////////////////////////////////////////////////////
 	
+	TSGrenadeProjectile::precache();
+	ts_powerup::precache();
 	
 	precache_model("models/powerup.mdl");
 	
@@ -53,17 +55,6 @@ void ServerGame_Precache(void){
 	precache_sound("player/pain2.wav");
 	precache_sound("player/pain3.wav");
 	precache_sound("player/pain4.wav");
-	
-	// for the grenade only so far.
-	precache_sound("weapons/grenbounce1.wav");
-	precache_sound("weapons/grenbounce2.wav");
-	precache_sound("weapons/grenbounce3.wav");
-	precache_sound("weapons/grenbounce4.wav");
-	precache_sound("explo/explode.wav");
-	precache_sound("explo/explode1.wav");
-	precache_sound("explo/explode2.wav");
-	precache_sound("explo/explode3.wav");
-	precache_sound("explo/explode4.wav");
 	
 	precache_sound("goslow.wav");
 	

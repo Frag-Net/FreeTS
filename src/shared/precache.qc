@@ -21,19 +21,6 @@ void SharedGame_Precache(void){
 	// In FreeTS, looks like shell eject effects are precached both client & serverside
 	// (so here in shared/precache.qc is good).
 	
-	// nearly identical..?
-	precache_model("models/56_shell.mdl");
-	precache_model("models/556_shell.mdl");
-	
-	// identical..?
-	precache_model("models/22_shell.mdl");
-	precache_model("models/9mm_shell.mdl");
-	precache_model("models/shell.mdl");
-	
-	precache_model("models/shotgun_shell.mdl");
-	precache_model("models/shotgun_shell_blue.mdl");
-	precache_model("models/shotgun_shell_gold.mdl");
-
 	// physics-related / slow-mo?
 	precache_model("models/bullet.mdl");
 	precache_model("models/long_bullet.mdl");
@@ -68,7 +55,7 @@ void SharedGame_Precache(void){
 	precache_sound("items/gunpickup2.wav");
 	
 	
-	//Needed, apparently.
+	// Needed, apparently.
 	precache_sound("common/null.wav");
 	
 	//precache_sound("weapons/insert-shell.wav");
@@ -79,13 +66,9 @@ void SharedGame_Precache(void){
 	// Same for others where that applies
 	precache_sound("weapons/switch.wav");
 	
-	precache_sound("weapons/shell.wav");
-	precache_sound("weapons/sshell.wav");
-	precache_sound("weapons/sshell1.wav");
-	precache_sound("weapons/sshell2.wav");
-	precache_sound("weapons/sshell3.wav");
+	// from Valve, no need to clone this
+	precache_model("sprites/glow02.spr");
 	
-	precache_model("sprites/new/glow02.spr");
 	//precache_sound("weapons/weapondrop.wav");
 	
 	
@@ -165,9 +148,5 @@ void SharedGame_Precache(void){
 	//precache_sound("weapons/mp5/clipin.wav");
 	//precache_sound("weapons/mp5/clipout.wav");
 	
-	
-	
-	
-
 	
 }

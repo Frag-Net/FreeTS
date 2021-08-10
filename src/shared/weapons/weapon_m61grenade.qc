@@ -20,114 +20,14 @@ void weapon_m61grenade_onSecondaryAttackRelease(player pl, weapondynamic_t arg_t
 
 
 //Serverside only method, generates an entity
+// TODO - just be an entity in its own file at this point. 
 #ifdef SERVER
-
-static void weapon_m61grenade_Touch( void );
-static void weapon_m61grenade_Explode( void );
-
 void weapon_m61grenade_spawnProjectile(player pl, weapondynamic_t arg_thisWeapon, BOOL wasToss, float heldDuration){
-	
-	weapondata_throwable_t basicRef = *((weapondata_throwable_t*)ary_weaponData[WEAPON_ID::M61GRENADE]);
-	
-	makevectors( GET_VIEW_ANGLES );
-	entity eNade = spawn();
-	setorigin( eNade, ( pl.origin + pl.view_ofs ) + ( v_forward * 16 ) );
-	setmodel( eNade, basicRef.sWorldModelPath );
-	setsize( eNade, '-1 -1 -1', '1 1 1' );
-	
+	makevectors( GET_VIEW_ANGLES );	
+	vector vGrenadeOrigin = (pl.origin + pl.view_ofs) + (v_forward * 16);
 	vector vDir = aim ( pl, 100000 );
-	eNade.owner = pl;
-	eNade.classname = "remove_me";
-	eNade.solid = SOLID_TRIGGER; // This is so grenades will not get slowed down by windows they touch
-	eNade.angles = vectoangles( vDir );
 	
-	// TODO, CRITICAL.
-	// Factor in wasToss, heldDuration (out of 3, small minimum from clicking without holding down while
-	// some of the toss anim plays)?
-	eNade.velocity = ( vDir * 200 );  //was 1000
-	
-	eNade.avelocity = ( v_forward * 1000 );
-	eNade.movetype = MOVETYPE_BOUNCE;
-	eNade.touch = weapon_m61grenade_Touch;
-	eNade.gravity = 0.5f;
-	
-	eNade.think = weapon_m61grenade_Explode;
-	eNade.nextthink = time + 3.0f;
-	
-}
-
-
-static void weapon_m61grenade_Touch( void ) {
-	float randomChoice;
-	if ( other.solid == SOLID_TRIGGER ) {
-		return;
-	}
-	if ( other == self.owner ) {
-		return;
-	}
-	if ( ( other.classname == "func_breakable" ) && ( other.material == GSMATERIAL_GLASS ) ) {
-		// this means, insta-break the breakable glass we hit.
-		// Calling this BLUNT I guess?  The grenade is really a rock at this point.
-		Damage_Apply( other, self.owner, other.health, WEAPON_ID::M61GRENADE, DMG_BLUNT);
-	}
-
-	randomChoice = random();
-	if(randomChoice < 0.25){
-		sound(self, CHAN_WEAPON, "weapons/grenbounce1.wav", 1, ATTN_NORM);
-	}else if(randomChoice < 0.5){
-		sound(self, CHAN_WEAPON, "weapons/grenbounce2.wav", 1, ATTN_NORM);
-	}else if(randomChoice < 0.75){
-		sound(self, CHAN_WEAPON, "weapons/grenbounce3.wav", 1, ATTN_NORM);
-	}else{
-		sound(self, CHAN_WEAPON, "weapons/grenbounce4.wav", 1, ATTN_NORM);
-	}
-}
-
-
-static void weapon_m61grenade_Explode( void ) {
-	float randomChoice;
-	
-	//!!! THIS IS THE COUNTERSTRIKE EFFECT.
-	// Comment/uncomment as needed.
-	// we redirect this to the new lines for TS.  Easier to keep
-	// the change to env_explosion and func_breakables that explode.
-	Effect_CreateExplosion( self.origin );
-	
-	//Effect_ScreenShake( self.origin, 2048, 255 );
-	//Effect_Explosion( self.origin + [0,0,16] );
-	
-	// Is this accurate? I just know a grenade can kill a player with around
-	// 150 health from a powerup, and takes 100 down to 20 from a good distance.
-	// CHANGE!  Don't we want to tell who attacked (who threw the grenade), not just give
-	// the grenade itself for the 2nd "eAttacker" parameter?
-	Damage_Radius( self.origin, self.owner, 160, 380, TRUE, WEAPON_ID::M61GRENADE );
-	//Damage_Radius( self.origin, self, 75, 550, TRUE, WEAPON_ID::M61GRENADE );
-	
-	//Damage_Apply(other, this, m_iDamage, WEAPON_ID::M61GRENADE, DMG_GENERIC);
-	
-	// this is mad old
-	//Damage_Apply(plPlayer, world, plPlayer.dmg, DAMAGE_DROWNING, WEAPON_NONE);
-	//Damage_Apply(target, world, 5, DMG_DROWN, 0);
-	
-	//Damage_Apply( self, world, fFallDamage, 0, DMG_FALL);
-	
-	randomChoice = random();
-	if(randomChoice < 0.2){
-		SoundPitched_Send(self, SNDP_EXPLODE);
-	}else if(randomChoice < 0.4){
-		SoundPitched_Send(self, SNDP_EXPLODE1);
-	}else if(randomChoice < 0.6){
-		SoundPitched_Send(self, SNDP_EXPLODE2);
-	}else if(randomChoice < 0.8){
-		SoundPitched_Send(self, SNDP_EXPLODE3);
-	}else{
-		SoundPitched_Send(self, SNDP_EXPLODE4);
-	}
-	
-	// delay this so damage indicators can figure out where I came from!
-	// ...weird, I know.
-	//remove( self );
-	removeSelfDelayed(self);
+	TSGrenadeProjectile::generate(pl, vGrenadeOrigin, vDir, v_forward, WEAPON_ID::M61GRENADE);
 }
 #endif
 
@@ -338,8 +238,8 @@ w_m61grenade_precache(void)
 {
 	weapon_precache(ary_weaponData[WEAPON_ID::M61GRENADE]);
 #ifdef SERVER
-	// grenade-bounce and explode ones are done globally, I could see those
-	// being re-used
+	// grenade-bounce and explode sounds are precached in
+	// TSGrenadeProjectile::precache and fx_ts_explosion_grenade_Init respectively
 	//precache_sound("weapons/gr_pull.wav");
 	//precache_sound("weapons/gr_safe.wav");
 #else

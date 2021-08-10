@@ -1,0 +1,10 @@
+fx.ts_explosion_grenade
+{
+	pitch 400
+	shakes 2.7
+	sample explo/explode.wav
+	sample explo/explode1.wav
+	sample explo/explode2.wav
+	sample explo/explode3.wav
+	sample explo/explode4.wav
+} 
