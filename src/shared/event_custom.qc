@@ -37,7 +37,8 @@ TS_Weapon_Draw_extra(void){
 	
 	printfline("PLAYER DREW WEAPON: invID:%i (g_weapons ID:%d)", pl.inventoryEquippedIndex, pl.activeweapon);
 	
-	pl.currentZoomChoice = -1;
+	pl.resetZoom();
+	
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	
@@ -180,6 +181,32 @@ TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	
 	_TS_playerEquippedWeapon(pl, newWeaponEquipped, useAkimbo);
 	sendevent("TS_playerEquippedWeapon", "ii", newWeaponEquipped, (int)useAkimbo);
+	// EXPERIMENTAL
+	pl.equippedWeaponWaitingForCallback = TRUE;
+	// Not sure how you'd deal with a ping worse than 0.5 seconds
+	pl.equippedWeaponWaitingForCallback_maxWaitTime = time + 0.6;
+}
+
+
+// EXPERIMENTAL.  If the currently equipped weapon has been changed, reject
+// messages received between the time I sent an order to change the current wepaon
+// and the time it takes to get a response that the new weapon was seen by the server.
+// This stops out-of-date calls coming in from reverting the zoom (or whatever other var)
+// back to the old state.
+// Or, example:
+// Var A is networked (server sends updates to the client of its current value to keep it
+// from going too far out of sync).
+// var A starts at 30 both places.  Say the ping is 500 milliseconds.
+// Client sets var A to 12, sends a message to the server to have it changed too.
+// But, during those 500 milliseconds to reach the server, messages sent from the server
+// with the old A value (30), sent before the client sent the A-update to the server, reach
+// the client and rever the value of A back to that 30.
+// Only after the A-update of 12 reaches the server and the server updates the client back
+// does that stop.
+void
+EV_EquipCallback(void){
+	player pl = (player)self;
+	pl.equippedWeaponWaitingForCallback = FALSE;
 }
 
 #endif
@@ -200,7 +227,15 @@ TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	//pl.activeweapon_net = 255;
 	//pl.inventoryEquippedIndex_net = 255;
 	
+	// The client is waiting for a callback?  Go on!
+	// Trying the reliable (_R) version for now
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EVENT_TS::EQUIP_CALLBACK );
+	msg_entity = pl;
+	multicast( [0,0,0], MULTICAST_ONE_R );
+	
 }
+
 
 // This is a received call from the client.
 // We do need to let the server update first, which then tells the client
@@ -305,6 +340,10 @@ EV_PlayerDeath(void){
 	// after this PlayerDeath one, somehow.  Stopping damage-drawing on the "*dead" key
 	// being 1 works.
 	//pSeat->m_flDamageAlpha = 0;
+	
+	
+	player pl = (player)self;
+	pl.resetZoom();
 }
 #endif
 

@@ -118,11 +118,13 @@ UI_MOTD_Draw(void)
 {
 	
 #ifdef MOTD_NEW_VGUI
-	if(!(UI_MOTD_win.m_iFlags & 1) && !g_UI_MOTD_everClosed){
+	if(!(UI_MOTD_win.m_iFlags & 1) /*&& !g_UI_MOTD_everClosed*/){
 		// this means the window was hidden by closing with the X button.
 		// The OK button sets that flag so that this can't be reached that way.
 		// The point is, closing the MoTD the first time by any means should lead
 		// to the buy menu
+		// ACTUALLY, leaving that up to btnOK to determine.  Still want to solidly set
+		// the current screen to NONE regardless of closing the MoTD for the first time.
 		UI_MOTD_btnOK_Clicked();
 	}
 	

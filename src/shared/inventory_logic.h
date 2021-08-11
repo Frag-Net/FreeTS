@@ -96,7 +96,7 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 #endif 
 
 #ifdef SERVER
-int addWeaponToInventory(player pl, TSWorldGun arg_pickupRef);
+int addWeaponToInventory(player pl, CTSWorldGun arg_pickupRef);
 #endif
 
 #ifdef CLIENT

@@ -5,6 +5,9 @@ void ServerGame_Precache(void){
 	printfline("***ServerGame_Precache called***");
 	SharedGame_Precache();
 	
+	// yes, a serverside to this for now, the sound call is from serverside for the time being
+	FX_TS_Explosion_Grenade_Init();
+	
 	
 	//TAGGG - From FreeHL.  Anything that ends up unused by FreeTS can be removed,
 	// including sound config files that are then unused.
@@ -17,8 +20,7 @@ void ServerGame_Precache(void){
 	precache_model("models/player.mdl");
 	////////////////////////////////////////////////////////////
 	
-	TSGrenadeProjectile::precache();
-	ts_powerup::precache();
+	TS_GrenadeProjectile::precache();
 	
 	precache_model("models/powerup.mdl");
 	

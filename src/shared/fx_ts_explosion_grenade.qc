@@ -10,9 +10,19 @@ var int FX_TS_EXPLOSION_PARTICLE;
 void
 FX_TS_Explosion_Grenade_Init(void)
 {
-	Sound_Precache("fx.ts_explosion_grenade");
+	//Sound_Precache("fx.ts_explosion_grenade");
 	FX_TS_EXPLOSION_PARTICLE = particleeffectnum("ts_fx_explosion_grenade.explosion_grenade");
 }
+
+#else
+
+// sound only
+void
+FX_TS_Explosion_Grenade_Init(void)
+{
+	Sound_Precache("fx.ts_explosion_grenade");
+}
+
 #endif
 
 
@@ -47,10 +57,30 @@ FX_TS_Explosion_Grenade(vector vecPos)
 
 
 #ifdef SERVER
-// call me around a FX_TS_Explosion_Grenade call in TSGrenadeProjectile
+// call me around a FX_TS_Explosion_Grenade call in TS_GrenadeProjectile
 void
-FX_TS_Explosion_Grenade_PlaySound(entity ePlayer){
-	Sound_Play(ePlayer, CHAN_WEAPON, "fx.ts_explosion_grenade");
+FX_TS_Explosion_Grenade_PlaySound(entity eSelf){
+	//Sound_Play(eSelf, CHAN_WEAPON, "fx.ts_explosion_grenade");
+	
+	// if we're not using the sound-script, do it by a manual call
+	//Client_ShakeOnce(vector pos, float radius, float duration, float frequency, float amplitude)
+	
+	// there is a command, soundlength("x") that takes a path to a .wav file I think?
+	// Probably unnecessary
+	Client_ShakeOnce(eSelf.origin, 512, 1.7, 2.1, 3.4);
+
+	float randomChoice = random();
+	if(randomChoice < 0.2){
+		SoundPitched_Channel_Send(eSelf, SNDP_EXPLODE, CHAN_AUTO);
+	}else if(randomChoice < 0.4){
+		SoundPitched_Channel_Send(eSelf, SNDP_EXPLODE1, CHAN_AUTO);
+	}else if(randomChoice < 0.6){
+		SoundPitched_Channel_Send(eSelf, SNDP_EXPLODE2, CHAN_AUTO);
+	}else if(randomChoice < 0.8){
+		SoundPitched_Channel_Send(eSelf, SNDP_EXPLODE3, CHAN_AUTO);
+	}else{
+		SoundPitched_Channel_Send(eSelf, SNDP_EXPLODE4, CHAN_AUTO);
+	}
 }
 #endif
 

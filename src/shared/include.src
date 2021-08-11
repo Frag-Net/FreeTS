@@ -1,6 +1,5 @@
 
 
-
 // If enabled, pressing left and right fire within a small amount of time
 // (more forgiving than the default "same-frame only" timing) lets firing
 // immediately change into the akimbo dual-fire animation.
@@ -15,7 +14,6 @@
 #includelist
 
 
-//TAGGG - NEW
 init.h
 
 entities.h
@@ -41,7 +39,6 @@ precache.h
 inventory_logic.h
 event_enum.h
 event_custom.h
-//init.h
 
 
 // Nope!  Leave this one up to per-project.
@@ -72,19 +69,12 @@ fx_ts_explosion_grenade.qc
 event_custom.qc
 
 
-
-util.qc
-precache.qc
+// leaving these up to client/server projects too now
+//util.qc
+//precache.qc
 sound_pitched.qc
-//fx_impact.h
-//pmove.c
-//animations.c
 
 
-
-//items.h
-//weapons.h
-// <half life weapons files were here>
 
 weapons/weapon_karate.qc
 weapons/weapon_glock18.qc

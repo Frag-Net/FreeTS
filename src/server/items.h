@@ -17,7 +17,7 @@
 /* PICKUP ITEMS */
 
 // Bare minimum to compile with what Nuclide's src/server/weapons.qc expects.
-// TS already has its own weapons-pickup class: TSWorldGun.
+// TS already has its own weapons-pickup class: CTSWorldGun.
 // Although that could fill in Nuclide's expected item_pickup and let anything in-map
 // redirect to this if that were preferred.
 

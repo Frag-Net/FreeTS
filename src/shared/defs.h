@@ -43,19 +43,6 @@ enum TS_Team{
 
 
 
-//TAGGG
-//FLAG. Rename of the same value used by FL_SEMI_TOGGLED, since that name isn't used in The Specialists
-//now.  It will instead tell whether this is the first time firing since a release or not.
-// One for secondary added too. hope that's a good idea
-// ...unfortunately using these for flag values might've been a bad idea.
-// Even in the old version, "1<<21" was already used for something else.
-// They've been offset in the new version (base FreeCS by the way).
-// So these will just be player bool's instead.
-//#define FL_PRIMARY_FIRE_FIRST_FRAME		(1<<20)
-//#define FL_SECONDARY_FIRE_FIRST_FRAME	(1<<21)
-
-
-
 // MODERN FREECS STATS (in case they're needed for the sake of being
 // an extensive gamemod, but seeing as FreeHL has none of these, I doubt
 // that)

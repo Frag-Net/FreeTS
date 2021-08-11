@@ -319,6 +319,9 @@ TSMultiplayerRules::PlayerDeath(base_player pp)
 	printfline("setInventoryEquippedIndex Flag Z");
 	TS_resetViewModel(pl);
 	pl.setInventoryEquippedIndex(-1);
+	
+	pl.resetZoom();
+	
 
 	for(int i = pl.ary_myWeapons_softMax-1; i >= 0; i--){
 		pl.dropWeapon(i, TRUE);

@@ -31,7 +31,9 @@ defs.h
 ../shared/weapons.h
 ../shared/player.h
 ../shared/powerup.h
-entity/shelleject.h
+../shared/sound_pitched.h
+
+entity/ts_shelleject.h
 
 clientinfo.h
 seatlocal.h
@@ -58,7 +60,7 @@ hud.h
 
 ../shared/player.qc
 ../shared/inventory_logic.qc
-entity/shelleject.qc
+entity/ts_shelleject.qc
 
 // old location of UI draw stuff
 
@@ -93,13 +95,10 @@ scoreboard.qc
 ../../../base/src/client/modelevent.qc
 
 
+../shared/util.qc
+../shared/precache.qc
 util.qc
 precache.qc
-//../_base/client/voice.c
-//../_base/client/sound.c
-//../_base/client/music.c
-//../_base/client/prints.c
-//../_base/client/util.c
 
 
 ../../../src/client/include.src

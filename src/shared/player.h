@@ -1,6 +1,6 @@
 //TAGGG - NEW.  Header file for gamemod player
 
-class TSWorldGun;
+class CTSWorldGun;
 
 
 // NOTE-
@@ -100,13 +100,38 @@ class player:base_player
 	// Should this be predicted?  Unsure, I doubt it.
 	float maxspeed_raw;
 	
+	
 
+// ZOOM VARS
+////////////////////////////////	
+	// Don't use viewzoom, that's used by Nucldie to enforce the real zoom.
+	// The closest thing is flZoomCurrent further down, the raw value even after the current
+	// state of lerp to be given to viewzoom.
+	
+	// The current choice of zoom of some incremental number offered by the current weapon.
+	// 0 is the default (no zoom).  There is no standard for what zoom value there is for each
+	// zoom level in general, that is up to the equipped weapon's secondaryfire method to fill
+	// on right-clicking to change the zoom level.
+	PREDICTED_INT(iZoomLevel);
+	// Set this (or the setZoom method) to tap into the lerp system properly.
+	// When noticed (client/view.qc), the current zoom value goes to flZoomStart and 
+	// flZoomTarget goes to flZoomEnd.  The lerp goes from Start to End for a smooth transition.
+	PREDICTED_FLOAT(flZoomTarget);
+	
 #ifdef CLIENT
-	//TAGGG - related to how to handle FOV changes.
-	float flCurrentZoom;
-	float flOldZoom;
+	float flZoomEnd;
+	float flZoomStart;
 	float flZoomLerp;
-	float flZoomLevel;
+	float flZoomCurrent;
+#endif
+////////////////////////////////
+	
+	
+#ifdef CLIENT
+	BOOL equippedWeaponWaitingForCallback;
+	float equippedWeaponWaitingForCallback_maxWaitTime;
+	
+	
 	
 	// For telling how long it's been since I've been on the ground.
 	// Don't oscillate the view model bob on going down short steps.
@@ -162,10 +187,6 @@ class player:base_player
 #else
 	
 #endif
-
-	// shared zoom var!  Don't use viewzoom, that's used by Nucldie to enforce the real zoom
-	PREDICTED_FLOAT(flTargetZoom);
-
 
 
 	float flKarateBlockCooldown;
@@ -257,11 +278,7 @@ class player:base_player
 	BOOL inputPrimaryReleasedQueue;
 	BOOL inputSecondaryReleasedQueue;
 
-	// -1 means not using a scope, regardless of whether the weapon has it.
-	// We'll keep this serverside too, since that's the one relaying the decisions to the
-	// client.
-	int currentZoomChoice;
-	
+
 	// Shared, but don't network!  I think?
 	int aryNextBurstShotTime_softLength;
 	float aryNextBurstShotTime[5];
@@ -449,6 +466,8 @@ class player:base_player
 	virtual void (void)handleAccuracyKickback;
 
 	virtual void(float arg_theZoom) setZoom;
+	virtual void(void) resetZoom;
+	
 	
 	virtual void(int arg_newIndex) setInventoryEquippedIndex;
 	virtual void(int arg_newIndex, BOOL useAkimbo) setInventoryEquippedIndex_Akimbo;
@@ -493,9 +512,9 @@ class player:base_player
 	//virtual void () frameThink;
 	//TAGGG - QUESTION.  Does this need to be separate from postThink at all?  Same for above,
 	// forget what these are for
-	virtual void () frameThink_fromServer;
+	virtual void(void) frameThink_fromServer;
 
-	virtual BOOL(TSWorldGun arg_pickup) attemptAddWeaponFromPickup;
+	virtual BOOL(CTSWorldGun arg_pickup) attemptAddWeaponFromPickup;
 	virtual void(int arg_weaponID, BOOL completeDrop) dropWeapon;
 	virtual BOOL(void) anyAmmoPoolNonEmpty;
 	virtual void(void) dropAmmo;

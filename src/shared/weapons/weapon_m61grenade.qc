@@ -27,7 +27,7 @@ void weapon_m61grenade_spawnProjectile(player pl, weapondynamic_t arg_thisWeapon
 	vector vGrenadeOrigin = (pl.origin + pl.view_ofs) + (v_forward * 16);
 	vector vDir = aim ( pl, 100000 );
 	
-	TSGrenadeProjectile::generate(pl, vGrenadeOrigin, vDir, v_forward, WEAPON_ID::M61GRENADE);
+	TS_GrenadeProjectile::generate(pl, vGrenadeOrigin, vDir, v_forward, WEAPON_ID::M61GRENADE);
 }
 #endif
 
@@ -239,7 +239,7 @@ w_m61grenade_precache(void)
 	weapon_precache(ary_weaponData[WEAPON_ID::M61GRENADE]);
 #ifdef SERVER
 	// grenade-bounce and explode sounds are precached in
-	// TSGrenadeProjectile::precache and fx_ts_explosion_grenade_Init respectively
+	// TS_GrenadeProjectile::precache and fx_ts_explosion_grenade_Init respectively
 	//precache_sound("weapons/gr_pull.wav");
 	//precache_sound("weapons/gr_safe.wav");
 #else

@@ -13,8 +13,10 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
- 
-// !!! IMPORTANT NOTE.
+
+// NOTE - Physics_WaterMove is in pmove_water.qc instead
+
+// !!! IMPORTANT
 // Any methods starting with "Game" in here are no longer called by Nuclide.
 // Most methods have been changed to player-methods instead, see much further
 // down.  Keeping mine as they are to be inserted as needed.
@@ -261,13 +263,6 @@ void
 player::Physics_WaterJump(void)
 {
 	base_player::Physics_WaterJump();
-	
-}
-
-void
-player::Physics_WaterMove(void)
-{
-	base_player::Physics_WaterMove();
 	
 }
 

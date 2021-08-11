@@ -13,6 +13,12 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+ 
+ 
+ 
+ 
+//#define FORCE_NETWORK_ALL_INVENTORY
+
 
 /* all potential SendFlags bits we can possibly send */
 enumflags
@@ -180,7 +186,20 @@ player::ReceiveEntity(float new, float fl)
 	w_attack_akimbo_next = readfloat();
 	isReloading = readbyte();
 	isChangingIronsight = readbyte();
-	flTargetZoom = readfloat();
+	
+	//flZoomTarget = readfloat();
+	float tempThing = readfloat();
+	/*
+	if(tempThing != flZoomTarget){
+		printfline("flZoomTarget change! %.2f - %.2f", flZoomTarget, tempThing);
+	}
+	*/
+	// That's a good thing, yes?
+	if(!equippedWeaponWaitingForCallback){
+		flZoomTarget = tempThing;
+	}
+	
+	iZoomLevel = readbyte();
 	nextAkimboAttackPreference = readbyte();
 	akimboDualFireToleranceTime = readfloat();
 	grenadeFireIndex = readbyte() - 1;
@@ -212,7 +231,6 @@ player::ReceiveEntity(float new, float fl)
 	
 	//doFiremodeChange = readbyte();
 	
-	currentZoomChoice = readbyte() - 1;
 	
 	
 	ary_myWeapons_softMax = readbyte();
@@ -358,7 +376,8 @@ player::PredictPreFrame(void)
 	SAVE_STATE(w_attack_akimbo_next);
 	SAVE_STATE(isReloading);
 	SAVE_STATE(isChangingIronsight);
-	SAVE_STATE(flTargetZoom);
+	SAVE_STATE(flZoomTarget);
+	SAVE_STATE(iZoomLevel);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
 	SAVE_STATE(grenadeFireIndex);
@@ -456,7 +475,8 @@ player::PredictPostFrame(void)
 	ROLL_BACK(w_attack_akimbo_next);
 	ROLL_BACK(isReloading);
 	ROLL_BACK(isChangingIronsight);
-	ROLL_BACK(flTargetZoom);
+	ROLL_BACK(flZoomTarget);
+	ROLL_BACK(iZoomLevel);
 	ROLL_BACK(nextAkimboAttackPreference);
 	ROLL_BACK(akimboDualFireToleranceTime);
 	ROLL_BACK(grenadeFireIndex);
@@ -505,6 +525,7 @@ player::EvaluateEntity(void)
 	base_player::EvaluateEntity();
 	
 	int i;
+	int myAmmoType;
 
 	/* animation */
 	if (ATTR_CHANGED(anim_bottom) || ATTR_CHANGED(anim_bottom_time))
@@ -613,7 +634,7 @@ player::EvaluateEntity(void)
 			if(ATTR_CHANGED(ary_myWeapons[i].iIronSight)) SendFlags |= PLAYER_UNUSED1;
 			if(ATTR_CHANGED(ary_myWeapons[i].forceBodygroup1Submodel)) SendFlags |= PLAYER_UNUSED1;
 		//}
-		int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
 		if(myAmmoType != -1){
 			i = myAmmoType;
 			//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -642,7 +663,8 @@ player::EvaluateEntity(void)
 	SAVE_STATE(w_attack_akimbo_next);
 	SAVE_STATE(isReloading);
 	SAVE_STATE(isChangingIronsight);
-	SAVE_STATE(flTargetZoom);
+	SAVE_STATE(flZoomTarget);
+	SAVE_STATE(iZoomLevel);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
 	SAVE_STATE(grenadeFireIndex);
@@ -680,7 +702,7 @@ player::EvaluateEntity(void)
 		//}
 
 
-		int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
 		if(myAmmoType != -1){
 			i = myAmmoType;
 			//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -796,7 +818,8 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, w_attack_akimbo_next );
 	WriteByte(MSG_ENTITY, isReloading );
 	WriteByte(MSG_ENTITY, isChangingIronsight );
-	WriteFloat(MSG_ENTITY, flTargetZoom);
+	WriteFloat(MSG_ENTITY, flZoomTarget);
+	WriteByte(MSG_ENTITY, iZoomLevel);
 	WriteByte(MSG_ENTITY, nextAkimboAttackPreference);
 	WriteFloat(MSG_ENTITY, akimboDualFireToleranceTime);
 	WriteByte(MSG_ENTITY, grenadeFireIndex + 1);
@@ -828,7 +851,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	
 	//WriteByte(MSG_ENTITY, doFiremodeChange);
 	
-	WriteByte(MSG_ENTITY, currentZoomChoice + 1 );
 
 	
 	//weapondynamic_t ary_myWeapons[ary_myWeapons_length];
@@ -933,10 +955,6 @@ player::player(void){
 	
 	flag_lastWeaponAkimbo = FALSE;
 	
-	flCurrentZoom = 1;
-	flOldZoom = 1;
-	flZoomLerp = 0;
-	flZoomLevel = 0;
 #endif
 	
 	flKarateBlockCooldown = 0;
@@ -1014,62 +1032,54 @@ player::reset(BOOL resetInventory){
 	// should this even make any assumptions about this?
 	//iState = ?;
 	
+	resetZoom();
 	
 #ifdef CLIENT
-		// For safety, doing this.
-		// If anywhere that ever calls for this method clientside has this set
-		// properly before the call to here, (whatever event-method in base files leads
-		// to here most likely), this is not necessary.
-		// Also, no need for pSeatLocal yet, but add in if that changes.
-		int s = (float)getproperty(VF_ACTIVESEAT);
-		pSeat = &g_seats[s];
-		pSeat->m_flHUDWeaponSelectTime = -1;
-		// we don't want damage related to the death / between spawns carrying over
-		// at the start of the next spawn.
-		pSeat->m_flDamageAlpha = 0;
-		
-		
-		// doing this in reset too to avoid a little glitch.
-		weaponSelectHighlightID = -1;
-		
-		w_freeze_idle_next = -1;
-		
-		flOldZoom = 1;
-		flCurrentZoom = 1;
-		flZoomLevel = 1;
-		
-		
-		flRecentGroundTime = 0;
-		
-		//TAGGG - BobNEW.
-		// Reset the vars here? Or only on an inventory wipe?
-		pViewBob = &g_viewBobVars[s];
-		pViewBob->m_flBobTime = 0;
-		pViewBob->m_flBob = 0;
-		pViewBob->m_flBobCycle = 0;
-		pViewBob->m_flSpeed = 0;
-		pViewBob->m_vCam = [0,0,0];
-		/////////////////////////////////////////////////////
-		
-		
-		flViewShake = 0;
-		
-		recentLaserHitPosSet = FALSE;
-		lasersightUnlockTime = FALSE;
-		
-		forceViewModelUpdate = FALSE;
-		prev_forceBodygroup1Submodel = 0;
+	// For safety, doing this.
+	// If anywhere that ever calls for this method clientside has this set
+	// properly before the call to here, (whatever event-method in base files leads
+	// to here most likely), this is not necessary.
+	// Also, no need for pSeatLocal yet, but add in if that changes.
+	int s = (float)getproperty(VF_ACTIVESEAT);
+	pSeat = &g_seats[s];
+	pSeat->m_flHUDWeaponSelectTime = -1;
+	// we don't want damage related to the death / between spawns carrying over
+	// at the start of the next spawn.
+	pSeat->m_flDamageAlpha = 0;
+	
+	
+	// doing this in reset too to avoid a little glitch.
+	weaponSelectHighlightID = -1;
+	
+	w_freeze_idle_next = -1;
+	
+	flRecentGroundTime = 0;
+	
+	//TAGGG - BobNEW.
+	// Reset the vars here? Or only on an inventory wipe?
+	pViewBob = &g_viewBobVars[s];
+	pViewBob->m_flBobTime = 0;
+	pViewBob->m_flBob = 0;
+	pViewBob->m_flBobCycle = 0;
+	pViewBob->m_flSpeed = 0;
+	pViewBob->m_vCam = [0,0,0];
+	/////////////////////////////////////////////////////
+	
+	
+	flViewShake = 0;
+	
+	recentLaserHitPosSet = FALSE;
+	lasersightUnlockTime = FALSE;
+	
+	forceViewModelUpdate = FALSE;
+	prev_forceBodygroup1Submodel = 0;
 		
 #endif
 	
 #ifdef SERVER
-		switchToRecentlyAddedWeapon = FALSE;
-		nextUseCooldown = 0;
+	switchToRecentlyAddedWeapon = FALSE;
+	nextUseCooldown = 0;
 #endif
-	
-	currentZoomChoice = -1;
-	setZoom(1.0f);
-	viewzoom = 1.0f;  // and apply instantly.
 	
 	
 	// Shared, but don't network!  I think?
@@ -1103,9 +1113,6 @@ player::reset(BOOL resetInventory){
 	shotgunReloadIndex = 0;
 	shotgunAddAmmoTime = -1;
 	shotgunAddAmmoSoundTime = -1;
-#ifdef CLIENT
-	//shotgunAddAmmoTime_cooldownSetTime = -1;
-#endif
 	
 	doFiremodeChange = FALSE;
 	
@@ -1119,14 +1126,6 @@ player::reset(BOOL resetInventory){
 	isReloading = FALSE;
 	isChangingIronsight = FALSE;
 	
-	// maybe not necessary, but I don't think
-	// the client gets any benefit from this.
-#ifdef SERVER
-	//the first time you fire will be the first frame of firing.
-	//flags = flags | FL_PRIMARY_FIRE_FIRST_FRAME;
-	//flags = flags | FL_SECONDARY_FIRE_FIRST_FRAME;
-	
-#endif
 	
 	nextAkimboAttackPreference = BITS_AKIMBOCHOICE_LEFT;
 	recentAttackHadAmmo = FALSE;
@@ -1143,6 +1142,8 @@ player::reset(BOOL resetInventory){
 	
 	if(resetInventory){
 		
+		
+		
 		// could this be done for resets outside of resetInventory?  unsure
 		flags = 0;
 		gflags = 0;
@@ -1154,6 +1155,10 @@ player::reset(BOOL resetInventory){
 		setInventoryEquippedIndex(-1);
 		
 		shotgunWaitingForPump = FALSE;
+	
+#ifdef CLIENT
+		equippedWeaponWaitingForCallback = FALSE;
+#endif
 	
 #ifdef SERVER
 		// other projects do that so sure?
@@ -1247,7 +1252,28 @@ player::handleAccuracyKickback(void){
 void
 player::setZoom(float arg_theZoom)
 {
-	flTargetZoom = arg_theZoom;
+	printfline("ORDER! %.2f", arg_theZoom);
+	flZoomTarget = arg_theZoom;
+}
+// forget any zoom-related settings instantly.
+// Unsure if a message should be sent to the client if called from the server, or assume the
+// calls coincide.
+void
+player::resetZoom(void)
+{
+	iZoomLevel = 0;
+	viewzoom = 1.0f;
+	setZoom(1.0f);  // sets flZoomTarget
+	
+#ifdef CLIENT
+	// IMPORTANT!  ZoomLerp under 0 tries to involve flZoomOld, set or not
+	flZoomLerp = 1.0f;
+	SAVE_STATE(iZoomLevel);
+	SAVE_STATE(viewzoom);
+	SAVE_STATE(flZoomTarget);
+	flZoomEnd = 1.0f;
+	flZoomCurrent = 1.0f;
+#endif
 }
 
 void
@@ -1337,16 +1363,17 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 	// ...  Marvelous.  But at least that's a completely separate issue, again with or without below.
 	
 	// (force a sendoff, expect it area)
-	/*
+	
 #ifdef SERVER
 	// Force a sendoff!
-	//SendFlags |= PLAYER_WEAPON;
+	SendFlags |= PLAYER_WEAPON;
 #else
 	SAVE_STATE(activeweapon);
 	// unsure if this one's needed
-	//SAVE_STATE(inventoryEquippedIndex);
+	SAVE_STATE(inventoryEquippedIndex);
 #endif
-	*/
+
+	
 
 }
 
@@ -1510,7 +1537,7 @@ player::frameThink_fromServer(void){
 
 #ifdef CLIENT
 
-// Note that these pre/postThink's aren't game events, they're just called by _base/entry.c
+// Note that these pre/postThink's aren't game events, they're just called 
 // before/after prediction accordingly, and every single rendered frame.
 // Unlike serverside preThink / postThink, which (I think?) are called independent of any
 // logic frame-rate on the server.
@@ -1523,6 +1550,11 @@ player::preThink(void){
 		gFun_UI_EventGrabber_DebugMethod();
 	}
 	
+	
+	if(time >= equippedWeaponWaitingForCallback_maxWaitTime){
+		// stop then
+		equippedWeaponWaitingForCallback = FALSE;
+	}
 	
 	// Called before rendering, so this is an acceptable place.
 	View_HandleZoom();
@@ -1649,7 +1681,7 @@ player::postThink(void){
 #ifdef SERVER
 
 BOOL
-player::attemptAddWeaponFromPickup(TSWorldGun arg_pickup){
+player::attemptAddWeaponFromPickup(CTSWorldGun arg_pickup){
 	
 	//int existingMatchingIndex = findWeaponInConfig((player)other, (int)arg_pickup.myInfo.weaponID);
 	
@@ -1723,7 +1755,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 	// record the number of slots lost for removing from the total later,
 	// typically those of the 'eDrop' entity.  Adjust for being more than one.
 	int iSlotsDropped = 0;
-	TSWorldGun eDrop = NULL;
+	CTSWorldGun eDrop = NULL;
 	
 	// there is a "TS_playerDropWeapon" method in event_custom.c we could call if needed.
 	// Looks like we never really intended for it to go anywhere though, no need for that.
@@ -1795,7 +1827,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 		//	 basicRefX.iAkimboID > 0
 		if((*basicPS).iBitsUpgradeAuto & BITS_WEAPONOPT_AKIMBO){
 			// singular akimbo?  dropping removes.		
-			eDrop = TSWorldGun::generate(this, arg_weaponID);		
+			eDrop = CTSWorldGun::generate(this, arg_weaponID);		
 			removeWeaponFromInventory(this, arg_weaponID);
 			if(!completeDrop){
 				playerEquipIdealSafe(this);
@@ -1812,7 +1844,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 			// WAIT NOT JUST YET.  The weapon drop will think we're dropping the weapon while it
 			// didn't have akimbo.
 			if(!completeDrop){
-				eDrop = TSWorldGun::generate(this, arg_weaponID);
+				eDrop = CTSWorldGun::generate(this, arg_weaponID);
 				
 				if(weaponEquippedAkimbo){
 					// safety.   dynaRefPRE.iClipLeft stays as it is, just enforcing that the akimbo one was dropped.
@@ -1849,10 +1881,10 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 				// Player is dying?  Remove this weapon and drop two copies.
 				// Pretty simple.
 				// ...but we need to override how they get ammo.
-				eDrop = TSWorldGun::generate(this, arg_weaponID);
+				eDrop = CTSWorldGun::generate(this, arg_weaponID);
 				eDrop.myInfo.iClipLeft = dynaRefPRE.iClipLeft;
 				eDrop.myInfo.iClipAkimboLeft = 0;
-				eDrop = TSWorldGun::generate(this, arg_weaponID);
+				eDrop = CTSWorldGun::generate(this, arg_weaponID);
 				eDrop.myInfo.iClipLeft = dynaRefPRE.iClipAkimboLeft;
 				eDrop.myInfo.iClipAkimboLeft = 0;
 				
@@ -1865,7 +1897,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 			
 		}else{
 			// doesn't support akimbo or not akimbo? remove.
-			eDrop = TSWorldGun::generate(this, arg_weaponID);
+			eDrop = CTSWorldGun::generate(this, arg_weaponID);
 			removeWeaponFromInventory(this, arg_weaponID);
 			if(!completeDrop){
 				playerEquipIdealSafe(this);
@@ -1875,7 +1907,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 		
 		//drop away
 		if(!completeDrop){
-			eDrop = TSWorldGun::generate(this, arg_weaponID);
+			eDrop = CTSWorldGun::generate(this, arg_weaponID);
 			
 			eDrop.myInfo.iCount = 1;
 			eDrop.myInfo.iSlots = (*basicPS).iSlots * 1;
@@ -1894,7 +1926,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 			
 		}else{
 			// combine them all, happens naturally.
-			eDrop = TSWorldGun::generate(this, arg_weaponID);
+			eDrop = CTSWorldGun::generate(this, arg_weaponID);
 			removeWeaponFromInventory(this, arg_weaponID);
 			playerEquipIdealSafe(this);
 		}
@@ -1902,7 +1934,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 		
 	}else{  // if((*basicPS).typeID == WEAPONDATA_TYPEID_MELEE)
 		
-		eDrop = TSWorldGun::generate(this, arg_weaponID);
+		eDrop = CTSWorldGun::generate(this, arg_weaponID);
 		removeWeaponFromInventory(this, arg_weaponID);
 		if(!completeDrop){
 			playerEquipIdealSafe(this);
@@ -1941,8 +1973,8 @@ player::anyAmmoPoolNonEmpty(void){
 // oh.. I guess that's it.
 void
 player::dropAmmo(void){
-	//TSAmmoPack eDrop = 
-	TSAmmoPack::generate(this);
+	//CTSAmmoPack eDrop = 
+	CTSAmmoPack::generate(this);
 
 }// dropAmmo
 

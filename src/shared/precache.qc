@@ -16,9 +16,12 @@ void SharedGame_Precache(void){
 	//printfline("***SharedGame_Precache called***");
 	
 	
+	// good idea to have precache shared?  Unsure, but it has script client and serverside
+	CTSPowerUp::precache();
+	
 	precache_model("models/powerup.mdl");
 	
-	// In FreeTS, looks like shell eject effects are precached both client & serverside
+	// In FreeTS, looks like shell eject effects are precached both client and serverside
 	// (so here in shared/precache.qc is good).
 	
 	// physics-related / slow-mo?

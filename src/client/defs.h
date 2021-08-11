@@ -45,8 +45,9 @@ var float FONT_ARIAL_STD;  //stands for "standard" ya hooligans.
 var float FONT_ARIAL_NUMSLASH;
 var float FONT_ARIAL_SCOPEMAG;
 
-// Be sure to keep this up to date with the font FONT_ARIAL_STD as it's loaded in _base/client/entry.c,
-// notice this is always one less than the actual expected corresponding font.
+// Be sure to keep this up to date with the font FONT_ARIAL_STD as it's loaded in
+// ui.qc, notice this is always one less than the actual expected corresponding font.
+// TODO - a some things may be unused at this point, check.
 const vector vButtonFontSize = [13, 13, 0];
 const vector vFontSizeNumSlash = [15, 15, 0];
 const vector vFontArialScopeMag = [16, 16, 0];

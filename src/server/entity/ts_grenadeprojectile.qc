@@ -1,21 +1,21 @@
 void
-TSGrenadeProjectile::TSGrenadeProjectile(void){
+TS_GrenadeProjectile::TS_GrenadeProjectile(void){
 }
 
 void
-TSGrenadeProjectile::precache(void)
+TS_GrenadeProjectile::precache(void)
 {
 	Sound_Precache("weapon_m61grenade.bounce");
 	// Explosion sound is already precached in fx_ts_explosion_grenade.qc
 	// And the projectile model uses the world model, so that is also already handled
 }
 
-TSGrenadeProjectile
-TSGrenadeProjectile::generate(
+TS_GrenadeProjectile
+TS_GrenadeProjectile::generate(
 	player arg_player, vector arg_vOrigin, vector arg_vThrowDir,
 	vector arg_vPlayerForward, int arg_weaponTypeID
 ){
-	TSGrenadeProjectile eNade = spawn(TSGrenadeProjectile);
+	TS_GrenadeProjectile eNade = spawn(TS_GrenadeProjectile);
 	
 	weapondata_throwable_t* basicP = ((weapondata_throwable_t*)ary_weaponData[arg_weaponTypeID]);
 	
@@ -37,14 +37,14 @@ TSGrenadeProjectile::generate(
 	eNade.movetype = MOVETYPE_BOUNCE;
 	eNade.gravity = 0.5f;
 	
-	eNade.think = TSGrenadeProjectile_Explode;
+	eNade.think = TS_GrenadeProjectile_Explode;
 	eNade.nextthink = time + 3.0f;
 	
 	return eNade;
 }
 
 void
-TSGrenadeProjectile::touch(void){
+TS_GrenadeProjectile::touch(void){
 	if ( other.solid == SOLID_TRIGGER ) {
 		return;
 	}
@@ -62,7 +62,7 @@ TSGrenadeProjectile::touch(void){
 
 
 void
-TSGrenadeProjectile_Explode(void){
+TS_GrenadeProjectile_Explode(void){
 	//float randomChoice;
 	
 	// Also - don't worry about the shakes, sound script file for the
@@ -91,22 +91,6 @@ TSGrenadeProjectile_Explode(void){
 	//Damage_Apply(target, world, 5, DMG_DROWN, 0);
 	
 	//Damage_Apply( self, world, fFallDamage, 0, DMG_FALL);
-	
-	
-	/*
-	randomChoice = random();
-	if(randomChoice < 0.2){
-		SoundPitched_Send(self, SNDP_EXPLODE);
-	}else if(randomChoice < 0.4){
-		SoundPitched_Send(self, SNDP_EXPLODE1);
-	}else if(randomChoice < 0.6){
-		SoundPitched_Send(self, SNDP_EXPLODE2);
-	}else if(randomChoice < 0.8){
-		SoundPitched_Send(self, SNDP_EXPLODE3);
-	}else{
-		SoundPitched_Send(self, SNDP_EXPLODE4);
-	}
-	*/
 	
 	// delay this so damage indicators can figure out where I came from!
 	// ...weird, I know.

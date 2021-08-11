@@ -97,6 +97,9 @@ TS_SetViewModelFromStats(void)
 	SAVE_STATE(pl.w_idle_next);
 	SAVE_STATE(pl.viewzoom);
 	SAVE_STATE(pl.weapontime);
+	//TAGGG - NEW VAR
+	SAVE_STATE(pl.w_attack_akimbo_next);
+	SAVE_STATE(pl.flZoomTarget);
 
 	skel_delete( mflash.skeletonindex );
 	mflash.skeletonindex = skel_create( vm.modelindex );
@@ -206,6 +209,7 @@ View_UpdateWeapon(entity vm, entity mflash)
 	SAVE_STATE(pl.weapontime);
 	//TAGGG - NEW VAR.
 	SAVE_STATE(pl.w_attack_akimbo_next);
+	SAVE_STATE(pl.flZoomTarget);
 	
 	//TAGGG - also new line.  It is a good idea to reset the event
 	// on changing models, right?
@@ -258,17 +262,34 @@ void View_HandleZoom(void){
 		return;
 	}
 	
-	//TAGGG - any references to STAT_VIEWZOOM are now garbage.
-	// Rely on pl.flTargetZoom instead, it's sent to the client every frame
-	// and should be handled serverside anyway.
-	// flCurrentZoom is actually the "target" zoom we want to reach.
-	// flOldZoom is the zoom we started at, at the time of the change.
-	// flZoomLerp is how far along we are from oldZoom to currentZoom.
-	// flZoomLevel is the actual zoom we are at this very moment.
+	// test
+	/*
+	pl.flZoomCurrent = pl.flZoomTarget;
+	pl.viewzoom = pl.flZoomTarget;
+	printfline("flZoomTarget: %.2f", pl.flZoomTarget);
+	return;
+	*/
 	
-	if (pl.flCurrentZoom != pl.flTargetZoom ) {
-		pl.flOldZoom = pl.flCurrentZoom;
-		pl.flCurrentZoom = pl.flTargetZoom ;
+	//printfline("WHATS GOING ON %.2f %.2f %.2f %.2f %.2f", pl.flZoomEnd, pl.flZoomTarget, pl.flZoomStart, pl.flZoomLerp, pl.flZoomCurrent);
+	
+	//TAGGG - any references to STAT_VIEWZOOM are now garbage.
+	// Rely on pl.flZoomTarget instead, it's sent to the client every frame
+	// and should be handled serverside anyway.
+	// flZoomEnd is actually the "target" zoom we want to reach.
+	// flZoomStart is the zoom we started at, at the time of the change.
+	// flZoomLerp is how far along we are from oldZoom to currentZoom.
+	// flZoomCurrent is the actual zoom we are at this very moment.
+	
+	if (pl.flZoomEnd != pl.flZoomTarget ) {
+		// is setting flZoomStart to flZoomEnd or flZoomCurrent a better idea?
+		// at flZoomEnd means, on changing before the current lerp has finished, it jumps to beginning
+		// at the end point of the lerp in progress.  But starting at flZoomCurrent might be smoother?
+		// if it isn't glitchy that could be nice.  Trying that out.
+		
+		pl.flZoomStart = pl.flZoomCurrent;
+		//pl.flZoomStart = pl.flZoomEnd;
+		
+		pl.flZoomEnd = pl.flZoomTarget;
 		pl.flZoomLerp = 0.0f;
 	}
 
@@ -277,24 +298,24 @@ void View_HandleZoom(void){
 		// 0.8 can be safe.
 		// The Wastes default was 4.
 		
-		pl.flZoomLerp += clframetime * 8;
+		pl.flZoomLerp += clframetime * 5.7;
 		
 		if(pl.flZoomLerp >= 1.0){
 			//enforce the cap.
 			pl.flZoomLerp = 1.0;
 		}
 		
-		//pl.flZoomLevel = getstatf(STAT_VIEWZOOM);
-		pl.flZoomLevel = Math_Lerp(pl.flOldZoom, pl.flCurrentZoom, pl.flZoomLerp);
+		//pl.flZoomCurrent = getstatf(STAT_VIEWZOOM);
+		pl.flZoomCurrent = Math_Lerp(pl.flZoomStart, pl.flZoomEnd, pl.flZoomLerp);
 	}
 	
 	// Set this, since Nuclide will read it in and apply instantly.
 	// So same effect without having to edit Nuclide, this pipes it over for it
 	// to do the setproperty thing below to apply
-	pl.viewzoom = pl.flZoomLevel;
+	pl.viewzoom = pl.flZoomCurrent;
 
-	////setproperty(VF_AFOV, DEFAULT_FOV * pl.flZoomLevel);
-	////setsensitivityscaler(pl.flZoomLevel);
+	////setproperty(VF_AFOV, DEFAULT_FOV * pl.flZoomCurrent);
+	////setsensitivityscaler(pl.flZoomCurrent);
 	
 	// here's the way old FreeCS did it
 	//setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
@@ -327,7 +348,5 @@ View_ShowMuzzleflash(int index)
 	// be the end of the weapon for flashes
 	pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 0;
 }
-
-
 
 

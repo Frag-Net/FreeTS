@@ -10,15 +10,12 @@ void TS_playerEquippedWeapon_Shared(player pl, int newWeaponEquipped, BOOL useAk
 
 #ifdef CLIENT
 void _TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo);
-
 void TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo);
-
+void EV_EquipCallback(void);
 #endif
 #ifdef SERVER
 void _TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo);
-
 void TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo);
-
 void CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOL useAkimbo);
 #endif
 

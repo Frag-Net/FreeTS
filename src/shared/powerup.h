@@ -93,8 +93,8 @@ powerupdata_basic_t* ary_powerupData[POWERUP_ID::LAST_ID];
 
 
 #ifdef SERVER
-class ts_powerup;
-extern void powerup_linkToStruct(ts_powerup arg_entity, POWERUP_ID arg_id);
+class CTSPowerUp;
+extern void powerup_linkToStruct(CTSPowerUp arg_entity, POWERUP_ID arg_id);
 #endif
 
 extern void setupPowerupData(void);

@@ -772,7 +772,10 @@ typedef struct{
 
 //TODO. Is extern'ing these earlier possible?
 ammodata_t* ary_ammoData[AMMO_ID::LAST_ID];
+#ifdef CLIENT
 shellejectdata_t* ary_shellEjectData[SHELLEJECT_ID::LAST_ID];
+muzzleflashdata_t* ary_muzzleFlashData[MUZZLEFLASH_ID::LAST_ID];
+#endif
 
 //weapondata_normal_t* ary_weaponData[WEAPON_ID::LAST_ID];
 //Void pointer should be fine, right? Cast to the right weapondata_ struct above (typeID tells what that is).
@@ -847,7 +850,8 @@ void weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t
 void weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon);
 
-void weapon_ejectShell(int arg_shellEjectType);
+void weapon_ShowMuzzleFlash(int arg_muzzleFlashTypeID);
+void weapon_EjectShell(int arg_shellEjectType);
 
 void weapon_precache(weapondata_basic_t* basePRef);
 
@@ -948,10 +952,11 @@ int getAmmoTypeOfWeapon(int arg_weaponID);
 #ifdef CLIENT
 void viewEv_playShotgunInsertShellSound(void);
 
-// TEMP DUMMY
+
+// dummy
 void w_ejectshell_pistol(void){};
 
-void viewEv_weapon_ejectShell(void);
+void viewEv_weapon_EjectShell(void);
 
 void copyWeaponConfig(weaponconfig_weapon_t* arg_dest, weaponconfig_weapon_t* arg_src);
 void copyConfig(weaponconfig_data_t* arg_dest, weaponconfig_data_t* arg_src);

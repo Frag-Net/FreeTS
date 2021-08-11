@@ -59,15 +59,16 @@ defs.h
 ../shared/weapons.h
 ../shared/player.h
 ../shared/powerup.h
+../shared/sound_pitched.h
 
 
 precache.h
 entity/ts_powerup.h
-//player.c
 
-entity/TSWorldGun.h
-entity/TSThrownProjectile.h
-entity/TSGrenadeProjectile.h
+entity/ts_worldgun.h
+entity/ts_thrownprojectile.h
+entity/ts_ammopack.h
+entity/ts_grenadeprojectile.h
 
 ../shared/include.src
 
@@ -85,10 +86,10 @@ entity/ts_slowmotionpoint.qc
 entity/ts_teamescape.qc
 entity/ts_trigger.qc
 entity/ts_wingiver.qc
-entity/TSWorldGun.qc
-entity/TSThrownProjectile.qc
-entity/TSAmmoPack.qc
-entity/TSGrenadeProjectile.qc
+entity/ts_worldgun.qc
+entity/ts_thrownprojectile.qc
+entity/ts_ammopack.qc
+entity/ts_grenadeprojectile.qc
 
 ../shared/player.qc
 ../shared/inventory_logic.qc
@@ -117,9 +118,10 @@ spawn.qc
 
 
 
+../shared/util.qc
+../shared/precache.qc
+// no server util.qc
 precache.qc
-//money.qc
-//spectator.qc
 
 
 

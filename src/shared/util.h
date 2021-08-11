@@ -80,7 +80,7 @@
 #endif
 
 ////////////////////////////////////////////////////////
-// situational, see TSWorldGun and TSThrownProjectile.
+// situational, see CTSWorldGun and CTSThrownProjectile.
 // (consider unpacking, this is kinda unnecessary)
 // anywhere in inventory_logic.qc still do something like that??  I forget.
 #define COPYVARFROM(varName) myInfo.##varName = tempRef.##varName;

@@ -8,41 +8,32 @@ void ClientGame_Precache(void){
 	SharedGame_Precache();
 	
 	
-	// Example of loading a muzzle flash sprite
-	//MUZZLE_CUSTOM = (int)getmodelindex("sprites/muzzleCUSTOM.spr");
+	// things from ClientGame_RendererRestart from FreeHL mostly for referred-to effects
+	////////////////////////////////////////////////////////////////////////////////////
+	Obituary_Precache();
+
+	// All forked effects!
+	FX_Blood_Init();
+	FX_BreakModel_Init();
+	FX_Explosion_Init();
+	FX_GibHuman_Init();
+	FX_Spark_Init();
+	FX_Impact_Init();
+	////////////////////////////////////////////////////////////////////////////////////
+	
+	// NEW
+	CTSShellEject::precache();
+	FX_TS_Explosion_Grenade_Init();
+	FX_Impact_Melee_Init();
+	MuzzleFlash_precache();
 	
 	
-	CShellEject::precache();
-	
-	//TAGGG - From FreeHL.
-	// Does TS use something else?
-	////////////////////////////////////////////////////////////
-	precache_model("sprites/muzzleflash1.spr");
-	precache_model("sprites/muzzleflash2.spr");
-	precache_model("sprites/muzzleflash3.spr");
-	////////////////////////////////////////////////////////////
 	
 	precache_sound("weapons/draw.wav");
 	
 	precache_model("sprites/mapsprites/ts_gpc1.spr");
 	precache_model("sprites/mapsprites/ts_gpc2.spr");
 	
-	precache_model("sprites/player/crouched.spr");
-	precache_model("sprites/player/divestepb.spr");
-	precache_model("sprites/player/divestepc.spr");
-	precache_model("sprites/player/divestept.spr");
-	precache_model("sprites/player/health.spr");
-	precache_model("sprites/player/kevlar.spr");
-	precache_model("sprites/player/kungfu.spr");
-	precache_model("sprites/player/movement.spr");
-	precache_model("sprites/player/prone.spr");
-	precache_model("sprites/player/run.spr");
-	precache_model("sprites/player/stand.spr");
-	
-	
-	
-	precache_model("sprites/weapons/item_installed.spr");
-	precache_model("sprites/weapons/item_not_installed.spr");
 	
 	precache_model("sprites/wires/bwire.spr");
 	precache_model("sprites/wires/bwirecutted.spr");

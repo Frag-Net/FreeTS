@@ -241,21 +241,21 @@ w_m16a4_secondary(void)
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		
-		switch(pl.currentZoomChoice){
+		switch(pl.iZoomLevel){
 			case -1:{
 				//pl.viewzoom = 32/80;
 				pl.setZoom(0.4f);
-				pl.currentZoomChoice++;
+				pl.iZoomLevel++;
 			break;}
 			case 0:{
 				//pl.viewzoom = 8/80;
 				pl.setZoom(0.10f);
-				pl.currentZoomChoice++;
+				pl.iZoomLevel++;
 			break;}
 			case 1:{
 				//pl.viewzoom = 0;
 				pl.setZoom(1.00f);
-				pl.currentZoomChoice = -1;
+				pl.iZoomLevel = -1;
 			break;}
 		}//END OF switch
 

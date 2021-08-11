@@ -159,8 +159,8 @@ w_ak47_primary(void)
 	}
 	
 #ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
+	weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::RIFLE);
+	weapon_EjectShell(SHELLEJECT_ID::_56);
 #endif
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::AK47], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
@@ -189,21 +189,16 @@ w_ak47_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		switch(pl.currentZoomChoice){
-			case -1:{
-				//pl.viewzoom = 32/80;
-				pl.setZoom(0.4f);
-				pl.currentZoomChoice++;
-			break;}
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 3;
+		switch(pl.iZoomLevel){
 			case 0:{
-				//pl.viewzoom = 13/80;
-				pl.setZoom(0.1625f);
-				pl.currentZoomChoice++;
+				pl.setZoom(1.00f);
 			break;}
 			case 1:{
-				//pl.viewzoom = 0;
-				pl.setZoom(1.00f);
-				pl.currentZoomChoice = -1;
+				pl.setZoom(0.4f);
+			break;}
+			case 2:{
+				pl.setZoom(0.1625f);
 			break;}
 		}//END OF switch
 

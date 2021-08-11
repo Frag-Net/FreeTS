@@ -41,7 +41,7 @@ void HUD_DrawScope_Pic( vector vPos, vector vSize, string sSprite ) {
 =================
 HUD_DrawScope
 
-Tries to draw a scope whenever viewzoom < 1.0f
+Tries to draw a scope
 =================
 */
 void HUD_DrawScope( void ) {
@@ -167,7 +167,7 @@ void HUD_DrawScope( void ) {
 	
 	
 	
-	int magAmount = (int)(1.0f / (pl.flZoomLevel ));
+	int magAmount = (int)(1.0f / (pl.flZoomCurrent ));
 	//int xOffset = drawSpriteNumber(ary_LCD_numberSet, 24, 24, magAmount, 3, BITS_DIGITOPT_NONE, clrPaleBlue, 0.88f);
 			//[24 + xOffset + 1, 24 + 4]
 	Gfx_Text( [24, 27], sprintf("%ix", magAmount), vFontArialScopeMag, clrPaleBlue, 0.95f, DRAWFLAG_ADDITIVE, FONT_ARIAL_SCOPEMAG );

@@ -21,7 +21,7 @@ enum pwuptype_choice{
 
 #ifdef SERVER
 
-class ts_powerup:CBaseEntity{
+class CTSPowerUp:CBaseEntity{
 	
 	//key values?
 	pwuptype_choice m_ePwuptype;
@@ -41,7 +41,7 @@ class ts_powerup:CBaseEntity{
 	
 	vector mem_origin;
 	
-	void(void) ts_powerup;
+	void(void) CTSPowerUp;
 	static void(void) precache;
 	virtual void(void) CustomInit;
 	//virtual void(void) restartAnim;
@@ -56,7 +56,7 @@ class ts_powerup:CBaseEntity{
 
 
 void
-ts_powerup::ts_powerup(void)
+CTSPowerUp::CTSPowerUp(void)
 {
 	
 	// And why don't we just receive these as name/value pairs like clientside does?
@@ -64,7 +64,7 @@ ts_powerup::ts_powerup(void)
 	// And is it a problem we never call CBaseEntity's constructor?
 	// If we did it would read every single field that way, in addition to us
 	// reading every single field here, just to get info that the CBaseEntity expects
-	// (origin) and what ts_powerup expects. Not efficient!
+	// (origin) and what CTSPowerUp expects. Not efficient!
 	
 	
 	int nfields = tokenize( __fullspawndata );
@@ -98,15 +98,9 @@ ts_powerup::ts_powerup(void)
 	
 }// constructor
 
-void
-ts_powerup::precache(void)
-{
-	precache_model(POWERUP_MODEL_PATH);
-}
-
 
 void
-ts_powerup::CustomInit(void)
+CTSPowerUp::CustomInit(void)
 {
 	
 	
@@ -131,8 +125,8 @@ ts_powerup::CustomInit(void)
 	
 	
 	//customphysics?
-	//eDrop.think = ts_powerup::Think;
-	//eDrop.touch = ts_powerup::Touch;
+	//eDrop.think = CTSPowerUp::Think;
+	//eDrop.touch = CTSPowerUp::Touch;
 	//this.nextthink = time + 0.5f;
 	
 	//uhh..  ok, sure
@@ -192,8 +186,8 @@ ts_powerup::CustomInit(void)
 	this.SendEntity = send;
 	this.SendFlags = 1;
 	
-	//this.touch = ts_powerup::Touch;
-	//this.think = ts_powerup::Think;
+	//this.touch = CTSPowerUp::Touch;
+	//this.think = CTSPowerUp::Think;
 	this.nextthink = time + 0;
 	
 	// ??? SERVERTEST
@@ -206,7 +200,7 @@ ts_powerup::CustomInit(void)
 
 
 
-float ts_powerup::send(entity pvsent, float cflags)
+float CTSPowerUp::send(entity pvsent, float cflags)
 {
 	WriteByte(MSG_ENTITY, ENT_POWERUP);
 	WriteCoord(MSG_ENTITY, this.origin[0]);
@@ -232,7 +226,7 @@ float ts_powerup::send(entity pvsent, float cflags)
 
 
 void
-ts_powerup::Respawn(void)
+CTSPowerUp::Respawn(void)
 {
 	
 	CustomInit();
@@ -243,7 +237,7 @@ ts_powerup::Respawn(void)
 
 
 void
-ts_powerup::think(void)
+CTSPowerUp::think(void)
 {
 	
 	//TAGGG - CRITICAL.  DISCUSS.
@@ -274,7 +268,7 @@ ts_powerup::think(void)
 
 
 void
-ts_powerup::touch(void)
+CTSPowerUp::touch(void)
 {
 	
 	
@@ -312,7 +306,7 @@ ts_powerup::touch(void)
 
 
 void
-ts_powerup::determineDataID(void)
+CTSPowerUp::determineDataID(void)
 {
 	int bitsToChoose[9];
 	
@@ -429,7 +423,7 @@ ts_powerup::determineDataID(void)
 
 
 void
-ts_powerup::declareDisposable(void)
+CTSPowerUp::declareDisposable(void)
 {
 	
 	// Since we clearly weren't spawned by the map for this method to be called,
@@ -465,7 +459,7 @@ ts_powerup::declareDisposable(void)
 
 #ifdef CLIENT
 
-class ts_powerup:CBaseEntity{
+class CTSPowerUp:CBaseEntity{
 	
 	//key values?
 	pwuptype_choice m_ePwuptype;
@@ -476,7 +470,8 @@ class ts_powerup:CBaseEntity{
 	POWERUP_ID dataID;
 	BOOL alreadyPickedUp;
 	
-	void(void) ts_powerup;
+	void(void) CTSPowerUp;
+	static void(void) precache;
 	virtual void(void) Initialized;
 	virtual void(void) updateAnim;
 	virtual void(string strField, string strKey) SpawnKey;
@@ -493,14 +488,14 @@ class ts_powerup:CBaseEntity{
 
 
 void
-ts_powerup::ts_powerup(void)
+CTSPowerUp::CTSPowerUp(void)
 {
 }
 
 
 // Use me instead for startup stuff expected after reading spawnflags.
 void
-ts_powerup::Initialized(void)
+CTSPowerUp::Initialized(void)
 {
 	//base method is empty, this is pointless
 	//CBaseEntity::Initialized();
@@ -529,7 +524,7 @@ ts_powerup::Initialized(void)
 	//this.think = updateAnim;
 	//this.nextthink = time + (31-1)/50;
 	
-	//ts_powerup selfRef = this;
+	//CTSPowerUp selfRef = this;
 	
 }// Initialized
 
@@ -537,13 +532,13 @@ ts_powerup::Initialized(void)
 
 
 void
-ts_powerup::updateAnim(void)
+CTSPowerUp::updateAnim(void)
 {
 	
 	//this.lerpfrac = 1;
 	//this.baseframe1time = 0;
 	//this.frame1time = 0;
-	//printfline("ts_powerup::updateAnim %0.2f", this.frame1time);
+	//printfline("CTSPowerUp::updateAnim %0.2f", this.frame1time);
 	//this.frame1time += clframetime;
 	
 	//resets the anim frame.
@@ -570,7 +565,7 @@ void
 Powerup_Parse(void)
 {
 	
-	ts_powerup selfRef;
+	CTSPowerUp selfRef;
 
 	/* convert us to an object of type decal */
 	
@@ -579,11 +574,11 @@ Powerup_Parse(void)
 	if(self.classname != "ts_powerup"){
 		//is this really persistent?
 		//printfline("ts_powerup: Powerup_Parse. MY CLASSNAME IS INCORRECT: %s", self.classname);
-		spawnfunc_ts_powerup();
+		spawnfunc_CTSPowerUp();
 		self.classname = "ts_powerup";
 	}
 	
-	selfRef = (ts_powerup)self;
+	selfRef = (CTSPowerUp)self;
 
 	BOOL mem_alreadyPickedUp = selfRef.alreadyPickedUp;
 
@@ -631,7 +626,7 @@ Powerup_Parse(void)
 	if(isRespawnCall || (!selfRef.alreadyPickedUp && (mem_alreadyPickedUp != selfRef.alreadyPickedUp))){
 		// forcively respawned, or appearing since being hidden?  Force animation time to 0 (start at beginning)
 		selfRef.frame1time = 0;
-		selfRef.think = ts_powerup::updateAnim;
+		selfRef.think = CTSPowerUp::updateAnim;
 		selfRef.nextthink = time + (31-1)/20 - 0.005;
 	}
 	
@@ -659,12 +654,12 @@ Powerup_Parse(void)
 	}
 	
 	
-	//selfRef.customphysics = ts_powerup::Physics;
-	//selfRef.think = ts_powerup::Think;
+	//selfRef.customphysics = CTSPowerUp::Physics;
+	//selfRef.think = CTSPowerUp::Think;
 	//selfRef.nextthink = time + 0;
 	
 	// unnecessary.
-	//selfRef.predraw = ts_powerup::predraw;
+	//selfRef.predraw = CTSPowerUp::predraw;
 	
 	// Why do we have to do this in Powerup_Parse and not just once in "Initialized?"
 	selfRef.drawmask = MASK_ENGINE;
@@ -675,9 +670,9 @@ Powerup_Parse(void)
 
 
 float
-ts_powerup::predraw(void)
+CTSPowerUp::predraw(void)
 {
-	ts_powerup selfRef = (ts_powerup)self;
+	CTSPowerUp selfRef = (CTSPowerUp)self;
 	
 	selfRef.frame1time += clframetime;
 	
@@ -689,13 +684,13 @@ ts_powerup::predraw(void)
 
 
 /*
-void ts_powerup::Physics(void){
+void CTSPowerUp::Physics(void){
 	
 	this.frame1time += clframetime;
 	
 }// Physics
 
-void ts_powerup::Think(void){
+void CTSPowerUp::Think(void){
 	
 	this.frame1time += clframetime;
 	this.nextthink = time + 0;
@@ -706,9 +701,9 @@ void ts_powerup::Think(void){
 
 
 void
-ts_powerup::SpawnKey(string strField, string strKey)
+CTSPowerUp::SpawnKey(string strField, string strKey)
 {
-	//printfline("SpawnKey:: ts_powerup: (%s: %s)", strField, strKey);
+	//printfline("SpawnKey:: CTSPowerUp: (%s: %s)", strField, strKey);
 
 	switch (strField) {
 		case "pwuptype":
@@ -717,7 +712,8 @@ ts_powerup::SpawnKey(string strField, string strKey)
 		case "pwupduration":
 			m_iPwupduration = stoi(strKey);
 		break;
-		case "message":m_strMessage = strKey;
+		case "message":
+			m_strMessage = strKey;
 		break;
 		
 		
@@ -754,3 +750,17 @@ ts_powerup::SpawnKey(string strField, string strKey)
 #endif
 
 
+// SHARED?
+void
+CTSPowerUp::precache(void)
+{
+	precache_model(POWERUP_MODEL_PATH);
+}
+
+
+// ent name on maps is ts_powerup
+void
+ts_powerup(void)
+{
+	spawnfunc_CTSPowerUp();
+}

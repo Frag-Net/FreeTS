@@ -185,7 +185,7 @@ w_combatknife_secondary(void)
 		arg_thisWeapon.forceBodygroup1Submodel = 1;  //reset, new knife is not bloody.
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav");
 #ifdef SERVER
-		TSThrownProjectile::generate2(pl, arg_thisWeapon);
+		CTSThrownProjectile::generate2(pl, arg_thisWeapon);
 #endif
 	}
 	

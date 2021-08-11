@@ -15,12 +15,27 @@
  */
 
 
-// Nope, HUD/UI-related precaches in client/precache.qc instead
-// ...mostly, keeping this one here?
 void
 HUD_Init(void)
 {
+	// leftover HL precache that's used in scoreboard.qc it seems,
+	// haven't looked into what TS does for that yet.
 	g_hud1_spr = spriteframe("sprites/640hud1.spr", 0, 0.0f);
+	
+	precache_model("sprites/player/crouched.spr");
+	precache_model("sprites/player/divestepb.spr");
+	precache_model("sprites/player/divestepc.spr");
+	precache_model("sprites/player/divestept.spr");
+	precache_model("sprites/player/health.spr");
+	precache_model("sprites/player/kevlar.spr");
+	precache_model("sprites/player/kungfu.spr");
+	precache_model("sprites/player/movement.spr");
+	precache_model("sprites/player/prone.spr");
+	precache_model("sprites/player/run.spr");
+	precache_model("sprites/player/stand.spr");
+	
+	precache_model("sprites/weapons/item_installed.spr");
+	precache_model("sprites/weapons/item_not_installed.spr");
 }
 
 
@@ -71,8 +86,8 @@ HUD_Draw(void)
 		//////////////////////////////////////////////////////////////
 		//View_HandleZoom();
 		
-		//printfline("SCOPE LEVEL %.2f", pl.flZoomLevel);
-		if(pl.flZoomLevel < 0.5){   //is this < 40?	yes.
+		//printfline("SCOPE LEVEL %.2f", pl.flZoomCurrent);
+		if(pl.flZoomCurrent < 0.5){   //is this < 40?	yes.
 			HUD_DrawScope();
 		}else{
 			// We'll leave details like extra details for the lasersight and the

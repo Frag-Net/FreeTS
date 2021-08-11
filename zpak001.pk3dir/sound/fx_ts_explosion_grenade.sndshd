@@ -1,7 +1,11 @@
+// And yes, pitch is a decimal, 0.5 to 4.0 is likely the allowed range
+// Unfortuantely this isn't quite there, the greatest pitch mod allowed
+// this way is 200%.  Strange, have to use sound_pitched.qc instead
+// 
 fx.ts_explosion_grenade
 {
-	pitch 400
-	shakes 2.7
+	pitch 4
+	shakes 3.5
 	sample explo/explode.wav
 	sample explo/explode1.wav
 	sample explo/explode2.wav

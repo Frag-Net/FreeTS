@@ -173,14 +173,11 @@ w_glock18_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_glock18::shootempty, (31.0f/30.0f) );
 	}
 	
-	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	// TODO:
-	//weapon_showMuzzleFlash(MUZZLE_SMALL);
-#endif
-	
-	weapon_ejectShell(SHELLEJECT_ID::_9MM);
+	// TODO.
+	// For now using lazy HL defaults for muzzle flashes, I'll leave
+	// TS's own muzzle flashes, whichever ones are even used, for another time
+	weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::SMALL);
+	weapon_EjectShell(SHELLEJECT_ID::_9MM);
 	
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);

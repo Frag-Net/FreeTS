@@ -497,8 +497,7 @@ weapon_shotgun_reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.currentZoomChoice = -1;
-	pl.setZoom(1.00f);
+	pl.resetZoom();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	
@@ -1364,8 +1363,7 @@ weapon_gun_Reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.currentZoomChoice = -1;
-	pl.setZoom(1.00f);
+	pl.resetZoom();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1408,8 +1406,7 @@ weapon_gun_Reload_CustomSequence(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.currentZoomChoice = -1;
-	pl.setZoom(1.00f);
+	pl.resetZoom();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1455,8 +1452,7 @@ weapon_ironsight_Reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.currentZoomChoice = -1;
-	pl.setZoom(1.00f);
+	pl.resetZoom();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1830,16 +1826,33 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 }// weapon_throwable_onDrawHUD
 
 
+void
+weapon_ShowMuzzleFlash(int arg_muzzleFlashTypeID){
+	
+#ifdef CLIENT
+	if(arg_muzzleFlashTypeID != MUZZLEFLASH_ID::NONE){
+		muzzleflashdata_t* tempRef = ary_muzzleFlashData[arg_muzzleFlashTypeID];
+		
+		View_ShowMuzzleflash((*tempRef).iSpritePrecacheID);
+	}
+#else
+	// anything for other players to see, or will this be per animation in clientside rendering
+	// (player predraw) for whoever sees another player firing?
+#endif
+}
 
-// Not to be confused with the clientside-only event "viewEv_weapon_ejectShell".
+
+// Not to be confused with the clientside-only event "viewEv_weapon_EjectShell".
 // This is called by weapons to add the event, handles setting the shell-type global
 // for it to see.  If shell-ejects are done serverside, that would not be an amazing
 // idea. Per-player would be better.
-void weapon_ejectShell(int arg_shellEjectType){
+void
+weapon_EjectShell(int arg_shellEjectType)
+{
 #ifdef CLIENT
 	player pl = (player)self;
 	pl.iShellEjectType = arg_shellEjectType;
-	View_AddEvent(viewEv_weapon_ejectShell, 0.0f);
+	View_AddEvent(viewEv_weapon_EjectShell, 0.0f);
 #else
 	// anything for the playermodel?  Also only do that for all players except the 
 	// localplayer if using a viewmodel.
@@ -1848,11 +1861,14 @@ void weapon_ejectShell(int arg_shellEjectType){
 #endif
 }
 
+
 // Precache models and the HUD icon given in FreeTS weapondata.
 // Weapon sounds and anything else not in the struct shuold be precached
 // in the weapon's own precache method or globally (precache.qc) if reused
 // between different weapons like shell models/sounds.
-void weapon_precache(weapondata_basic_t* basePRef){
+void
+weapon_precache(weapondata_basic_t* basePRef)
+{
 #ifdef SERVER
 	if((*basePRef).sWorldModelPath != NULL){
 		precache_model((*basePRef).sWorldModelPath);
@@ -1886,7 +1902,9 @@ void weapon_gun_updateAmmo(player pl, weapondata_gun_t* basePRef, weapondynamic_
 }
 */
 // Easier way for the caller.
-void weapon_gun_updateAmmo(player pl, int weaponTypeID){
+void
+weapon_gun_updateAmmo(player pl, int weaponTypeID)
+{
 	if(pl.inventoryEquippedIndex != -1){
 		weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 		// no need to hardcode ammo names when they're given by weapondata
@@ -2110,35 +2128,6 @@ setupWeaponData(void){
 	ary_shotgunExtra[SHOTGUN_EXTRA_ID::SPAS12] = &weapon_spas12_shotgunExtra;
 
 
-	ASSIGN_AMMODATA(NONE)
-	ASSIGN_AMMODATA(_9X19MM)
-	ASSIGN_AMMODATA(_45ACP)
-	ASSIGN_AMMODATA(_P50AE)
-
-	ASSIGN_AMMODATA(_5P7X28)
-	
-	ASSIGN_AMMODATA(_10MMAUTO)
-	ASSIGN_AMMODATA(_P22LR)
-	ASSIGN_AMMODATA(_P454CASULL)
-	ASSIGN_AMMODATA(_5P56NATO)
-	ASSIGN_AMMODATA(_7P62X39MM)
-	ASSIGN_AMMODATA(_50BMG)
-	ASSIGN_AMMODATA(_SHELLS)
-	ASSIGN_AMMODATA(_32ACP)
-	ASSIGN_AMMODATA(_7P62X51MM)
-	
-	
-	
-	ASSIGN_SHELLEJECTDATA(NONE)
-	ASSIGN_SHELLEJECTDATA(_56)
-	ASSIGN_SHELLEJECTDATA(_556)
-	ASSIGN_SHELLEJECTDATA(_22)
-	ASSIGN_SHELLEJECTDATA(_9MM)
-	ASSIGN_SHELLEJECTDATA(_GENERIC)
-	ASSIGN_SHELLEJECTDATA(_SHOTGUN)
-	ASSIGN_SHELLEJECTDATA(_SHOTGUN_BLUE)
-	ASSIGN_SHELLEJECTDATA(_SHOTGUN_GOLD)
-	
 	
 }//setupWeaponData
 
@@ -2249,11 +2238,15 @@ viewEv_playShotgunInsertShellSound(void)
 }
 
 void
-viewEv_weapon_ejectShell(void)
+viewEv_weapon_EjectShell(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
-	CShellEject::generate(pl.iShellEjectType);
-}//viewEv_weapon_ejectShell
+	// TODO - how about a first-person check?  Doesn't make sense if in thirdperson.
+	// Although that might've been needed earlier unless this event-thing works fine for being
+	// a playermodel too.  Players other than the local one being rendered and needing to drop
+	// shells, that sounds like a whole other story
+	CTSShellEject::generateForViewmodel(pl.iShellEjectType);
+}
 
 
 // also clientside only, dealing with configs

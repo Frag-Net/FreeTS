@@ -187,6 +187,9 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::PLAYER_DEATH:
 		EV_PlayerDeath();
 		break;
+	case EVENT_TS::EQUIP_CALLBACK:
+		EV_EquipCallback();
+		break;
 	case EVENT_TS::SOUNDPITCHED:
 		SoundPitched_Receive();
 		break;
@@ -195,7 +198,7 @@ ClientGame_EventParse(float fHeader)
 		break;
 	/*
 	// can this even happen anymore?
-	// If a drop-weapon call can be signaled by the server, not shared with th
+	// If a drop-weapon call can be signaled by the server, not shared with the
 	// client and server reaching a drop call independently, then yes.
 	case EVENT_TS::DROP_WEAPON:
 		EV_TS_playerDropWeapon(pl);

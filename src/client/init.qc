@@ -173,20 +173,4 @@ ClientGame_RendererRestart(string rstr)
 	// Hook into precache.qc
 	ClientGame_Precache();
 	
-
-	Obituary_Precache();
-
-	// All forked effects!
-	FX_Blood_Init();
-	FX_BreakModel_Init();
-	FX_Explosion_Init();
-	FX_GibHuman_Init();
-	FX_Spark_Init();
-	FX_Impact_Init();
-	
-	// NEW
-	FX_TS_Explosion_Grenade_Init();
-	FX_Impact_Melee_Init();
-	
-	
 }

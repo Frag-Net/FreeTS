@@ -5,6 +5,9 @@
 #define ASSIGN_SHELLEJECTDATA(arg_constName) ary_shellEjectData[SHELLEJECT_ID::##arg_constName] = (shellejectdata_t*) &shelleject_##arg_constName;
 #define DECLARE_SHELLEJECTDATA(arg_varName, arg_sModelPath, arg_sTouchSound) shellejectdata_t shelleject_##arg_varName = {arg_sModelPath, arg_sTouchSound};
 
+#define ASSIGN_MUZZLEFLASHDATA(arg_constName) ary_muzzleFlashData[MUZZLEFLASH_ID::##arg_constName] = (muzzleflashdata_t*) &muzzleflash_##arg_constName;
+#define DECLARE_MUZZLEFLASHDATA(arg_varName, arg_sSpritePath) var muzzleflashdata_t muzzleflash_##arg_varName = {0, arg_sSpritePath};
+
 
 enum AMMO_ID{
 	NONE = 0,
@@ -69,6 +72,12 @@ enum SHELLEJECT_ID{
 };
 
 
+
+
+
+// For now, ShellEject and MuzzleFlash structs are clientside only.
+// ENUMs to let calls to related shared methods be dummied serverside for now
+#ifdef CLIENT
 // any other info tied to shell choice?
 typedef struct{
 	string sModelPath;
@@ -76,4 +85,41 @@ typedef struct{
 	string sTouchSound;
 	
 } shellejectdata_t;
+#endif
+
+
+
+
+
+// first three are the default HL muzzle flashes, which might even be skiped by TS.
+// TS does come with its own muzzleflash sprites, haven't look into those much yet
+enum MUZZLEFLASH_ID{
+	NONE = 0,
+	RIFLE,
+	SMALL,
+	WEIRD,
+	
+	LAST_ID
+};
+
+// NOTE!  iSpritePrecacheID is only for clientside so far, not precached serverside.
+// This is based off how FreeHL does muzzleflash sprite precaches: only clientside.
+// Structure is here in case they ever become shared.
+
+#ifdef CLIENT
+// Not much to a muzzle flash
+typedef struct{
+	int iSpritePrecacheID;
+	string sSpritePath;
+	
+} muzzleflashdata_t;
+
+void MuzzleFlash_precache(void);
+#endif
+
+// shared
+void setupAmmoData(void);
+
+
+
 

@@ -1467,7 +1467,7 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 
 //TAGGG - TODO.  Could this even be shared?
 // It is only called by the player picking up weapons ingame, which only happens serverside.
-// The client does not even receive the implementation details of TSWorldGun.
+// The client does not even receive the implementation details of CTSWorldGun.
 
 #ifdef SERVER
 // This method may only be used by the server ingame, not at all buy-related.
@@ -1480,7 +1480,7 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 // if there is room for it... this should not call this method at all)
 // Picking up the new weapon cannot put the player overbudget for slots (default 81).  If so, we deny the pickup.
 //int addWeaponToInventory(player pl, int arg_weaponID, int arg_iClip, int arg_iClipAkimbo, int arg_iBitsUpgrade, int iCount){
-int addWeaponToInventory(player pl, TSWorldGun arg_pickupRef){
+int addWeaponToInventory(player pl, CTSWorldGun arg_pickupRef){
 	
 	//safe assumption... for now.
 	//NOTICE that this doesn't mean anything if we return -1,

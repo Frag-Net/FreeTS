@@ -226,15 +226,15 @@ w_deserteagle_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		switch(pl.currentZoomChoice){
+		switch(pl.iZoomLevel){
 			case -1:{
 				//pl.viewzoom = 60/80;
 				pl.setZoom(0.75f);
-				pl.currentZoomChoice++;
+				pl.iZoomLevel++;
 			break;}
 			case 0:{
 				pl.setZoom(1.00f);
-				pl.currentZoomChoice = -1;
+				pl.iZoomLevel = -1;
 			break;}
 			
 		}//END OF switch

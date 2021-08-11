@@ -20,61 +20,8 @@
 // katana sounds except miss and miss1 are pitched normally in the
 // as-is sound files.
 
-typedef enum
-{
-	SNDP_AK47_FIRE,
-	SNDP_AKIMBOCOLTS_FIRE,
-	SNDP_BARRETTM82_FIRE,
-	SNDP_BENELLIM3_FIRE,
-	SNDP_BERETTA_FIRE,
-	SNDP_BERETTA_FIRE_SIL,
-	SNDP_CONTENDERG2_FIRE,
-	SNDP_DESERTEAGLE_FIRE,
-	SNDP_DESERTEAGLE_FIRE_SIL,
-	SNDP_FIVESEVEN_FIRE,
-	SNDP_FIVESEVEN_FIRE_SIL,
-	SNDP_GLOCK18_FIRE,
-	SNDP_GLOCK18_FIRE_SIL,
-	SNDP_GLOCK20_FIRE,
-	SNDP_GLOCK20_FIRE_SIL,
-	SNDP_HKPDW_FIRE,
-	SNDP_HKPDW_FIRE_SIL,
-	SNDP_KATANA_MISS,
-	SNDP_KATANA_MISS1,
-	SNDP_M4A1_FIRE,
-	SNDP_M4A1_FIRE_SIL,
-	SNDP_M16A4_FIRE,
-	SNDP_M60_FIRE,
-	SNDP_MAC10_FIRE,
-	SNDP_MAC10_FIRE_SIL,
-	SNDP_MINIUZI_FIRE,
-	SNDP_MINIUZI_FIRE_SIL,
-	SNDP_MOSSBERG500_FIRE,
-	SNDP_MP5K_FIRE,
-	SNDP_MP5K_FIRE_SIL,
-	SNDP_MP5SD_FIRE,
-	SNDP_RAGINGBULL_FIRE,
-	SNDP_RUGERMK1_FIRE,
-	SNDP_SAWEDOFF_FIRE,
-	SNDP_SKORPION_FIRE,
-	SNDP_SOCOMMK23_FIRE,
-	SNDP_SOCOMMK23_FIRE_SIL,
-	SNDP_SPAS12_FIRE,
-	SNDP_STEYRAUG_FIRE,
-	SNDP_STEYRAUG_FIRE_SIL,
-	SNDP_STEYRTMP_FIRE,
-	SNDP_STEYRTMP_FIRE_SIL,
-	SNDP_UMP_FIRE,
-	SNDP_UMP_FIRE_SIL,
-	SNDP_USAS12_FIRE/*,
-	SNDP_EXPLODE,
-	SNDP_EXPLODE1,
-	SNDP_EXPLODE2,
-	SNDP_EXPLODE3,
-	SNDP_EXPLODE4
-	*/
-} sfx_pitched_t;
 
+//#define SOUNDPITCHED_SEND_ALL_DEBUG
 
 
 void
@@ -108,6 +55,8 @@ SoundPitched_Channel_Send(entity ent, int id, float chan)
 	multicast(ent.origin, MULTICAST_PHS);
 #endif
 }
+
+
 
 #ifdef CLIENT
 const string sfx_pitched_s[] =
@@ -156,13 +105,12 @@ const string sfx_pitched_s[] =
 	"weapons/tmp/fire-sil.wav",
 	"weapons/ump/ump-fire.wav",
 	"weapons/ump/ump-fire-sil.wav",
-	"weapons/usas/usas-fire.wav"/*,
+	"weapons/usas/usas-fire.wav",
 	"explo/explode.wav",
 	"explo/explode1.wav",
 	"explo/explode2.wav",
 	"explo/explode3.wav",
 	"explo/explode4.wav"
-	*/
 };
 
 void
@@ -177,6 +125,8 @@ SoundPitched_Receive(void)
 		sound(ent, CHAN_WEAPON, sfx_pitched_s[id], 1.0f, ATTN_NORM, 400, SOUNDFLAG_FOLLOW);
 }
 
+
+#ifndef SOUNDPITCHED_SEND_ALL_DEBUG
 void
 SoundPitched_Channel_Receive(void)
 {
@@ -188,7 +138,9 @@ SoundPitched_Channel_Receive(void)
 		sound(ent, chan, sfx_pitched_s[id], 1.0f, ATTN_NORM, 400, SOUNDFLAG_FOLLOW);
 }
 
-/*
+
+#else
+	
 // ISSUE: sounds seem to play only for the entity that called for
 // the message to be played from serverside.  If it's a spawned entity
 // (like a grenade sending itself to make the explosion sound), no player
@@ -217,6 +169,7 @@ SoundPitched_Channel_Receive(void)
 	//	sound(ent, chan, sfx_pitched_s[id], 1.0f, ATTN_NORM, 400, SOUNDFLAG_FOLLOW);
 	sound(self, chan, sfx_pitched_s[id], 1.0f, ATTN_NORM, 400, SOUNDFLAG_FOLLOW);
 }
-*/
 
-#endif
+#endif// SOUNDPITCHED_SEND_ALL_DEBUG
+
+#endif// CLIENT

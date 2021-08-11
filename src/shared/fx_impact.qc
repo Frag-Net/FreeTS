@@ -250,8 +250,9 @@ FX_Impact_Melee(int iType, vector vecPos, vector vNormal)
 	multicast(vecPos, MULTICAST_PVS);
 #else
 	
-	//TAGGG - TODO.  See _base\server\footsteps.c for other pl_... sounds to use
-	// as TS did for various surfaces hit by melee.
+	//TAGGG - TODO.  See Nuclide's footsteps.qc for other pl_... sounds to use
+	// as TS did for various surfaces hit by melee.  Used in sound script files.
+	// Or that might be all done now.
 	
 	float impactSoundVolume = 0.55;
 
