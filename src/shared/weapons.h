@@ -850,8 +850,9 @@ void weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t
 void weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon);
 
-void weapon_ShowMuzzleFlash(int arg_muzzleFlashTypeID);
+void weapon_ShowMuzzleFlash(int arg_muzzleFlashType);
 void weapon_EjectShell(int arg_shellEjectType);
+void weapon_ClientEffects(int arg_muzzleFlashType, int arg_shellEjectType);
 
 void weapon_precache(weapondata_basic_t* basePRef);
 
@@ -952,11 +953,9 @@ int getAmmoTypeOfWeapon(int arg_weaponID);
 #ifdef CLIENT
 void viewEv_playShotgunInsertShellSound(void);
 
-
-// dummy
-void w_ejectshell_pistol(void){};
-
+void viewEv_weapon_ShowMuzzleFlash(void);
 void viewEv_weapon_EjectShell(void);
+void viewEv_weapon_ClientEffects(void)
 
 void copyWeaponConfig(weaponconfig_weapon_t* arg_dest, weaponconfig_weapon_t* arg_src);
 void copyConfig(weaponconfig_data_t* arg_dest, weaponconfig_data_t* arg_src);

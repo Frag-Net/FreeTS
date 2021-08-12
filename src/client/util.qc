@@ -214,3 +214,63 @@ Colors_RGB8_to_HEX(vector color)
 	}
 	return out;
 }
+
+
+
+
+// Load the map description
+// Do we have any use for this though?  Check original TS, the "Select Team"
+// screen does (press enter to close or after closing the MoTD, probably)
+string 
+loadMapDescription(void)
+{
+	int i;
+	filestream fmMapDescr;
+	string sTemp;
+	string sMapString_total = "";
+	
+	
+	// If the mapname ends in .bsp, remove that portion, that causes
+	// the appended ".txt" to work wrongly, "mymap.bsp.txt" instead of "mymap.txt".
+	// This check for ending in ".bsp" adjusts for that if so
+	string mapname_filtered = mapname;
+	float mapname_len = strlen(mapname);
+	// name is at least 5 characters (...X.bsp)
+	if(mapname_len >= 5){
+		string lastChars = substring(mapname, mapname_len - 4, 4);
+		if(lastChars == ".bsp"){
+			// change _filtered!
+			mapname_filtered = substring(mapname, 0, mapname_len - 4);
+		}
+	}
+	
+	//printfline("loadMapDescription: mapname:%s mapname_filtered: %s", mapname, mapname_filtered);
+	
+	fmMapDescr = fopen( sprintf( "maps/%s.txt", mapname_filtered ), FILE_READ );
+	if ( fmMapDescr != -1 ) {
+		for (i = 0; i < 35; i++ ) {
+			sTemp = fgets( fmMapDescr );
+			if not ( sTemp ) {
+				break;
+			}
+			sMapString[ i ] = sTemp;
+			
+			/*
+			if (sMapString[ i ] == "/" ) {
+				sMapString_total = strcat(sMOTD_total, "\n" );
+			}else{
+				sMapString_total = strcat(sMapString_total, sprintf("%s\n", sMapString[ i ]) );
+			}
+			*/
+			sMapString_total = strcat(sMapString_total, sprintf("%s\n", sMapString[ i ]) );
+
+		}
+		fclose( fmMapDescr );
+	}else{
+		// No mapname.txt?  Could set sMapString_total to "No description found."
+	}
+	
+	//printfline("map descriptor: %s", sMapString_total);
+	return sMapString_total;
+}//loadMapDescription
+

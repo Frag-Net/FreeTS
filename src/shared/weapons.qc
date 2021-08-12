@@ -1827,13 +1827,16 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 
 
 void
-weapon_ShowMuzzleFlash(int arg_muzzleFlashTypeID){
+weapon_ShowMuzzleFlash(int arg_muzzleFlashType){
 	
 #ifdef CLIENT
-	if(arg_muzzleFlashTypeID != MUZZLEFLASH_ID::NONE){
-		muzzleflashdata_t* tempRef = ary_muzzleFlashData[arg_muzzleFlashTypeID];
-		
-		View_ShowMuzzleflash((*tempRef).iSpritePrecacheID);
+	if(arg_muzzleFlashType != MUZZLEFLASH_ID::NONE){
+		// not yet!
+		//muzzleflashdata_t* tempRef = ary_muzzleFlashData[arg_muzzleFlashType];
+		//View_ShowMuzzleflash((*tempRef).iSpritePrecacheID);
+		player pl = (player)self;
+		pl.iMuzzleFlashType = arg_muzzleFlashType;
+		View_AddEvent(viewEv_weapon_ShowMuzzleFlash, 0.0f);
 	}
 #else
 	// anything for other players to see, or will this be per animation in clientside rendering
@@ -1851,19 +1854,34 @@ weapon_EjectShell(int arg_shellEjectType)
 {
 #ifdef CLIENT
 	player pl = (player)self;
-	pl.iShellEjectType = arg_shellEjectType;
-	View_AddEvent(viewEv_weapon_EjectShell, 0.0f);
+	if(arg_shellEjectType != SHELLEJECT_ID::NONE){
+		pl.iShellEjectType = arg_shellEjectType;
+		View_AddEvent(viewEv_weapon_EjectShell, 0.0f);
+	}
 #else
-	// anything for the playermodel?  Also only do that for all players except the 
-	// localplayer if using a viewmodel.
-	// ...and already this is sounding more like a job for predraw, which does handle
-	// players rendering players other than themselves.  And yes, still clientside.
+	// anything for the playermodel?
+#endif
+}
+
+// Both weapon_ShowMuzzleFlash and weapon_EjectShell in one call for scheduling
+// one event that calls both, otherwise, only either can happen (one event allowed;
+// any more and they just overwrite each other on being set)
+void weapon_ClientEffects(int arg_muzzleFlashType, int arg_shellEjectType){
+#ifdef CLIENT
+	player pl = (player)self;
+	pl.iMuzzleFlashType = arg_muzzleFlashType;
+	pl.iShellEjectType = arg_shellEjectType;
+	View_AddEvent(viewEv_weapon_ClientEffects, 0.0f);
+#else
+	// ?
 #endif
 }
 
 
+
+
 // Precache models and the HUD icon given in FreeTS weapondata.
-// Weapon sounds and anything else not in the struct shuold be precached
+// Weapon sounds and anything else not in the struct should be precached
 // in the weapon's own precache method or globally (precache.qc) if reused
 // between different weapons like shell models/sounds.
 void
@@ -2245,7 +2263,25 @@ viewEv_weapon_EjectShell(void)
 	// Although that might've been needed earlier unless this event-thing works fine for being
 	// a playermodel too.  Players other than the local one being rendered and needing to drop
 	// shells, that sounds like a whole other story
-	CTSShellEject::generateForViewmodel(pl.iShellEjectType);
+	if(pl.iShellEjectType != SHELLEJECT_ID::NONE){
+		CTSShellEject::generateForViewmodel(pl.iShellEjectType);
+	}
+}
+
+void 
+viewEv_weapon_ShowMuzzleFlash(void){
+	player pl = (player)pSeat->m_ePlayer;
+	if(pl.iMuzzleFlashType != MUZZLEFLASH_ID::NONE){
+		muzzleflashdata_t* tempRef = ary_muzzleFlashData[pl.iMuzzleFlashType];
+		View_ShowMuzzleflash((*tempRef).iSpritePrecacheID);
+	}
+}
+
+
+void
+viewEv_weapon_ClientEffects(void){
+	viewEv_weapon_EjectShell();
+	viewEv_weapon_ShowMuzzleFlash();
 }
 
 

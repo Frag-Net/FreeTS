@@ -150,6 +150,8 @@ class player:base_player
 	// equipped.  Not that it could ever change while not equipped anyway.
 	int prev_forceBodygroup1Submodel;
 	
+	// same as below for muzzleflash.
+	int iMuzzleFlashType;
 	// During a shell-eject event, what member of aryShellEjectData do I use for the model
 	// and hitsound script file to use?  Set on setting the event
 	int iShellEjectType;

@@ -150,10 +150,9 @@ w_contenderg2_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_contenderg2::shoot2, 31.0f/30.0f);
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	// guessing a shell-eject doesn't happen, could be wrong.
+	//weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);
+	weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::RIFLE);
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
@@ -181,21 +180,15 @@ w_contenderg2_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case -1:{
-				//pl.viewzoom = 26/80;
-				pl.setZoom(0.325f);
-				pl.iZoomLevel++;
-			break;}
 			case 0:{
-				//pl.viewzoom = 0;
 				pl.setZoom(1.00f);
-				pl.iZoomLevel = -1;
 			break;}
-			
-		}//END OF switch
-
+			case 1:{
+				pl.setZoom(0.325f);
+			break;}
+		}
 	}
 	
 }

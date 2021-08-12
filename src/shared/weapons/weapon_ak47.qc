@@ -158,10 +158,7 @@ w_ak47_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_ak47::shoot2, 31.0f/30.0f);
 	}
 	
-#ifdef CLIENT
-	weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::RIFLE);
-	weapon_EjectShell(SHELLEJECT_ID::_56);
-#endif
+	weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::AK47], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
@@ -195,13 +192,12 @@ w_ak47_secondary(void)
 				pl.setZoom(1.00f);
 			break;}
 			case 1:{
-				pl.setZoom(0.4f);
+				pl.setZoom(0.40f);
 			break;}
 			case 2:{
 				pl.setZoom(0.1625f);
 			break;}
-		}//END OF switch
-
+		}
 	}else{
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::AK47], arg_thisWeapon);

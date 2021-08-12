@@ -157,11 +157,11 @@ w_fiveseven_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_fiveseven::shootlast, 31.0f/40.0f);
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
-
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::_56);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::_56);
+	}
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::FIVESEVEN], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

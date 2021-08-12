@@ -169,9 +169,7 @@ w_spas12_primary(void)
 			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/spas12/spas12-pump.wav", CHAN_AUTO);
 
 			// these pumps eject shells
-#ifdef CLIENT
-				View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+			weapon_EjectShell(SHELLEJECT_ID::SHOTGUN);
 			
 			int r = (float)input_sequence % 2;
 			if(r == 0){
@@ -197,18 +195,12 @@ w_spas12_primary(void)
 
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		TS_Weapons_ViewAnimation(weaponseq_spas12::shootpump, (31.0f/35.0f) );
-		// no shell!  Pumping does that here.
+		// no shell!  Pumping does that.
 		pl.shotgunWaitingForPump = TRUE;
-#ifdef CLIENT
-			View_ShowMuzzleflash(MUZZLE_SMALL);
-			// no shell, that comes in the pump soon after.
-#endif
+		weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::WEIRD);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_spas12::shootsemi, (31.0f/35.0f) );
-#ifdef CLIENT
-			View_ShowMuzzleflash(MUZZLE_SMALL);
-			View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+		weapon_ClientEffects(MUZZLEFLASH_ID::WEIRD, SHELLEJECT_ID::SHOTGUN);
 	}
 	
 	weapon_base_onAttack_multi(pl, ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon, 8, BITS_AKIMBOCHOICE_LEFT);

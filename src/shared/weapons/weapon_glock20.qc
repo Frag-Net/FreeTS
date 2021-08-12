@@ -156,11 +156,11 @@ w_glock20_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_glock20::shootempty, 31.0f/30.0f);
 	}
 
-	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::GENERIC);
+	}
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

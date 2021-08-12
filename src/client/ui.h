@@ -13,7 +13,6 @@ string sMOTDString[25];
 string sMapString[35];
 
 var string sMOTD_total;
-var string sMapString_total;
 
 
 // Keep in synch with the ary_UI_Screen array of ui.qc

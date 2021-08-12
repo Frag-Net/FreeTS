@@ -100,8 +100,6 @@ w_deserteagle_precache(void)
 void
 w_deserteagle_updateammo(player pl)
 {
-	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	//Weapons_UpdateAmmo(pl, arg_thisWeapon.iClipLeft, pl.ary_ammoTotal[AMMO_ID::_9x19mm], -1);
 }
 
 string
@@ -193,10 +191,11 @@ w_deserteagle_primary(void)
 		}
 	}
 
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::GENERIC);
+	}
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
@@ -226,19 +225,15 @@ w_deserteagle_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case -1:{
-				//pl.viewzoom = 60/80;
-				pl.setZoom(0.75f);
-				pl.iZoomLevel++;
-			break;}
 			case 0:{
 				pl.setZoom(1.00f);
-				pl.iZoomLevel = -1;
 			break;}
-			
-		}//END OF switch
-
+			case 1:{
+				pl.setZoom(0.75f);
+			break;}
+		}
 	}else{
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);

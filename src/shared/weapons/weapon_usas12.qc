@@ -135,11 +135,7 @@ w_usas12_primary(void)
 
 	TS_Weapons_ViewAnimation(weaponseq_usas12::shootsemi, 31.0f/35.0f);
 
-	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	weapon_ClientEffects(MUZZLEFLASH_ID::WEIRD, SHELLEJECT_ID::SHOTGUN);
 
 	weapon_base_onAttack_multi(pl, ary_weaponData[WEAPON_ID::USAS12], arg_thisWeapon, 8, BITS_AKIMBOCHOICE_LEFT);
 	

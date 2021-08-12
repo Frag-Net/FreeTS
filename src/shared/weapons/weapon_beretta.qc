@@ -167,12 +167,11 @@ w_beretta_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_beretta::shootempty, 31.0f/35.0f);
 	}
 	
-	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
-
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::_9MM);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::_9MM);
+	}
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::BERETTA], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

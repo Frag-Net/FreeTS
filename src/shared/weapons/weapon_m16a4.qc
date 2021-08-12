@@ -190,12 +190,7 @@ w_m16a4_primary(void)
 		}
 	}
 	
-	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
-	
+	weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);
 	
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_BURST)
 	{
@@ -240,25 +235,18 @@ w_m16a4_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 3;
 		switch(pl.iZoomLevel){
-			case -1:{
-				//pl.viewzoom = 32/80;
-				pl.setZoom(0.4f);
-				pl.iZoomLevel++;
-			break;}
 			case 0:{
-				//pl.viewzoom = 8/80;
-				pl.setZoom(0.10f);
-				pl.iZoomLevel++;
+				pl.setZoom(1.00f);
 			break;}
 			case 1:{
-				//pl.viewzoom = 0;
-				pl.setZoom(1.00f);
-				pl.iZoomLevel = -1;
+				pl.setZoom(0.40f);
 			break;}
-		}//END OF switch
-
+			case 2:{
+				pl.setZoom(0.10f);
+			break;}
+		}
 	}else{
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl , (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon);

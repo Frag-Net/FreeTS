@@ -146,10 +146,8 @@ w_ragingbull_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_ragingbull::shoot2, 31.0f/30.0f);
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	// no shell eject
+	weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::RIFLE);
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::RAGINGBULL], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
@@ -177,21 +175,15 @@ w_ragingbull_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case -1:{
-				//pl.viewzoom = 40/80;
-				pl.setZoom(0.5f);
-				pl.iZoomLevel++;
-			break;}
 			case 0:{
-				//pl.viewzoom = 0;
 				pl.setZoom(1.00f);
-				pl.iZoomLevel = -1;
 			break;}
-			
-		}//END OF switch
-
+			case 1:{
+				pl.setZoom(0.50f);
+			break;}
+		}
 	}
 	
 }

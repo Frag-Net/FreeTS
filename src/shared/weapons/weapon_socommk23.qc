@@ -182,11 +182,11 @@ w_socommk23_primary(void)
 		}
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
-
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::GENERIC);
+	}	
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::SOCOMMK23], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

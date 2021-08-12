@@ -214,10 +214,11 @@ w_m4a1_primary(void)
 		}
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::_56);
+	}
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
@@ -245,21 +246,15 @@ w_m4a1_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case -1:{
-				//pl.viewzoom = 26/80;
-				pl.setZoom(0.325f);
-				pl.iZoomLevel++;
-			break;}
 			case 0:{
-				//pl.viewzoom = 0;
 				pl.setZoom(1.00f);
-				pl.iZoomLevel = -1;
 			break;}
-			
-		}//END OF switch
-
+			case 1:{
+				pl.setZoom(0.325f);
+			break;}
+		}
 	}else{
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon);

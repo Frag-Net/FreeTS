@@ -146,10 +146,7 @@ w_skorpion_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_skorpion::fire3, 31.0f/30.0f);
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC);
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::SKORPION], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

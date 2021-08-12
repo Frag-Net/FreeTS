@@ -162,11 +162,8 @@ w_mp5sd_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_mp5sd::shoot3, 31.0f/30.0f);
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
-
+	weapon_EjectShell(SHELLEJECT_ID::_9MM);
+	
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_BURST)
 	{
 		weapon_gun_burstFire(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT, 3, 0.02, 0.18);
@@ -205,19 +202,15 @@ w_mp5sd_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case -1:{
-				//pl.viewzoom = 32/80;
-				pl.setZoom(0.40f);
-				pl.iZoomLevel++;
-			break;}
 			case 0:{
-				//pl.viewzoom = 0;
 				pl.setZoom(1.00f);
-				pl.iZoomLevel = -1;
 			break;}
-		}//END OF switch
-
+			case 1:{
+				pl.setZoom(0.40f);
+			break;}
+		}
 	}
 	
 }

@@ -176,9 +176,24 @@ w_glock18_primary(void)
 	// TODO.
 	// For now using lazy HL defaults for muzzle flashes, I'll leave
 	// TS's own muzzle flashes, whichever ones are even used, for another time
-	weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::SMALL);
-	weapon_EjectShell(SHELLEJECT_ID::_9MM);
-	
+	//weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::SMALL);
+	//weapon_EjectShell(SHELLEJECT_ID::_9MM);
+	// Nope!  Doing both in the same event for now, not sure if any other options
+	// to not have issues with packet delays.
+	// The old way in ShowMuzzleFlash didn't use the event system, so it being called
+	// every single frame until a server update (force packet delays) resets the muzzle
+	// flash to full until the ping-time is reached.  It appears to stay solid the whole
+	// time.  But doing two events at the same time is not an option because there is 
+	// only one event at a time that can be stored, see Nuclide's src/cleint/view.qc,
+	// m_pEventCall.  Being set before it is reached, exact same 0.0 time or not, overwrites
+	// the previous value so only the most recent call has any effect.
+	// One method, "weapon_ViewModelEffects" that accepts both will do, since NONE are also
+	// choices for any oddballs out there
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::_9MM);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::_9MM);
+	}
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

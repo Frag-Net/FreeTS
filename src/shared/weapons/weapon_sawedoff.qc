@@ -201,10 +201,8 @@ w_sawedoff_primary(void)
 		}
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	//View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	// no shell eject
+	weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::SMALL);
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

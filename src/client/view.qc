@@ -337,9 +337,7 @@ void View_HandleZoom(void){
 void
 View_ShowMuzzleflash(int index)
 {
-	// View_SetMuzzleflash
 	pSeat->m_eMuzzleflash.modelindex = (float)index;
-	
 	// Event_ProcessModel: force it.
 	pSeat->m_eMuzzleflash.alpha = 1.0f;
 	pSeat->m_eMuzzleflash.scale = 0.25;

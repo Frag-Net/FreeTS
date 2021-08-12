@@ -160,10 +160,11 @@ w_ump_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_ump::shoot3, 19.0f/30.0f);
 	}
 
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::GENERIC);
+	}
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::UMP], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	
@@ -191,20 +192,15 @@ w_ump_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
+		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case -1:{
-				//pl.viewzoom = 40/80;
-				pl.setZoom(0.50f);
-				pl.iZoomLevel++;
-			break;}
 			case 0:{
-				//pl.viewzoom = 0;
 				pl.setZoom(1.00f);
-				pl.iZoomLevel = -1;
 			break;}
-			
-		}//END OF switch
-
+			case 1:{
+				pl.setZoom(0.50f);
+			break;}
+		}
 	}
 	
 }

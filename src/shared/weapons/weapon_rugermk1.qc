@@ -150,10 +150,7 @@ w_rugermk1_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_rugermk1::shoot2, 31.0f/35.0f);
 	}
 	
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	//View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	weapon_EjectShell(SHELLEJECT_ID::GENERIC);
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::RUGERMK1], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

@@ -63,11 +63,11 @@ enum SHELLEJECT_ID{
 	// ammo type.  Still using those first in weapons involving those
 	_22,
 	_9MM,
-	_GENERIC,
+	GENERIC,
 
-	_SHOTGUN, // red
-	_SHOTGUN_BLUE,
-	_SHOTGUN_GOLD,
+	SHOTGUN, // red
+	SHOTGUN_BLUE,
+	SHOTGUN_GOLD,
 	LAST_ID
 };
 

@@ -139,11 +139,7 @@ w_m60_primary(void)
 		TS_Weapons_ViewAnimation(weaponseq_m60::shoot2, 31.0f/33.0f);
 	}
 
-
-#ifdef CLIENT
-	View_ShowMuzzleflash(MUZZLE_SMALL);
-	View_AddEvent(w_ejectshell_pistol, 0.0f);
-#endif
+	weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);
 	
 	weapon_base_onAttack(pl, ary_weaponData[WEAPON_ID::M60], arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 	

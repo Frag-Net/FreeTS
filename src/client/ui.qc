@@ -143,12 +143,9 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 void
 UI_Init(void)
 {
-	string sTemp;
 	int iMOTDLength;
 	int i;
 	int s;
-	
-	filestream fmMapDescr;
 	
 	// First load the MESSAGE OF THE DAY from the sever
 	//sMOTD_total = serverkey("motd_total");
@@ -169,43 +166,8 @@ UI_Init(void)
 	// NOPE!  Let this be handled elsewhere in case of a different color choice!
 	//sMOTD_total = strcat("^xFA0", sMOTD_total);
 	
-	
-	// Now load the MAP DESCRIPTION
-	// TAGGG
-	// Do we have any use for this though?  Check original TS, the "Select Team"
-	// screen does (press enter to close or after closing the MoTD, probably)
-	
-	sMapString_total = "";
-	
-	//printfline("MAPNAME READS: %s", mapname);
-	// TODO!  If the mapname ends in .bsp, remove that portion, that causes
-	// the appended ".txt" to work wrongly, "mymap.bsp.txt" instead of "mymap.txt"
-	
-	fmMapDescr = fopen( sprintf( "maps/%s.txt", mapname ), FILE_READ );
-	if ( fmMapDescr != -1 ) {
-		for (i = 0; i < 35; i++ ) {
-			sTemp = fgets( fmMapDescr );
-			if not ( sTemp ) {
-				break;
-			}
-			sMapString[ i ] = sTemp;
-			
-			/*
-			if (sMapString[ i ] == "/" ) {
-				sMapString_total = strcat(sMOTD_total, "\n" );
-			}else{
-				sMapString_total = strcat(sMapString_total, sprintf("%s\n", sMapString[ i ]) );
-			}
-			*/
-			sMapString_total = strcat(sMapString_total, sprintf("%s\n", sMapString[ i ]) );
-
-		}
-		fclose( fmMapDescr );
-	}
-	
-	//printfline("MAP DESCRIPTOR?");
-	//printfline("%s", sMapString_total);
-	
+	// someVar = loadMapDescription();
+	loadMapDescription();
 	
 	gFun_UI_EventGrabber_Initialize();
 	
