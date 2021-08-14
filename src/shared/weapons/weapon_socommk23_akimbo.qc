@@ -233,6 +233,7 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 	}
 	
 	
+	int r;
 	if(pl.akimboTest == 0 && !(finalAkimboChoice == BITS_AKIMBOCHOICE_BOTH)){
 		// Not both fire types chosen
 		// Firing the opposite way within this time will let the dual animation play.
@@ -241,13 +242,15 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_LEFT){
 			//printfline("VM: LEFT");
 			if(!arg_thisWeapon.iIronSight){
-				if ( random() <= 0.5 ) {
+				r = (float)input_sequence % 2;
+				if(r == 0){
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_left1, (31.0f/40.0f), 2 );
 				} else {
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_left2, (31.0f/40.0f), 2 );
 				}
 			}else{
-				if ( random() <= 0.5 ) {
+				r = (float)input_sequence % 2;
+				if(r == 0){
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_leftb1, (31.0f/40.0f), 2 );
 				} else {
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_leftb2, (31.0f/40.0f), 2 );
@@ -265,13 +268,15 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		}else if(finalAkimboChoice == BITS_AKIMBOCHOICE_RIGHT){
 			//printfline("VM: RIGHT");
 			if(!arg_thisWeapon.iIronSight){
-				if ( random() <= 0.5 ) {
+				r = (float)input_sequence % 2;
+				if(r == 0){
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_right1, (31.0f/40.0f), 2 );
 				} else {
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_right2, (31.0f/40.0f), 2 );
 				}
 			}else{
-				if ( random() <= 0.5 ) {
+				r = (float)input_sequence % 2;
+				if(r == 0){
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_rightb1, (31.0f/40.0f), 2 );
 				} else {
 					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_rightb2, (31.0f/40.0f), 2 );
@@ -309,6 +314,15 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);
 	}
+	
+	/*
+	// TODO: akimbo support
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+	} else {
+		weapon_EjectShell(SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+	}
+	*/
 	
 }// weapon_socommk23_akimbo_attack
 

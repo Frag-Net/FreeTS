@@ -161,8 +161,8 @@ BOOL CON_anyWeaponUsingAmmoType(int arg_ammoType, int arg_excludedWeaponID){
 		if(otherWeaponTypeID == WEAPONDATA_TYPEID_GUN || otherWeaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
 			//in the clear. do the check.
 			weapondata_basic_t* otherWeaponPointer = ary_weaponData[CONFIG_PLAYER_INVENTORY_GENERIC[i].weaponID];
-			weapondata_gun_t otherGunRef = *((weapondata_gun_t*) otherWeaponPointer);
-			if(otherGunRef.iAmmoDataID == arg_ammoType){
+			weapondata_gun_t* otherGunP = ((weapondata_gun_t*) otherWeaponPointer);
+			if(otherGunP->iAmmoDataID == arg_ammoType){
 				//valid match - still using this ammo pool. confirm and stop.
 				//ammoStillUsed = TRUE;
 				//break;
@@ -284,7 +284,8 @@ void swapInventoryElements(player pl, int arg_index1, int arg_index2){
 	int iFireMode = PLAYER_INVENTORY_GENERIC[arg_index2].iFireMode;
 	int iFireModeAkimbo = PLAYER_INVENTORY_GENERIC[arg_index2].iFireModeAkimbo;
 	int iIronSight = PLAYER_INVENTORY_GENERIC[arg_index2].iIronSight;
-	int forceBodygroup1Submodel = PLAYER_INVENTORY_GENERIC[arg_index2].forceBodygroup1Submodel;
+	int iForceBodygroup1Submodel = PLAYER_INVENTORY_GENERIC[arg_index2].iForceBodygroup1Submodel;
+	int bNeedsPump = PLAYER_INVENTORY_GENERIC[arg_index2].bNeedsPump;
 	
 	
 	PLAYER_INVENTORY_GENERIC[arg_index2].weaponID = PLAYER_INVENTORY_GENERIC[arg_index1].weaponID;
@@ -301,7 +302,8 @@ void swapInventoryElements(player pl, int arg_index1, int arg_index2){
 	PLAYER_INVENTORY_GENERIC[arg_index2].iFireMode = PLAYER_INVENTORY_GENERIC[arg_index1].iFireMode;
 	PLAYER_INVENTORY_GENERIC[arg_index2].iFireModeAkimbo = PLAYER_INVENTORY_GENERIC[arg_index1].iFireModeAkimbo;
 	PLAYER_INVENTORY_GENERIC[arg_index2].iIronSight = PLAYER_INVENTORY_GENERIC[arg_index1].iIronSight;
-	PLAYER_INVENTORY_GENERIC[arg_index2].forceBodygroup1Submodel = PLAYER_INVENTORY_GENERIC[arg_index1].forceBodygroup1Submodel;
+	PLAYER_INVENTORY_GENERIC[arg_index2].iForceBodygroup1Submodel = PLAYER_INVENTORY_GENERIC[arg_index1].iForceBodygroup1Submodel;
+	PLAYER_INVENTORY_GENERIC[arg_index2].bNeedsPump = PLAYER_INVENTORY_GENERIC[arg_index1].bNeedsPump;
 	
 	
 	
@@ -319,7 +321,8 @@ void swapInventoryElements(player pl, int arg_index1, int arg_index2){
 	PLAYER_INVENTORY_GENERIC[arg_index1].iFireMode = iFireMode;
 	PLAYER_INVENTORY_GENERIC[arg_index1].iFireModeAkimbo = iFireModeAkimbo;
 	PLAYER_INVENTORY_GENERIC[arg_index1].iIronSight = iIronSight;
-	PLAYER_INVENTORY_GENERIC[arg_index1].forceBodygroup1Submodel = forceBodygroup1Submodel;
+	PLAYER_INVENTORY_GENERIC[arg_index1].iForceBodygroup1Submodel = iForceBodygroup1Submodel;
+	PLAYER_INVENTORY_GENERIC[arg_index1].bNeedsPump = bNeedsPump;
 	
 	
 }//END OF swapConfigElements
@@ -787,7 +790,8 @@ BOOL attemptAddWeaponToConfig(player pl, int arg_weaponID, int arg_iBitsUpgrade,
 	
 	PLAYER_INVENTORY_GENERIC[matchStart].iIronSight = 0;  //default: no use / magnification.
 	
-	PLAYER_INVENTORY_GENERIC[matchStart].forceBodygroup1Submodel = FALSE;
+	PLAYER_INVENTORY_GENERIC[matchStart].iForceBodygroup1Submodel = 0;
+	PLAYER_INVENTORY_GENERIC[matchStart].bNeedsPump = FALSE;
 	
 	//PLAYER_INVENTORY_GENERIC[matchStart].iPrice = newPrice;
 	//PLAYER_INVENTORY_GENERIC[matchStart].iSlots = newSlots;
@@ -1113,7 +1117,7 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 	
 	
 	// IGNORE WARNINGS ABOUT ME!  Only used if the weapon type ID suggests this is a gun or ironsight - type.
-	weapondata_gun_t gunRef;
+	weapondata_gun_t* gunP = NULL;
 	
 	weapondata_throwable_t throwableRef;
 	int existingMatchingIndex = -1;  //not found until proven otherwise.
@@ -1248,8 +1252,8 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 		
 		//And if this weapon's ammo type hasn't been filled by another weapon purchased before, do so (and add its cost).
 		//(gun & ironsight only)
-		gunRef = *((weapondata_gun_t*) weaponPointer);
-		ammoType = gunRef.iAmmoDataID;
+		gunP = ((weapondata_gun_t*) weaponPointer);
+		ammoType = gunP->iAmmoDataID;
 		ammoRef = *ary_ammoData[ammoType];
 	
 		//do the ammo purchase. at least, a hypothetical:
@@ -1332,12 +1336,12 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 	PLAYER_INVENTORY_GENERIC[matchStart].weaponTypeID = basicRef.typeID;
 	
 	if(myWeaponTypeID == WEAPONDATA_TYPEID_GUN || myWeaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
-		PLAYER_INVENTORY_GENERIC[matchStart].iClipLeft = gunRef.iClipMax;
+		PLAYER_INVENTORY_GENERIC[matchStart].iClipLeft = gunP->iClipMax;
 		
 		//If our weapon supports akimbo, and we actually have it this time...
 		if((basicRef.iBitsUpgrade & BITS_WEAPONOPT_AKIMBO) && (iBitsUpgradeSafe & BITS_WEAPONOPT_AKIMBO) ){
 			//you'll be needing this then.
-			PLAYER_INVENTORY_GENERIC[matchStart].iClipAkimboLeft = gunRef.iClipMax;
+			PLAYER_INVENTORY_GENERIC[matchStart].iClipAkimboLeft = gunP->iClipMax;
 		}
 		else{
 			//nothing
@@ -1367,27 +1371,26 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 	
 	if(myWeaponTypeID == WEAPONDATA_TYPEID_GUN || myWeaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
 		
-		if(gunRef.iBitDefaultFireMode != 0){
+		if(gunP->iBitDefaultFireMode != 0){
 			//well that was easy.
 			
 			if(!(iBitsUpgradeSafe & BITS_WEAPONOPT_AKIMBO)){
 				//well that was easy.
-				PLAYER_INVENTORY_GENERIC[matchStart].iFireMode = gunRef.iBitDefaultFireMode;
+				PLAYER_INVENTORY_GENERIC[matchStart].iFireMode = gunP->iBitDefaultFireMode;
 			}else{
 				
-				if(gunRef.iAkimboID > 0 && gunRef.iAkimboID < WEAPON_AKIMBO_UPGRADE_ID::LAST_ID ){
+				if(gunP->iAkimboID > 0 && gunP->iAkimboID < WEAPON_AKIMBO_UPGRADE_ID::LAST_ID ){
 					
 					//set this too.  and iFireModeAkimbo.
-					PLAYER_INVENTORY_GENERIC[matchStart].iFireMode = gunRef.iBitDefaultFireMode;
+					PLAYER_INVENTORY_GENERIC[matchStart].iFireMode = gunP->iBitDefaultFireMode;
 					
 					//Get the akimbo information then
-					weapondata_gun_t* basicAkimboGunPointer = (weapondata_gun_t*) ary_akimboUpgradeData[gunRef.iAkimboID];
-					weapondata_gun_t basicAkimboGunRef = *(basicAkimboGunPointer);
+					weapondata_gun_t* basicAkimboGunP = (weapondata_gun_t*) ary_akimboUpgradeData[gunP->iAkimboID];
 					
-					PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = basicAkimboGunRef.iBitDefaultFireMode;
+					PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = basicAkimboGunP->iBitDefaultFireMode;
 				}else{
 					//No akimbo ref?  Then I am the akimbo ref.  But I'm using "iFireModeAkimbo".
-					PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = gunRef.iBitDefaultFireMode;
+					PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = gunP->iBitDefaultFireMode;
 				}
 			
 			}
@@ -1407,7 +1410,8 @@ BOOL attemptBuyWeapon(player pl, int arg_weaponID, int arg_iBitsUpgrade, int iCo
 	
 	PLAYER_INVENTORY_GENERIC[matchStart].iIronSight = 0;  //default: no use / magnification.
 	
-	PLAYER_INVENTORY_GENERIC[matchStart].forceBodygroup1Submodel = FALSE;
+	PLAYER_INVENTORY_GENERIC[matchStart].iForceBodygroup1Submodel = 0;
+	PLAYER_INVENTORY_GENERIC[matchStart].bNeedsPump = FALSE;
 	
 	//PLAYER_INVENTORY_GENERIC[matchStart].iPrice = newPrice;
 	//PLAYER_INVENTORY_GENERIC[matchStart].iSlots = newSlots;
@@ -1490,7 +1494,7 @@ int addWeaponToInventory(player pl, CTSWorldGun arg_pickupRef){
 	int arg_weaponID = arg_pickupRef.myInfo.weaponID;
 	
 	
-	weapondata_gun_t gunRef;
+	weapondata_gun_t* gunP = NULL;
 	weapondata_throwable_t throwableRef;
 	int existingMatchingIndex = -1;  //not found until proven otherwise.
 	ammodata_t ammoRef;
@@ -1617,7 +1621,7 @@ Full Load: X times the buy price, where "X" is max capacity (throwing knives or 
 		// primary ammo instead.
 		BOOLEAN harvestAmmo = FALSE;
 		
-		gunRef = *((weapondata_gun_t*) weaponPointer);
+		gunP = ((weapondata_gun_t*) weaponPointer);
 		//gun? ironsight?  We can go akimbo, maybe.
 		// Have it already?
 		if(existingMatchingIndex == -1){
@@ -1628,7 +1632,7 @@ Full Load: X times the buy price, where "X" is max capacity (throwing knives or 
 			}
 			
 		}else{   //if(existingMatchingIndex != -1
-			ammoType = gunRef.iAmmoDataID;
+			ammoType = gunP->iAmmoDataID;
 			ammoRef = *ary_ammoData[ammoType];
 			
 			//we are seeing if we have akimbo...
@@ -1756,19 +1760,17 @@ Full Load: X times the buy price, where "X" is max capacity (throwing knives or 
 		}else if(basicRef.iBitsUpgrade & BITS_WEAPONOPT_AKIMBO && iBitsUpgradeSafe & BITS_WEAPONOPT_AKIMBO){
 			//Send the weapon's clip to iClipAkimboLeft actually.
 			//printfline("addWeaponToInventory - iFireModeAkimbo:%i ammo in akimbo1:%i akimbo2:%i", arg_pickupRef.myInfo.iFireModeAkimbo, arg_pickupRef.myInfo.iClipLeft, arg_pickupRef.myInfo.iClipAkimboLeft);
-			//PLAYER_INVENTORY_GENERIC[matchStart].iClipAkimboLeft = arg_pickupRef.myInfo.iClipAkimboLeft; //gunRef.iClipMax;
-			PLAYER_INVENTORY_GENERIC[matchStart].iClipAkimboLeft = arg_pickupRef.myInfo.iClipLeft; //gunRef.iClipMax;
+			PLAYER_INVENTORY_GENERIC[matchStart].iClipAkimboLeft = arg_pickupRef.myInfo.iClipLeft;
 			PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = arg_pickupRef.myInfo.iFireModeAkimbo;
 			if(PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo == 0){
 				//give me a default fire mode for akimbo!  Happens if we were only in singular and dropped.
-				weapondata_gun_t* basicAkimboGunPointer = (weapondata_gun_t*) ary_akimboUpgradeData[gunRef.iAkimboID];
-				weapondata_gun_t basicAkimboGunRef = *(basicAkimboGunPointer);
+				weapondata_gun_t* basicAkimboGunP = (weapondata_gun_t*) ary_akimboUpgradeData[gunP->iAkimboID];
 				
-				PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = basicAkimboGunRef.iBitDefaultFireMode;
+				PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = basicAkimboGunP->iBitDefaultFireMode;
 			}
 		}else{
 			//this isn't akimbo or we don't support it?  To the first clip only, blank the akimbo for safety.
-			PLAYER_INVENTORY_GENERIC[matchStart].iClipLeft = arg_pickupRef.myInfo.iClipLeft; //gunRef.iClipMax;
+			PLAYER_INVENTORY_GENERIC[matchStart].iClipLeft = arg_pickupRef.myInfo.iClipLeft;
 			PLAYER_INVENTORY_GENERIC[matchStart].iClipAkimboLeft = 0;
 			PLAYER_INVENTORY_GENERIC[matchStart].iFireMode = arg_pickupRef.myInfo.iFireMode;
 			//PLAYER_INVENTORY_GENERIC[matchStart].iFireModeAkimbo = 0;
@@ -1789,7 +1791,7 @@ Full Load: X times the buy price, where "X" is max capacity (throwing knives or 
 	PLAYER_INVENTORY_GENERIC[matchStart].iCount = newCount;
 	arg_pickupRef.myInfo.iCount -= pickupCountSubtract;
 	
-	//printfline("pickup forceBodygroup1Submodel: %i", arg_pickupRef.myInfo.forceBodygroup1Submodel);
+	//printfline("pickup iForceBodygroup1Submodel: %i", arg_pickupRef.myInfo.iForceBodygroup1Submodel);
 	
 	//PLAYER_INVENTORY_GENERIC[matchStart].iPrice = newPrice;
 	PLAYER_INVENTORY_GENERIC[matchStart].iSlots = newSlots;

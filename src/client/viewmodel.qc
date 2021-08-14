@@ -165,6 +165,9 @@ Viewmodel_CalcBob(void)
 	setVCam();
 }
 
+
+void Custom_LatePreDraw(void);
+
 //TAGGG - BobNEW. REPLACED.
 void
 Viewmodel_ApplyBob(entity gun)
@@ -176,4 +179,6 @@ Viewmodel_ApplyBob(entity gun)
 	gun.origin += v_right * (autocvar_v_gunofs[1] + (pViewBob->m_flBob * (-0.2 + 0.308 * sin(pViewBob->m_flBobCycle)) ) + 0.98 * pViewBob->m_vCam[1] );
 	gun.origin += v_up * (0.5 + autocvar_v_gunofs[2] + (pViewBob->m_flBob * (-0.48 + 0.196 * fabs(sin(pViewBob->m_flBobCycle)) )) + 0.98 * pViewBob->m_vCam[2] );
 
+	//TAGGG - mock-event
+	Custom_LatePreDraw();
 }

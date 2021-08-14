@@ -88,30 +88,6 @@ Game_Input(void)
 		// HUD_DrawWeaponSelect_Trigger here, Nuclide calls the latter which works
 		// fine.
 		
-		// CRITICAL.
-		// DISABLED.
-		// This is trying to close weaponselect on detecting a right-click, but it 
-		// has issues.
-		// Idea is, this needs to *absorb* the right-click, and stop it from reaching
-		// the rest of the client and server to work with weapons, like a change-ironsight
-		// order.
-		// This might stop the client weapon logic from seeing the right click, but not
-		// the server.
-		// It appears there is no way to stop that without the FTE built-in event method 
-		// CSQC_Input_Frame (defined by Nuclide) letting the gamemod block right-click
-		// inputs per some condition, like weapon-select being up.
-		/*
-		if(pSeat->m_iInputAttack2){   //input_buttons & INPUT_BUTTON3){
-			if(HUD_CloseWeaponSelect(TRUE)){
-				pSeat->m_flInputBlockTime = time + 0.2;
-				input_impulse = 0;
-				input_buttons = 0;
-				pSeat->m_iInputAttack2 = FALSE;
-			}else{
-				//pSeat->m_iInputAttack2 = TRUE;
-			}
-		}
-		*/
 	}// pi.iState checks
 #endif
 	
@@ -196,23 +172,6 @@ Game_Input(void)
 	}
 #endif
 
-
-	// !!!
-	// An override for this to go in CSQC_Input_Frame would be very nice I think,
-	// unless there is some other way that I'm missing.
-	/*
-	#ifdef CSQC
-	if (pSeatLocal->m_iInputSpeed == TRUE) {
-		//input_buttons |= INPUT_BUTTON9;
-		input_buttons |= INPUT_BUTTON7;
-		//self.flags |= FL_SNEAK;
-	}else{
-		//self.flags &= ~FL_SNEAK;
-	}
-	#endif
-	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
-	*/
-
 	// TS way, weapon thinks happen alongside checking inputs
 	pl.callWeaponThink();
 
@@ -234,8 +193,15 @@ Game_Input(void)
 		
 	processInputs();
 	
+	// !!!
+	// Should SEMI flags be handled here for anytime an input has been pressed
+	// (even if not involved due to the other being picked, like primary fire
+	// taking precedence when both are pressed so secondary is registered as 
+	// held down the next frame, even when primary is let go but sec is not),
+	// or only on PRIMARY / SECONDARY being handled?  Decisions decisions
+	
 	if(input_buttons & INPUT_BUTTON0){
-		pl.gflags |= GF_SEMI_TOGGLED;
+		//pl.gflags |= GF_SEMI_TOGGLED;
 	}else{
 		// held down the previous frame, but not now?  That's a release.
 		if(pl.gflags & GF_SEMI_TOGGLED){
@@ -243,15 +209,15 @@ Game_Input(void)
 			pl.gflags &= ~GF_SEMI_TOGGLED;
 		}
 	}
-	
 	if(input_buttons & INPUT_BUTTON3){
-		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
+		//pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
 	}else{
 		if(pl.gflags & GF_SEMI_SECONDARY_TOGGLED){
 			TS_Weapon_SecondaryAttackRelease(pl);
 			pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
 		}
 	}
+	
 	
 #else
 	//////////////////////////////////////////////
@@ -393,79 +359,22 @@ Game_Input(void)
 void processInputs(void){
 	player pl = (player)self;
 	
+	
+	
 	if (input_buttons & INPUT_BUTTON0){
 		//printfline("!!! PRIMA !!! (%d %d)", ((input_buttons & INPUT_BUTTON0)!=0), ((input_buttons & INPUT_BUTTON3)!=0));
 		Weapons_Primary();
 		
-		//TAGGG - CRITICAL.
-		// Is setting the _net version of gflags ok?
-		// This is like SAVE_STATE but only for this bitflag.
-		// Doing this causes the issue of client being called many times for a short while as
-		// though SEMI_TOGGLED weren't touched to happen.
-		// In other words, checks for being out of clip and playing a click sound can play
-		// several clicks one frame after the other even though one was intended every 0.22 seconds.
-		// If this is the wrong way to go about fixing that, or this has some nasty side-effects
-		// in realistic pings, need to know to fix that some other way.
-		// Could even check for having recently seen the button not pressed and reject out-of-date
-		// server messages explicitly too?
-		// (This all applies to "GF_SEMI_SECONDARY_TOGGLED" further down)
-		
-		/*
-		// BEST YET
 		pl.gflags |= GF_SEMI_TOGGLED;
-		pl.gflags_net |= GF_SEMI_TOGGLED;
-		
-		// FIX: for holding both inputs to behave properly
-		if(input_buttons & INPUT_BUTTON3){
-			pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
-			pl.gflags_net |= GF_SEMI_SECONDARY_TOGGLED;
-		}
-		*/
-		
-		
-		// Primary was picked, so turn off the flag for secondary
-		//pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
-		
 		return;
 	}
 	
 	
 	if (input_buttons & INPUT_BUTTON3){
 		//printfline("!!! SECO !!! (%d %d)", ((input_buttons & INPUT_BUTTON0)!=0), ((input_buttons & INPUT_BUTTON3)!=0));
-		// TAGGG - CRITICAL.
-		// Would be nice to be able to do secondary input ignored if weapon select is open
-		// like primary, see a similar place involving "HUD_DrawWeaponSelect_Trigger" in
-		// Nuclide's src/client/entry.qc.  Can we get that CSQC_Input_Frame event to pipe 
-		// a call over to gamemod script for custom behavior like this, perhaps?
-		/*
-#if CLIENT
-		if ((pSeat->m_iHUDWeaponSelected) ) {
-			HUD_DrawWeaponSelect_Trigger();
-			input_buttons = 0;
-			pSeat->m_flInputBlockTime = time + 0.2;
-		}
-
-		// prevent accidental input packets
-		if (pSeat->m_flInputBlockTime > time) {
-			input_impulse = 0;
-			input_buttons = 0;
-			return;
-		}
-#endif
-		*/
-		
 		Weapons_Secondary();
 		
-		// BEST YET
-		/*
 		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
-		pl.gflags_net |= GF_SEMI_SECONDARY_TOGGLED;
-		*/
-		
-		// Secondary was picked, so turn off the flag for primary
-		//pl.gflags &= ~GF_SEMI_TOGGLED;
-		
-		
 		return;
 	}
 	
@@ -498,4 +407,57 @@ void processInputs(void){
 	*/
 	
 }//processInputs
+
+
+
+#ifdef CLIENT
+
+void HUD_DrawWeaponSelect_Trigger(void);
+BOOL TS_HUD_CloseWeaponSelect(BOOL);
+
+// Not yet called by Nuclide!  A series of notes for now
+// (move to clientside files then)
+//TODO: if spawning from seemingly the same click as "use new config" is still a problem, this is 
+// definitely the place to try something
+void ClientGame_Input_Frame(void){
+	
+	// This is trying to close weaponselect on detecting a right-click, but it 
+	// has issues.
+	// Idea is, this needs to *absorb* the right-click, and stop it from reaching
+	// the rest of the client and server to work with weapons, like a change-ironsight
+	// order.
+	// This might stop the client weapon logic from seeing the right click, but not
+	// the server.
+	// It appears there is no way to stop that without the FTE built-in event method 
+	// CSQC_Input_Frame (defined by Nuclide) letting the gamemod block right-click
+	// inputs per some condition, like weapon-select being up.
+	
+	if(pSeat->m_iHUDWeaponSelected && pSeat->m_iInputAttack2){   //input_buttons & INPUT_BUTTON3
+		if(TS_HUD_CloseWeaponSelect(TRUE)){
+			pSeat->m_flInputBlockTime = time + 0.2;
+			input_impulse = 0;
+			input_buttons = 0;
+			pSeat->m_iInputAttack2 = FALSE;
+		}else{
+			//pSeat->m_iInputAttack2 = TRUE;
+		}
+	}
+	
+	
+	// !!!
+	// An override for this to go in CSQC_Input_Frame would be very nice I think,
+	// unless there is some other way that I'm missing.
+	
+	if (pSeatLocal->m_iInputSpeed == TRUE) {
+		//input_buttons |= INPUT_BUTTON9;
+		input_buttons |= INPUT_BUTTON7;
+		//self.flags |= FL_SNEAK;
+	}else{
+		//self.flags &= ~FL_SNEAK;
+	}
+	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
+		
+}
+#endif
+
 

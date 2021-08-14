@@ -121,7 +121,6 @@ w_glock20_holster(void)
 void
 w_glock20_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -145,8 +144,8 @@ w_glock20_primary(void)
 	}
 
 	if(arg_thisWeapon.iClipLeft > 0){
-		randomChoice = random();
-		if(randomChoice < 0.5){
+		int r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_glock20::shoot1, 31.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_glock20::shoot2, 31.0f/30.0f);

@@ -117,7 +117,6 @@ w_m60_holster(void)
 void
 w_m60_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -132,8 +131,8 @@ w_m60_primary(void)
 	
 		SoundPitched_Send(pl, SNDP_M60_FIRE);
 	
-	randomChoice = random();
-	if(randomChoice < 0.5){
+	int r = (float)input_sequence % 2;
+	if(r == 0){
 		TS_Weapons_ViewAnimation(weaponseq_m60::shoot, 31.0f/33.0f);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_m60::shoot2, 31.0f/33.0f);

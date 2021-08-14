@@ -1,6 +1,13 @@
 #pragma target fte
 #pragma progs_dat  "../../progs.dat"
 
+//---WARNINGS DISABLED---
+// As of now, the only warnings left are for the server/gamerules.qc unused globals
+// like sRule_TeamNames.
+#pragma warning disable Q302 /*uninitialised locals*/
+/////////////////////////////////////////////////////////////////
+
+
 #define QWSSQC
 #define SERVER
 #define TS

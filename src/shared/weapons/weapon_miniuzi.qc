@@ -148,7 +148,6 @@ w_miniuzi_holster(void)
 void
 w_miniuzi_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -170,27 +169,27 @@ w_miniuzi_primary(void)
 	} else {
 		SoundPitched_Send(pl, SNDP_MINIUZI_FIRE_SIL);
 	}
-
+	int r;
 	if(!arg_thisWeapon.iIronSight){
-		randomChoice = random();
-		if(randomChoice < 1/4){
+		r = (float)input_sequence % 4;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shoot, (31.0f/30.0f) );
-		}else if(randomChoice < 2/4){
+		}else if(r == 1){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shoot2, (31.0f/30.0f) );
-		}else if(randomChoice < 3/4){
+		}else if(r == 2){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshoot, (31.0f/30.0f) );
-		}else{  //4/4
+		}else{
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshoot2, (31.0f/30.0f) );
 		}
 	}else{
-		randomChoice = random();
-		if(randomChoice < 1/4){
+		r = (float)input_sequence % 4;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shootb, (31.0f/30.0f) );
-		}else if(randomChoice < 2/4){
+		}else if(r == 1){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shootb2, (31.0f/30.0f) );
-		}else if(randomChoice < 3/4){
+		}else if(r == 2){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshootb, (31.0f/30.0f) );
-		}else{  //4/4
+		}else{
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshootb2, (31.0f/30.0f) );
 		}
 	}

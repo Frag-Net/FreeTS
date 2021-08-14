@@ -107,13 +107,11 @@ w_katana_holster(void)
 {
 }
 
-
 void
 w_katana_primary(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	float randomChoice;
 	MELEE_HIT_RESPONSE hitRep;
 	int meleeAnimToPlay = 0;
 	
@@ -169,9 +167,11 @@ w_katana_primary(void)
 	// Don't check 'hitRep' client side, ray-checks to see what was hit are
 	// ineffective there
 #ifdef SERVER
+	int r;
+	
 	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
-		randomChoice = randomInRange_i(0, 1);
-		if(randomChoice == 0){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			SoundPitched_Send(pl, SNDP_KATANA_MISS);
 		}else{
 			SoundPitched_Send(pl, SNDP_KATANA_MISS1);
@@ -179,14 +179,14 @@ w_katana_primary(void)
 	}else if(hitRep == MELEE_HIT_RESPONSE::SOFT){
 		//nothin
 	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
-		randomChoice = randomInRange_i(0, 1);
-		if(randomChoice == 0){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_PlaySoundDirect(pl, "weapons/katana/hit.wav");
 		}else{
 			TS_Weapons_PlaySoundDirect(pl, "weapons/katana/hit1.wav");
 		}
 	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
-		arg_thisWeapon.forceBodygroup1Submodel = 2;
+		arg_thisWeapon.iForceBodygroup1Submodel = 2;
 		TS_Weapons_PlaySoundDirect(pl, "weapons/katana/hit-body.wav");
 	}
 #endif

@@ -161,9 +161,8 @@ w_benellim3_primary(void)
 	
 	
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
-		if(pl.shotgunWaitingForPump){
+		if(arg_thisWeapon.bNeedsPump){
 			// pump instead!
-			pl.shotgunWaitingForPump = FALSE;
 			
 			//SoundPitched_Channel_Send(pl, SNDP_BENELLIM3_PUMP, CHAN_AUTO);
 			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/m3/m3-pump.wav", CHAN_AUTO);
@@ -171,7 +170,6 @@ w_benellim3_primary(void)
 			// these pumps eject shells
 			weapon_EjectShell(SHELLEJECT_ID::SHOTGUN_BLUE);
 			
-			// float randomChoice = random();
 			// why the cast to float here?  No idea
 			int r = (float)input_sequence % 2;
 			if(r == 0){
@@ -180,11 +178,13 @@ w_benellim3_primary(void)
 				TS_Weapons_ViewAnimation(weaponseq_benellim3::pump2, 25.0f/35.0f);
 			}
 			
+			arg_thisWeapon.bNeedsPump = FALSE;
 			weapon_base_setWholeAttackDelay(pl, 15.0f/35.0f);
 			return;
 		}
 	}else{
-		pl.shotgunWaitingForPump = FALSE;
+		// not in PUMP firemode?  Any firing forgets the pump-need if it was set.
+		arg_thisWeapon.bNeedsPump = FALSE;
 	}
 	
 	// we still want to be able to do a pump on firing the last in the clip
@@ -199,7 +199,7 @@ w_benellim3_primary(void)
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		TS_Weapons_ViewAnimation(weaponseq_benellim3::shootpump, (31.0f/35.0f) );
 		// no shell!  Pumping does that.
-		pl.shotgunWaitingForPump = TRUE;
+		arg_thisWeapon.bNeedsPump = TRUE;
 		weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::WEIRD);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_benellim3::shootsemi, (31.0f/35.0f) );
@@ -231,10 +231,6 @@ w_benellim3_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	/*
@@ -248,15 +244,9 @@ w_benellim3_secondary(void)
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.5f);
-			break;}
+		case 0:pl.setZoom(1.00f);break;
+		case 1:pl.setZoom(0.50f);break;
 		}
-	}else{
-		// no ironsight for this
 	}
 }
 

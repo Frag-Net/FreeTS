@@ -163,7 +163,8 @@ w_glock18_primary(void)
 	
 	if(arg_thisWeapon.iClipLeft > 1){
 		// more than 1 bullet left? Typical
-		if ( random() <= 0.5 ) {
+		int r = (float)input_sequence % 2;
+		if (r == 0) {
 			TS_Weapons_ViewAnimation(weaponseq_glock18::shoot1, (31.0f/30.0f));
 		} else {
 			TS_Weapons_ViewAnimation(weaponseq_glock18::shoot2, (31.0f/30.0f));

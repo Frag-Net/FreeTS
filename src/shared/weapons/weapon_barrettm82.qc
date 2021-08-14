@@ -123,14 +123,13 @@ w_barrettm82_holster(void)
 void
 w_barrettm82_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
 		return;
 	}
-		
+	
 	//if(arg_thisWeapon.iFireMode == BITS_FIREMODE_SEMI){
 		INPUT_PRIMARY_TAP_GATE
 	//}
@@ -142,8 +141,8 @@ w_barrettm82_primary(void)
 
 	SoundPitched_Send(pl, SNDP_BARRETTM82_FIRE);
 	
-	randomChoice = random();
-	if(randomChoice < 0.5){
+	int r = (float)input_sequence % 2;
+	if(r == 0){
 		TS_Weapons_ViewAnimation(weaponseq_barrettm82::shoot, 31.0f/30.0f);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_barrettm82::shoot2, 31.0f/30.0f);
@@ -171,25 +170,15 @@ w_barrettm82_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 3;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.40f);
-			break;}
-			case 2:{
-				pl.setZoom(0.10f);
-			break;}
+		case 0:pl.setZoom(1.00f);break;
+		case 1:pl.setZoom(0.40f);break;
+		case 2:pl.setZoom(0.10f);break;
 		}
 	}
 	

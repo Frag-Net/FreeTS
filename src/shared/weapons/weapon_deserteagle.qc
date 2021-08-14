@@ -171,9 +171,11 @@ w_deserteagle_primary(void)
 	}
 
 
+	int r;
 	if(!arg_thisWeapon.iIronSight){
 		if(arg_thisWeapon.iClipLeft > 0){
-			if ( random() <= 0.5 ) {
+			r = (float)input_sequence % 2;
+			if (r == 0) {
 				TS_Weapons_ViewAnimation(weaponseq_deserteagle::shoot1, 31.0f/30.0f);
 			} else {
 				TS_Weapons_ViewAnimation(weaponseq_deserteagle::shoot2, 31.0f/30.0f);
@@ -217,24 +219,19 @@ w_deserteagle_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.75f);
-			break;}
+		case 0:pl.setZoom(1.00f);break;
+		case 1:pl.setZoom(0.75f);break;
 		}
 	}else{
+		if(pl.w_attack_next > 0){
+			return;
+		}
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);
 	}

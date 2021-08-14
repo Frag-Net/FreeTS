@@ -111,7 +111,6 @@ w_sealknife_primary(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	float randomChoice;
 
 	if (pl.w_attack_next > 0.0) {
 		return;
@@ -132,7 +131,7 @@ w_sealknife_primary(void)
 	}else if(hitRep == MELEE_HIT_RESPONSE::METAL){
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hit.wav");
 	}else if(hitRep == MELEE_HIT_RESPONSE::FLESH){
-		arg_thisWeapon.forceBodygroup1Submodel = 2;
+		arg_thisWeapon.iForceBodygroup1Submodel = 2;
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_hitbody.wav");
 	}
 #endif
@@ -141,12 +140,12 @@ w_sealknife_primary(void)
 	//self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 
 	// actually do this animation the same regardless as far as we know.
-	randomChoice = randomInRange_i(0, 2);
-	if(randomChoice == 0){
+	int r = (float)input_sequence % 3;
+	if(r == 0){
 		TS_Weapons_ViewAnimation(weaponseq_sealknife::slash1, (31.0f/30.0f) );
-	}else if(randomChoice == 1){
+	}else if(r == 1){
 		TS_Weapons_ViewAnimation(weaponseq_sealknife::slash2, (31.0f/30.0f) );
-	}else if(randomChoice == 2){
+	}else{
 		TS_Weapons_ViewAnimation(weaponseq_sealknife::slash3, (31.0f/30.0f) );
 	}
 	
@@ -159,7 +158,6 @@ w_sealknife_secondary(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	float randomChoice;
 	
 	if (pl.w_attack_next > 0.0) {
 		return;
@@ -174,7 +172,7 @@ w_sealknife_secondary(void)
 		//throw it!  play this sound too.
 		arg_thisWeapon.iCount -= 1;
 		pl.updateSlotCountsForEquippedWeapon();
-		arg_thisWeapon.forceBodygroup1Submodel = 1;  //reset, new knife is not bloody.
+		arg_thisWeapon.iForceBodygroup1Submodel = 1;  //reset, new knife is not bloody.
 		TS_Weapons_PlaySoundDirect(pl, "weapons/knife/knife_miss.wav");
 #ifdef SERVER
 		CTSThrownProjectile::generate2(pl, arg_thisWeapon);

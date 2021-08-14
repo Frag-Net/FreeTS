@@ -121,7 +121,6 @@ w_ragingbull_holster(void)
 void
 w_ragingbull_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -140,7 +139,8 @@ w_ragingbull_primary(void)
 	
 	SoundPitched_Send(pl, SNDP_RAGINGBULL_FIRE);
 	
-	if ( random() <= 0.5 ) {
+	int r = (float)input_sequence % 2;
+	if (r == 0) {
 		TS_Weapons_ViewAnimation(weaponseq_ragingbull::shoot, 31.0f/30.0f);
 	} else {
 		TS_Weapons_ViewAnimation(weaponseq_ragingbull::shoot2, 31.0f/30.0f);
@@ -167,22 +167,14 @@ w_ragingbull_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.50f);
-			break;}
+		case 0:pl.setZoom(1.00f);break;
+		case 1:pl.setZoom(0.50f);break;
 		}
 	}
 	

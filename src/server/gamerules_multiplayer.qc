@@ -506,7 +506,7 @@ TSMultiplayerRules::TimerUpdate(void)
 				}
 			}
 		}
-	}//END OF gamemode check
+	}// gamemode check
 	
 	
 	if (g_ts_gamestate != GAME_OVER) {
@@ -516,7 +516,7 @@ TSMultiplayerRules::TimerUpdate(void)
 				centerprintToAll("mp_timelimit expired, changing map...\n");
 		
 				TimerBegin(5, GAME_OVER);
-				printfline("Did the gamemode become GAME_OVER? %i", (g_ts_gamestate==GAME_OVER));
+				printfline("Did the gamemode become GAME_OVER? %d", (float)(g_ts_gamestate==GAME_OVER));
 			}
 		}
 	}

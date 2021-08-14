@@ -225,7 +225,6 @@ player::ReceiveEntity(float new, float fl)
 	
 	
 	shotgunReloadIndex = readbyte();
-	shotgunWaitingForPump = readbyte();
 	shotgunAddAmmoTime = readfloat();
 	shotgunAddAmmoSoundTime = readfloat();
 	
@@ -311,7 +310,8 @@ void player::ReceiveEntity_ary_myWeapons(int i){
 	
 	ary_myWeapons[i].iFireModeAkimbo = readbyte();
 	ary_myWeapons[i].iIronSight = readbyte();
-	ary_myWeapons[i].forceBodygroup1Submodel = readbyte();
+	ary_myWeapons[i].iForceBodygroup1Submodel = readbyte();
+	ary_myWeapons[i].bNeedsPump = readbyte();
 
 }
 
@@ -384,7 +384,6 @@ player::PredictPreFrame(void)
 	SAVE_STATE(grenadeToss);
 	
 	SAVE_STATE(shotgunReloadIndex);
-	SAVE_STATE(shotgunWaitingForPump);
 	
 	SAVE_STATE(shotgunAddAmmoTime);
 	SAVE_STATE(shotgunAddAmmoSoundTime);
@@ -406,7 +405,8 @@ player::PredictPreFrame(void)
 		SAVE_STATE(ary_myWeapons[i].iFireMode);
 		SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
 		SAVE_STATE(ary_myWeapons[i].iIronSight);
-		SAVE_STATE(ary_myWeapons[i].forceBodygroup1Submodel);
+		SAVE_STATE(ary_myWeapons[i].iForceBodygroup1Submodel);
+		SAVE_STATE(ary_myWeapons[i].bNeedsPump);
 	}
 
 	//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -483,7 +483,6 @@ player::PredictPostFrame(void)
 	ROLL_BACK(grenadeToss);
 	
 	ROLL_BACK(shotgunReloadIndex);
-	ROLL_BACK(shotgunWaitingForPump);
 	
 	ROLL_BACK(shotgunAddAmmoTime);
 	ROLL_BACK(shotgunAddAmmoSoundTime);
@@ -504,7 +503,8 @@ player::PredictPostFrame(void)
 		ROLL_BACK(ary_myWeapons[i].iFireMode);
 		ROLL_BACK(ary_myWeapons[i].iFireModeAkimbo);
 		ROLL_BACK(ary_myWeapons[i].iIronSight);
-		ROLL_BACK(ary_myWeapons[i].forceBodygroup1Submodel);
+		ROLL_BACK(ary_myWeapons[i].iForceBodygroup1Submodel);
+		ROLL_BACK(ary_myWeapons[i].bNeedsPump);
 	}
 
 	//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -632,7 +632,9 @@ player::EvaluateEntity(void)
 			if(ATTR_CHANGED(ary_myWeapons[i].iFireMode)) SendFlags |= PLAYER_UNUSED1;
 			if(ATTR_CHANGED(ary_myWeapons[i].iFireModeAkimbo)) SendFlags |= PLAYER_UNUSED1;
 			if(ATTR_CHANGED(ary_myWeapons[i].iIronSight)) SendFlags |= PLAYER_UNUSED1;
-			if(ATTR_CHANGED(ary_myWeapons[i].forceBodygroup1Submodel)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].iForceBodygroup1Submodel)) SendFlags |= PLAYER_UNUSED1;
+			if(ATTR_CHANGED(ary_myWeapons[i].bNeedsPump)) SendFlags |= PLAYER_UNUSED1;
+			
 		//}
 		myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
 		if(myAmmoType != -1){
@@ -672,7 +674,6 @@ player::EvaluateEntity(void)
 	
 	
 	SAVE_STATE(shotgunReloadIndex);
-	SAVE_STATE(shotgunWaitingForPump);
 	
 	SAVE_STATE(shotgunAddAmmoTime);
 	SAVE_STATE(shotgunAddAmmoSoundTime);
@@ -698,7 +699,8 @@ player::EvaluateEntity(void)
 			SAVE_STATE(ary_myWeapons[i].iFireMode);
 			SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
 			SAVE_STATE(ary_myWeapons[i].iIronSight);
-			SAVE_STATE(ary_myWeapons[i].forceBodygroup1Submodel);
+			SAVE_STATE(ary_myWeapons[i].iForceBodygroup1Submodel);
+			SAVE_STATE(ary_myWeapons[i].bNeedsPump);
 		//}
 
 
@@ -845,7 +847,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	
 	
 	WriteByte(MSG_ENTITY, shotgunReloadIndex );
-	WriteByte(MSG_ENTITY, shotgunWaitingForPump );
 	WriteFloat(MSG_ENTITY, shotgunAddAmmoTime );
 	WriteFloat(MSG_ENTITY, shotgunAddAmmoSoundTime );
 	
@@ -913,7 +914,8 @@ void player::SendEntity_ary_myWeapons(int i){
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireMode );
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireModeAkimbo );
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iIronSight );
-	WriteByte(MSG_ENTITY, ary_myWeapons[i].forceBodygroup1Submodel);
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].iForceBodygroup1Submodel);
+	WriteByte(MSG_ENTITY, ary_myWeapons[i].bNeedsPump);
 }
 
 #endif
@@ -1072,7 +1074,7 @@ player::reset(BOOL resetInventory){
 	lasersightUnlockTime = FALSE;
 	
 	forceViewModelUpdate = FALSE;
-	prev_forceBodygroup1Submodel = 0;
+	prev_iForceBodygroup1Submodel = 0;
 		
 #endif
 	
@@ -1142,8 +1144,6 @@ player::reset(BOOL resetInventory){
 	
 	if(resetInventory){
 		
-		
-		
 		// could this be done for resets outside of resetInventory?  unsure
 		flags = 0;
 		gflags = 0;
@@ -1154,8 +1154,6 @@ player::reset(BOOL resetInventory){
 		printfline("setInventoryEquippedIndex: FLAG A");
 		setInventoryEquippedIndex(-1);
 		
-		shotgunWaitingForPump = FALSE;
-	
 #ifdef CLIENT
 		equippedWeaponWaitingForCallback = FALSE;
 #endif
@@ -1252,7 +1250,7 @@ player::handleAccuracyKickback(void){
 void
 player::setZoom(float arg_theZoom)
 {
-	printfline("ORDER! %.2f", arg_theZoom);
+	//printfline("setZoom: %.2f", arg_theZoom);
 	flZoomTarget = arg_theZoom;
 }
 // forget any zoom-related settings instantly.
@@ -1557,7 +1555,7 @@ player::preThink(void){
 	}
 	
 	// Called before rendering, so this is an acceptable place.
-	View_HandleZoom();
+	TS_View_HandleZoom();
 	
 	//callWeaponThink();
 	
@@ -1921,7 +1919,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 				playerEquipIdealSafe(this);
 			}else{
 				// still have it?  undirty any blood effects since we dropped that.
-				ary_myWeapons[arg_weaponID].forceBodygroup1Submodel = 0;
+				ary_myWeapons[arg_weaponID].iForceBodygroup1Submodel = 0;
 			}
 			
 		}else{
@@ -1942,7 +1940,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 		
 	}
 	
-	printfline("playerDrop:  end.  Was there a drop? %d", (eDrop != NULL));
+	printfline("playerDrop:  end.  Was there a drop? %d", (float)(eDrop != NULL));
 
 
 	if(eDrop != NULL){

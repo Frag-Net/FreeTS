@@ -139,7 +139,6 @@ w_spas12_holster(void)
 void
 w_spas12_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -161,9 +160,8 @@ w_spas12_primary(void)
 	
 	
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
-		if(pl.shotgunWaitingForPump){
+		if(arg_thisWeapon.bNeedsPump){
 			// pump instead!
-			pl.shotgunWaitingForPump = FALSE;
 			
 			//SoundPitched_Channel_Send(pl, SNDP_SPAS12_PUMP, CHAN_AUTO);
 			TS_Weapons_PlaySoundChannelDirect(pl, "weapons/spas12/spas12-pump.wav", CHAN_AUTO);
@@ -178,11 +176,12 @@ w_spas12_primary(void)
 				TS_Weapons_ViewAnimation(weaponseq_spas12::pump2, 31.0f/35.0f);
 			}
 			
+			arg_thisWeapon.bNeedsPump = FALSE;
 			weapon_base_setWholeAttackDelay(pl, 14.0f/35.0f);
 			return;
 		}
 	}else{
-		pl.shotgunWaitingForPump = FALSE;
+		arg_thisWeapon.bNeedsPump = FALSE;
 	}
 	
 	// we still want to be able to do a pump on firing the last in the clip
@@ -196,7 +195,7 @@ w_spas12_primary(void)
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		TS_Weapons_ViewAnimation(weaponseq_spas12::shootpump, (31.0f/35.0f) );
 		// no shell!  Pumping does that.
-		pl.shotgunWaitingForPump = TRUE;
+		arg_thisWeapon.bNeedsPump = TRUE;
 		weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::WEIRD);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_spas12::shootsemi, (31.0f/35.0f) );

@@ -140,7 +140,6 @@ w_steyrtmp_holster(void)
 void
 w_steyrtmp_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -164,16 +163,17 @@ w_steyrtmp_primary(void)
 		SoundPitched_Send(pl, SNDP_STEYRTMP_FIRE_SIL);
 	}
 	
+	int r;
 	if(!arg_thisWeapon.iIronSight){
-		randomChoice = random();
-		if(randomChoice < 1/2){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shoot, 31.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shoot2, 31.0f/30.0f);
 		}
 	}else{
-		randomChoice = random();
-		if(randomChoice < 1/2){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shootb, 31.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shootb2, 31.0f/30.0f);

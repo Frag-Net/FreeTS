@@ -137,7 +137,6 @@ w_m16a4_holster(void)
 void
 w_m16a4_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -165,25 +164,26 @@ w_m16a4_primary(void)
 	}
 
 	SoundPitched_Send(pl, SNDP_M16A4_FIRE);
-
+	
+	int r;
 	if(!arg_thisWeapon.iIronSight){
-		randomChoice = random();
-		if(randomChoice < 1/4){
+		r = (float)input_sequence % 4;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot1, (31.0f/30.0f) );
-		}else if(randomChoice < 2/4){
+		}else if(r == 1){
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot2, (31.0f/30.0f) );
-		}else if(randomChoice < 3/4){
+		}else if(r == 2){
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot1, (31.0f/30.0f) );
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot2, (31.0f/30.0f) );
 		}
 	}else{
-		randomChoice = random();
-		if(randomChoice < 1/4){
+		r = (float)input_sequence % 4;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot3, (31.0f/30.0f) );
-		}else if(randomChoice < 2/4){
+		}else if(r == 1){
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot4, (31.0f/30.0f) );
-		}else if(randomChoice < 3/4){
+		}else if(r == 2){
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot3, (31.0f/30.0f) );
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot4, (31.0f/30.0f) );
@@ -227,27 +227,20 @@ w_m16a4_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 3;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.40f);
-			break;}
-			case 2:{
-				pl.setZoom(0.10f);
-			break;}
+		case 0:pl.setZoom(1.00f);break;
+		case 1:pl.setZoom(0.40f);break;
+		case 2:pl.setZoom(0.10f);break;
 		}
 	}else{
+		if(pl.w_attack_next > 0){
+			return;
+		}
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl , (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::M16A4], arg_thisWeapon);
 	}

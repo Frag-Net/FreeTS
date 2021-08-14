@@ -125,7 +125,6 @@ w_contenderg2_holster(void)
 void
 w_contenderg2_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
@@ -144,7 +143,8 @@ w_contenderg2_primary(void)
 	
 	SoundPitched_Send(pl, SNDP_CONTENDERG2_FIRE);
 	
-	if ( random() <= 0.5 ) {
+	int r = (float)input_sequence % 2;
+	if (r == 0) {
 		TS_Weapons_ViewAnimation(weaponseq_contenderg2::shoot1, 31.0f/30.0f);
 	} else {
 		TS_Weapons_ViewAnimation(weaponseq_contenderg2::shoot2, 31.0f/30.0f);
@@ -172,22 +172,14 @@ w_contenderg2_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.325f);
-			break;}
+		case 0:pl.setZoom(1.00f);break;
+		case 1:pl.setZoom(0.325f);break;
 		}
 	}
 	

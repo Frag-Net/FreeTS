@@ -120,7 +120,6 @@ w_karate_primary(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	float randomChoice;
 
 	if (pl.w_attack_next > 0.0) {
 		return;
@@ -156,14 +155,14 @@ w_karate_primary(void)
 	//Animation_ShootWeapon( self );
 	pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.085, 1);
 	
-	randomChoice = randomInRange_i(0, 3);
-	if(randomChoice == 0){
+	int r = (float)input_sequence % 4;
+	if(r == 0){
 		TS_Weapons_ViewAnimation(weaponseq_karate::punch_left, (31.0f/40.0f) );
-	}else if(randomChoice == 1){
+	}else if(r == 1){
 		TS_Weapons_ViewAnimation(weaponseq_karate::punch_right, (31.0f/30.0f) );
-	}else if(randomChoice == 2){
+	}else if(r == 2){
 		TS_Weapons_ViewAnimation(weaponseq_karate::uppercut, (31.0f/30.0f) );
-	}else if(randomChoice == 3){
+	}else{
 		TS_Weapons_ViewAnimation(weaponseq_karate::punch_right2, (31.0f/30.0f) );
 	}
 	
@@ -265,7 +264,6 @@ w_karate_secondary(void)
 {
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
-	float randomChoice;
 	// a warning if this isn't defaulted, really?
 	// The whole point of being sent as a reference in determineSecondaryAttack is
 	// to give it a value though, I think this FTE warning is wrong, but satisfying anyway
@@ -300,13 +298,13 @@ w_karate_secondary(void)
 	}
 #endif
 	
-	
+	int r;
 	if(meleeAnimToPlay == 0){
 		//ordinary
-		randomChoice = randomInRange_i(0,1);
-		if(randomChoice == 0){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_karate::kick, (31.0f/30.0f) );
-		}else if(randomChoice == 1){
+		}else{
 			TS_Weapons_ViewAnimation(weaponseq_karate::sidekick, (31.0f/30.0f) );
 		}
 	}else if(meleeAnimToPlay == 1){

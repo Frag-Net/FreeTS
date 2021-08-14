@@ -129,7 +129,6 @@ w_beretta_holster(void)
 void
 w_beretta_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -156,8 +155,8 @@ w_beretta_primary(void)
 	
 	
 	if(arg_thisWeapon.iClipLeft > 0){
-		randomChoice = random();
-		if(randomChoice <= 0.5){
+		int r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_beretta::shoot, 31.0f/35.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_beretta::shoot2, 31.0f/35.0f);

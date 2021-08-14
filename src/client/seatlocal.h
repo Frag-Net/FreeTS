@@ -7,6 +7,13 @@
 
 struct
 {
+	// Clone of the Nuclide muzzleflash so that dual akimbo fire (both at the same time)
+	// can be shown.
+	// No need to handle Event_ProcessModel - TS doesn't even have model events for muzzle
+	// flashes, modify the way of setting up muzzleflash-related variables to support this
+	// when needed.
+	entity m_eMuzzleflashAkimbo;
+	
 	// PENDING - probably safe to remove these
 	int m_iHealthOld;
 	float m_flHealthAlpha;

@@ -118,7 +118,6 @@ w_skorpion_holster(void)
 void
 w_skorpion_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -137,10 +136,10 @@ w_skorpion_primary(void)
 	
 	SoundPitched_Send(pl, SNDP_SKORPION_FIRE);
 	
-	randomChoice = random();
-	if(randomChoice < 1/3){
+	int r = (float)input_sequence % 3;
+	if(r == 0){
 		TS_Weapons_ViewAnimation(weaponseq_skorpion::fire1, 31.0f/30.0f);
-	}else if(randomChoice < 2/3){
+	}else if(r == 1){
 		TS_Weapons_ViewAnimation(weaponseq_skorpion::fire2, 31.0f/30.0f);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_skorpion::fire3, 31.0f/30.0f);

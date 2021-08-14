@@ -41,7 +41,12 @@ enum PLAYER_STATE{
 #define SAVE_STATE_ARRAY_MEMBER(ary, i, sub) x ##_net = x    // did not do
 */
 
+
+// NOTE - it seems this is the only place this var is declared?  Unsure what the 'noref' means.
+// Nuclide expects it, used as a random seed, whole number.  Not sure the best way to get a decimal
+// out of it yet but some ideas should be good enough.
 noref int input_sequence;
+
 class player:base_player
 {
 	
@@ -144,11 +149,11 @@ class player:base_player
 	int recentLaserDistanceDisplay;
 	
 	BOOL forceViewModelUpdate;
-	// NOTICE - individual dynamic weapons have "forceBodygroup1Submodel".
-	// "prev_forceBodygroup1Submodel" is player-wide (here) instead because we only need to
-	// keep track of changes in a weapon's forceBodygroup1Submodel while that weapon is
+	// NOTICE - individual dynamic weapons have "iForceBodygroup1Submodel".
+	// "prev_iForceBodygroup1Submodel" is player-wide (here) instead because we only need to
+	// keep track of changes in a weapon's iForceBodygroup1Submodel while that weapon is
 	// equipped.  Not that it could ever change while not equipped anyway.
-	int prev_forceBodygroup1Submodel;
+	int prev_iForceBodygroup1Submodel;
 	
 	// same as below for muzzleflash.
 	int iMuzzleFlashType;
@@ -301,16 +306,8 @@ class player:base_player
 	// ALSO!  Call Byte vars 'floats' because FTE makes 'readbyte' give a float.
 	PREDICTED_FLOAT(shotgunReloadIndex);
 	
-	
-	// In pump-action mode, set to TRUE after firing the shotgun. The next click pumps
-	// instead.
-	// Note that switching to semi-fire mode and firing turns this flag off.
-	// Changing to semi-fire mode alone however, doesn't (changing fire modes without firing
-	// leaves this flag unaffected).
-	// Reloading also disables this flag, as it always ends in a visual pump.
-	// (was BOOL)
-	PREDICTED_FLOAT(shotgunWaitingForPump);
-	
+	// do these even need to be networked in the end?  Works now as it is,
+	// anything involving networking in even the most remote sense do be a finicky beast at times
 	PREDICTED_FLOAT(shotgunAddAmmoTime);
 	PREDICTED_FLOAT(shotgunAddAmmoSoundTime);
 

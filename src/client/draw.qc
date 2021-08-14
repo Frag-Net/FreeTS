@@ -29,21 +29,59 @@ extern var string g_damage_spr_r;
 
 void drawPainArrows(void);
 void drawPainFlash(void);
-void ClientGame_DamageDraw(void);
+void Custom_DamageDraw(void);
 
 
 
+// WARNING: don't try drawing any 2D things on screen here, they'll be rendered on top of
+// and ultimately lost, at least I think that's how it goes
 void
 ClientGame_PreDraw(void) 
 {
-
+	
 }
+
+
+void
+Player_HandleWeaponModel(base_player pp, float thirdperson);
+
+// Happens right before the CSQC_RenderScene call seen in Nuclide's client/draw.qc.
+// PostDraw further down is too late.
+// NOT A NUCLIDE EVENT - called by the end of ViewModel_ApplyBob (viewmodel.qc) so that
+// other changes to viewmodel position are already done.
+void
+Custom_LatePreDraw(void)
+{
+	player pl = (player)pSeat->m_ePlayer;
+	
+	Player_DrawViewModelCustom(pl);
+	
+	int thirdperson = (autocvar_cl_thirdperson == TRUE || pl.entnum != player_localentnum);
+	Player_DrawViewModelExtraEffects(pl, thirdperson);
+	
+}
+
 
 void
 ClientGame_PostDraw(void)
 {
-	ClientGame_DamageDraw();
+	// This is just the right place - occurs right beofre a HUD_Draw call so that the HUD
+	// is drawn on top of the potentially bright-red pain flash, rather than obscurred by it
+	Custom_DamageDraw();
+	
+	// To replicate what Nuclide does for the normal muzzle flash entity in frame-logic:
+	// reduce the alpha every frame to quickly fade away
+	entity m_eMuzzleflashAkimbo = pSeatLocal->m_eMuzzleflashAkimbo;
+
+	// Take away alpha once it has drawn fully at least once
+	//printfline("View_PostDraw, muzzleflash? %.2f - %.2f", m_eMuzzleflash.alpha, clframetime);
+	if (m_eMuzzleflashAkimbo.alpha > 0.0f) {
+		m_eMuzzleflashAkimbo.alpha -= (clframetime * 16);
+	}
 }
+
+
+
 
 
 // copied from Nuclide
@@ -118,7 +156,7 @@ drawPainFlash(void)
 
 
 void
-ClientGame_DamageDraw(void){
+Custom_DamageDraw(void){
 	
 	// No alpha, or dead?  No pain drawing
 	if(
@@ -128,8 +166,8 @@ ClientGame_DamageDraw(void){
 		return;
 	}
 
-	drawPainArrows();
 	drawPainFlash();
+	drawPainArrows();
 
 	// Nuclide's default had no modifier on clframetime ( * 1).
 	pSeat->m_flDamageAlpha -= clframetime * 1.7;

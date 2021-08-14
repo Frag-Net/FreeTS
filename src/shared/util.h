@@ -79,13 +79,6 @@
 #define printlinef(s1, ...) print(sprintf("SV: "s1"\n", ##__VA_ARGS__))
 #endif
 
-////////////////////////////////////////////////////////
-// situational, see CTSWorldGun and CTSThrownProjectile.
-// (consider unpacking, this is kinda unnecessary)
-// anywhere in inventory_logic.qc still do something like that??  I forget.
-#define COPYVARFROM(varName) myInfo.##varName = tempRef.##varName;
-#define COPYVARTO(varName) tempRef.##varName = myInfo.##varName;
-
 
 
 // Safe way to declare an entity seen in FreeHL.  Think of it as:

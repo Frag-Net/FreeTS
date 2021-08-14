@@ -10,7 +10,8 @@ class CTSShellEject{
 	
 	void(void) CTSShellEject;
 	static void(void) precache;
+	static CTSShellEject(int arg_iShellEjectType) generate;
 	static CTSShellEject(int arg_iShellEjectType) generateForViewmodel;
-	static CTSShellEject(int arg_iShellEjectType, vector arg_vOrigin, vector arg_vDir) generate;
+	static CTSShellEject(int arg_iShellEjectType, vector arg_vOrigin, vector arg_vDir) generate2;
 	virtual void(void) touch;
 };

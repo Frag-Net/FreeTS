@@ -185,9 +185,8 @@ w_mossberg500_primary(void)
 	
 	
 	//if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
-		if(pl.shotgunWaitingForPump){
+		if(arg_thisWeapon.bNeedsPump){
 			// pump instead!
-			pl.shotgunWaitingForPump = FALSE;
 			
 			// Sounds like the mossberg just re-uses the benelli m3's sound,
 			// as the mossberg sound folder lacks a pump sound.
@@ -208,6 +207,7 @@ w_mossberg500_primary(void)
 				}
 			}
 			
+			arg_thisWeapon.bNeedsPump = FALSE;
 			weapon_base_setWholeAttackDelay(pl, 14.0f/35.0f);
 			return;
 		}
@@ -231,7 +231,7 @@ w_mossberg500_primary(void)
 		}
 		
 		// no shell!  Pumping does that.
-		pl.shotgunWaitingForPump = TRUE;
+		arg_thisWeapon.bNeedsPump = TRUE;
 		weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::WEIRD);
 	//}
 	

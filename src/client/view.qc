@@ -15,22 +15,115 @@
  */
 
 
-// Also, Nuclide offers Weapons_SetGeomset for calling "setcustomskin" too, but one string
+// Nuclide offers Weapons_SetGeomset for calling "setcustomskin" too, but one string
 // at a time.  Don't really know if that way or the current way (cumulative string for
 // many commands delimited in one setcustomskin call) is any better, so leaving this as
 // it is for now.
 
 
+// vm is pSeat->m_eViewModel passed along from Nuclide's View_DrawViewModel
 void
-TS_SetViewModelFromStats(void)
+View_UpdateWeapon(entity vm, entity mflash)
+{
+	player pl = (player)pSeat->m_ePlayer;
+	
+	if(autocvar_cl_printoutspam == 1){
+		printfline("STATUS: %i==%d - %i", pSeat->m_iLastWeapon, pl.activeweapon, pl.inventoryEquippedIndex);
+	}
+	
+	/* only bother upon change */
+	if (pSeat->m_iLastWeapon == pl.activeweapon) {
+		
+		/*
+		if(pl.activeweapon == 0 && pl.inventoryEquippedIndex != -1){
+			// what??
+			pl.setInventoryEquippedIndex(pl.inventoryEquippedIndex);
+		}else{
+			TS_View_RoutineCheck();
+			return;
+		}
+		*/
+		TS_View_RoutineCheck();
+		return;
+	}
+	printfline("View_UpdateWeapon: change detected: %i -> %d", pSeat->m_iLastWeapon, pl.activeweapon);
+	printfline("and how about the others %d %i", pl.activeweapon, pl.inventoryEquippedIndex);
+	
+	
+	pSeat->m_iOldWeapon = pSeat->m_iLastWeapon;
+	pSeat->m_iLastWeapon = pl.activeweapon;
+
+	if (!pl.activeweapon /*|| pl.inventoryEquippedIndex < 0*/) {
+		// can't work with this!
+		TS_View_ResetViewModel();
+		return;
+	}
+
+	//printfline("View_UpdateWeapon: change: %d vs %d", pSeat->m_iLastWeapon, pl.activeweapon);
+	
+	// Call this to do a few other things for any weapon change
+	TS_Weapon_Draw_extra();
+	
+	// hack, we changed the wep, move this into Game_Input/PMove
+	// ... And yes, it seems this bound check is indeed needed, zany sync issues.
+	if(pl.inventoryEquippedIndex != -1){
+		Weapons_Draw();
+	}
+	
+	TS_View_ChangeViewModelPost();
+}
+
+
+//TAGGG - NEW.  Similar to Nuclide's provided "View_SetMuzzleflash", but also acts
+// as though the first frame were an event by doing the same lines as a 5000-ish
+// event.  This is because TS weapons don't have events for the muzzle flash
+// unlike HL ones, must be hardcoded to show up.
+// Figuring out what muzzle flash for what weapon will come another time.
+// For now using the same HL set, but TS comes with some muzzle-flash looking sprites.
+// ALSO - for now, always assuming attachment #0.
+// For the model event in case that changes, see Nuclide's src/client/modelevent.qc,
+// Event_ProcessModel.
+void
+View_ShowMuzzleflash(int index)
+{
+	pSeat->m_eMuzzleflash.modelindex = (float)index;
+	// Event_ProcessModel: force it.
+	pSeat->m_eMuzzleflash.alpha = 1.0f;
+	pSeat->m_eMuzzleflash.scale = 0.25;
+	// attachment #0 is m_iVMBones + 0.  Add for #1 to #3, I think.
+	// No idea if any weapons play with attachments, #0 should always
+	// be the end of the weapon for flashes
+	pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 0;
+}
+
+void
+View_ShowMuzzleflashAkimbo(int index)
+{
+	pSeatLocal->m_eMuzzleflashAkimbo.modelindex = (float)index;
+	// Event_ProcessModel: force it.
+	pSeatLocal->m_eMuzzleflashAkimbo.alpha = 1.0f;
+	pSeatLocal->m_eMuzzleflashAkimbo.scale = 0.25;
+	// akimbo attachments are in pairs: 
+	// 0 on one weapon, 1 further out along that weapon's direction,
+	// 2 on the other weapon, 3 further along the other weapon's direction.
+	// ALSO: on akimbo weapons, attachments 0 and 1 are for the right weapon,
+	// 1 and 2 for the left.
+	pSeatLocal->m_eMuzzleflashAkimbo.skin = pSeat->m_iVMBones + 2;
+}
+
+
+
+void
+TS_View_SetViewModelFromStats(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	entity vm = pSeat->m_eViewModel;
 	entity mflash = pSeat->m_eMuzzleflash;
+	entity mflashAkimbo = pSeatLocal->m_eMuzzleflashAkimbo;
 	weapondata_basic_t* basicP;
 	weapondynamic_t dynaRef;
 	
-	printfline("TS_SetViewModelFromStats:  I happen? activeweap:%d", pl.activeweapon);
+	printfline("TS_View_SetViewModelFromStats:  I happen? activeweap:%d", pl.activeweapon);
 	
 	basicP = pl.getEquippedWeaponData();
 	dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
@@ -83,40 +176,28 @@ TS_SetViewModelFromStats(void)
 		}
 	}//END OF gun type check (is a gun of some sort)
 	
-	if(dynaRef.forceBodygroup1Submodel > 0){
-		cumulativeCommandString = sprintf("%sgeomset 0 %i\n", cumulativeCommandString, dynaRef.forceBodygroup1Submodel );
+	if(dynaRef.iForceBodygroup1Submodel > 0){
+		cumulativeCommandString = sprintf("%sgeomset 0 %i\n", cumulativeCommandString, dynaRef.iForceBodygroup1Submodel );
 	}
 	// no need to do that geomset with the same value again.
-	pl.prev_forceBodygroup1Submodel = dynaRef.forceBodygroup1Submodel;
+	pl.prev_iForceBodygroup1Submodel = dynaRef.iForceBodygroup1Submodel;
 	
 	setcustomskin(vm, "", cumulativeCommandString);
 	
-	
-	// leftovers following a draw call, that likely lead here to begin with.
-	SAVE_STATE(pl.w_attack_next);
-	SAVE_STATE(pl.w_idle_next);
-	SAVE_STATE(pl.viewzoom);
-	SAVE_STATE(pl.weapontime);
-	//TAGGG - NEW VAR
-	SAVE_STATE(pl.w_attack_akimbo_next);
-	SAVE_STATE(pl.flZoomTarget);
-
-	skel_delete( mflash.skeletonindex );
-	mflash.skeletonindex = skel_create( vm.modelindex );
-	pSeat->m_iVMBones = skel_get_numbones( mflash.skeletonindex ) + 1;
+	TS_View_ChangeViewModelPost();
 	
 	// Don't let View_UpdateWeapon do this all over.
 	pSeat->m_iLastWeapon = pl.activeweapon;
 
+}//TS_View_SetViewModelFromStats
 
-}//TS_SetViewModelFromStats
+
 
 
 // On any frame, see if something about the current viewmodel needs to be changed
 void
-View_RoutineCheck(void)
+TS_View_RoutineCheck(void)
 {
-	
 	player pl = (player)pSeat->m_ePlayer;
 	entity vm = pSeat->m_eViewModel;
 	weapondynamic_t dynaRef;
@@ -128,89 +209,42 @@ View_RoutineCheck(void)
 	
 	dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.prev_forceBodygroup1Submodel != dynaRef.forceBodygroup1Submodel){
+	if(pl.prev_iForceBodygroup1Submodel != dynaRef.iForceBodygroup1Submodel){
 		
-		if(dynaRef.forceBodygroup1Submodel > 0){
+		if(dynaRef.iForceBodygroup1Submodel > 0){
 			string commandString;
-			commandString = sprintf("geomset 0 %i\n", dynaRef.forceBodygroup1Submodel );
+			commandString = sprintf("geomset 0 %i\n", dynaRef.iForceBodygroup1Submodel );
 			setcustomskin(vm, "", commandString);
 		}
-		pl.prev_forceBodygroup1Submodel = dynaRef.forceBodygroup1Submodel;
+		pl.prev_iForceBodygroup1Submodel = dynaRef.iForceBodygroup1Submodel;
 	}
 	
-}//View_RoutineCheck
+}//TS_View_RoutineCheck
 
 
-// vm is pSeat->m_eViewModel passed along from Nuclide's View_DrawViewModel
+
+// Used to be in View_UpdateWeapon, now also called for manual changes clientside too
+// (TS_View_SetViewModelFromStats above).
 void
-View_UpdateWeapon(entity vm, entity mflash)
+TS_View_ChangeViewModelPost(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
+	entity vm = pSeat->m_eViewModel;
+	entity mflash = pSeat->m_eMuzzleflash;
+	entity mflashAkimbo = pSeatLocal->m_eMuzzleflashAkimbo;
 	
-	
-	if(autocvar_cl_printoutspam == 1){
-		printfline("STATUS: %i==%d - %i", pSeat->m_iLastWeapon, pl.activeweapon, pl.inventoryEquippedIndex);
-	}
-
-	
-
-	/* only bother upon change */
-	if (pSeat->m_iLastWeapon == pl.activeweapon) {
-		
-		/*
-		if(pl.activeweapon == 0 && pl.inventoryEquippedIndex != -1){
-			// what??
-			pl.setInventoryEquippedIndex(pl.inventoryEquippedIndex);
-		}else{
-			View_RoutineCheck();
-			return;
-		}
-		*/
-		View_RoutineCheck();
-		return;
-	}
-	printfline("View_UpdateWeapon: change detected: %i -> %d", pSeat->m_iLastWeapon, pl.activeweapon);
-	printfline("and how about the others %d %i", pl.activeweapon, pl.inventoryEquippedIndex);
-	
-	
-	pSeat->m_iOldWeapon = pSeat->m_iLastWeapon;
-	pSeat->m_iLastWeapon = pl.activeweapon;
-
-	if (!pl.activeweapon /*|| pl.inventoryEquippedIndex < 0*/) {
-		// can't work with this!
-		resetViewModel();
-		return;
-	}
-
-	//printfline("View_UpdateWeapon: change: %d vs %d", pSeat->m_iLastWeapon, pl.activeweapon);
-	
-	// Call this to do a few other things for any weapon change
-	TS_Weapon_Draw_extra();
-	
-	// hack, we changed the wep, move this into Game_Input/PMove
-	//... And yes, it seems this bound check is indeed needed, zany sync issues.
-	if(pl.inventoryEquippedIndex != -1){
-		Weapons_Draw();
-	}
-	
-	
-	
-	//No longer a var!  Oops
-	//pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1;
-			
 	/* we forced a weapon call outside the prediction,
 	 * thus we need to update all the net variables to
 	 * make sure these updates are recognized. this is
 	 * vile but it'll have to do for now */
-	
 	SAVE_STATE(pl.w_attack_next);
 	SAVE_STATE(pl.w_idle_next);
 	SAVE_STATE(pl.viewzoom);
 	SAVE_STATE(pl.weapontime);
-	//TAGGG - NEW VAR.
+	//TAGGG - NEW VAR
 	SAVE_STATE(pl.w_attack_akimbo_next);
 	SAVE_STATE(pl.flZoomTarget);
-	
+
 	//TAGGG - also new line.  It is a good idea to reset the event
 	// on changing models, right?
 	pSeat->m_pEventCall = NULL;
@@ -219,43 +253,55 @@ View_UpdateWeapon(entity vm, entity mflash)
 	mflash.skeletonindex = skel_create( vm.modelindex );
 	pSeat->m_iVMBones = skel_get_numbones( mflash.skeletonindex ) + 1;
 	
+	// assuming cloning above for the akimbo muzzleflash is a good idea
+	skel_delete(mflashAkimbo.skeletonindex);
+	// TODO: could we just reuse the mflash.skeletonindex here?  I don't know
+	mflashAkimbo.skeletonindex = skel_create(vm.modelindex);
+	// no need to set m_iVMBones again, nor have a separate copy.  How could it
+	// be any different for the akimbo one (clone of mflash)
 	
-		
-}
+}//TS_View_ChangeViewModelPost
 
 
 void
-resetViewModel(void)
+TS_View_ResetViewModel(void)
 {
-	printfline("resetViewModel called.");
+	printfline("TS_View_ResetViewModel called.");
 	
 	if(pSeat->m_ePlayer == NULL){
-		printfline("resetViewModel: early end #1, client ent NULL");
+		printfline("TS_View_ResetViewModel: early end #1, client ent NULL");
 		return;
 	}
 	
-	
-	//was m_eViewModel and m_eMuzzleflash
+	// was m_eViewModel and m_eMuzzleflash
 	entity vm = pSeat->m_eViewModel;
 	entity mflash = pSeat->m_eMuzzleflash;
+	entity mflashAkimbo = pSeatLocal->m_eMuzzleflashAkimbo;
 
 	setmodel( vm, "" );
+	
 	skel_delete( mflash.skeletonindex );
-	mflash.skeletonindex = 0;  //er wat. would -1 be better or not?
+	mflash.skeletonindex = 0;
+	
 	pSeat->m_iVMBones = 0 + 1;
-	//pSeat->m_iVMEjectBone = pSeat->m_iVMBones + 1;
+	
+	// ! If the skeletonindex becomes shared, skel_delete for each will not be necessary
+	skel_delete(mflashAkimbo.skeletonindex);
+	mflashAkimbo.skeletonindex = 0;
+	
 	
 	/*
 	player pl = (player) pSeat->m_ePlayer;
 	pl.setInventoryEquippedIndex(-1);  //do we have to?
 	*/
 	
-}// resetViewModel
+}// TS_View_ResetViewModel
 
 
 
 //TAGGG - loaned from The Wastes.
-void View_HandleZoom(void){
+void TS_View_HandleZoom(void)
+{
 	player pl = (player)pSeat->m_ePlayer;
 	
 	if(pl == NULL){
@@ -320,31 +366,6 @@ void View_HandleZoom(void){
 	// here's the way old FreeCS did it
 	//setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
 	//setsensitivityscaler(pl.viewzoom);
-}
-
-
-
-
-//TAGGG - NEW.  Similar to Nuclide's provided "View_SetMuzzleflash", but also acts
-// as though the first frame were an event by doing the same lines as a 5000-ish
-// event.  This is because TS weapons don't have events for the muzzle flash
-// unlike HL ones, must be hardcoded to show up.
-// Figuring out what muzzle flash for what weapon will come another time.
-// For now using the same HL set, but TS comes with some muzzle-flash looking sprites.
-// ALSO - for now, always assuming attachment #0.
-// For the model event in case that changes, see Nuclide's src/client/modelevent.qc,
-// Event_ProcessModel.
-void
-View_ShowMuzzleflash(int index)
-{
-	pSeat->m_eMuzzleflash.modelindex = (float)index;
-	// Event_ProcessModel: force it.
-	pSeat->m_eMuzzleflash.alpha = 1.0f;
-	pSeat->m_eMuzzleflash.scale = 0.25;
-	// attachment #0 is m_iVMBones + 0.  Add for #1 to #3, I think.
-	// No idea if any weapons play with attachments, #0 should always
-	// be the end of the weapon for flashes
-	pSeat->m_eMuzzleflash.skin = pSeat->m_iVMBones + 0;
 }
 
 

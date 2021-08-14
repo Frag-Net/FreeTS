@@ -139,14 +139,11 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 	
 }
 
-
+// helper method to load the MoTD text from the server into this client's memory
 void
-UI_Init(void)
-{
+UI_loadMOTD(void){
 	int iMOTDLength;
 	int i;
-	int s;
-	
 	// First load the MESSAGE OF THE DAY from the sever
 	//sMOTD_total = serverkey("motd_total");
 	
@@ -165,6 +162,15 @@ UI_Init(void)
 	// color it
 	// NOPE!  Let this be handled elsewhere in case of a different color choice!
 	//sMOTD_total = strcat("^xFA0", sMOTD_total);
+	
+}
+
+void
+UI_Init(void)
+{
+	int s;
+	
+	UI_loadMOTD();
 	
 	// someVar = loadMapDescription();
 	loadMapDescription();

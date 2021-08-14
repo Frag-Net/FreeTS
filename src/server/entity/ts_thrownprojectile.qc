@@ -7,8 +7,9 @@
 
 
 
-
-void CTSThrownProjectile::CTSThrownProjectile(void){
+void
+CTSThrownProjectile::CTSThrownProjectile(void)
+{
 	CTSWorldGun::CTSWorldGun();
 	
 	startAngularVelocityDelay = -1;
@@ -21,22 +22,25 @@ void CTSThrownProjectile::CTSThrownProjectile(void){
 }
 
 
-CTSThrownProjectile CTSThrownProjectile::generate(player arg_player, int arg_weaponID){
+CTSThrownProjectile
+CTSThrownProjectile::generate(player arg_player, int arg_weaponID)
+{
 	weapondynamic_t dynaRefPRE = arg_player.ary_myWeapons[arg_weaponID];
 	return CTSThrownProjectile::generate2(arg_player, dynaRefPRE);
 }
 	
 // Static method called from elsewhere to create and initialize a
 // weapon drop entity, given a player and what weapon to copy information from.
-CTSThrownProjectile CTSThrownProjectile::generate2(player arg_player, weapondynamic_t dynaRefPRE){
+CTSThrownProjectile
+CTSThrownProjectile::generate2(player arg_player, weapondynamic_t dynaRefPRE)
+{
 	CTSThrownProjectile eDrop = spawn(CTSThrownProjectile);
 	
 	//eDrop.setup(arg_player, arg_weaponID);
 	
 	//weapondynamic_t dynaRefPRE = arg_player.ary_myWeapons[arg_weaponID];
-	weapondata_basic_t* basicPointerPRE = (weapondata_basic_t*) ary_weaponData[dynaRefPRE.weaponID];
-	weapondata_basic_t basicRefPRE = *(basicPointerPRE);
-	weapondata_throwable_t throwableRef = *((weapondata_throwable_t*)basicPointerPRE);
+	weapondata_basic_t* basicP = (weapondata_basic_t*) ary_weaponData[dynaRefPRE.weaponID];
+	weapondata_throwable_t* throwableP = ((weapondata_throwable_t*)basicP);
 	
 	
 	makevectors( arg_player.v_angle );
@@ -45,7 +49,7 @@ CTSThrownProjectile CTSThrownProjectile::generate2(player arg_player, weapondyna
 	eDrop.solid = SOLID_TRIGGER; //or CORPSE
 	
 	setorigin( eDrop, arg_player.origin + arg_player.view_ofs + v_forward * 16 );
-	setmodel( eDrop, basicRefPRE.sWorldModelPath );
+	setmodel( eDrop, throwableP->sWorldModelPath );
 	
 	
 	//printfline("CTSThrownProjectile::generate2 v_up: %.2f %.2f %.2f", v_up.x, v_up.y, v_up.z);
@@ -54,9 +58,9 @@ CTSThrownProjectile CTSThrownProjectile::generate2(player arg_player, weapondyna
 	//eDrop.velocity = arg_player.velocity + v_forward * 256;
 	// relying on the 'makevectors' call from earlier!
 	vector vDir = aim ( arg_player, 100000 );
-	//eDrop.velocity = ( arg_player.velocity + vDir * throwableRef.fThrowSpeed );
+	//eDrop.velocity = ( arg_player.velocity + vDir * throwableP->fThrowSpeed );
 	// we'll let player velocity influence the knives a little..
-	eDrop.velocity = ( arg_player.velocity*0.4 + vDir * throwableRef.fThrowSpeed );
+	eDrop.velocity = ( arg_player.velocity*0.4 + vDir * throwableP->fThrowSpeed );
 	
 	
 	//modify the vector we send a bit...
@@ -83,7 +87,7 @@ CTSThrownProjectile CTSThrownProjectile::generate2(player arg_player, weapondyna
 	// "use" does nothing to me... yet.
 	eDrop.PlayerUse = NULL;
 	
-	eDrop.gravity = throwableRef.fThrowGravity;
+	eDrop.gravity = throwableP->fThrowGravity;
 	
 	
 	eDrop.copyFrom2(arg_player, dynaRefPRE);
@@ -105,12 +109,12 @@ CTSThrownProjectile CTSThrownProjectile::generate2(player arg_player, weapondyna
 	// it worldspawn anyway.
 	// W.  H.  A.   T.
 	//TAGGG - TODO.  then. apparently.
-	//setsize( eKnife, '-1.7 -1.7 -1.7', '1.7 1.7 1.7' );
-	//setsize( eKnife, '-1.4 -1.4 -1.4', '1.4 1.4 1.4' );
-	//setsize( eKnife, '-1 -1 -1', '1 1 1' );
-	setsize( eDrop, '-1 -1 0', '1 1 1' );
+	//setsize( eKnife, [-1.7, -1.7, -1.7], [1.7, 1.7, 1.7] );
+	//setsize( eKnife, [-1.4, -1.4, -1.4], [1.4, 1.4, 1.4] );
+	//setsize( eKnife, [-1, -1, -1], [1, 1, 1] );
+	setsize( eDrop, [-1, -1, 0], [1, 1, 1] );
 	
-	//setsize( eDrop, '-16 -16 0', '16 16 16' );
+	//setsize( eDrop, [-16, -16, 0], [16, 16, 16] );
 	
 
 	//And lastly, assume I need to expire at some point.
@@ -126,10 +130,14 @@ CTSThrownProjectile CTSThrownProjectile::generate2(player arg_player, weapondyna
 	eDrop.friction = 0.78;
 	
 	return eDrop;
-}//END OF generate
+}// generate
 
 
-void CTSThrownProjectile::becomePickupable(BOOL becomeStuck, optional vector dir, optional entity stuckTo, optional BOOL touchedBreakableGlass){
+void
+CTSThrownProjectile::becomePickupable(
+	BOOL becomeStuck, optional vector dir, optional entity stuckTo,
+	optional BOOL touchedBreakableGlass
+){
 	
 	forceBecomePickupableTime = -1;
 	
@@ -191,83 +199,75 @@ void CTSThrownProjectile::becomePickupable(BOOL becomeStuck, optional vector dir
 	this.expireTime = time + 30;
 	this.avelocity = [0,0,0];
 	
-}//END OF becomePickupable
+}// becomePickupable
 
 
-void CTSThrownProjectile::copyFrom(player arg_player, int arg_weaponID){
+void
+CTSThrownProjectile::copyFrom(player arg_player, int arg_weaponID)
+{
 	weapondynamic_t tempRef = arg_player.ary_myWeapons[arg_weaponID];
 	copyFrom2(arg_player, tempRef);
 }
 
 // From what index in the player's inventory should I copy stats from?
 // Called as we're being filled to be thrown from the player.
-void CTSThrownProjectile::copyFrom2(player arg_player, weapondynamic_t tempRef){
+void
+CTSThrownProjectile::copyFrom2(player arg_player, weapondynamic_t tempRef)
+{
+	myInfo.weaponID = tempRef.weaponID;
+	myInfo.weaponTypeID = tempRef.weaponTypeID;
 	
-	//weapondynamic_t tempRef = arg_player.ary_myWeapons[arg_weaponID];
-	
-	COPYVARFROM(weaponID)
-	COPYVARFROM(weaponTypeID)
-	
-	//COPYVARFROM(iBitsUpgrade)
-	//actually want to exclude the AKIMBO and FULLLOAD bits. They were only for the shop really.
+	// actually want to exclude the AKIMBO and FULLLOAD bits. They were only for the shop really.
 	myInfo.iBitsUpgrade = tempRef.iBitsUpgrade & ~(BITS_WEAPONOPT_AKIMBO | BITS_WEAPONOPT_FULLLOAD);
 	
-	//COPYVARFROM(iCount)
-	weapondata_basic_t* weaponPointer = ary_weaponData[tempRef.weaponID];
-	weapondata_basic_t basicRef = *((weapondata_basic_t*) weaponPointer);
+	weapondata_basic_t* basicP = ary_weaponData[tempRef.weaponID];
 	
 	// only one throwable is 'thrown' at a time ever.
 	myInfo.iCount = 1;
 	
-	
-	COPYVARFROM(iPrice)	//who cares.
-	//COPYVARFROM(iSlots)
-	
-	//re-calculate the slots now.
-	myInfo.iSlots = myInfo.iCount * basicRef.iSlots;
-	
+	// Not important to really preserve through any changes as far as I know
+	myInfo.iPrice = tempRef.iPrice;
+	// re-calculate the slots
+	myInfo.iSlots = myInfo.iCount * basicP->iSlots;
 	
 	//doesn't use these.  We're a throwable.
 	myInfo.iClipLeft = 0;
 	myInfo.iClipAkimboLeft = 0;
 	
 	
-	COPYVARFROM(iBitsUpgrade_on)
-	COPYVARFROM(iFireMode)
-	COPYVARFROM(iFireModeAkimbo)
-	//COPYVARFROM(iIronSight)
+	myInfo.iBitsUpgrade_on = tempRef.iBitsUpgrade_on;
+	myInfo.iFireMode = tempRef.iFireMode;
+	myInfo.iFireModeAkimbo = tempRef.iFireModeAkimbo;
 	
-	COPYVARFROM(forceBodygroup1Submodel)
+	myInfo.iForceBodygroup1Submodel = tempRef.iForceBodygroup1Submodel;
 	
 	myInfo.iIronSight = 0;   //default: not using it.
 	
-}//END OF copyFrom
+}// copyFrom
 
 // From what index in the player's inventory should I copy stats from?
 // Called as we're being picked up by a player to fill one of their weapon slots.
-void CTSThrownProjectile::copyTo(player arg_player, int arg_weaponID){
+void
+CTSThrownProjectile::copyTo(player arg_player, int arg_weaponID)
+{
 	
 	weapondynamic_t tempRef = arg_player.ary_myWeapons[arg_weaponID];
 	
-	COPYVARTO(weaponID)
-	COPYVARTO(weaponTypeID)
-	//COPYVARTO(iBitsUpgrade)
-	//COPYVARTO(iCount)
-	COPYVARTO(iPrice)  //no one cares.
-	//COPYVARTO(iSlots)  //re-calculated.
-	//COPYVARTO(iClipLeft)
-	//COPYVARTO(iClipAkimboLeft)
-	//COPYVARTO(iBitsUpgrade_on)
-	//COPYVARTO(iFireMode)
-	//COPYVARTO(iFireModeAkimbo)
-	//COPYVARTO(iIronSight)
-	COPYVARTO(forceBodygroup1Submodel)
+	tempRef.weaponID = myInfo.weaponID;
+	tempRef.weaponTypeID = myInfo.weaponTypeID;
+	
+	// ?
+	tempRef.iPrice = myInfo.iPrice;
+	
+	tempRef.iForceBodygroup1Submodel = myInfo.iForceBodygroup1Submodel;
 	tempRef.iIronSight = 0;   //default: not using it.
 	
-}//END OF copyTo
+}// copyTo
 
 
-void CTSThrownProjectile::Touch( void ) {
+void
+CTSThrownProjectile::Touch(void)
+{
 	
 	if ( other.solid == SOLID_TRIGGER ) {
 		return;
@@ -332,7 +332,7 @@ void CTSThrownProjectile::Touch( void ) {
 			}
 			
 			//notice, ATTN_NORM.  Sound goes further.,
-			sound( this, CHAN_WEAPON, "weapons/knife/knife_hit.wav", 1, ATTN_NORM - 0.15 );
+			sound(this, CHAN_AUTO, "weapons/knife/knife_hit.wav", 1, ATTN_NORM - 0.15 );
 			
 			
 			//printfline("trace_fraction %.2f", trace_fraction);
@@ -422,16 +422,15 @@ void CTSThrownProjectile::Touch( void ) {
 			//is it something we can deal damage to?
 			if(other.takedamage == DAMAGE_YES){
 				
-				//is it fleshy?  eh, assume it is.
-				//there is always a "trace_ent.iBleeds" check though.
-				sound( this, CHAN_WEAPON, "weapons/knife/knife_hitbody.wav", 1, ATTN_IDLE );
+				// is it fleshy?  eh, assume it is.
+				// there is always a "trace_ent.iBleeds" check though.
+				sound(this, CHAN_AUTO, "weapons/knife/knife_hitbody.wav", 1, ATTN_IDLE );
 				
-				weapondata_basic_t* basicPointerPRE = (weapondata_basic_t*) ary_weaponData[this.myInfo.weaponID];
-				//weapondata_basic_t basicRefPRE = *(basicPointerPRE);
-				weapondata_throwable_t throwableRef = *((weapondata_throwable_t*)basicPointerPRE);
+				weapondata_basic_t* basicP = (weapondata_basic_t*) ary_weaponData[this.myInfo.weaponID];
+				weapondata_throwable_t* throwableP = ((weapondata_throwable_t*)basicP);
 				
 				// tell the thing being damaged that my OWNER was what damaged it.
-				Damage_Apply(other, this.m_owner, throwableRef.fThrowDamage, myInfo.weaponID, DMG_SLASH);
+				Damage_Apply(other, this.m_owner, throwableP->fThrowDamage, myInfo.weaponID, DMG_SLASH);
 				
 				remove(this);
 				return;
@@ -439,7 +438,7 @@ void CTSThrownProjectile::Touch( void ) {
 				//oh. bounce off I guess.
 				//TAGGG - TODO.  Spark effect!
 				//TODO - bounce the opposite direction floor-wise?
-				sound( this, CHAN_WEAPON, "weapons/knife/knife_hit.wav", 1, ATTN_NORM - 0.15 );
+				sound( this, CHAN_AUTO, "weapons/knife/knife_hit.wav", 1, ATTN_NORM - 0.15 );
 				
 				becomePickupable(FALSE);
 				//setsize( this, '-16 -16 0', '16 16 16' );
@@ -454,18 +453,22 @@ void CTSThrownProjectile::Touch( void ) {
 	}
 	
 	
-}//END OF touch method
+}// touch method
 
 
 
-void CTSThrownProjectile::PlayerUse( void ) {
+void
+CTSThrownProjectile::PlayerUse(void)
+{
 	//EMPTY.  Use CTSWorldGun's PlayerUse once we dropped,
 	// OR have logic that redirects to that in here when we want to make this pickup-able.
 	// Whichever works.
 }
 
 
-void CTSThrownProjectile::Think( void ) {
+void
+CTSThrownProjectile::Think(void)
+{
 	
 	if(this.startAngularVelocityDelay != -1 && time >= this.startAngularVelocityDelay){
 		this.startAngularVelocityDelay = -1;

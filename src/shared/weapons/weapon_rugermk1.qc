@@ -123,7 +123,6 @@ w_rugermk1_holster(void)
 void
 w_rugermk1_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -143,8 +142,8 @@ w_rugermk1_primary(void)
 	// silencer only!
 	SoundPitched_Send(pl, SNDP_RUGERMK1_FIRE);
 
-	randomChoice = random();
-	if(randomChoice < 0.5){
+	int r = (float)input_sequence % 2;
+	if(r == 0){
 		TS_Weapons_ViewAnimation(weaponseq_rugermk1::shoot1, 31.0f/35.0f);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_rugermk1::shoot2, 31.0f/35.0f);

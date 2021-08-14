@@ -1,37 +1,38 @@
 
-
-
-void CTSWorldGun::CTSWorldGun(void){
-	
+void
+CTSWorldGun::CTSWorldGun(void)
+{
 	accessibleCooldownTime = -1;
 	myInfo = spawn(weapondynamic_t);
 	
 }
 
 
-CTSWorldGun CTSWorldGun::generate(player arg_player, int arg_weaponID){
+CTSWorldGun
+CTSWorldGun::generate(player arg_player, int arg_weaponID)
+{
 	weapondynamic_t dynaRefPRE = arg_player.ary_myWeapons[arg_weaponID];
 	return CTSWorldGun::generate2(arg_player, dynaRefPRE);
 }
 	
 // Static method called from elsewhere to create and initialize a
 // weapon drop entity, given a player and what weapon to copy information from.
-CTSWorldGun CTSWorldGun::generate2(player arg_player, weapondynamic_t dynaRefPRE){
+CTSWorldGun
+CTSWorldGun::generate2(player arg_player, weapondynamic_t dynaRefPRE)
+{
 	CTSWorldGun eDrop = spawn(CTSWorldGun);
 	
 	//eDrop.setup(arg_player, arg_weaponID);
 	
 	//weapondynamic_t dynaRefPRE = arg_player.ary_myWeapons[arg_weaponID];
-	weapondata_basic_t* basicPointerPRE = (weapondata_basic_t*) ary_weaponData[dynaRefPRE.weaponID];
-	weapondata_basic_t basicRefPRE = *(basicPointerPRE);
-	
-	
+	weapondata_basic_t* basicP = ary_weaponData[dynaRefPRE.weaponID];
+		
 	eDrop.movetype = MOVETYPE_TOSS;
 	eDrop.solid = SOLID_TRIGGER; //or CORPSE
 	
 	//CTSWorldGun eDrop = spawn(CTSWorldGun);
 	setorigin( eDrop, arg_player.origin + arg_player.view_ofs );
-	setmodel( eDrop, basicRefPRE.sWorldModelPath );
+	setmodel( eDrop, basicP->sWorldModelPath );
 	
 	eDrop.angles = [0, randomInRange_f(0, 360), 0];
 	eDrop.avelocity = [0, randomInRange_f(100, 500), 0];
@@ -64,36 +65,35 @@ CTSWorldGun CTSWorldGun::generate2(player arg_player, weapondynamic_t dynaRefPRE
 	
 	
 	return eDrop;
-}//END OF generate
+}// generate
 
 
 
-void CTSWorldGun::copyFrom(player arg_player, int arg_weaponID){
+void
+CTSWorldGun::copyFrom(player arg_player, int arg_weaponID)
+{
 	weapondynamic_t tempRef = arg_player.ary_myWeapons[arg_weaponID];
 	copyFrom2(arg_player, tempRef);
 }
 
 // From what index in the player's inventory should I copy stats from?
 // Called as we're being filled to be thrown from the player.
-void CTSWorldGun::copyFrom2(player arg_player, weapondynamic_t tempRef){
+void
+CTSWorldGun::copyFrom2(player arg_player, weapondynamic_t tempRef)
+{
 	
 	//weapondynamic_t tempRef = arg_player.ary_myWeapons[arg_weaponID];
 	
+	myInfo.weaponID = tempRef.weaponID;
+	myInfo.weaponTypeID = tempRef.weaponTypeID;
 	
-	COPYVARFROM(weaponID)
-	COPYVARFROM(weaponTypeID)
-	
-	
-	//COPYVARFROM(iBitsUpgrade)
 	//actually want to exclude the AKIMBO and FULLLOAD bits. They were only for the shop really.
 	myInfo.iBitsUpgrade = tempRef.iBitsUpgrade & ~(BITS_WEAPONOPT_AKIMBO | BITS_WEAPONOPT_FULLLOAD);
 	
-	//COPYVARFROM(iCount)
-	weapondata_basic_t* weaponPointer = ary_weaponData[tempRef.weaponID];
-	weapondata_basic_t basicRef = *((weapondata_basic_t*) weaponPointer);
-	if(basicRef.typeID == WEAPONDATA_TYPEID_THROWABLE){
+	weapondata_basic_t* basicP = ary_weaponData[tempRef.weaponID];
+	if(basicP->typeID == WEAPONDATA_TYPEID_THROWABLE){
 		//we're a throwable?  Send the count over.
-		COPYVARFROM(iCount)
+		myInfo.iCount = tempRef.iCount;
 	}else{
 		// Always a count of 1.  Any dropped weapon from akimbo is really just "one" of the two pickups needed.
 		// Even weapons that only come in akimbo, like goldencolts, don't hurt by being called a count of "1".
@@ -101,24 +101,19 @@ void CTSWorldGun::copyFrom2(player arg_player, weapondynamic_t tempRef){
 		myInfo.iCount = 1;
 	}
 	
+	// Not important to really preserve through any changes as far as I know
+	myInfo.iPrice = tempRef.iPrice;
+	// re-calculate the slots
+	myInfo.iSlots = myInfo.iCount * basicP->iSlots;
 	
-	
-	COPYVARFROM(iPrice)	//who cares.
-	//COPYVARFROM(iSlots)
-	
-	//re-calculate the slots now.
-	myInfo.iSlots = myInfo.iCount * basicRef.iSlots;
-	
-	
-	//Hold on... this isn't so simple.
-	
-	if(basicRef.typeID == WEAPONDATA_TYPEID_GUN || basicRef.typeID == WEAPONDATA_TYPEID_IRONSIGHT){
-		if(basicRef.iBitsUpgradeAuto & BITS_WEAPONOPT_AKIMBO){
+	//Hold on, this isn't so simple.
+	if(basicP->typeID == WEAPONDATA_TYPEID_GUN || basicP->typeID == WEAPONDATA_TYPEID_IRONSIGHT){
+		if(basicP->iBitsUpgradeAuto & BITS_WEAPONOPT_AKIMBO){
 			//If the weapon we're spawned from is forced akimbo, the intuitive way works.
 			//iClipLeft & iClipAkimboLeft can be filled, this is a singular drop to represent akimbo.
-			COPYVARFROM(iClipLeft)
-			COPYVARFROM(iClipAkimboLeft)
-		}else if(basicRef.iBitsUpgrade & BITS_WEAPONOPT_AKIMBO && tempRef.iBitsUpgrade & BITS_WEAPONOPT_AKIMBO){
+			myInfo.iClipLeft = tempRef.iClipLeft;
+			myInfo.iClipAkimboLeft = tempRef.iClipAkimboLeft;
+		}else if(basicP->iBitsUpgrade & BITS_WEAPONOPT_AKIMBO && tempRef.iBitsUpgrade & BITS_WEAPONOPT_AKIMBO){
 			//If the weapon supports akimbo and we have it, assume the thing dropped is the 2nd weapon. 
 			//That is, the one tied to "iClipAkimboLeft".
 			
@@ -144,44 +139,43 @@ void CTSWorldGun::copyFrom2(player arg_player, weapondynamic_t tempRef){
 	
 	
 	
-	COPYVARFROM(iBitsUpgrade_on)
-	COPYVARFROM(iFireMode)		//we can always copy both firemodes to any individual weapon, can't really hurt.
-	COPYVARFROM(iFireModeAkimbo)
-	//COPYVARFROM(iIronSight)
+	myInfo.iBitsUpgrade_on = tempRef.iBitsUpgrade_on;
+	myInfo.iFireMode = tempRef.iFireMode;		//we can always copy both firemodes to any individual weapon, can't really hurt.
+	myInfo.iFireModeAkimbo = tempRef.iFireModeAkimbo;
 	
-	COPYVARFROM(forceBodygroup1Submodel)
+	myInfo.iForceBodygroup1Submodel = tempRef.iForceBodygroup1Submodel;
+	myInfo.bNeedsPump = tempRef.bNeedsPump;
 	
 	myInfo.iIronSight = 0;   //default: not using it.
 	
-}//END OF copyFrom
+}// copyFrom
 
 // From what index in the player's inventory should I copy stats from?
 // Called as we're being picked up by a player to fill one of their weapon slots.
-void CTSWorldGun::copyTo(player arg_player, int arg_weaponID){
-	
+void
+CTSWorldGun::copyTo(player arg_player, int arg_weaponID)
+{
 	
 	weapondynamic_t tempRef = arg_player.ary_myWeapons[arg_weaponID];
 	
-	COPYVARTO(weaponID)
-	COPYVARTO(weaponTypeID)
-	//COPYVARTO(iBitsUpgrade)
-	//COPYVARTO(iCount)
-	COPYVARTO(iPrice)  //no one cares.
-	//COPYVARTO(iSlots)  //re-calculated.
-	//COPYVARTO(iClipLeft)
-	//COPYVARTO(iClipAkimboLeft)
-	//COPYVARTO(iBitsUpgrade_on)
-	//COPYVARTO(iFireMode)
-	//COPYVARTO(iFireModeAkimbo)
-	//COPYVARTO(iIronSight)
-	COPYVARTO(forceBodygroup1Submodel)
+	tempRef.weaponID = myInfo.weaponID;
+	tempRef.weaponTypeID = myInfo.weaponTypeID;
+	
+	// ?
+	tempRef.iPrice = myInfo.iPrice;
+	
+	tempRef.iForceBodygroup1Submodel = myInfo.iForceBodygroup1Submodel;
+	tempRef.bNeedsPump = myInfo.bNeedsPump;
+	
 	tempRef.iIronSight = 0;   //default: not using it.
 	
-}//END OF copyTo
+}// copyTo
 
 
 
-void CTSWorldGun::Touch( void ) {
+void
+CTSWorldGun::Touch(void)
+{
 	if ( other.classname != "player" ) {
 		// assume it's the world.. play this sound?
 		
@@ -194,11 +188,13 @@ void CTSWorldGun::Touch( void ) {
 		return;
 	}
 	
-}//END OF touch method
+}// touch method
 
 
 
-void CTSWorldGun::PlayerUse( void ) {
+void
+CTSWorldGun::PlayerUse(void)
+{
 	
 	//laziness.
 	//entity other = eActivator;
@@ -240,7 +236,9 @@ void CTSWorldGun::PlayerUse( void ) {
 
 
 
-void CTSWorldGun::Think( void ) {
+void
+CTSWorldGun::Think(void)
+{
 	//CTSWorldGun selfRef = (CTSWorldGun)self;
 	// oh.. this makes the weapon collidable with the original dropper
 	// again.

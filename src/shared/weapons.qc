@@ -497,7 +497,8 @@ weapon_shotgun_reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.resetZoom();
+	//pl.resetZoom();
+	pl.setZoom(1.0f);
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	
@@ -512,7 +513,7 @@ weapon_shotgun_reload(
 	
 	// In original TS, something about ever starting a reload stops the need
 	// for a pump. Or some part of reloading, good enough I think
-	pl.shotgunWaitingForPump = FALSE;
+	arg_thisWeapon.bNeedsPump = FALSE;
 		
 }//weapon_shotgun_reload
 
@@ -1303,7 +1304,7 @@ weapon_ironsight_ToggleIronsight(
 
 	if(pl.isReloading == FALSE && pl.isChangingIronsight == FALSE){
 		
-		printfline("time: %.2f weapon_ironsight_ToggleIronsight PASS.  CURRENT:%i", time, arg_thisWeapon.iIronSight);
+		//printfline("time: %.2f weapon_ironsight_ToggleIronsight PASS.  CURRENT:%i", time, arg_thisWeapon.iIronSight);
 	
 		pl.isChangingIronsight = TRUE;
 		
@@ -1330,7 +1331,7 @@ weapon_ironsight_ToggleIronsight(
 		return;
 	}else{
 		
-		printfline("time: %.2f weapon_ironsight_ToggleIronsight FAILED (%d, %d).  current:%i", time, pl.isReloading, pl.isChangingIronsight, arg_thisWeapon.iIronSight);
+		//printfline("time: %.2f weapon_ironsight_ToggleIronsight FAILED (%d, %d).  current:%i", time, pl.isReloading, pl.isChangingIronsight, arg_thisWeapon.iIronSight);
 	}
 	
 }// weapon_ironsight_ToggleIronsight
@@ -1363,7 +1364,8 @@ weapon_gun_Reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.resetZoom();
+	//pl.resetZoom();
+	pl.setZoom(1.0f);
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1406,7 +1408,8 @@ weapon_gun_Reload_CustomSequence(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.resetZoom();
+	//pl.resetZoom();
+	pl.setZoom(1.0f);
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1452,7 +1455,8 @@ weapon_ironsight_Reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	pl.resetZoom();
+	//pl.resetZoom();
+	pl.setZoom(1.0f);
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1547,7 +1551,7 @@ weapon_base_onEquip(
 	printfline("weapon_base_onEquip: activeweap:%d sName:%s sName2:%s", pl.activeweapon, baseRef.sDisplayName, g_weapons[pl.activeweapon].name);
 	
 #ifdef CLIENT
-	TS_SetViewModelFromStats();
+	TS_View_SetViewModelFromStats();
 	//sound(pl, CHAN_ITEM, "weapons/draw.wav", 1, ATTN_NORM, 100, SOUNDFLAG_PLAYER_COMMON);
 	localsound("weapons/draw.wav", CHAN_AUTO, 1.0f);
 	//printfline("weapon_base_onEquip: playing deploy anim");

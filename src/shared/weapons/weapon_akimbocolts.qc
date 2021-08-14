@@ -132,7 +132,6 @@ w_akimbocolts_holster(void)
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
 void weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
-	float randomChoice;
 	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	//special case

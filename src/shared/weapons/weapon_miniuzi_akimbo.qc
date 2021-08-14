@@ -145,7 +145,6 @@ w_miniuzi_akimbo_holster(void)
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
 void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
-	float randomChoice;
 	int finalAkimboChoice = BITS_AKIMBOCHOICE_NONE;  //default
 	
 	// NOTE! weapon_akimbo_semiAttackChoice already handles telling to skip firing if
@@ -213,7 +212,7 @@ void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 		}
 	}
 	
-	
+	int r;
 	if(pl.akimboTest == 0 && !(finalAkimboChoice == BITS_AKIMBOCHOICE_BOTH)){
 		
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_LEFT){
@@ -244,18 +243,18 @@ void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 	
 	}else{
 		//printfline("VM: UZI: BOTH");
-		randomChoice = random();
-		if(randomChoice < 1/6){
+		r = (float)input_sequence % 6;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_shoot1, (31.0f/30.0f) );
-		}else if(randomChoice < 2/6){
+		}else if(r == 1){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_shoot2, (31.0f/30.0f) );
-		}else if(randomChoice < 3/6){
+		}else if(r == 2){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_shoot3, (31.0f/30.0f) );
-		}else if(randomChoice < 4/6){
+		}else if(r == 3){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_sshoot1, (31.0f/30.0f) );
-		}else if(randomChoice < 5/6){
+		}else if(r == 4){
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_sshoot2, (31.0f/30.0f) );
-		}else{  // 6/6
+		}else{
 			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_sshoot3, (31.0f/30.0f) );
 		}
 		

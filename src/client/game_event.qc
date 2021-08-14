@@ -18,11 +18,6 @@ void
 ClientGame_EventParse(float fHeader)
 {
 	player pl = (player)pSeat->m_ePlayer;
-	vector vecOrigin;
-	int iSequence;
-	float fDuration;
-	float fIdleEndOffset;
-	int iType;
 	
 	// !
 	// Any need for a m_ePlayer classname check here?
@@ -30,10 +25,10 @@ ClientGame_EventParse(float fHeader)
 	// buymenu spectator (player with that is not PLAYER_STATE::SPAWNED)
 	
 	switch(fHeader){
-	case EV_OBITUARY:
+	case EV_OBITUARY:{
 		Obituary_Parse();
-		break;
-	case EV_SPARK:
+	}break;
+	case EV_SPARK:{
 		vector vSparkPos, vSparkAngle;
 		vSparkPos[0] = readcoord();
 		vSparkPos[1] = readcoord();
@@ -42,15 +37,15 @@ ClientGame_EventParse(float fHeader)
 		vSparkAngle[1] = readcoord();
 		vSparkAngle[2] = readcoord();
 		FX_Spark(vSparkPos, vSparkAngle);
-		break;
-	case EV_GIBHUMAN:
+	}break;
+	case EV_GIBHUMAN:{
 		vector vGibPos;
 		vGibPos[0] = readcoord();
 		vGibPos[1] = readcoord();
 		vGibPos[2] = readcoord();
 		FX_GibHuman(vGibPos);
-		break;
-	case EV_BLOOD:
+	}break;
+	case EV_BLOOD:{
 		vector vBloodPos;
 		vector vBloodColor;
 
@@ -63,8 +58,8 @@ ClientGame_EventParse(float fHeader)
 		vBloodColor[2] = readbyte() / 255;
 
 		FX_Blood(vBloodPos, vBloodColor);
-		break;
-	case EV_EXPLOSION:
+	}break;
+	case EV_EXPLOSION:{
 		vector vExploPos;
 
 		vExploPos[0] = readcoord();
@@ -72,8 +67,8 @@ ClientGame_EventParse(float fHeader)
 		vExploPos[2] = readcoord();
 
 		FX_Explosion(vExploPos);
-		break;
-	case EVENT_TS::FX_TS_EXPLOSION_GRENADE:
+	}break;
+	case EVENT_TS::FX_TS_EXPLOSION_GRENADE:{
 		vector vExploPos2;
 
 		vExploPos2[0] = readcoord();
@@ -81,8 +76,8 @@ ClientGame_EventParse(float fHeader)
 		vExploPos2[2] = readcoord();
 
 		FX_TS_Explosion_Grenade(vExploPos2);
-		break;
-	case EV_MODELGIB:
+	}break;
+	case EV_MODELGIB:{
 		vector vecPos;
 		vecPos[0] = readcoord();
 		vecPos[1] = readcoord();
@@ -96,9 +91,9 @@ ClientGame_EventParse(float fHeader)
 		float fStyle = readbyte();
 		int count = readbyte();
 		FX_BreakModel(count, vecPos, vSize, [0,0,0], fStyle);
-		break;
-	case EV_IMPACT:
-		//int iType;
+	}break;
+	case EV_IMPACT:{
+		int iType;
 		vector vOrigin, vNormal;
 
 		iType = (int)readbyte();
@@ -111,8 +106,8 @@ ClientGame_EventParse(float fHeader)
 		vNormal[2] = readcoord();
 
 		FX_Impact(iType, vOrigin, vNormal);
-		break;
-	case EVENT_TS::EV_IMPACT_MELEE:
+	}break;
+	case EVENT_TS::EV_IMPACT_MELEE:{
 		int iType3;
 		vector vOrigin3;
 		vector vNormal3;
@@ -127,28 +122,28 @@ ClientGame_EventParse(float fHeader)
 		vNormal3[2] = readcoord();
 
 		FX_Impact_Melee(iType3, vOrigin3, vNormal3);
-		break;
-	case EV_CHAT:
+	}break;
+	case EV_CHAT:{
 		float fSender = readbyte();
 		float fTeam = readbyte();
 		string sMessage = readstring();
 
 		CSQC_Parse_Print(sprintf("%s: %s", getplayerkeyvalue(fSender, "name"), sMessage), PRINT_CHAT);
-		break;
-	case EV_CHAT_TEAM:
+	}break;
+	case EV_CHAT_TEAM:{
 		float fSender2 = readbyte();
 		float fTeam2 = readbyte();
 		string sMessage2 = readstring();
 
 		CSQC_Parse_Print(sprintf("[TEAM] %s: %s", getplayerkeyvalue(fSender2, "name"), sMessage2), PRINT_CHAT);
-		break;
-	case EV_CHAT_VOX:
+	}break;
+	case EV_CHAT_VOX:{
 		Vox_Play(readstring());
-		break;
-	case EV_VIEWMODEL:
+	}break;
+	case EV_VIEWMODEL:{
 		View_PlayAnimation(readbyte());
-		break;
-	case EV_WEAPON_PICKUP:
+	}break;
+	case EV_WEAPON_PICKUP:{
 		int w = readbyte();
 		
 		// NOTE!
@@ -165,8 +160,8 @@ ClientGame_EventParse(float fHeader)
 		*/
 
 		HUD_WeaponPickupNotify(w);
-		break;
-	case EVENT_TS::SPAWN:
+	}break;
+	case EVENT_TS::SPAWN:{
 		// time to read the config to send in the weapons one-by-one.
 		deployConfig();
 		
@@ -176,38 +171,38 @@ ClientGame_EventParse(float fHeader)
 		// so that any choice of weapon, same as before or even nothing, will still
 		// let client/view.qc do the whole viewmodel routine again
 		pSeat->m_iLastWeapon = -2;
-		break;
-	case EVENT_TS::RESET_VIEW_MODEL:
+	}break;
+	case EVENT_TS::RESET_VIEW_MODEL:{
 		EV_TS_resetViewModel();
-		break;
-	case EVENT_TS::RESET_PLAYER:
+	}break;
+	case EVENT_TS::RESET_PLAYER:{
 		int resetInventory = readbyte();
 		EV_TS_resetPlayer(pl, resetInventory);
-		break;
-	case EVENT_TS::PLAYER_DEATH:
+	}break;
+	case EVENT_TS::PLAYER_DEATH:{
 		EV_PlayerDeath();
-		break;
-	case EVENT_TS::EQUIP_CALLBACK:
+	}break;
+	case EVENT_TS::EQUIP_CALLBACK:{
 		EV_EquipCallback();
-		break;
-	case EVENT_TS::SOUNDPITCHED:
+	}break;
+	case EVENT_TS::SOUNDPITCHED:{
 		SoundPitched_Receive();
-		break;
-	case EVENT_TS::SOUNDPITCHED_CHANNEL:
+	}break;
+	case EVENT_TS::SOUNDPITCHED_CHANNEL:{
 		SoundPitched_Channel_Receive();
-		break;
+	}break;
 	/*
 	// can this even happen anymore?
 	// If a drop-weapon call can be signaled by the server, not shared with the
 	// client and server reaching a drop call independently, then yes.
-	case EVENT_TS::DROP_WEAPON:
+	case EVENT_TS::DROP_WEAPON:{
 		EV_TS_playerDropWeapon(pl);
-		break;
+	}break;
 	*/
-	case EVENT_TS::TEST:
+	case EVENT_TS::TEST:{
 		//printfline("EVENT_TS::TEST HAPPENED");
 		//clearscene();
-		break;
+	}break;
 	}
 		
 }

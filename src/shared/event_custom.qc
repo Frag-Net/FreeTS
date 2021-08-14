@@ -284,7 +284,7 @@ EV_TS_resetViewModel(void){
 	player pl = (player)self;
 	pSeat->m_iLastWeapon = -1;  // any weapon slot choice will refresh the view model.
 	pl.lasersightUnlockTime = FALSE;
-	resetViewModel();
+	TS_View_ResetViewModel();
 }
 #endif
 

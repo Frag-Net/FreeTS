@@ -139,7 +139,6 @@ w_mp5k_holster(void)
 void
 w_mp5k_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -171,16 +170,17 @@ w_mp5k_primary(void)
 		SoundPitched_Send(pl, SNDP_MP5K_FIRE_SIL);
 	}
 	
+	int r;
 	if(!arg_thisWeapon.iIronSight){
-		randomChoice = random();
-		if(randomChoice < 1/2){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot1, 31.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot2, 31.0f/30.0f);
 		}
 	}else{
-		randomChoice = random();
-		if(randomChoice < 1/2){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot1b, 31.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot2b, 31.0f/30.0f);
@@ -223,24 +223,19 @@ w_mp5k_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.40f);
-			break;}
+			case 0:pl.setZoom(1.00f);break;
+			case 1:pl.setZoom(0.40f);break;
 		}
 	}else{
+		if(pl.w_attack_next > 0){
+			return;
+		}
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::MP5K], arg_thisWeapon);
 	}

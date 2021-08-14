@@ -120,7 +120,6 @@ w_skorpion_akimbo_holster(void)
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
 void weapon_skorpion_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
-	float randomChoice;
 	int finalAkimboChoice = BITS_AKIMBOCHOICE_NONE;  //default
 	
 	// NOTE! weapon_akimbo_semiAttackChoice already handles telling to skip firing if
@@ -180,7 +179,7 @@ void weapon_skorpion_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, in
 		SoundPitched_Send(pl, SNDP_SKORPION_FIRE);
 	}
 	
-	
+	int r;
 	if(pl.akimboTest == 0 && !(finalAkimboChoice == BITS_AKIMBOCHOICE_BOTH)){
 		
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_LEFT){
@@ -211,8 +210,8 @@ void weapon_skorpion_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, in
 	
 	}else{
 		//printfline("VM: UZI: BOTH");
-		randomChoice = random();
-		if(randomChoice < 0.5){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_skorpion_akimbo::fire1ak, (31.0f/30.0f) );
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_skorpion_akimbo::fire2ak, (31.0f/30.0f) );

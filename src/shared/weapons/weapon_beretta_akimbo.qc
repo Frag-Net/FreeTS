@@ -154,7 +154,6 @@ w_beretta_akimbo_holster(void)
 // Putting it here avoids duplicating a bunch of code.
 // Also, "attackTypeUsed" is whether primary (FALSE) or secondary (TRUE) lead to this point.
 void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
-	float randomChoice;
 	//weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	//special case
@@ -218,6 +217,7 @@ void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 		}
 	}
 	
+	int r;
 	
 	if(pl.akimboTest == 0 && !(finalAkimboChoice == BITS_AKIMBOCHOICE_BOTH)){
 		// Not both fire types chosen
@@ -226,19 +226,20 @@ void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 		
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_LEFT){
 			//printfline("VM: LEFT");
+			
 			if(!arg_thisWeapon.iIronSight){
 				if(arg_thisWeapon.iClipLeft > 0 ){
-					randomChoice = random();
-					if(randomChoice <= 0.33){
+					r = (float)input_sequence % 3;
+					if(r == 0){
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshoot_1, 31.0f/31.0f);
-					}else if(randomChoice <= 0.66){
+					}else if(r == 1){
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshoot2_1, 31.0f/31.0f);
 					}else{
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshoots_1, 31.0f/31.0f);
 					}
 				}else{
-					randomChoice = random();
-					if(randomChoice <= 0.5){
+					r = (float)input_sequence % 2;
+					if(r == 0){
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshootlast_1, 31.0f/31.0f);
 					}else{
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshootlasts_1, 31.0f/31.0f);
@@ -260,17 +261,17 @@ void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 			//printfline("VM: RIGHT");
 			if(!arg_thisWeapon.iIronSight){
 				if(arg_thisWeapon.iClipAkimboLeft > 0 ){
-					randomChoice = random();
-					if(randomChoice <= 0.33){
+					r = (float)input_sequence % 3;
+					if(r == 0){
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshoot_1, 31.0f/31.0f);
-					}else if(randomChoice <= 0.66){
+					}else if(r == 1){
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshoot2_1, 31.0f/31.0f);
 					}else{
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshoots_1, 31.0f/31.0f);
 					}
 				}else{
-					randomChoice = random();
-					if(randomChoice <= 0.5){
+					r = (float)input_sequence % 2;
+					if(r == 0){
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshootlast_1, 31.0f/31.0f);
 					}else{
 						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshootlasts_1, 31.0f/31.0f);

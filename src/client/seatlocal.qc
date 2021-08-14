@@ -5,8 +5,8 @@
 void
 pSeatLocal_init(void)
 {
+	pSeatLocal->m_eMuzzleflashAkimbo = NULL;
 	pSeatLocal->m_flUI_Display = UI_SCREEN::NONE;
-	
 	
 	pSeatLocal->m_inputKeyTapped = 0;
 	pSeatLocal->m_inputKeyDown = 0;

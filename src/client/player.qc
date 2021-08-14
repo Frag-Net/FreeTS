@@ -122,11 +122,13 @@ Player_HandleWeaponModel(base_player pp, float thirdperson)
 		/* set the new skeletonindex */
 		pl.p_model.skeletonindex = skel_create(pl.p_model.modelindex);
 
-		/* hack this thing in here FIXME: this should be done when popping in/out of a pvs */
-		if (autocvar(cl_himodels, 1, "Use high-quality player models over lower-definition ones"))
-			setcustomskin(self, "", "geomset 0 2\n");
-		else
-			setcustomskin(self, "", "geomset 0 1\n");
+
+		//TAGGG - change.  Pretty sure TS has nothing like hi models
+		// hack this thing in here FIXME: this should be done when popping in/out of a pvs
+		//if (autocvar(cl_himodels, 1, "Use high-quality player models over lower-definition ones"))
+		//	setcustomskin(self, "", "geomset 0 2\n");
+		//else
+		//	setcustomskin(self, "", "geomset 0 1\n");
 	}
 
 	/* follow player at all times */
@@ -170,13 +172,93 @@ Player_DestroyWeaponModel(entity pp)
 void
 Player_PreDraw(base_player pp, int thirdperson)
 {
+	player pl = (player)pp;
+	// OLD WAY.  Now called from draw.c's Custom_LatePreDraw to avoid a one-frame-lag issue
+	// on lasersight/flashlight effects
+	//Player_DrawViewmodelExtraEffects(pl, thirdperson);
+	
+	pl.Physics_SetViewParms();
+	Animation_PlayerUpdate((player)pl);
+	Animation_TimerUpdate((player)pl, clframetime);
+	Player_HandleWeaponModel(pl, thirdperson);
+}
+
+
+
+// NEW, helper method, not called by Nuclide
+// Does the same Nuclide script to draw the normal viewmodel at viewzooms between 0.5
+// and 1.0, Nuclide skips drawing it on any zoom below 1.0 unlike original TS.
+// Also, handles drawing the akimbo muzzle flash.
+void
+Player_DrawViewModelCustom(player pl){
+	
+	// Same forbidding conditions from Nuclide's src/client/view.qc
+	if (pl.health <= 0) {
+		return;
+	}
+	if (cvar("r_drawviewmodel") == 0 || autocvar_cl_thirdperson == TRUE) {
+		return;
+	}
+	
+	// Nuclide does not draw the viewmodel at any zoom other than 1.0 (unmodified).
+	// So, this draws the viewmodel the othertimes TS did, in lower zoom choices.
+	// At viewzoom 0.5 and above, the scope graphic is not drawn so it is safe to
+	// do this.
+	if(pl.viewzoom >= 0.5){
+		entity m_eViewModel = pSeat->m_eViewModel;
+		entity m_eMuzzleflash = pSeat->m_eMuzzleflash;
+		entity m_eMuzzleflashAkimbo = pSeatLocal->m_eMuzzleflashAkimbo;
+		
+		// (only re-do the default Nuclide viewmodel + normal muzzleflash script if we have reason
+		// to believe Nuclide didn't, i.e., a zoom under 1.0)
+		if(pl.viewzoom < 1.0){
+			// CLONE OF NUCLIDE SCRIPT
+			/////////////////////////////////////////////////////////////////////////////
+			if (m_eMuzzleflash.alpha > 0.0f) {
+				makevectors(getproperty(VF_ANGLES));
+				m_eMuzzleflash.origin = gettaginfo(m_eViewModel, m_eMuzzleflash.skin);
+				m_eMuzzleflash.angles = m_eViewModel.angles;
+				m_eMuzzleflash.angles[2] += (random() * 10) - 5;
+
+				/*dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400 * m_eMuzzleflash.alpha, [1,0.45,0]);*/
+
+				setorigin(m_eMuzzleflash, m_eMuzzleflash.origin);
+				addentity(m_eMuzzleflash);
+			}
+			setorigin(m_eViewModel, m_eViewModel.origin);
+			addentity(m_eViewModel);
+			/////////////////////////////////////////////////////////////////////////////
+		}
+		
+		// Regardless of being 1.0 or not (Nuclide certainly isn't doing this),
+		// handle the other muzzleflash too
+		if (m_eMuzzleflashAkimbo.alpha > 0.0f) {
+			makevectors(getproperty(VF_ANGLES));
+			m_eMuzzleflashAkimbo.origin = gettaginfo(m_eViewModel, m_eMuzzleflashAkimbo.skin);
+			m_eMuzzleflashAkimbo.angles = m_eViewModel.angles;
+			m_eMuzzleflashAkimbo.angles[2] += (random() * 10) - 5;
+
+			/*dynamiclight_add(pSeat->m_vecPredictedOrigin + (v_forward * 32), 400 * m_eMuzzleflashAkimbo.alpha, [1,0.45,0]);*/
+
+			setorigin(m_eMuzzleflashAkimbo, m_eMuzzleflashAkimbo.origin);
+			addentity(m_eMuzzleflashAkimbo);
+		}
+	}
+	
+}
+
+// another helper method
+// Draw the lasersight, and flashlight effects
+void
+Player_DrawViewModelExtraEffects(player pl, int thirdperson)
+{
 	//int thirdperson = (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum);
 	//base_player pp = (base_player)this;
 
 	BOOL canRenderFlashlight = FALSE;
 	BOOL canRenderLaserSight = FALSE;
 	
-	player pl = (player)pp;
+	//player pl = (player)pp;
 	//we're going to use the buyopts of our current weapon + the one actually turned on, yah?
 	
 	// DEBUG: printouts about the other player.
@@ -571,9 +653,10 @@ Player_PreDraw(base_player pp, int thirdperson)
 		pl.recentLaserHitPosSet = FALSE;
 	}//END OF canRenderLaserSight || canRenderFlashlight
 	
-	
-	pl.Physics_SetViewParms();
-	Animation_PlayerUpdate((player)pl);
-	Animation_TimerUpdate((player)pl, clframetime);
-	Player_HandleWeaponModel(pl, thirdperson);
 }
+
+
+
+
+
+

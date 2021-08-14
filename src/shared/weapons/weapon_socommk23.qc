@@ -168,14 +168,17 @@ w_socommk23_primary(void)
 		SoundPitched_Send(pl, SNDP_SOCOMMK23_FIRE_SIL);
 	}
 
+	int r;
 	if(!arg_thisWeapon.iIronSight){
-		if ( random() <= 0.5 ) {
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_socommk23::shootb1, (31.0f/30.0f));
 		} else {
 			TS_Weapons_ViewAnimation(weaponseq_socommk23::shootb2, (31.0f/30.0f));
 		}
 	}else{
-		if ( random() <= 0.5 ) {
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_socommk23::shootc1, (31.0f/30.0f));
 		} else {
 			TS_Weapons_ViewAnimation(weaponseq_socommk23::shootc2, (31.0f/30.0f));

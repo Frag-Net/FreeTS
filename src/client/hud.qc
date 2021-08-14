@@ -84,10 +84,11 @@ HUD_Draw(void)
 		
 		//TAGGG - NEw
 		//////////////////////////////////////////////////////////////
-		//View_HandleZoom();
+		// moved to shared/player.qc, clientside player::preThink
+		//TS_View_HandleZoom();
 		
 		//printfline("SCOPE LEVEL %.2f", pl.flZoomCurrent);
-		if(pl.flZoomCurrent < 0.5){   //is this < 40?	yes.
+		if(pl.flZoomCurrent < 0.5){   //is this < 40/80 mag?	yes.
 			HUD_DrawScope();
 		}else{
 			// We'll leave details like extra details for the lasersight and the
@@ -122,7 +123,7 @@ HUD_Draw(void)
 		// (draw.qc) instead. Might stop the pain flash from affecting the color of
 		// HUD draw's.
 		//Damage_Draw();
-		//ClientGame_DamageDraw();
+		//Custom_DamageDraw();
 		
 	}else{
 		// Fake spectator, or the temporary forced third-person on death (not yet implemented).

@@ -148,7 +148,6 @@ w_mac10_holster(void)
 void
 w_mac10_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -171,32 +170,32 @@ w_mac10_primary(void)
 		SoundPitched_Send(pl, SNDP_MAC10_FIRE_SIL);
 	}
 
+	int r = (float)input_sequence % 6;
 	if(!arg_thisWeapon.iIronSight){
-		randomChoice = random();
-		if(randomChoice < 1/6){
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::shoot, 31.0f/30.0f);
-		}else if(randomChoice < 2/6){
+		}else if(r == 1){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::shoot2, 31.0f/30.0f);
-		}else if(randomChoice < 3/6){
+		}else if(r == 2){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::shoot3, 31.0f/30.0f);
-		}else if(randomChoice < 4/6){
+		}else if(r == 3){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::sshoot, 31.0f/30.0f);
-		}else if(randomChoice < 5/6){
+		}else if(r == 4){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::sshoot2, 31.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_mac10::sshoot3, 31.0f/30.0f);
 		}
 	}else{
-		randomChoice = random();
-		if(randomChoice < 1/6){
+		r = (float)input_sequence % 6;
+		if(r == 1){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::shootb, 31.0f/30.0f);
-		}else if(randomChoice < 2/6){
+		}else if(r == 2){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::shootb2, 31.0f/30.0f);
-		}else if(randomChoice < 3/6){
+		}else if(r == 3){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::shootb3, 31.0f/30.0f);
-		}else if(randomChoice < 4/6){
+		}else if(r == 4){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::sshootb, 31.0f/30.0f);
-		}else if(randomChoice < 5/6){
+		}else if(r == 5){
 			TS_Weapons_ViewAnimation(weaponseq_mac10::sshootb2, 31.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_mac10::sshootb3, 31.0f/30.0f);

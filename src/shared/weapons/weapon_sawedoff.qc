@@ -166,7 +166,6 @@ w_sawedoff_holster(void)
 void
 w_sawedoff_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -184,17 +183,18 @@ w_sawedoff_primary(void)
 	}
 	
 	SoundPitched_Send(pl, SNDP_SAWEDOFF_FIRE);
-
+	
+	int r;
 	if(!arg_thisWeapon.iIronSight){
-		randomChoice = random();
-		if(randomChoice < 0.5){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot1, 31.0f/33.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot2, 31.0f/33.0f);
 		}
 	}else{
-		randomChoice = random();
-		if(randomChoice < 0.5){
+		r = (float)input_sequence % 2;
+		if(r == 0){
 			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot1b, 31.0f/33.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot2b, 31.0f/33.0f);

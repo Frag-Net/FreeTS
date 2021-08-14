@@ -123,7 +123,6 @@ w_mp5sd_holster(void)
 void
 w_mp5sd_primary(void)
 {
-	float randomChoice;
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
@@ -153,10 +152,10 @@ w_mp5sd_primary(void)
 	SoundPitched_Send(pl, SNDP_MP5SD_FIRE);
 
 
-	randomChoice = random();
-	if(randomChoice < 1/3){
+	int r = (float)input_sequence % 3;
+	if(r == 0){
 		TS_Weapons_ViewAnimation(weaponseq_mp5sd::shoot1, 31.0f/30.0f);
-	}else if(randomChoice < 2/3){
+	}else if(r == 1){
 		TS_Weapons_ViewAnimation(weaponseq_mp5sd::shoot2, 31.0f/30.0f);
 	}else{
 		TS_Weapons_ViewAnimation(weaponseq_mp5sd::shoot3, 31.0f/30.0f);
@@ -194,22 +193,14 @@ w_mp5sd_secondary(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	if(pl.w_attack_next > 0){
-		return;
-	}
-	
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
 		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
 		switch(pl.iZoomLevel){
-			case 0:{
-				pl.setZoom(1.00f);
-			break;}
-			case 1:{
-				pl.setZoom(0.40f);
-			break;}
+		case 0:pl.setZoom(1.00f);break;
+		case 1:pl.setZoom(0.40f);break;
 		}
 	}
 	

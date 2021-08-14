@@ -145,6 +145,24 @@ ClientGame_InitDone(void)
 {
 }
 
+
+// keeping this here, not called by Nuclide but to be obvious what it's mirroring.
+// Sets up the akimbo muzzleflash entity as Nuclide would have:
+void
+Custom_ViewInit(void){
+	int s;
+	for (s = g_seats.length; s-- > numclientseats;) {
+		pSeatLocal = &g_seatslocal[s];
+		if(!pSeatLocal->m_eMuzzleflashAkimbo){
+			pSeatLocal->m_eMuzzleflashAkimbo = spawn();
+			pSeatLocal->m_eMuzzleflashAkimbo.classname = "mflash";
+			pSeatLocal->m_eMuzzleflashAkimbo.renderflags = RF_ADDITIVE;
+			pSeatLocal->m_eMuzzleflashAkimbo.effects |= EF_NOSHADOW;
+			setsize(pSeatLocal->m_eMuzzleflashAkimbo, [0,0,0], [0,0,0]);
+		}
+	}
+}
+
 void
 ClientGame_RendererRestart(string rstr)
 {
@@ -169,7 +187,7 @@ ClientGame_RendererRestart(string rstr)
 		numclientseats_highest = numclientseats;
 	}
 	
-	
+	Custom_ViewInit();
 	// Hook into precache.qc
 	ClientGame_Precache();
 	

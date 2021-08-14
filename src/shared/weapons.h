@@ -370,7 +370,16 @@ class weapondynamic_t{
 	// to the submodel on drawing this weapon.  Submodels actually start at 1, even if the only one.
 	// If set to 0, the change will only be noticed on undrawing/drawing the weapon as the submodel will
 	// not be applied then.  Set to 1 to change in real time (likely the intention).
-	PREDICTED_INT(forceBodygroup1Submodel);
+	PREDICTED_INT(iForceBodygroup1Submodel);
+	
+	// In pump-action mode, set to TRUE after firing the shotgun. The next click pumps
+	// instead.
+	// Note that switching to semi-fire mode and firing turns this flag off.
+	// Changing to semi-fire mode alone however, doesn't (changing fire modes without firing
+	// leaves this flag unaffected).
+	// Reloading also disables this flag, as it always ends in a visual pump.
+	// (was BOOL)
+	PREDICTED_FLOAT(bNeedsPump);
 	
 	
 	void(void) weapondynamic_t;
