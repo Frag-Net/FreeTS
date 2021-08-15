@@ -42,7 +42,6 @@ entity/ts_shelleject.h
 
 clientinfo.h
 seatlocal.h
-player.h
 
 precache.h
 ui.h

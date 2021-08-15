@@ -860,8 +860,11 @@ void weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, wea
 void weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon);
 
 void weapon_ShowMuzzleFlash(int arg_muzzleFlashType);
+void weapon_ShowMuzzleFlashAkimbo(int arg_muzzleFlashType, int arg_akimboChoice);
 void weapon_EjectShell(int arg_shellEjectType);
+void weapon_EjectShellAkimbo(int arg_shellEjectType, int arg_akimboChoice);
 void weapon_ClientEffects(int arg_muzzleFlashType, int arg_shellEjectType);
+void weapon_ClientEffectsAkimbo(int arg_muzzleFlashType, int arg_shellEjectType, int arg_akimboChoice);
 
 void weapon_precache(weapondata_basic_t* basePRef);
 

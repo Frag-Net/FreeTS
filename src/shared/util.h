@@ -234,8 +234,8 @@ if (pl.inputSecondaryTapFrameCount == 0)\
 // OLD UNDERWATER CHECK.  Using a new var for more accuracy.
 //#define WEAPON_UNDERWATER_CHECK pl.waterlevel >= 3
 //#define WEAPON_UNDERWATER_CHECK_NOT pl.waterlevel < 3
-#define WEAPON_UNDERWATER_CHECK !pl.viewAboveWater
-#define WEAPON_UNDERWATER_CHECK_NOT pl.viewAboveWater
+#define WEAPON_UNDERWATER_CHECK !pl.bViewAboveWater
+#define WEAPON_UNDERWATER_CHECK_NOT pl.bViewAboveWater
 
 
 

@@ -161,9 +161,6 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 	// NOTE! weapon_akimbo_semiAttackChoice already handles telling to skip firing if
 	// pl.recentAttackHadAmmo == FALSE or finalAkimboChoice is 0 or -1, no need
 	// to keep track of w_attack_next per variant.
-	// Also,
-	//TODO - CRITICAL!
-	// Muzzle flashes and shell ejections for akimbo pending!
 	
 	// because I am not copy/pasting this monstrosity 5 times.
 	finalAkimboChoice = weapon_akimbo_semiAttackChoice(pl, ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO], arg_thisWeapon, attackTypeUsed);
@@ -315,14 +312,12 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);
 	}
 	
-	/*
-	// TODO: akimbo support
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
-		weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+		weapon_ClientEffectsAkimbo(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC, finalAkimboChoice);
 	} else {
-		weapon_EjectShell(SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+		weapon_EjectShellAkimbo(SHELLEJECT_ID::GENERIC, finalAkimboChoice);
 	}
-	*/
+	
 	
 }// weapon_socommk23_akimbo_attack
 

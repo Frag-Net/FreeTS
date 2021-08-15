@@ -54,7 +54,7 @@ void weapon_m61grenade_onThink(player pl, weapondynamic_t arg_thisWeapon){
 			pl.grenadeSpawnTime = -1;
 			
 #ifdef SERVER
-			weapon_m61grenade_spawnProjectile(pl, arg_thisWeapon, pl.grenadeToss, pl.grenadeHeldDuration);
+			weapon_m61grenade_spawnProjectile(pl, arg_thisWeapon, pl.bGrenadeToss, pl.grenadeHeldDuration);
 #endif
 		}
 	}
@@ -90,7 +90,7 @@ void weapon_m61grenade_onThink(player pl, weapondynamic_t arg_thisWeapon){
 	// should this be joined by else or no?
 	if(pl.grenadeFireIndex == 1){
 		// Release detected, do the throw anim + spawn the grenade soon
-		if(!pl.grenadeToss){
+		if(!pl.bGrenadeToss){
 			TS_Weapons_ViewAnimation(weaponseq_m61grenade::throw, 11.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_m61grenade::throw_slide, 11.0f/30.0f);
@@ -196,9 +196,9 @@ void weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int 
 	// Once already started, this can affect being a normal throw or slide-throw.
 	if(pl.grenadeFireIndex == 0){
 		if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
-			pl.grenadeToss = FALSE;  //throw, this was primary.
+			pl.bGrenadeToss = FALSE;  //throw, this was primary.
 		}else if(attackTypeUsed & BITS_AKIMBOCHOICE_RIGHT){
-			pl.grenadeToss = TRUE;  //throw, this was sec.
+			pl.bGrenadeToss = TRUE;  //throw, this was sec.
 		}
 	}
 	

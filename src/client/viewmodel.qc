@@ -66,38 +66,13 @@ Viewmodel_CalcBob(void)
 
 	int inputLen = vlen(input_movevalues);
 
-	// do we care about "self.maxspeed" ??
+	// do we care about "self.maxspeed" ?
 
-	// Instead of some new bTouchingGround, using the presence of flag FL_ONGROUND.
-	// If the player waterlevel >= 2, the "FL_ONGROUND" flag never occurs,
-	// regardless of touching the floor in the area.
-	// In original TS, being on the floor underwater DOES still do the camera/viewbob.
-	// No idea how to get around this, beyond traces against the ground like pmove
-	// does.
 	
-	BOOL bOnGround = FALSE;
-	
-	if(pl.waterlevel < 2){
-		// Easy, trsy pl.flags having FL_ONGROUND.
-		bOnGround = ((pl.flags & FL_ONGROUND) != 0);
-	}else{
-		// Underwater enough?  Need to do a re-trace, FL_ONGROUND is forced off by
-		// pmove.
-		// Open for better ideas, or maybe this is a massive "who cares" situation.
-		
-		tracebox(pl.origin, pl.mins, pl.maxs, pl.origin - [0,0,0.25], FALSE, pl);
-
-		if (!trace_startsolid) {
-			if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
-				bOnGround = TRUE;
-			} else {
-				
-			}
-		}
-	}
-	
-	
-	if(!bOnGround){
+	// could check for FL_ONGROUND, but it is never set when the player is touching the ground
+	// while underwater, even though orginal TS viewbob counts that too.
+	// TODO: may as well turn this into a separate bitflag too then.
+	if(!pl.bOnGround){
 		float timeTol;
 		vector vSource = pl.origin;
 		

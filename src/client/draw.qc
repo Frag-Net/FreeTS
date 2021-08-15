@@ -42,9 +42,6 @@ ClientGame_PreDraw(void)
 }
 
 
-void
-Player_HandleWeaponModel(base_player pp, float thirdperson);
-
 // Happens right before the CSQC_RenderScene call seen in Nuclide's client/draw.qc.
 // PostDraw further down is too late.
 // NOT A NUCLIDE EVENT - called by the end of ViewModel_ApplyBob (viewmodel.qc) so that
@@ -54,10 +51,10 @@ Custom_LatePreDraw(void)
 {
 	player pl = (player)pSeat->m_ePlayer;
 	
-	Player_DrawViewModelCustom(pl);
+	TS_View_DrawCustom(pl);
 	
 	int thirdperson = (autocvar_cl_thirdperson == TRUE || pl.entnum != player_localentnum);
-	Player_DrawViewModelExtraEffects(pl, thirdperson);
+	TS_View_DrawExtraEffects(pl, thirdperson);
 	
 }
 

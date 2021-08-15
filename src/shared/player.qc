@@ -203,7 +203,7 @@ player::ReceiveEntity(float new, float fl)
 	nextAkimboAttackPreference = readbyte();
 	akimboDualFireToleranceTime = readfloat();
 	grenadeFireIndex = readbyte() - 1;
-	grenadeToss = readbyte();
+	bGrenadeToss = readbyte();
 	
 	
 	armor = readbyte();
@@ -381,7 +381,7 @@ player::PredictPreFrame(void)
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
 	SAVE_STATE(grenadeFireIndex);
-	SAVE_STATE(grenadeToss);
+	SAVE_STATE(bGrenadeToss);
 	
 	SAVE_STATE(shotgunReloadIndex);
 	
@@ -480,7 +480,7 @@ player::PredictPostFrame(void)
 	ROLL_BACK(nextAkimboAttackPreference);
 	ROLL_BACK(akimboDualFireToleranceTime);
 	ROLL_BACK(grenadeFireIndex);
-	ROLL_BACK(grenadeToss);
+	ROLL_BACK(bGrenadeToss);
 	
 	ROLL_BACK(shotgunReloadIndex);
 	
@@ -670,7 +670,7 @@ player::EvaluateEntity(void)
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
 	SAVE_STATE(grenadeFireIndex);
-	SAVE_STATE(grenadeToss);
+	SAVE_STATE(bGrenadeToss);
 	
 	
 	SAVE_STATE(shotgunReloadIndex);
@@ -825,7 +825,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, nextAkimboAttackPreference);
 	WriteFloat(MSG_ENTITY, akimboDualFireToleranceTime);
 	WriteByte(MSG_ENTITY, grenadeFireIndex + 1);
-	WriteByte(MSG_ENTITY, grenadeToss);
+	WriteByte(MSG_ENTITY, bGrenadeToss);
 	
 	WriteByte(MSG_ENTITY, armor );
 	WriteByte(MSG_ENTITY, iTotalSlots );
@@ -1123,7 +1123,7 @@ player::reset(BOOL resetInventory){
 	grenadeFireIndex = -1;
 	grenadeHeldDuration = -1;
 	grenadeSpawnTime = -1;
-	grenadeToss = FALSE;
+	bGrenadeToss = FALSE;
 	
 	isReloading = FALSE;
 	isChangingIronsight = FALSE;

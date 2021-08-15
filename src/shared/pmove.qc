@@ -269,6 +269,14 @@ player::Physics_WaterJump(void)
 float
 player::Physics_MaxSpeed(void)
 {
+	
+	// Consider noclip.  Otherwise, moving downward is considerably slower for no
+	// apparent reason (FL_CROUCHING input detected further down).
+	if(this.movetype == MOVETYPE_NOCLIP){
+		return serverkeyfloat("phy_maxspeed");
+	}
+	
+	
 	/*
 	float parentResult = base_player::Physics_MaxSpeed();
 	return parentResult;
@@ -283,7 +291,9 @@ player::Physics_MaxSpeed(void)
 	
 	//TAGGG - CRITICAL TODO.   Check for prone, that gets set to 30% of normal speed and only 
 	// allows for sideways movement, ignore input_movevalues[#]  whatever is the forward one.  probably 0.
-	if ( this.flags & FL_CROUCHING ) {
+	// TODO: does this slow down lateral movement while trying to go downard underwater?  Does it even
+	// signal for that at all?  This might be a non-issue.
+	if((this.flags & FL_CROUCHING) ){
 		targetSpeed = serverkeyfloat("phy_maxspeed") * 1.0 * 0.33;
 	} else {
 		targetSpeed = serverkeyfloat("phy_maxspeed") * 1.0;
@@ -292,6 +302,10 @@ player::Physics_MaxSpeed(void)
 	
 	if(time <= this.fMoveBlockDelay){
 		// don't move much until this has passed.  Further slowdowns need not apply.
+		// !
+		// "fMoveBlockCapSpeed" must be set by a weapon before it is involved.
+		// Is that the best way to handle this?  Being a field in all weapon data would
+		// not make sense though, not much uses this
 		targetSpeed = min(targetSpeed, this.fMoveBlockCapSpeed);
 		return targetSpeed;
 	}
@@ -313,6 +327,23 @@ void
 player::Physics_InputPreMove(void)
 {
 	base_player::Physics_InputPreMove();
+	
+	// IDEA: is changing the speed by inputmove value adjusting better than changing
+	// the max speed for prediction wonkiness (the camera looks to jump around on slowing down
+	// since a recent karate attack)?
+	// from Nuclide's player_move.qc (holding use-key slowdown):
+	//if (input_buttons & INPUT_BUTTON5) {
+	//	input_movevalues *= 0.25;
+	//}
+	
+	// also, reduce the up/down noclip movement a bit, no need to be that quite that fast in
+	// most cases
+	if (input_buttons & INPUT_BUTTON2) {
+		input_movevalues[2] *= 0.7;
+	}
+	if (input_buttons & INPUT_BUTTON8) {
+		input_movevalues[2] *= 0.7;
+	}
 	
 }
 
@@ -345,42 +376,87 @@ player::Physics_Run(void)
 // Copied from PMoveCustom_Categorize / PMove_Categorize, whatever we're calling it,
 // from Nuclide.
 // Any changes to what PMoveCustom_Categorize already changes would be redundant,
-// this is only to do a finer check for a new var, 'viewAboveWater', a more accurate
+// this is only to do a finer check for a new var, 'bViewAboveWater', a more accurate
 // check than 'pl.waterlevel < 3'.
 // Or maybe this will be deemed pointless and scrapped anyway, that isn't too bad and
 // it's what nearly any goldsource mod did, probably quake-based in general.
-	int contents;
-	
-	contents = PMoveCustom_Contents(this.origin + this.mins + [0,0,1]);
 
-	if (contents & CONTENTBIT_WATER) {
-		contents = CONTENT_WATER;
-	} else if (contents & CONTENTBIT_SLIME) {
-		contents = CONTENT_SLIME;
-	} else if (contents & CONTENTBIT_LAVA) {
-		contents = CONTENT_LAVA;
-	}
-
-
-	//player pl = (player)self;
-	this.viewAboveWater = TRUE;
-
-	// how far underwater are we?
-	if (contents < CONTENT_SOLID && !(this.flags & FL_ONLADDER)) {
-		//this.watertype = contents;
+// But first some common sense checks with the existing determined pl.waterlevel.
+// 0: not touching water at all
+// 1: at least the bottom of the bounding box, not past the halfway point up
+// 2: between the halfway point up and very close to the top
+// 3: close to the very top or completely submerged
+//... so we only need to be more specifc with the trace below if pl.waterlevel is 2
+	if(this.waterlevel < 2){
+		// definitely so (not in water at all also counts)
+		this.bViewAboveWater = TRUE;
+	}else if (this.waterlevel == 3){
+		// submerged so no
+		this.bViewAboveWater = FALSE;
+	}else{
+		// == 2?  Check
+		int contents;
 		
-		// Let's do this check sperately instead of below.
-		// Little margin of error (-5 in .z) to see if the viewmodel is probably above/below water.
-		if(PMoveCustom_Contents(this.origin + this.view_ofs -  '0 0 5') & CONTENTBITS_FLUID){
-			this.viewAboveWater = FALSE;
+		contents = PMoveCustom_Contents(this.origin + this.mins + [0,0,1]);
+
+		if (contents & CONTENTBIT_WATER) {
+			contents = CONTENT_WATER;
+		} else if (contents & CONTENTBIT_SLIME) {
+			contents = CONTENT_SLIME;
+		} else if (contents & CONTENTBIT_LAVA) {
+			contents = CONTENT_LAVA;
 		}
-		
-	} else {
-		//this.watertype = CONTENT_EMPTY;
-		///this.waterlevel = 0;
-	}
-	/////////////////////////////////////////////////////////////////////////////
+
+		this.bViewAboveWater = TRUE;
+
+		// how far underwater are we?
+		if (contents < CONTENT_SOLID && !(this.flags & FL_ONLADDER)) {
+			//this.watertype = contents;
+			
+			// Let's do this check sperately instead of below.
+			// Little margin of error (-5 in .z) to see if the viewmodel is probably above/below water.
+			vector vTest = this.origin + this.view_ofs - [0, 0, 5];
+			if(PMoveCustom_Contents(vTest) & CONTENTBITS_FLUID){
+				this.bViewAboveWater = FALSE;
+			}
+			
+		} else {
+			//this.watertype = CONTENT_EMPTY;
+			///this.waterlevel = 0;
+		}
+		/////////////////////////////////////////////////////////////////////////////
+	}// bViewAboveWater check
 	
-}
+	
+	
+	// If the player waterlevel >= 2, the "FL_ONGROUND" flag never occurs,
+	// regardless of touching the floor while underwater (as seen in Nuclide pmove).
+	// In original TS, being on the floor underwater DOES still do the camera/viewbob.
+	// No idea how to get around this, beyond traces against the ground like pmove
+	// does.
+	// Open for better ideas, or maybe this is a massive "who cares" situation.
+	
+	if(this.waterlevel < 2){
+		// Easy, trsy pl.flags having FL_ONGROUND.
+		this.bOnGround = ((this.flags & FL_ONGROUND) != 0);
+	}else{
+		// Underwater enough?  Need to do a re-trace, FL_ONGROUND is forced off by
+		// pmove.
+		
+		// until proven otherwise
+		this.bOnGround = FALSE;
+		vector vTest2 = this.origin - [0,0,0.25];
+		tracebox(this.origin, this.mins, this.maxs, vTest2, FALSE, this);
+
+		if (!trace_startsolid) {
+			if ((trace_fraction < 1) && (trace_plane_normal[2] > 0.7)) {
+				this.bOnGround = TRUE;
+			} else {
+				
+			}
+		}
+	}
+	
+}// Physics_Run
 
 

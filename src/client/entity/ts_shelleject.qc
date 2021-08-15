@@ -51,15 +51,21 @@ CTSShellEject::generate(int arg_iShellEjectType){
 	//setmodel(eShell, "models/shell.mdl");
 	shellejectdata_t* mySED = ary_shellEjectData[eShell.iShellEjectType];
 	setmodel(eShell, (*mySED).sModelPath);
+	//setmodel(eShell, "models/powerup.mdl");
+	
 	
 	eShell.solid = SOLID_BBOX;
 	eShell.movetype = MOVETYPE_BOUNCE;
 	eShell.drawmask = MASK_ENGINE;
 	eShell.angles = [pSeat->m_eViewModel.angles[0], pSeat->m_eViewModel.angles[1], 0];
+	
+	//player pl = (player) pSeat->m_ePlayer;
+	//printfline("What?? (%.2f %.2f %.2f), (%.2f %.2f %.2f)",  pSeat->m_vecPredictedVelocity.x, pSeat->m_vecPredictedVelocity.y, pSeat->m_vecPredictedVelocity.z, pl.velocity.x, pl.velocity.y, pl.velocity.z);
+	
 	eShell.velocity = pSeat->m_vecPredictedVelocity;
 
 	makevectors(pSeat->m_eViewModel.angles);
-	eShell.velocity += (v_forward * 0);
+	eShell.velocity += (v_forward * 20);
 	eShell.velocity += (v_right * 80);
 	eShell.velocity += (v_up * 100);
 	
@@ -78,8 +84,29 @@ CTSShellEject::generate(int arg_iShellEjectType){
 // The practical constructor, manually call this after spawning.
 // NOTE: assumes pSeat->m_eViewModel is valid for involving in determining
 // origin, angles, velocity
+void
+CTSShellEject::generateForViewModelAkimbo(int arg_iShellEjectType, int arg_akimboChoice)
+{
+	
+	// this means, a singular weapon, not akimbo.  Important distinction for
+	// attachment points to pick
+	if(arg_akimboChoice == BITS_AKIMBOCHOICE_NONE){
+		CTSShellEject::generateForViewModel_attachments(arg_iShellEjectType, 0, 3);
+	}
+	if(arg_akimboChoice & BITS_AKIMBOCHOICE_LEFT){
+		CTSShellEject::generateForViewModel_attachments(arg_iShellEjectType, 2, 3);
+	}
+	if(arg_akimboChoice & BITS_AKIMBOCHOICE_RIGHT){
+		CTSShellEject::generateForViewModel_attachments(arg_iShellEjectType, 0, 1);
+	}
+	
+	
+}
+
+// with the attachments to be used to help get a better idea of forwards/backwards/sideways
+// for the current weapon, create a shell.
 CTSShellEject
-CTSShellEject::generateForViewmodel(int arg_iShellEjectType)
+CTSShellEject::generateForViewModel_attachments(int arg_iShellEjectType, int arg_attachment1, int arg_attachment2)
 {
 	// give me an origin!
 	CTSShellEject eShell = CTSShellEject::generate(arg_iShellEjectType);
@@ -123,8 +150,8 @@ CTSShellEject::generateForViewmodel(int arg_iShellEjectType)
 	vector angGun;
 	
 	
-	gunpos = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 0i);
-	gunpos_tempEnd = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 3i);
+	gunpos = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + arg_attachment1);
+	gunpos_tempEnd = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + arg_attachment2);
 	dirGun = normalize(gunpos_tempEnd - gunpos);
 	angGun = vectoangles(dirGun);
 	makevectors(angGun);
@@ -136,6 +163,14 @@ CTSShellEject::generateForViewmodel(int arg_iShellEjectType)
 	// ALSO, TODO: Check for being akimbo and per weapon.  oh dear... we need a paramter for what
 	// weapon, left or right to use then (LEFT always a default, even if non-akimbo is ok too),
 	// see weapons for that AKIMBOCHOICE thing
+	/*
+	player pl = (player) pSeat->m_ePlayer;
+	if(arg_iShellEjectType == SHELLEJECT_ID::SHOTGUN_BLUE){
+		vOrigin = gunpos + pl.velocity*input_timelength;
+	}else{
+		vOrigin = gunpos;
+	}
+	*/
 	vOrigin = gunpos;
 	vOrigin += v_forward * -3.5;
 	vOrigin += v_up * -0.02;
@@ -144,8 +179,27 @@ CTSShellEject::generateForViewmodel(int arg_iShellEjectType)
 	
 	setorigin(eShell, vOrigin);
 	
+	/*
+	// TEST.  Any difference between the vecPredictedOrigin and current origin at this point of the call?
+	player pl = (player) pSeat->m_ePlayer;
+	vector vDelta;
+	vDelta = pSeat->m_vecPredictedOrigin - pl.origin;
+	if(vlen(vDelta) > 0.001){
+		printfline("Difference? %.2f %.2f %.2f", vDelta.x, vDelta.y, vDelta.z);
+	}
+	*/
+	/*
+	player pl = (player) pSeat->m_ePlayer;
+	float vel = vlen(pl.velocity);
+	float vel2 = vlen(pl.basevelocity);
+	if(vel > 0.001 || vel2 > 0.001){
+		printfline("vel: %.2f basevel: %.2f", vel, vel2);
+	}
+	*/
+	
 	return eShell;
 }
+
 
 // TODO.  For playermodels as seen in thirdperson (local one) or looking at other players
 // that called for shell ejecting.

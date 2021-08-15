@@ -157,9 +157,24 @@ class player:base_player
 	
 	// same as below for muzzleflash.
 	int iMuzzleFlashType;
+	// and akimbo support
+	int iMuzzleFlashAkimboChoice;
+	
+	
 	// During a shell-eject event, what member of aryShellEjectData do I use for the model
-	// and hitsound script file to use?  Set on setting the event
+	// and hitsound script file to use?  Set on setting up the event so that it is only
+	// called once, clientside weapons can be strange.
+	// Must be stored as a var to be preserved for the event (which does not take any params,
+	// and is called very shortly after being set in a separate stream of execution).
 	int iShellEjectType;
+	// And, for which weapon?  Default is LEFT (attachment #0)
+	int iShellEjectAkimboChoice;
+	// Not involved in setting up the shell-eject event.  Rather, it is set BY the shell-eject
+	// event to ensure this only happens once per fire animation.
+	// When seen TRUE in TS_View_DrawCustom, the shell ejection actually happens for the
+	// most accurate position.
+	BOOL bShellEjectScheduled;
+	
 	
 	// WEAPON KICKBACK STUFF.
 	// Way it works is a little different from the average (Half-Life and Counterstrike).
@@ -350,14 +365,16 @@ class player:base_player
 	// at what time do I throw the grenade after starting the throw/toss anim?
 	float grenadeSpawnTime;
 	float grenadeHeldDuration;
-	PREDICTED_FLOAT(grenadeToss);   //set to FALSE if it's a typical throw instead.
+	PREDICTED_FLOAT(bGrenadeToss);   //set to FALSE if it's a typical throw instead.
 	
 	
 	// shared
 	
 	//////////////////////////////////////////////////////////////////////////////
-	//for pmove to set
-	BOOL viewAboveWater;
+	// for custom pmove to set
+	// TODO: these should probably be gflags constants as bitflags instead
+	BOOL bOnGround;
+	BOOL bViewAboveWater;
 
 	//TODO - could this just be an entity flag just as well?  Unfortunately I don't know for
 	// sure what flags are guaranteed open / nonconflicting with anything else.

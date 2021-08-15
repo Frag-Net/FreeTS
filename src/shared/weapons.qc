@@ -9,7 +9,8 @@ weapon_t g_weapons[WEAPON_ID::LAST_ID];
 
 
 void
-weaponconfig_data_init(weaponconfig_data_t* arg_this){
+weaponconfig_data_init(weaponconfig_data_t* arg_this)
+{
 	arg_this->ary_myWeapons_softMax = 0;
 	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
 		arg_this->ary_ammoTotal[i] = 0;
@@ -30,7 +31,8 @@ weaponconfig_data_init(weaponconfig_data_t* arg_this){
 
 
 void
-weapon_base_setWholeAttackDelay(player pl, float amount){
+weapon_base_setWholeAttackDelay(player pl, float amount)
+{
 	pl.w_attack_next = amount;
 	pl.w_attack_akimbo_next = amount;
 	
@@ -43,14 +45,16 @@ weapon_base_setWholeAttackDelay(player pl, float amount){
 
 // normal delay only?
 void
-weapon_base_setLeftAttackDelay(player pl, float amount){
+weapon_base_setLeftAttackDelay(player pl, float amount)
+{
 	pl.w_attack_next = amount;
 	//SAVE_STATE(pl.w_attack_next);
 }
 
 // akimbo secondary delay only?
 void
-weapon_base_setRightAttackDelay(player pl, float amount){
+weapon_base_setRightAttackDelay(player pl, float amount)
+{
 	pl.w_attack_akimbo_next = amount;
 	//SAVE_STATE(pl.w_attack_akimbo_next);
 }
@@ -61,7 +65,8 @@ weapon_base_setRightAttackDelay(player pl, float amount){
 // If there are 2 seconds left until firing is allowed, ignore a request
 // to set it to 0.3 seconds.
 void
-weapon_base_setLeftAttackDelay_AtLeast(player pl, float amount){
+weapon_base_setLeftAttackDelay_AtLeast(player pl, float amount)
+{
 	if(pl.w_attack_next <= amount){
 		pl.w_attack_next = amount;
 		//SAVE_STATE(pl.w_attack_next);
@@ -70,7 +75,8 @@ weapon_base_setLeftAttackDelay_AtLeast(player pl, float amount){
 
 // akimbo secondary delay only?
 void
-weapon_base_setRightAttackDelay_AtLeast(player pl, float amount){
+weapon_base_setRightAttackDelay_AtLeast(player pl, float amount)
+{
 	if(pl.w_attack_akimbo_next <= amount){
 		pl.w_attack_akimbo_next = amount;
 		//SAVE_STATE(pl.w_attack_akimbo_next);
@@ -272,7 +278,8 @@ weapon_base_onPrimaryAttack_melee_fromCustomDirection(
 
 // Apparently serverside-only? ok...
 void
-weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed){
+weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed)
+{
 	weapon_base_onAttack_multi(pl, basePRef, arg_thisWeapon, 1, attackTypeUsed);
 }// weapon_base_onAttack
 
@@ -287,7 +294,8 @@ weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t ar
 // (effectively becomes 'max number of penetrations allowed', which is still something only for guns)
 // NOTE - checks for being unable to fire yet not included!
 void
-weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed){
+weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed)
+{
 	
 #ifdef SERVER
 	weapondata_gun_t baseRef = *((weapondata_gun_t*)basePRef);
@@ -526,7 +534,8 @@ weapon_shotgun_reload(
 // (don't do anything if not of course)
 // Also, this is meant to completely replace the weapon_gun_onThink call that most would have used.
 void
-weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
+weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon)
+{
 	weapondata_gun_t baseRef = *basePRef;
 	weapondata_shotgun_extra_t* shotgunExtraRef;
 	
@@ -1642,7 +1651,8 @@ weapon_gun_onThink_burstFireLogic(
 
 
 void
-weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon){
+weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon)
+{
 #ifdef CLIENT
 	weapondata_gun_t baseRef = *basePRef;
 	
@@ -1780,7 +1790,8 @@ weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_
 
 
 void
-weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon){
+weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondynamic_t arg_thisWeapon)
+{
 #ifdef CLIENT
 	weapondata_throwable_t baseRef = *basePRef;
 	
@@ -1806,7 +1817,8 @@ weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondy
 
 
 void
-weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon){
+weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t arg_thisWeapon)
+{
 #ifdef CLIENT
 	weapondata_melee_t baseRef = *basePRef;
 	
@@ -1830,16 +1842,25 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 }// weapon_throwable_onDrawHUD
 
 
+
 void
-weapon_ShowMuzzleFlash(int arg_muzzleFlashType){
+weapon_ShowMuzzleFlash(int arg_muzzleFlashType)
+{
+	weapon_ShowMuzzleFlashAkimbo(arg_muzzleFlashType, BITS_AKIMBOCHOICE_NONE);
+}
+
+void
+weapon_ShowMuzzleFlashAkimbo(int arg_muzzleFlashType, int arg_akimboChoice)
+{
 	
 #ifdef CLIENT
 	if(arg_muzzleFlashType != MUZZLEFLASH_ID::NONE){
-		// not yet!
-		//muzzleflashdata_t* tempRef = ary_muzzleFlashData[arg_muzzleFlashType];
-		//View_ShowMuzzleflash((*tempRef).iSpritePrecacheID);
+		// Set up an event to do this instead so that being called over and over by the client
+		// with packet delays (realistic network delays in multiplayer) don't cause the flash
+		// to appear frozen until a server update.
 		player pl = (player)self;
 		pl.iMuzzleFlashType = arg_muzzleFlashType;
+		pl.iMuzzleFlashAkimboChoice = arg_akimboChoice;
 		View_AddEvent(viewEv_weapon_ShowMuzzleFlash, 0.0f);
 	}
 #else
@@ -1848,18 +1869,25 @@ weapon_ShowMuzzleFlash(int arg_muzzleFlashType){
 #endif
 }
 
-
 // Not to be confused with the clientside-only event "viewEv_weapon_EjectShell".
 // This is called by weapons to add the event, handles setting the shell-type global
 // for it to see.  If shell-ejects are done serverside, that would not be an amazing
 // idea. Per-player would be better.
+
 void
 weapon_EjectShell(int arg_shellEjectType)
 {
+	weapon_EjectShellAkimbo(arg_shellEjectType, BITS_AKIMBOCHOICE_NONE);
+}
+
+void
+weapon_EjectShellAkimbo(int arg_shellEjectType, int arg_akimboChoice)
+{
 #ifdef CLIENT
-	player pl = (player)self;
 	if(arg_shellEjectType != SHELLEJECT_ID::NONE){
+		player pl = (player)self;
 		pl.iShellEjectType = arg_shellEjectType;
+		pl.iShellEjectAkimboChoice = arg_akimboChoice;
 		View_AddEvent(viewEv_weapon_EjectShell, 0.0f);
 	}
 #else
@@ -1867,14 +1895,30 @@ weapon_EjectShell(int arg_shellEjectType)
 #endif
 }
 
+
+void
+weapon_ClientEffects(int arg_muzzleFlashType, int arg_shellEjectType)
+{
+	weapon_ClientEffectsAkimbo(arg_muzzleFlashType, arg_shellEjectType, BITS_AKIMBOCHOICE_NONE);
+}
+
+
 // Both weapon_ShowMuzzleFlash and weapon_EjectShell in one call for scheduling
 // one event that calls both, otherwise, only either can happen (one event allowed;
 // any more and they just overwrite each other on being set)
-void weapon_ClientEffects(int arg_muzzleFlashType, int arg_shellEjectType){
+void
+weapon_ClientEffectsAkimbo(int arg_muzzleFlashType, int arg_shellEjectType, int arg_akimboChoice)
+{
 #ifdef CLIENT
 	player pl = (player)self;
-	pl.iMuzzleFlashType = arg_muzzleFlashType;
-	pl.iShellEjectType = arg_shellEjectType;
+	if(arg_shellEjectType != SHELLEJECT_ID::NONE){
+		pl.iShellEjectType = arg_shellEjectType;
+		pl.iShellEjectAkimboChoice = arg_akimboChoice;
+	}
+	if(arg_muzzleFlashType != MUZZLEFLASH_ID::NONE){
+		pl.iMuzzleFlashType = arg_muzzleFlashType;
+		pl.iMuzzleFlashAkimboChoice = arg_akimboChoice;
+	}
 	View_AddEvent(viewEv_weapon_ClientEffects, 0.0f);
 #else
 	// ?
@@ -2015,7 +2059,8 @@ weapondata_basic_t weapon_none_akimbo =
 //Or would it make sense to extern the structs here and keep this method in the same file?
 //	(compile weapon-specific files first, then weapon.c)
 void
-setupWeaponData(void){
+setupWeaponData(void)
+{
 	
 	// for reference, old way.  REDO THAT MACRO to involve g_weapons, described more below
 	//#define ASSIGN_WEAPONDATA(arg_constName) ary_weaponData[WEAPON_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_constName;
@@ -2156,7 +2201,8 @@ setupWeaponData(void){
 
 
 weapondata_basic_t*
-getWeaponData(int arg_weaponID, BOOL arg_akimbo){
+getWeaponData(int arg_weaponID, BOOL arg_akimbo)
+{
 	weapondata_basic_t* basicP;
 	
 	// no cap check for now
@@ -2235,8 +2281,6 @@ getAmmoTypeOfWeapon(int arg_weaponID)
 
 
 
-
-
 // This is based off what the HL glock does, adjust with custom shell-choices per
 // different weapons that use them.
 // Is HL's "w_shotgun_ejectshell" even any different from this besides shell-model
@@ -2262,28 +2306,34 @@ viewEv_playShotgunInsertShellSound(void)
 void
 viewEv_weapon_EjectShell(void)
 {
+	// Actually, queue a shell eject during the next LatePreDraw call
+	// (TS_View_DrawCustom to be more specific).  This makes the generated shell 
+	// position more accurate.  It will use the player's tempvars to set up
+	// the shell for the akimbo choice like here would have.
+	
 	player pl = (player)pSeat->m_ePlayer;
-	// TODO - how about a first-person check?  Doesn't make sense if in thirdperson.
-	// Although that might've been needed earlier unless this event-thing works fine for being
-	// a playermodel too.  Players other than the local one being rendered and needing to drop
-	// shells, that sounds like a whole other story
+	pl.bShellEjectScheduled = TRUE;
+	/*
 	if(pl.iShellEjectType != SHELLEJECT_ID::NONE){
-		CTSShellEject::generateForViewmodel(pl.iShellEjectType);
+		CTSShellEject::generateForViewModelAkimbo(pl.iShellEjectType, pl.iShellEjectAkimboChoice);
 	}
+	*/
 }
 
 void 
-viewEv_weapon_ShowMuzzleFlash(void){
+viewEv_weapon_ShowMuzzleFlash(void)
+{
 	player pl = (player)pSeat->m_ePlayer;
 	if(pl.iMuzzleFlashType != MUZZLEFLASH_ID::NONE){
 		muzzleflashdata_t* tempRef = ary_muzzleFlashData[pl.iMuzzleFlashType];
-		View_ShowMuzzleflash((*tempRef).iSpritePrecacheID);
+		TS_View_ShowMuzzleflash(tempRef->iSpritePrecacheID, pl.iMuzzleFlashAkimboChoice);
 	}
 }
 
 
 void
-viewEv_weapon_ClientEffects(void){
+viewEv_weapon_ClientEffects(void)
+{
 	viewEv_weapon_EjectShell();
 	viewEv_weapon_ShowMuzzleFlash();
 }
