@@ -211,14 +211,18 @@ TS_View_ChangeViewModelPost(void)
 	// on changing models, right?
 	pSeat->m_pEventCall = NULL;
 	
+	
 	skel_delete( mflash.skeletonindex );
 	mflash.skeletonindex = skel_create( vm.modelindex );
 	pSeat->m_iVMBones = skel_get_numbones( mflash.skeletonindex ) + 1;
 	
-	// assuming cloning above for the akimbo muzzleflash is a good idea
-	skel_delete(mflashAkimbo.skeletonindex);
-	// TODO: could we just reuse the mflash.skeletonindex here?  I don't know
-	mflashAkimbo.skeletonindex = skel_create(vm.modelindex);
+	
+	///skel_delete(mflashAkimbo.skeletonindex);
+	
+	// could we just reuse the mflash.skeletonindex here?
+	//mflashAkimbo.skeletonindex = skel_create(vm.modelindex);
+	mflashAkimbo.skeletonindex = mflash.skeletonindex;
+	
 	// no need to set m_iVMBones again, nor have a separate copy.  How could it
 	// be any different for the akimbo one (clone of mflash)
 	
@@ -248,7 +252,7 @@ TS_View_ResetViewModel(void)
 	pSeat->m_iVMBones = 0 + 1;
 	
 	// ! If the skeletonindex becomes shared, skel_delete for each will not be necessary
-	skel_delete(mflashAkimbo.skeletonindex);
+	//skel_delete(mflashAkimbo.skeletonindex);
 	mflashAkimbo.skeletonindex = 0;
 	
 	

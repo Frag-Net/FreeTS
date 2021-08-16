@@ -13,3 +13,13 @@ pSeatLocal_init(void)
 	pSeatLocal->m_inputMouseClicked = FALSE;
 }
 
+//TAGGG - BobNEW.  helper method
+void
+pViewBob_reset(void)
+{
+	pViewBob->m_flBobTime = 0;
+	pViewBob->m_flBob = 0;
+	pViewBob->m_flBobCycle = 0;
+	pViewBob->m_flSpeed = 0;
+	pViewBob->m_vCam = [0,0,0];
+}

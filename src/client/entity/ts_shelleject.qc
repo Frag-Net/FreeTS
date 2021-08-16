@@ -53,6 +53,12 @@ CTSShellEject::generate(int arg_iShellEjectType){
 	setmodel(eShell, (*mySED).sModelPath);
 	//setmodel(eShell, "models/powerup.mdl");
 	
+	// Setting the owner stops the shell from bouncing off the firing player, most
+	// noticeable on firing while moving backwards at close to max speed but
+	// sometimes still at max speed.  From what I can tell, no side-effects to this.
+	// Possibly an issue in original TS too.
+	player pl = (player) pSeat->m_ePlayer;
+	eShell.owner = pl;
 	
 	eShell.solid = SOLID_BBOX;
 	eShell.movetype = MOVETYPE_BOUNCE;

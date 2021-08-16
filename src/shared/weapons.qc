@@ -157,9 +157,6 @@ weapon_base_onPrimaryAttack_melee_fromCustomDirection(
 	vSource = ( pl.origin + pl.view_ofs );
 	traceline( vSource, vSource + ( vTraceDirection * range ), MOVE_HITMODEL, pl );
 	
-	// regardless of hitting, delay is set all the same
-	weapon_base_setWholeAttackDelay(pl, baseRef.fAttackDelay);
-	
 	
 	if ( trace_fraction == 1.0 ) {
 		// did not hit anything
@@ -305,10 +302,6 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	
 	float angleRange = 115;
 	float finalAng = ( 90 - (angleRange/2) + randoAngFactor*( angleRange ) ) *(M_PI/180);
-	
-	// OLD LOC OF setWholeAttackDelay
-	
-	//TODO - factor in 'fAccuracyKickback' too.  Or a cumulative var really in this case.
 	float baseAcc = baseRef.firestats.fAccuracy;
 	float kickbackToApply = pl.fAccuracyKickback;
 	
@@ -391,7 +384,7 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	// Properly predicted shotgun firing would be a good demonstration of that too,
 	// so what happens instantly (client sees) and what actually happened (server sees; everyone
 	// else sees) line up.
-	pl.fAccuracyKickbackStartCooldown = time + 0.14;
+	pl.fAccuracyKickbackStartCooldown = 0.14;
 	pl.fAccuracyKickback += baseRef.firestats.fAccuracyKickback;
 	if(pl.fAccuracyKickback >= 0.1){
 		//cap it.
@@ -1558,6 +1551,7 @@ weapon_base_onEquip(
 	weapondata_basic_t baseRef = *basePRef;
 	
 	printfline("weapon_base_onEquip: activeweap:%d sName:%s sName2:%s", pl.activeweapon, baseRef.sDisplayName, g_weapons[pl.activeweapon].name);
+	
 	
 #ifdef CLIENT
 	TS_View_SetViewModelFromStats();

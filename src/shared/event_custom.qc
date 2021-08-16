@@ -184,7 +184,7 @@ TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 	// EXPERIMENTAL
 	pl.equippedWeaponWaitingForCallback = TRUE;
 	// Not sure how you'd deal with a ping worse than 0.5 seconds
-	pl.equippedWeaponWaitingForCallback_maxWaitTime = time + 0.6;
+	pl.equippedWeaponWaitingForCallback_maxWaitTime = time + 0.8;
 }
 
 

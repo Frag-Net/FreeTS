@@ -210,27 +210,29 @@ class player:base_player
 	
 #endif
 
-
+	
+	// should be better networked when it's better understood what the block feature
+	// (reload with karate out, I assume?) is supposed to do.
 	float flKarateBlockCooldown;
 	
-	int iMeleeCycler;
+	PREDICTED_INT(iMeleeCycler);
 
 	//SHARED!!!
 	vector vViewAngleOffsetTarget;
-	float fAccuracyKickback;
-	// don't send to the client.  ...unless it can account for the difference
-	// from server time.
-	float fAccuracyKickbackStartCooldown;
+	PREDICTED_FLOAT(fAccuracyKickback);
+	PREDICTED_FLOAT(fAccuracyKickbackStartCooldown);
 	
 	// The client can keep its own in mind as prediction between frames if needed.  Server
 	// time and client time aren't really compatible to send like this.
 	
 	
 	
-	float fMoveBlockDelay;
-	float fUncrouchBlockDelay;
+	PREDICTED_FLOAT(fMoveBlockDelay);
+	PREDICTED_FLOAT(fUncrouchBlockDelay);
+	// not networked, set by the player individually client and serverside on picking
+	// the weapon.  Might not even be necessary to do this.
 	float fMoveBlockCapSpeed;
-	float fKarateStamina;
+	PREDICTED_FLOAT(fKarateStamina);
 
 
 //These will be shared and help with slowdown logic.
@@ -472,6 +474,7 @@ class player:base_player
 	
 	virtual void(void) preThink;
 	virtual void(void) postThink;
+	virtual void(void) preThinkShared;
 	
 		
 	////////////////////////////////////////////////////////////
@@ -479,7 +482,7 @@ class player:base_player
 	virtual void(BOOL resetInventory) reset;
 
 	virtual vector(vector vecInputAngles)View_approachAngleOffsetTarget;
-	virtual void (void)handleAccuracyKickback;
+	virtual void (void)updateTimers;
 
 	virtual void(float arg_theZoom) setZoom;
 	virtual void(void) resetZoom;

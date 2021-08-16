@@ -15,7 +15,8 @@
  */
  
  
- 
+// little test
+//var float otherTimer = 0;
  
 //#define FORCE_NETWORK_ALL_INVENTORY
 
@@ -209,18 +210,27 @@ player::ReceiveEntity(float new, float fl)
 	armor = readbyte();
 	iTotalSlots = readbyte();
 	
-	fAccuracyKickback = readfloat();
-	
-	fMoveBlockDelay = readfloat();
-	fUncrouchBlockDelay = readfloat();
-	fKarateStamina = readfloat();
 	
 	
+	//flKarateBlockCooldown
 	iMeleeCycler = readbyte();
-	
 	//vViewAngleOffsetTarget[0] = readcoord();
 	//vViewAngleOffsetTarget[1] = readcoord();
 	//vViewAngleOffsetTarget[2] = readcoord();
+	fAccuracyKickback = readfloat();
+	fAccuracyKickbackStartCooldown = readfloat();
+	
+	
+	
+	float fMoveBlockDelay_temp = readfloat();
+	float fUncrouchBlockDelay_temp = readfloat();
+	
+	if(!equippedWeaponWaitingForCallback){
+		fMoveBlockDelay = fMoveBlockDelay_temp;
+		fUncrouchBlockDelay = fUncrouchBlockDelay_temp;
+	}
+	
+	fKarateStamina = readfloat();
 	
 	
 	
@@ -255,7 +265,10 @@ player::ReceiveEntity(float new, float fl)
 		if(i != -1){
 			ReceiveEntity_ary_myWeapons(i);
 
-			int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+			
+			//int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+			int betterID = ary_myWeapons[inventoryEquippedIndex].weaponID;
+			int myAmmoType = getAmmoTypeOfWeapon(betterID);
 			if(myAmmoType != -1){
 				i = myAmmoType;
 				//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -266,7 +279,12 @@ player::ReceiveEntity(float new, float fl)
 					ary_ammoTotal[i] = readlong();
 				//}
 			}
+		}/*else{
+			// STUPID.
+			ReceiveEntity_ary_myWeapons(0);
+			ary_ammoTotal[0] = readlong();
 		}
+		*/
 	}
 	/////////////////////////////////////////////////////
 	
@@ -383,6 +401,21 @@ player::PredictPreFrame(void)
 	SAVE_STATE(grenadeFireIndex);
 	SAVE_STATE(bGrenadeToss);
 	
+	
+	//flKarateBlockCooldown
+	SAVE_STATE(iMeleeCycler);
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
+	SAVE_STATE(fAccuracyKickback);
+	SAVE_STATE(fAccuracyKickbackStartCooldown);
+	
+	SAVE_STATE(fMoveBlockDelay);
+	SAVE_STATE(fUncrouchBlockDelay);
+	SAVE_STATE(fKarateStamina);
+	
+	
+	
 	SAVE_STATE(shotgunReloadIndex);
 	
 	SAVE_STATE(shotgunAddAmmoTime);
@@ -482,6 +515,19 @@ player::PredictPostFrame(void)
 	ROLL_BACK(grenadeFireIndex);
 	ROLL_BACK(bGrenadeToss);
 	
+	//flKarateBlockCooldown
+	ROLL_BACK(iMeleeCycler);
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
+	ROLL_BACK(fAccuracyKickback);
+	ROLL_BACK(fAccuracyKickbackStartCooldown);
+	
+	ROLL_BACK(fMoveBlockDelay);
+	ROLL_BACK(fUncrouchBlockDelay);
+	ROLL_BACK(fKarateStamina);
+	
+	
 	ROLL_BACK(shotgunReloadIndex);
 	
 	ROLL_BACK(shotgunAddAmmoTime);
@@ -526,6 +572,7 @@ player::EvaluateEntity(void)
 	
 	int i;
 	int myAmmoType;
+	int betterID;
 
 	/* animation */
 	if (ATTR_CHANGED(anim_bottom) || ATTR_CHANGED(anim_bottom_time))
@@ -636,7 +683,9 @@ player::EvaluateEntity(void)
 			if(ATTR_CHANGED(ary_myWeapons[i].bNeedsPump)) SendFlags |= PLAYER_UNUSED1;
 			
 		//}
-		myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		//myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		betterID = ary_myWeapons[inventoryEquippedIndex].weaponID;
+		myAmmoType = getAmmoTypeOfWeapon(betterID);
 		if(myAmmoType != -1){
 			i = myAmmoType;
 			//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -672,6 +721,18 @@ player::EvaluateEntity(void)
 	SAVE_STATE(grenadeFireIndex);
 	SAVE_STATE(bGrenadeToss);
 	
+	//flKarateBlockCooldown
+	SAVE_STATE(iMeleeCycler);
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
+	SAVE_STATE(fAccuracyKickback);
+	SAVE_STATE(fAccuracyKickbackStartCooldown);
+	
+	SAVE_STATE(fMoveBlockDelay);
+	SAVE_STATE(fUncrouchBlockDelay);
+	SAVE_STATE(fKarateStamina);
+	
 	
 	SAVE_STATE(shotgunReloadIndex);
 	
@@ -704,7 +765,9 @@ player::EvaluateEntity(void)
 		//}
 
 
-		myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		//myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+		betterID = ary_myWeapons[inventoryEquippedIndex].weaponID;
+		myAmmoType = getAmmoTypeOfWeapon(betterID);
 		if(myAmmoType != -1){
 			i = myAmmoType;
 			//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -830,20 +893,18 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, armor );
 	WriteByte(MSG_ENTITY, iTotalSlots );
 	
+	//flKarateBlockCooldown
+	WriteByte(MSG_ENTITY, iMeleeCycler);
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
+	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
 	WriteFloat(MSG_ENTITY, fAccuracyKickback);
-	
-	
+	WriteFloat(MSG_ENTITY, fAccuracyKickbackStartCooldown);
 	
 	WriteFloat(MSG_ENTITY, fMoveBlockDelay);
 	WriteFloat(MSG_ENTITY, fUncrouchBlockDelay);
 	WriteFloat(MSG_ENTITY, fKarateStamina);
 	
-	
-	WriteByte(MSG_ENTITY, iMeleeCycler);
-	
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
 	
 	
 	WriteByte(MSG_ENTITY, shotgunReloadIndex );
@@ -879,7 +940,9 @@ player::SendEntity(entity ePEnt, float fChanged)
 		if(i != -1){
 			SendEntity_ary_myWeapons(i);
 
-			int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+			//int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
+			int betterID = ary_myWeapons[inventoryEquippedIndex].weaponID;
+			int myAmmoType = getAmmoTypeOfWeapon(betterID);
 			if(myAmmoType != -1){		
 				i = myAmmoType;
 				//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -1005,7 +1068,7 @@ player::player(void){
 	printfline("player: %i", someThingy.player);
 	printfline("reset: %i", someThingy.reset);
 	printfline("View_approachAngleOffsetTarget: %i", someThingy.View_approachAngleOffsetTarget);
-	printfline("handleAccuracyKickback: %i", someThingy.handleAccuracyKickback);
+	printfline("updateTimers: %i", someThingy.updateTimers);
 	printfline("frameThink: %i", someThingy.frameThink);
 	printfline("frameThink_fromServer: %i", someThingy.frameThink_fromServer);
 	printfline("preThink: %i", someThingy.preThink);
@@ -1057,17 +1120,6 @@ player::reset(BOOL resetInventory){
 	
 	flRecentGroundTime = 0;
 	
-	//TAGGG - BobNEW.
-	// Reset the vars here? Or only on an inventory wipe?
-	pViewBob = &g_viewBobVars[s];
-	pViewBob->m_flBobTime = 0;
-	pViewBob->m_flBob = 0;
-	pViewBob->m_flBobCycle = 0;
-	pViewBob->m_flSpeed = 0;
-	pViewBob->m_vCam = [0,0,0];
-	/////////////////////////////////////////////////////
-	
-	
 	flViewShake = 0;
 	
 	recentLaserHitPosSet = FALSE;
@@ -1090,25 +1142,7 @@ player::reset(BOOL resetInventory){
 	
 	
 	iMeleeCycler = 0;
-		
-	// do this at spawn too. oh right, this 'reset' method is called from there.
-	vViewAngleOffsetTarget = '0 0 0';
-	fAccuracyKickback = 0;
-	fAccuracyKickbackStartCooldown = -1;
 	
-	fMoveBlockDelay = -1;
-	fUncrouchBlockDelay = -1;
-	fMoveBlockCapSpeed = 0;
-	fKarateStamina = 1.0;
-	
-	flBaseSpeedMulti = 1;
-	flMoveSpeedMulti = 1;
-	flSoundSpeedMulti = 1;
-	flFireDelayMulti = 1;
-	flBulletSpeedMulti = 1;
-	flProjectileSpeedMulti = 1;
-
-
 	//shotgun stuff.
 	//NOTICE - all networked now, testing.
 	
@@ -1144,6 +1178,30 @@ player::reset(BOOL resetInventory){
 	
 	if(resetInventory){
 		
+		
+#ifdef CLIENT
+		//TAGGG - BobNEW.
+		pViewBob = &g_viewBobVars[s];
+		pViewBob_reset();
+#endif
+
+		// do this at spawn too. oh right, this 'reset' method is called from there.
+		vViewAngleOffsetTarget = [0, 0, 0];
+		fAccuracyKickback = 0;
+		fAccuracyKickbackStartCooldown = -1;
+		
+		fMoveBlockDelay = 0;
+		fUncrouchBlockDelay = 0;
+		fMoveBlockCapSpeed = 0;
+		fKarateStamina = 1.0;
+		
+		flBaseSpeedMulti = 1;
+		flMoveSpeedMulti = 1;
+		flSoundSpeedMulti = 1;
+		flFireDelayMulti = 1;
+		flBulletSpeedMulti = 1;
+		flProjectileSpeedMulti = 1;
+
 		// could this be done for resets outside of resetInventory?  unsure
 		flags = 0;
 		gflags = 0;
@@ -1227,24 +1285,58 @@ player::View_approachAngleOffsetTarget(vector vecInputAngles)
 }//View_approachAngleOffsetTarget
 
 
-// TODO - make this better shared probably?
+
+// little test
+var float input_timelengthSum = 0;
+
+// Count down my custom timers, called by ts/src/shared/input.qc, which is called
+// by Nuclide's PMove, same place that counts down w_attack_next.
+// Best to put things here that involve input_timelength.
 void
-player::handleAccuracyKickback(void){
+player::updateTimers(void){
 	
+	
+	
+	// good place for this?  Cloned from w_attack_next as a separate counter
+	// for akimbo firing to use.
+	w_attack_akimbo_next = max(0, w_attack_akimbo_next - input_timelength);	
+	
+	akimboDualFireToleranceTime = max(0, akimboDualFireToleranceTime - input_timelength);
+	
+	fMoveBlockDelay = max(0, fMoveBlockDelay - input_timelength);
+	fUncrouchBlockDelay = max(0, fUncrouchBlockDelay - input_timelength);
+	
+	/*
+	// little test.  See input_timelengthSum shoot up with packet latency.
+	input_timelengthSum += input_timelength;	
+	if(otherTimer >= 1.0){
+		otherTimer -= 1.0;
+		printfline("input_timelengthSum: %.2f", input_timelengthSum);
+		input_timelengthSum = 0;
+	}
+	*/
+	
+	
+	fAccuracyKickbackStartCooldown = max(0, fAccuracyKickbackStartCooldown - input_timelength);
+	
+	if(fKarateStamina < 1.0){
+		//fKarateStamina = bound(0, fKarateStamina + frametime * 0.1667, 1);
+		fKarateStamina = bound(0, fKarateStamina + input_timelength * 0.1667, 1);
+	}
 	if(fAccuracyKickbackStartCooldown != -1){
-		if(time >= fAccuracyKickbackStartCooldown){
-			//begin reducing the kickback cumula.
-			fAccuracyKickback -= frametime * 0.1;
+		if(fAccuracyKickbackStartCooldown <= 0){
+			// begin reducing
+			//fAccuracyKickback -= frametime * 0.1;
+			fAccuracyKickback = max(0, fAccuracyKickback - input_timelength);
 			
 			if(fAccuracyKickback <= 0){
-				//stop!
-				fAccuracyKickback = 0;
+				// stop!
 				fAccuracyKickbackStartCooldown = -1;
 			}
 		}
 	}//kickbackStartCooldown check
 	
-}
+}//updateTimers
 
 
 void
@@ -1519,12 +1611,11 @@ player::frameThink_fromServer(void){
 		printfline("STATUS: %d, %i", activeweapon, inventoryEquippedIndex);
 	}
 	
+	// no, leave that to shared/input.qc
+	//updateTimers();
 	
-	if(fKarateStamina < 1.0){
-		fKarateStamina = bound(0, fKarateStamina + frametime * 0.1667, 1);
-	}
+	preThinkShared();
 	
-	handleAccuracyKickback();
 	
 }// frameThink_fromServer
 
@@ -1619,6 +1710,8 @@ player::preThink(void){
 		}// inventoryEquippedIndex
 	}// w_freeze_idle_next check
 	
+	preThinkShared();
+	
 }//preThink
 
 
@@ -1674,6 +1767,27 @@ player::postThink(void){
 	
 }// postThink
 #endif
+
+
+
+// timer vars modified in here should use 'frametime'.
+// could/should clframetime be used for clientside intead?  Unsure.
+void
+player::preThinkShared(void){
+	
+	// little test
+	//otherTimer += frametime;
+	
+	//changedWeaponRecentlyTimer = max(0, changedWeaponRecentlyTimer - frametime);
+	
+	//if(fUncrouchBlockDelay > 0){
+	//	printfline("WHAT IS IT %.2f", fUncrouchBlockDelay);
+	//}
+	//fMoveBlockDelay = max(0, fMoveBlockDelay - frametime);
+	//fUncrouchBlockDelay = max(0, fUncrouchBlockDelay - frametime);
+}
+
+
 
 
 #ifdef SERVER

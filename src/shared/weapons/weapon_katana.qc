@@ -128,7 +128,8 @@ w_katana_primary(void)
 	
 	pl.fMoveBlockCapSpeed = 4;
 	
-	if(input_buttons & INPUT_BUTTON8){
+	// probably better than an input (input_buttons & INPUT_BUTTON8) check
+	if(pl.flags & FL_CROUCHING){
 		//okay, do the crouch attack!  Always use slash1 for it, resets cycler.
 		// TODO - the duration of a crouch attack locks the player in crouch, let pmove.c know sometime!!
 		pl.iMeleeCycler = 0;
@@ -137,10 +138,16 @@ w_katana_primary(void)
 		hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon, 80, 72);
 		
 		weapon_base_setWholeAttackDelay(pl, 0.70);
-		pl.fMoveBlockDelay = time + 1.0f;
-		pl.fUncrouchBlockDelay = time + 1.0f;
+		pl.fMoveBlockDelay = 1.0f;
+		pl.fUncrouchBlockDelay = 1.0f;
+		
+		// So this works now?  Or not.
+		#ifdef CLIENT
+		//SAVE_STATE(pl.fUncrouchBlockDelay);
+		#endif
+		
 	}else{
-		//Check.  Are we moving backwards,  enough??  And not looking up/down too far?
+		// Check.  Are we moving backwards,  enough??  And not looking up/down too far?
 		if(input_movevalues.x < -40 && GET_VIEW_ANGLES.x >= -55 && GET_VIEW_ANGLES.x <= 55){
 			//okay!
 			pl.iMeleeCycler = 0;
@@ -150,16 +157,18 @@ w_katana_primary(void)
 			hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon, 80, 74, -v_forward);
 			
 			weapon_base_setWholeAttackDelay(pl, 0.75);
-			pl.fMoveBlockDelay = time + 1.0f;
-			//pl.fUncrouchBlockDelay = time + 1.0f;
+			pl.fMoveBlockDelay = 1.0f;
+			//pl.fUncrouchBlockDelay = 1.0f;
 		}else{
-			//nothin special
+			// nothin special
 			meleeAnimToPlay = pl.iMeleeCycler;
 			pl.iMeleeCycler++;
 			if(pl.iMeleeCycler >= 2 || pl.iMeleeCycler < 0){
 				pl.iMeleeCycler = 0;
 			}
 			hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon, 80, 66);
+			
+			weapon_base_setWholeAttackDelay(pl, (ary_weaponData[WEAPON_ID::KATANA])->fAttackDelay);
 		}
 	}
 	

@@ -21,7 +21,32 @@
 // Most methods have been changed to player-methods instead, see much further
 // down.  Keeping mine as they are to be inserted as needed.
 // If they're not called in here, they never get called.
- 
+
+
+
+// This file was the source of the "GamePMove_..." format physics methods.
+// Now, the new base_player-overridable forms are used.
+
+// Also, some physics constants can be overridden like so:
+//     #define PMOVE_STEPHEIGHT 18
+// FreeHL doesn't do anything like that, so assuming original TS did nothing 
+// too special in that regard, but say so if that looks to be the case.
+
+
+
+// TODO - are the default player and crouch collision bounds still fitting for TS?
+//        Foggy on the details there, could've been some change in height
+
+
+// First something config-oriented.  If uncommented, a modified clone of Nuclide's
+// base_player::Physics_Crouch (overridden by player) is used to insert the checks for
+// stopping uncrouching too soon after certain melee attacks.  Example: katana melee attack.
+// Otherwise, a simpler way is done: in player::Physics_InputPreMove, force INPUT_BUTTON8
+// if the uncrouch block has not expired.
+//#define UNCROUCHBLOCK_FORKED
+
+
+///////////////////////////////////////////////////////////////////// 
  
  
 
@@ -51,62 +76,25 @@ const vector VEC_CHULL_MAX = [16,16,18];
 	PMove_Acceleration -> PMoveCustom_Acceleration
 */
 
-	
 
-	
-.float waterlevel;
-.float watertype;
-
-
-
-
-
-// new methods for physics to tap into
-// WARNING: Far, far too many edits into pmove for this to be feasible yet,
-// but needed for local slowdown (slow-mo / slow-pause effects) to be effective.
-float Game_MoveModMulti(player eTarget){
-	return autocvar_movemodmulti;
-}
+// From Nuclide, needed for cloned crouch logic
+#define PHY_VIEWPOS [0,0,24]
+#define PHY_VIEWPOS_CROUCHED [0,0,12]
+#define PHY_HULL_MIN [-16,-16,-36]
+#define PHY_HULL_MAX [16,16,36]
+#define PHY_HULL_CROUCHED_MIN [-16,-16,-18]
+#define PHY_HULL_CROUCHED_MAX [16,16,18]
 
 
-float GamePMove_MaxspeedRaw(player target){
-	return ( serverkeyfloat("phy_maxspeed") * 1.0 );
-}
-
-
-
-// Don't involve phy_friction anymore!  This gives a divisor for that instead.
-// (returning 0 means nothing happens, just like giving 1 to divide by)
-float Game_GetFriction(player eTarget){
-	
-	if(time <= eTarget.fMoveBlockDelay){
-		// don't move much until this has passed.  Further slowdowns need not apply.
-		//return serverkeyfloat("phy_friction") * 3.6;
-		return 0.2777777778;
-	}
-	
-	// default, nothing special
-	//return serverkeyfloat("phy_friction");
-	return 0;
-}
-
-
-
-
-// This file was the source of the "GamePMove_..." format physics methods.
-// Now, the new base_player-overridable forms are used.
-
-// Also, some physics constants can be overridden like so:
-//     #define PMOVE_STEPHEIGHT 18
-// FreeHL doesn't do anything like that, so assuming original TS did nothing 
-// too special in that regard, but say so if that looks to be the case.
-
-// I forget if TS did anything too weird about player hitbox height compared
-// to HL, for instance.
-
-
-// CHEEZY PROTOTYPE
+// Prototype for Nuclide methods involved
+int PMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs);
 int PMoveCustom_Contents(vector org);
+
+// Prototypes for new helper methods
+float Game_MoveModMulti(player eTarget);
+float GamePMove_MaxspeedRaw(player target);
+float Game_GetFriction(player eTarget);
+void TS_Physics_LedgeCheck(player pl);
 
 
 
@@ -145,8 +133,67 @@ player::Physics_Fall(float flDownforce)
 void
 player::Physics_Crouch(void)
 {
+#ifndef UNCROUCHBLOCK_FORKED
+	// simple simple
 	base_player::Physics_Crouch();
+#else
+	// would this be better somewhere, in CSQC_InputFrame or Physics_InputPreMove?
+	// probably the latter to make hacking less rewarding
+	// Oh!  That actually worked.  No need to fork this method then.
 	
+	int iFixCrouch = FALSE;
+	if (input_buttons & INPUT_BUTTON8) {
+		flags |= FL_CROUCHING;
+	} else {
+		
+		
+		if(this.fUncrouchBlockDelay <= 0){
+			if (PMove_IsStuck(this, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
+				flags &= ~FL_CROUCHING;
+				iFixCrouch = TRUE;
+			}
+			
+		}else{
+			flags |= FL_CROUCHING;
+		}
+		
+		/*
+		// If we aren't holding down duck anymore and 'attempt' to stand up, prevent it
+		if (flags & FL_CROUCHING) {
+			//TAGGG - only allow uncrouching if uncrouchBlockDelay isn't on.
+			// Surrounded with condition
+			if(this.fUncrouchBlockDelay <= 0){
+				//printfline("uncrouch time? %.2f", time);
+			////////////////////////////////////////////////////////////////////
+				if (PMove_IsStuck(this, [0,0,36], PHY_HULL_MIN, PHY_HULL_MAX) == FALSE) {
+					flags &= ~FL_CROUCHING;
+					iFixCrouch = TRUE;
+				}
+			////////////////////////////////////////////////////////////////////
+			}
+		} else {
+			flags &= ~FL_CROUCHING;
+		}
+		*/
+	}
+
+	if (flags & FL_CROUCHING) {
+		setsize(this, PHY_HULL_CROUCHED_MIN, PHY_HULL_CROUCHED_MAX);
+		view_ofs = PHY_VIEWPOS_CROUCHED;
+	} else {
+		setsize(this, PHY_HULL_MIN, PHY_HULL_MAX);
+		if (iFixCrouch && PMove_IsStuck(this, [0,0,0], PHY_HULL_MIN, PHY_HULL_MAX)) {
+			for (int i = 0; i < 36; i++) {
+				origin[2] += 1;
+				if (PMove_IsStuck(this, [0,0,0], mins, maxs) == FALSE) {
+					break;
+				}
+			}
+		}
+		setorigin(this, origin);
+		view_ofs = PHY_VIEWPOS;
+	}
+#endif
 }
 
 void
@@ -188,66 +235,19 @@ player::Physics_Jump(void)
 }
 
 
-// used to be called GamePMove_JumpPressed
-// Check to see if the player can ascend up a nearby surface interpreted
-// as a "ledge".  At least I think that's what the original TS was going for.
-// This may even be a little more likely to work than in the original, I don't
-// think that's too bad.
-void LedgeCheck(player pl){
-	
-	//if(pl.velocity.z != 0 && !(pl.velocity.z >= -45 && pl.velocity.z <= 50)){
-	//	printfline("that VELOCITY is bad  %.2f", pl.velocity.z);
-	//}
-	
-	//&& pl.velocity.z >= -45 && pl.velocity.z <= 50
-	if(
-		!(pl.flags & FL_ONGROUND) &&
-		GET_VIEW_ANGLES.x >= -70 && GET_VIEW_ANGLES.x <= 80
-		&& (pl.velocity.z >= -90 && pl.velocity.z <= 160)
-	){
-		
-		makevectors(GET_VIEW_ANGLES);
-		vector v_forward_proj = normalize([v_forward.x, v_forward.y, 0]);
-		
-		// Does a line from the bottom of the player model to a little further below
-		// find anything?
-		vector vBottomStart = pl.origin + [0,0,pl.mins.z + 2];
-		vector vBottomDown = pl.origin + [0,0,pl.mins.z - 2];
-		traceline(vBottomStart, vBottomDown, FALSE, pl);
-		if(trace_fraction == 1.0){
-			//printfline("tracetest A");
-			// If not, proceed. Does a line from a little below the player outward
-			// find something?
-			vector vBottomDownForward = vBottomDown + v_forward_proj * (pl.maxs.x * 1.7);
-			
-			traceline(vBottomDown, vBottomDownForward, FALSE, pl);
-			if(trace_fraction < 1.0){
-				//ok. And does a line from the top of the model going forwards work?
-				
-				vector vTopStart = pl.origin + [0,0,pl.maxs.z + 1];
-				vector vTopForward = vTopStart + v_forward_proj * (pl.maxs.x * 1.7);
-				
-				traceline(vTopStart, vTopForward, FALSE, pl);
-				//printfline("tracetest B trace: %.2f", trace_fraction);
-				if(trace_fraction == 1.0){
-					//printfline("tracetest C");
-					//ok! do it
-					pl.velocity.z += 10;
-				}
-			}
-		}
-		
-	}
-}
-
 void
 player::Physics_CheckJump(float premove)
 {
 	base_player::Physics_CheckJump(premove);
 	
+	if(this.movetype == MOVETYPE_NOCLIP){
+		// no ledge checks
+		return;
+	}
+	
 	// is this at all a good idea.
 	if (input_buttons & INPUT_BUTTON2){
-		LedgeCheck(this);
+		TS_Physics_LedgeCheck(this);
 	}
 	
 }
@@ -300,13 +300,15 @@ player::Physics_MaxSpeed(void)
 	}
 	
 	
-	if(time <= this.fMoveBlockDelay){
+	if(this.fMoveBlockDelay > 0){
 		// don't move much until this has passed.  Further slowdowns need not apply.
 		// !
 		// "fMoveBlockCapSpeed" must be set by a weapon before it is involved.
 		// Is that the best way to handle this?  Being a field in all weapon data would
 		// not make sense though, not much uses this
+		
 		targetSpeed = min(targetSpeed, this.fMoveBlockCapSpeed);
+		//targetSpeed *= 0.07;
 		return targetSpeed;
 	}
 	
@@ -336,16 +338,29 @@ player::Physics_InputPreMove(void)
 	//	input_movevalues *= 0.25;
 	//}
 	
-	// also, reduce the up/down noclip movement a bit, no need to be that quite that fast in
-	// most cases
-	if (input_buttons & INPUT_BUTTON2) {
-		input_movevalues[2] *= 0.7;
-	}
-	if (input_buttons & INPUT_BUTTON8) {
-		input_movevalues[2] *= 0.7;
-	}
 	
-}
+	if(this.movetype == MOVETYPE_NOCLIP){
+		// also, reduce the up/down noclip movement a bit, no need to be that quite that fast in
+		// most cases
+		if (input_buttons & INPUT_BUTTON2) {
+			input_movevalues[2] *= 0.7;
+		}
+		if (input_buttons & INPUT_BUTTON8) {
+			input_movevalues[2] *= 0.7;
+		}
+		
+	}else{
+		
+#ifndef UNCROUCHBLOCK_FORKED
+		if(this.fUncrouchBlockDelay > 0 && (flags & FL_CROUCHING)){
+			// still crouched while the time hasn't expired?  Keep the crouch
+			input_buttons |= INPUT_BUTTON8;
+		}
+#endif
+		
+	}// noclip check
+	
+}// Physics_InputPreMove
 
 void
 player::Physics_InputPostMove(void)
@@ -371,6 +386,13 @@ player::Physics_Run(void)
 	
 	// This call is pretty damn important
 	base_player::Physics_Run();
+	
+	
+	if(this.movetype == MOVETYPE_NOCLIP){
+		// no custom logic below makes sense for noclip
+		return;
+	}
+	
 	
 // !!!
 // Copied from PMoveCustom_Categorize / PMove_Categorize, whatever we're calling it,
@@ -458,5 +480,97 @@ player::Physics_Run(void)
 	}
 	
 }// Physics_Run
+
+
+
+
+
+
+// !!!
+// New methods for physics to tap into, helper methods not called by Nuclide
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// WARNING: Far, far too many edits into pmove for this to be feasible yet,
+// but needed for local slowdown (slow-mo / slow-pause effects) to be effective.
+float Game_MoveModMulti(player eTarget){
+	return autocvar_movemodmulti;
+}
+
+
+float GamePMove_MaxspeedRaw(player target){
+	return ( serverkeyfloat("phy_maxspeed") * 1.0 );
+}
+
+
+// Don't involve phy_friction anymore!  This gives a divisor for that instead.
+// (returning 0 means nothing happens, just like giving 1 to divide by)
+// Noclip doesn't pay attention to friction so don't bother with a check for that
+float Game_GetFriction(player eTarget){
+	
+	if(eTarget.fMoveBlockDelay > 0){
+		// don't move much until this has passed.  Further slowdowns need not apply.
+		//return serverkeyfloat("phy_friction") * 3.6;
+		return 0.2777777778;
+	}
+	
+	// default, nothing special
+	//return serverkeyfloat("phy_friction");
+	return 0;
+}
+
+
+
+// used to be called GamePMove_JumpPressed
+// Check to see if the player can ascend up a nearby surface interpreted
+// as a "ledge".  At least I think that's what the original TS was going for.
+// This may even be a little more likely to work than in the original, I don't
+// think that's too bad.
+void TS_Physics_LedgeCheck(player pl){
+	
+	//if(pl.velocity.z != 0 && !(pl.velocity.z >= -45 && pl.velocity.z <= 50)){
+	//	printfline("that VELOCITY is bad  %.2f", pl.velocity.z);
+	//}
+	
+	//&& pl.velocity.z >= -45 && pl.velocity.z <= 50
+	if(
+		!(pl.flags & FL_ONGROUND) &&
+		GET_VIEW_ANGLES.x >= -70 && GET_VIEW_ANGLES.x <= 80
+		&& (pl.velocity.z >= -90 && pl.velocity.z <= 160)
+	){
+		
+		makevectors(GET_VIEW_ANGLES);
+		vector v_forward_proj = normalize([v_forward.x, v_forward.y, 0]);
+		
+		// Does a line from the bottom of the player model to a little further below
+		// find anything?
+		vector vBottomStart = pl.origin + [0,0,pl.mins.z + 2];
+		vector vBottomDown = pl.origin + [0,0,pl.mins.z - 2];
+		traceline(vBottomStart, vBottomDown, FALSE, pl);
+		if(trace_fraction == 1.0){
+			//printfline("tracetest A");
+			// If not, proceed. Does a line from a little below the player outward
+			// find something?
+			vector vBottomDownForward = vBottomDown + v_forward_proj * (pl.maxs.x * 1.7);
+			
+			traceline(vBottomDown, vBottomDownForward, FALSE, pl);
+			if(trace_fraction < 1.0){
+				//ok. And does a line from the top of the model going forwards work?
+				
+				vector vTopStart = pl.origin + [0,0,pl.maxs.z + 1];
+				vector vTopForward = vTopStart + v_forward_proj * (pl.maxs.x * 1.7);
+				
+				traceline(vTopStart, vTopForward, FALSE, pl);
+				//printfline("tracetest B trace: %.2f", trace_fraction);
+				if(trace_fraction == 1.0){
+					//printfline("tracetest C");
+					//ok! do it
+					pl.velocity.z += 10;
+				}
+			}
+		}
+		
+	}
+}
 
 

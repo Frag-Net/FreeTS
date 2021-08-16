@@ -67,6 +67,7 @@
 #undef printf
 #endif
 
+
 #ifdef CLIENT
 #define printf_starter print("CL")
 #define printf(s1, ...) print(sprintf(s1, ##__VA_ARGS__))
@@ -79,7 +80,13 @@
 #define printlinef(s1, ...) print(sprintf("SV: "s1"\n", ##__VA_ARGS__))
 #endif
 
-
+// could dummy printouts by enabling this block instead of the above
+/*
+#define printf_starter
+#define printf(s1, ...)
+#define printfline(s1, ...)
+#define printlinef(s1, ...)
+*/
 
 // Safe way to declare an entity seen in FreeHL.  Think of it as:
 //     arg_dest = spawnfunc_ClassNameHere;

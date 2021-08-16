@@ -135,8 +135,8 @@ w_karate_primary(void)
 
 	
 	weapon_base_setWholeAttackDelay(pl, 0.175f);
-	pl.fMoveBlockDelay = time + 0.09f;
-	//pl.fUncrouchBlockDelay = time + 1.0f;
+	pl.fMoveBlockDelay = 0.09;
+	//pl.fUncrouchBlockDelay = 1.0f;
 		
 			
 #ifdef SERVER
@@ -188,13 +188,13 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAni
 	
 	curSpeed = vlen(pl.velocity);
 	
-	if(input_buttons & INPUT_BUTTON8){
+	if(pl.flags & FL_CROUCHING){
 		//crouching?
 		//spin kick
 		meleeAnimToPlay = 1;
 		hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 40 * pl.fKarateStamina, 72);
 		weapon_base_setWholeAttackDelay(pl, 1);
-		pl.fMoveBlockDelay = time + 1;
+		pl.fMoveBlockDelay = 1.0;
 		pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.25, 1);
 		
 		// curSpeed > 160
@@ -215,7 +215,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAni
 			meleeAnimToPlay = 2;
 			hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 76, -v_forward);
 			weapon_base_setWholeAttackDelay(pl, 1);
-			pl.fMoveBlockDelay = time + 1;
+			pl.fMoveBlockDelay = 1.0;
 			//TAGGG - NOTE. Why is this stamina-loss in original TS so high?
 			// Changing.  Original was 67%, but really now?  40% is plenty.
 			// Original TS behavior seesm to scale the stamina lost with the player speed,
@@ -226,7 +226,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAni
 			meleeAnimToPlay = 0;
 			hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, v_forward);
 			weapon_base_setWholeAttackDelay(pl, 0.53);
-			pl.fMoveBlockDelay = time + 0.46;
+			pl.fMoveBlockDelay = 0.46;
 			pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.16, 1);
 		}
 		
@@ -239,7 +239,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAni
 		meleeAnimToPlay = 2;
 		hitRep = weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 74, -v_forward);
 		weapon_base_setWholeAttackDelay(pl, 1);
-		pl.fMoveBlockDelay = time + 1;
+		pl.fMoveBlockDelay = 1.0;
 		pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.3, 1);
 		return;
 	}
@@ -249,7 +249,7 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAni
 	meleeAnimToPlay = 0;
 	hitRep = weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::KARATE], arg_thisWeapon, 30 * pl.fKarateStamina, 66);
 	weapon_base_setWholeAttackDelay(pl, 0.53);
-	pl.fMoveBlockDelay = time + 0.46;
+	pl.fMoveBlockDelay = 0.46;
 	
 	// Original behavior was this has the same stamina drain as a punch, but does that really make sense?
 	// A kick has a longer cooldown so it's impossible to run out of stamina just from doing standing kicks.
@@ -282,7 +282,7 @@ w_karate_secondary(void)
 	
 	w_karate_determineSecondaryAttack(hitRep, meleeAnimToPlay);
 	
-	//pl.fUncrouchBlockDelay = time + 1.0f;
+	pl.fUncrouchBlockDelay = 1.0f;
 	//Animation_ShootWeapon( self );
 	
 #ifdef SERVER

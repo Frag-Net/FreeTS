@@ -64,4 +64,5 @@ struct
 	vector m_vCam;
 } g_viewBobVars[4], *pViewBob;
 
+void pViewBob_reset(void);
 

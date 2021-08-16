@@ -129,6 +129,8 @@ w_combatknife_primary(void)
 	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::COMBATKNIFE];
 	MELEE_HIT_RESPONSE hitRep =  weapon_base_onPrimaryAttack_melee(pl, ary_weaponData[WEAPON_ID::COMBATKNIFE], arg_thisWeapon, baseRef.fAttackDamage, 58);
 	
+	weapon_base_setWholeAttackDelay(pl, (ary_weaponData[WEAPON_ID::COMBATKNIFE])->fAttackDelay);
+	
 	// Only the server is doing traces so far to get results for this to be worth checking.
 #ifdef SERVER
 	//printfline("melee hit reponse: %d soft? %d", hitRep, (hitRep==MELEE_HIT_RESPONSE::SOFT));

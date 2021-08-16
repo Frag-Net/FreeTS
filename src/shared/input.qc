@@ -17,6 +17,9 @@
  
 
 void processInputs(void);
+#ifdef CLIENT
+void PreSpawn_Input(void);
+#endif
 
 
 // WARNING!  This is only called by PMove_Run, which is only called
@@ -34,38 +37,14 @@ Game_Input(void)
 {
 	player pl = (player)self;
 	
+	//
+	// TODO: in the CSQC_Input_Frame event might be better when supported
+	// (but still do a 'return' on not being spawned here regardless)
+	//
 	if(pl.iState != PLAYER_STATE::SPAWNED){
 		// not ingame (fake spectator)?  Do another check instead: spawning.
 #ifdef CLIENT
-
-		
-		if(
-			pSeatLocal->m_flUI_Display == UI_SCREEN::NONE &&
-			(input_buttons & INPUT_BUTTON0) &&
-			!(pl.gflags & GF_SEMI_TOGGLED) &&
-			pSeatLocal->flBlockSpawnTime <= time
-		){
-			sendevent( "GamePlayerSpawn", "");
-		}
-		
-		/*
-		if(
-			((input_buttons & INPUT_BUTTON0) && pSeatLocal->flBlockSpawnTime > time) ||
-		    pSeat->m_flInputBlockTime > time
-		)
-		{
-			pSeatLocal->flBlockSpawnTime = time + 0.20f;
-			pl.gflags |= GF_SEMI_TOGGLED;
-			return;
-		}
-		*/
-		
-		// since the rest of this method is about to be skipped.
-		if(input_buttons & INPUT_BUTTON0){
-			pl.gflags |= GF_SEMI_TOGGLED;
-		}else{
-			pl.gflags &= ~GF_SEMI_TOGGLED;
-		}
+		PreSpawn_Input();
 #endif
 		// client or server, don't pay attention to the rest of this file if not spawned
 		return;
@@ -73,7 +52,7 @@ Game_Input(void)
 #ifdef CLIENT
 	else{
 		// not spawned?  Some notes on possible things to involve, all dummied for now
-
+		
 		
 		// This was removed?  Legacy VGUI
 		// If we are inside a UI, don't let the client do stuff outside
@@ -94,14 +73,10 @@ Game_Input(void)
 	// Must be ingame to reach beyond here
 	
 	
-	//TAGGG - good place for this?  Cloned from w_attack_next as a separate counter
-	// for akimbo firing to use.
 	// This method, Game_Input, is called by Nuclide's pmove.qc in the same place
 	// w_attack_next is adjusted by the current frame time.
-	pl.w_attack_akimbo_next = max(0, pl.w_attack_akimbo_next - input_timelength);
+	pl.updateTimers();
 	
-	pl.akimboDualFireToleranceTime = max(0, pl.akimboDualFireToleranceTime - input_timelength);
-
 #ifdef SERVER
 	CGameRules rules = (CGameRules)g_grMode;
 
@@ -412,6 +387,44 @@ void processInputs(void){
 
 #ifdef CLIENT
 
+// called when not ingame for sending a spawn request.
+void PreSpawn_Input(void){
+	player pl = (player)self;
+	
+	if(
+		pSeatLocal->m_flUI_Display == UI_SCREEN::NONE &&
+		(input_buttons & INPUT_BUTTON0) &&
+		!(pl.gflags & GF_SEMI_TOGGLED) &&
+		pSeatLocal->flBlockSpawnTime <= time
+	){
+		sendevent( "GamePlayerSpawn", "");
+	}
+	
+	/*
+	if(
+		((input_buttons & INPUT_BUTTON0) && pSeatLocal->flBlockSpawnTime > time) ||
+		pSeat->m_flInputBlockTime > time
+	)
+	{
+		pSeatLocal->flBlockSpawnTime = time + 0.20f;
+		pl.gflags |= GF_SEMI_TOGGLED;
+		return;
+	}
+	*/
+	
+	// since the rest of this method is about to be skipped.
+	if(input_buttons & INPUT_BUTTON0){
+		pl.gflags |= GF_SEMI_TOGGLED;
+	}else{
+		pl.gflags &= ~GF_SEMI_TOGGLED;
+	}
+}//PreSpawn_Input
+
+
+
+
+
+
 void HUD_DrawWeaponSelect_Trigger(void);
 BOOL TS_HUD_CloseWeaponSelect(BOOL);
 
@@ -432,17 +445,23 @@ void ClientGame_Input_Frame(void){
 	// CSQC_Input_Frame (defined by Nuclide) letting the gamemod block right-click
 	// inputs per some condition, like weapon-select being up.
 	
+	// TODO - changing what m_flInputBlockTime affects might be a good idea,
+	// affecting other inputs like crouch is unnecessary, that causes the player to uncrouch
+	// if changing weapons while crouched.
+	
 	if(pSeat->m_iHUDWeaponSelected && pSeat->m_iInputAttack2){   //input_buttons & INPUT_BUTTON3
 		if(TS_HUD_CloseWeaponSelect(TRUE)){
-			pSeat->m_flInputBlockTime = time + 0.2;
+			// might not even need this much, but verify.
+			// might change going to weapons that have an immediate secondary fire
+			//pSeat->m_flInputBlockTime = time + 0.2;
 			input_impulse = 0;
-			input_buttons = 0;
+			//input_buttons = 0;   no need for the whole buttons reset
+			input_buttons &= ~INPUT_BUTTON3;
 			pSeat->m_iInputAttack2 = FALSE;
 		}else{
 			//pSeat->m_iInputAttack2 = TRUE;
 		}
 	}
-	
 	
 	// !!!
 	// An override for this to go in CSQC_Input_Frame would be very nice I think,

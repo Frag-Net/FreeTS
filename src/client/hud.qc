@@ -102,7 +102,7 @@ HUD_Draw(void)
 		//TAGGG - new
 		//////////////////////////////////////////////////////////////
 		drawTimer();
-		drawPlayerStats();  
+		drawPlayerStats();
 		
 		// ---OLD LOCATION for weapon stats drawing (Weapons_DrawCrosshair)
 		//////////////////////////////////////////////////////////////
