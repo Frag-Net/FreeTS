@@ -33,6 +33,7 @@ weapondata_melee_t weapon_katana =
 	weapon_katana_onSecondaryAttackRelease,
 	weapon_katana_onThink,
 	weapon_katana_onColdCock,
+	NULL,
 	weaponseq_katana::idle,
 	weaponseq_katana::draw,
 	31.0f / 33.0f,
@@ -141,10 +142,6 @@ w_katana_primary(void)
 		pl.fMoveBlockDelay = 1.0f;
 		pl.fUncrouchBlockDelay = 1.0f;
 		
-		// So this works now?  Or not.
-		#ifdef CLIENT
-		//SAVE_STATE(pl.fUncrouchBlockDelay);
-		#endif
 		
 	}else{
 		// Check.  Are we moving backwards,  enough??  And not looking up/down too far?

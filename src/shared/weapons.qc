@@ -273,7 +273,6 @@ weapon_base_onPrimaryAttack_melee_fromCustomDirection(
 }// weapon_base_onPrimaryAttack_melee
 
 
-// Apparently serverside-only? ok...
 void
 weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed)
 {
@@ -294,7 +293,6 @@ void
 weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed)
 {
 	
-#ifdef SERVER
 	weapondata_gun_t baseRef = *((weapondata_gun_t*)basePRef);
 	float randoAngFactor = randomInRange_f(0, 1);
 	
@@ -336,6 +334,7 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	//float maxer = 1.00/128;
 	
 	
+#ifdef SERVER
 	//TAGGG - NOTE!
 	// Nuclide does not support custom range as of now, nor how to tell how far penetration can go.
 	// Old FreeTS did penetration distance by reducing range by 3 times as far as any solid object
@@ -356,6 +355,7 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 		myPenetrationCount = 0;
 	}
 	TraceAttack_SetPenetrationPower(myPenetrationCount);
+#endif
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
@@ -363,7 +363,9 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	// like "WEAPON_ID::Glock18".  Consider sending that as a parameter to be available here
 	if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
 		//left
+#ifdef SERVER
 		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
+#endif
 		arg_thisWeapon.iClipLeft -= 1;
 		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
 		pl.vViewAngleOffsetTarget += toGo;
@@ -371,8 +373,9 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	if(attackTypeUsed & BITS_AKIMBOCHOICE_RIGHT){
 		
 		//right
+#ifdef SERVER
 		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
-
+#endif
 		arg_thisWeapon.iClipAkimboLeft -= 1;
 		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
 		pl.vViewAngleOffsetTarget += toGo;
@@ -391,12 +394,9 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 		pl.fAccuracyKickback = 0.1;
 	}
 	
-	// TODO - third person.
+	
+	// TODO - third person.  This is mad old isn't it
 	//Animation_ShootWeapon( pl );
-#else
-	//CLIENTSIDE
-
-#endif
 	
 }// weapon_base_onAttack
 
@@ -498,8 +498,7 @@ weapon_shotgun_reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	//pl.resetZoom();
-	pl.setZoom(1.0f);
+	pl.resetZoomSoft();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	
@@ -1287,7 +1286,7 @@ weapon_akimbo_fullAttackChoice(
 			*/
 			
 		}
-		\
+		
 	}
 
 	return finalAkimboChoice;
@@ -1366,8 +1365,7 @@ weapon_gun_Reload(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	//pl.resetZoom();
-	pl.setZoom(1.0f);
+	pl.resetZoomSoft();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1410,8 +1408,7 @@ weapon_gun_Reload_CustomSequence(
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	//pl.resetZoom();
-	pl.setZoom(1.0f);
+	pl.resetZoomSoft();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
@@ -1432,13 +1429,19 @@ weapon_ironsight_Reload(
 ){
 	weapondata_ironsight_t baseRef = *basePRef;
 	
+	
+	/*
+	if (pl.w_attack_next > 0.0){
+		return;
+	}
+	*/
+	
 	if ( pl.isReloading || pl.isChangingIronsight){
 		//blocked
 		return;
 	}
-	//if ( self.fAttackFinished > time ) {
-	//	return;
-	//}
+	
+	
 	
 	if(pl.ary_ammoTotal[baseRef.iAmmoDataID] <= 0){
 		//also no.  Having no ammo in the pool to take from means no reloading.
@@ -1451,19 +1454,19 @@ weapon_ironsight_Reload(
 		 }
 	}else{
 		//akimbo, allows reloading for either being less than full
-		 if(arg_thisWeapon.iClipLeft >= baseRef.iClipMax && arg_thisWeapon.iClipAkimboLeft >= baseRef.iClipMax){
+		 if(arg_thisWeapon.iClipLeft >= baseRef.iClipMax && arg_thisWeapon.iClipAkimboLeft >= baseRef.iClipMax){ 
 			 return;  //both full? don't reload!
 		 }
 	}
 	
 	pl.isChangingIronsight = FALSE;
-	//pl.resetZoom();
-	pl.setZoom(1.0f);
+	pl.resetZoomSoft();
 	pl.aryNextBurstShotTime_softLength = 0;
 	pl.aryNextBurstShotTime_listenIndex = -1;
 	pl.isReloading = TRUE;
 	weapon_base_setWholeAttackDelay(pl, baseRef.fAnim_Reload_Duration);
 	
+	//printfline("not ironsite rite %i", arg_thisWeapon.iIronSight);
 	if(!arg_thisWeapon.iIronSight){
 		TS_Weapons_ViewAnimation(baseRef.iAnim_Reload_Index, baseRef.fAnim_Reload_Duration );
 	}else{
@@ -1642,6 +1645,8 @@ weapon_gun_onThink_burstFireLogic(
 		}
 	}
 }// weapon_gun_onThink
+
+
 
 
 void
@@ -2000,6 +2005,7 @@ weapondata_basic_t weapon_none =
 	weapons_dummyfun,
 	weapons_dummyfun,
 	weapons_dummyfun,
+	NULL,
 	0,
 	0,
 	0.0f,
@@ -2031,6 +2037,7 @@ weapondata_basic_t weapon_none_akimbo =
 	weapons_dummyfun,
 	weapons_dummyfun,
 	weapons_dummyfun,
+	NULL,
 	0,
 	0,
 	0.0f,
@@ -2049,9 +2056,7 @@ weapondata_basic_t weapon_none_akimbo =
 
 
 
-//include after all weapons have been defined? (that is, compile weapon.c (here), then weapon-specific files, then a new file containing setupWeaponData)
-//Or would it make sense to extern the structs here and keep this method in the same file?
-//	(compile weapon-specific files first, then weapon.c)
+
 void
 setupWeaponData(void)
 {

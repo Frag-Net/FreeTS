@@ -51,6 +51,7 @@ hud_weaponselect.h
 inventory_logic_draw.h
 view.h
 hud.h
+draw.h
 // Yes, really, server/entity... We have a clientside rendering component to this.
 ../server/entity/ts_powerup.h
 

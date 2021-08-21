@@ -24,6 +24,13 @@ void weapon_ak47_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_ak47_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_ak47_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.40f;break;
+	case 2:pl.flZoomTarget = 0.1625f;break;
+	}
+}
 
 weapondata_ironsight_t weapon_ak47 =
 {
@@ -38,6 +45,7 @@ weapondata_ironsight_t weapon_ak47 =
 	weapon_ak47_onSecondaryAttackRelease,
 	weapon_ak47_onThink,
 	weapon_ak47_onColdCock,
+	weapon_ak47_onSetZoomLevel,
 	weaponseq_ak47::idle,
 	weaponseq_ak47::draw,
 	31.0f / 35.0f,
@@ -171,6 +179,7 @@ w_ak47_primary(void)
 	
 }
 
+
 void
 w_ak47_secondary(void)
 {
@@ -180,13 +189,20 @@ w_ak47_secondary(void)
 	INPUT_SECONDARY_TAP_GATE
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
-		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 3;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.40f);break;
-		case 2:pl.setZoom(0.1625f);break;
-		}
+		
+		//int iZoomLevel_old = pl.iZoomLevel;
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 3;
+		//printfline("!!! ZoomLevel change MANUAL %i -> %i (%.2f) inputframe:%i", iZoomLevel_old, pl.iZoomLevel, time, input_sequence);
+		pl.setZoomLevel(newZoomLevel);
+		
+		// IDEA: have a var set by that EquipmentCallback thing instead that's networked,
+		// so:    client: set "waitingForCallback" to FALSE.  SendEvent("...")
+		//        server: modify "waitingForCallback", set to TRUE.
+		//        (because that var is networked, the client will see it when it updates).
+		// Or don't, that might be stupidly wasteful from being sent every frame when the
+		// sheer majority do not involve weapon changes.
+		
+		
 	}else{
 		if(pl.w_attack_next > 0){
 			return;
@@ -194,7 +210,6 @@ w_ak47_secondary(void)
 		// no scope?  we use ironsights then.
 		weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::AK47], arg_thisWeapon);
 	}
-	
 }
 
 void

@@ -188,27 +188,6 @@ TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo){
 }
 
 
-// EXPERIMENTAL.  If the currently equipped weapon has been changed, reject
-// messages received between the time I sent an order to change the current wepaon
-// and the time it takes to get a response that the new weapon was seen by the server.
-// This stops out-of-date calls coming in from reverting the zoom (or whatever other var)
-// back to the old state.
-// Or, example:
-// Var A is networked (server sends updates to the client of its current value to keep it
-// from going too far out of sync).
-// var A starts at 30 both places.  Say the ping is 500 milliseconds.
-// Client sets var A to 12, sends a message to the server to have it changed too.
-// But, during those 500 milliseconds to reach the server, messages sent from the server
-// with the old A value (30), sent before the client sent the A-update to the server, reach
-// the client and rever the value of A back to that 30.
-// Only after the A-update of 12 reaches the server and the server updates the client back
-// does that stop.
-void
-EV_EquipCallback(void){
-	player pl = (player)self;
-	pl.equippedWeaponWaitingForCallback = FALSE;
-}
-
 #endif
 #ifdef SERVER
 // that's it really serverside.
@@ -251,6 +230,89 @@ CSEv_TS_playerEquippedWeapon_ii(int newWeaponEquipped, BOOL useAkimbo){
 
 
 #endif
+
+
+
+
+
+
+
+#ifdef SERVER
+
+void
+CSEv_TS_Test_i(int arg){
+	player pl = (player)self;
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EVENT_TS::TEST_CALLBACK );
+	WriteInt( MSG_MULTICAST, arg );
+	msg_entity = pl;
+	multicast( [0,0,0], MULTICAST_ONE_R );
+}
+
+#else
+
+
+
+// begins from clientside!  Manually call from wherever
+// DUMMIED FOR NOW.  If seriously used, the player needs a global counter
+// that goes up with each call of this function (where globTemp is).
+void TestCallback_Initiate(void){
+	/*
+	globTemp = ((float)globTemp + 1); //% 255;   // use a byte or not?
+	pl.equippedWeaponWaitingForCallback = TRUE;
+	pl.equippedWeaponWaitingForCallback_ID = globTemp;
+	pl.equippedWeaponWaitingForCallback_maxWaitTime = time + 0.8;
+	sendevent("TS_Test", "i", pl.equippedWeaponWaitingForCallback_ID);
+	*/
+}
+
+// EXPERIMENTAL.  If the currently equipped weapon has been changed, reject
+// messages received between the time I sent an order to change the current wepaon
+// and the time it takes to get a response that the new weapon was seen by the server.
+// This stops out-of-date calls coming in from reverting the zoom (or whatever other var)
+// back to the old state.
+// Or, example:
+// Var A is networked (server sends updates to the client of its current value to keep it
+// from going too far out of sync).
+// var A starts at 30 both places.  Say the ping is 500 milliseconds.
+// Client sets var A to 12, sends a message to the server to have it changed too.
+// But, during those 500 milliseconds to reach the server, messages sent from the server
+// with the old A value (30), sent before the client sent the A-update to the server, reach
+// the client and rever the value of A back to that 30.
+// Only after the A-update of 12 reaches the server and the server updates the client back
+// does that stop.
+void
+EV_EquipCallback(void){
+	player pl = (player)self;
+	pl.equippedWeaponWaitingForCallback = FALSE;
+}
+void
+EV_TestCallback(int arg_messageID){
+	player pl = (player)self;
+	
+	if(pl.equippedWeaponWaitingForCallback == FALSE){
+		printfline("??? Not expecting a callback message!");
+	}
+	
+	if(arg_messageID == pl.equippedWeaponWaitingForCallback_ID){
+		printfline("EV_TestCallback: Received up to date message!");
+		pl.equippedWeaponWaitingForCallback = FALSE;
+	}else{
+		printfline("EV_TestCallback: Message out of date!  Exp:%i Recv:%i", pl.equippedWeaponWaitingForCallback_ID, arg_messageID);
+	}
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -518,10 +580,10 @@ _TS_playerChangeFiremode(void ) {
 				//this power of 2 is a valid fireMode?  pick it
 				(*fireModeVar) = currentChoice;
 				
-				#ifdef CLIENT
+#ifdef CLIENT
 				// effectively SAVE_STATE on whatever choice
 				(*fireModeVar_net) = currentChoice;
-				#endif
+#endif
 				
 				return;
 			}
@@ -595,9 +657,9 @@ _TS_playerUseItems(void){
 	
 #if defined(CLIENT_CMD_SAFEMODE) && defined(CLIENT)
 				// Have a much simpler version instead
-				#ifdef CLIENT
+#ifdef CLIENT
 					localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
-				#endif
+#endif
 				return;
 #endif
 				
@@ -842,6 +904,8 @@ CSEv_TS_Debug_getAngle_(void ) {
 // Note that trying to exceed an ammo's max allowed ammount still caps at the ammmo's capacity.
 // And if the player can't afford the ammount, the next greatest ammount to use the remaining money
 // will be used instead.
+// !!! PENDING REMOVAL.
+// Nothing calls this, and it's the wrong name anyway (_i, should be _ii at the end I belive).
 void
 CSEv_PlayerBuyAmmo_TS_i( int iAmmoTypeID, int iAmmoAmount ) {
 	player pl = (player)self;

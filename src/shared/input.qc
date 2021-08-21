@@ -136,9 +136,9 @@ Game_Input(void)
 	if(pl.doFiremodeChange){
 		
 		// so they say?
-		#ifdef CLIENT
+#ifdef CLIENT
 		//sendevent("TS_playerChangeFiremode", "");
-		#endif
+#endif
 		int iOldFiremode = pl.ary_myWeapons[pl.inventoryEquippedIndex].iFireMode;
 		_TS_playerChangeFiremode();
 		pl.doFiremodeChange = FALSE;

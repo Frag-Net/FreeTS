@@ -46,6 +46,7 @@ weapondata_ironsight_t weapon_socommk23_akimbo =
 	weapon_socommk23_akimbo_onSecondaryAttackRelease,
 	weapon_socommk23_akimbo_onThink,
 	weapon_socommk23_akimbo_onColdCock,
+	NULL,
 	weaponseq_socommk23_akimbo::idle,
 	weaponseq_socommk23_akimbo::draw,
 	31.0f / 40.0f,

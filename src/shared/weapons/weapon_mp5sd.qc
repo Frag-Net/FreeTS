@@ -21,6 +21,12 @@ void weapon_mp5sd_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_mp5sd_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_mp5sd_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.40f;break;
+	}
+}
 
 weapondata_gun_t weapon_mp5sd =
 {
@@ -35,6 +41,7 @@ weapondata_gun_t weapon_mp5sd =
 	weapon_mp5sd_onSecondaryAttackRelease,
 	weapon_mp5sd_onThink,
 	weapon_mp5sd_onColdCock,
+	weapon_mp5sd_onSetZoomLevel,
 	weaponseq_mp5sd::idle,
 	weaponseq_mp5sd::draw,
 	31.0f / 30.0f,
@@ -197,11 +204,8 @@ w_mp5sd_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.40f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 2;
+		pl.setZoomLevel(newZoomLevel);
 	}
 	
 }

@@ -20,6 +20,12 @@ void weapon_contenderg2_onThink(player pl, weapondynamic_t arg_thisWeapon){
 }
 void weapon_contenderg2_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 }
+void weapon_contenderg2_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.325f;break;
+	}
+}
 
 weapondata_gun_t weapon_contenderg2 =
 {
@@ -34,6 +40,7 @@ weapondata_gun_t weapon_contenderg2 =
 	weapon_contenderg2_onSecondaryAttackRelease,
 	weapon_contenderg2_onThink,
 	weapon_contenderg2_onColdCock,
+	weapon_contenderg2_onSetZoomLevel,
 	weaponseq_contenderg2::idle,
 	weaponseq_contenderg2::draw,
 	31.0f / 30.0f,
@@ -176,11 +183,8 @@ w_contenderg2_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.325f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 2;
+		pl.setZoomLevel(newZoomLevel);
 	}
 	
 }

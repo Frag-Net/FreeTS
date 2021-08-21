@@ -39,6 +39,7 @@ weapondata_ironsight_t weapon_steyrtmp =
 	weapon_steyrtmp_onSecondaryAttackRelease,
 	weapon_steyrtmp_onThink,
 	weapon_steyrtmp_onColdCock,
+	NULL,
 	weaponseq_steyrtmp::idle,
 	weaponseq_steyrtmp::draw,
 	31.0f / 35.0f,

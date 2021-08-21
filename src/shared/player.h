@@ -121,19 +121,26 @@ class player:base_player
 	// Set this (or the setZoom method) to tap into the lerp system properly.
 	// When noticed (client/view.qc), the current zoom value goes to flZoomStart and 
 	// flZoomTarget goes to flZoomEnd.  The lerp goes from Start to End for a smooth transition.
-	PREDICTED_FLOAT(flZoomTarget);
+	// TODO - soon, no longer serverside, not even involved there anymore at all.
+	// This can still be on server and clientside, since determining it from iZoomLevel
+	// given a weapon is possible (ak47's zoom #1 is this, barrett's zoom #1 is that, etc.)
+	//PREDICTED_FLOAT(flZoomTarget);
+	float flZoomTarget;
 	
 #ifdef CLIENT
 	float flZoomEnd;
 	float flZoomStart;
 	float flZoomLerp;
 	float flZoomCurrent;
+	float flZoomTarget;
+	float iZoomLevelPrev;  // for clientside to detect a change
 #endif
 ////////////////////////////////
 	
 	
 #ifdef CLIENT
 	BOOL equippedWeaponWaitingForCallback;
+	int equippedWeaponWaitingForCallback_ID;
 	float equippedWeaponWaitingForCallback_maxWaitTime;
 	
 	
@@ -484,8 +491,9 @@ class player:base_player
 	virtual vector(vector vecInputAngles)View_approachAngleOffsetTarget;
 	virtual void (void)updateTimers;
 
-	virtual void(float arg_theZoom) setZoom;
+	virtual void(int arg_iZoomLevel) setZoomLevel;
 	virtual void(void) resetZoom;
+	virtual void(void) resetZoomSoft;
 	
 	
 	virtual void(int arg_newIndex) setInventoryEquippedIndex;

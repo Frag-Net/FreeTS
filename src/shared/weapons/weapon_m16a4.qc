@@ -30,6 +30,13 @@ void weapon_m16a4_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_m16a4_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_m16a4_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.40f;break;
+	case 2:pl.flZoomTarget = 0.10f;break;
+	}
+}
 
 weapondata_ironsight_t weapon_m16a4 =
 {
@@ -44,6 +51,7 @@ weapondata_ironsight_t weapon_m16a4 =
 	weapon_m16a4_onSecondaryAttackRelease,
 	weapon_m16a4_onThink,
 	weapon_m16a4_onColdCock,
+	weapon_m16a4_onSetZoomLevel,
 	weaponseq_m16a4::idle,
 	weaponseq_m16a4::draw,
 	31.0f / 35.0f,
@@ -231,12 +239,8 @@ w_m16a4_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 3;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.40f);break;
-		case 2:pl.setZoom(0.10f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 3;
+		pl.setZoomLevel(newZoomLevel);
 	}else{
 		if(pl.w_attack_next > 0){
 			return;

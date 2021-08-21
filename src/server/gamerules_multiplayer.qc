@@ -857,22 +857,32 @@ TSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 	// If so whatever picks a spawn point should probably come with a spawn point to
 	// put the player anyway, including droptofloor.
 	
+	
+	if(autocvar_debug_spawnpointforced == 1){
+		
 #ifdef TS_CUSTOM_SPAWN_ORIGIN
-	myOrigin = TS_CUSTOM_SPAWN_ORIGIN;
+			myOrigin = TS_CUSTOM_SPAWN_ORIGIN;
 #else
-	myOrigin = eSpawn.origin;
+			printfline("WARNING!  debug_spawnpointforced set, but TS_CUSTOM_SPAWN_ORIGIN is not defined!");
+			myOrigin = eSpawn.origin;
 #endif
-	
-	
+		
 #ifdef TS_CUSTOM_SPAWN_VANGLE
-	pl.angles = TS_CUSTOM_SPAWN_VANGLE;
-	pl.v_angle = TS_CUSTOM_SPAWN_VANGLE;
+			pl.angles = TS_CUSTOM_SPAWN_VANGLE;
 #else
-	pl.angles = eSpawn.angles;
+			printfline("WARNING!  debug_spawnpointforced set, but TS_CUSTOM_SPAWN_VANGLE is not defined!");
+			pl.angles = eSpawn.angles;
+#endif
+	}else{
+		
+		myOrigin = eSpawn.origin;
+		pl.angles = eSpawn.angles;
+	}
+	
 	// Why do we have to do this now?  No clue.
 	// something about animation.h maybe? I Forget.
 	pl.v_angle = pl.angles;
-#endif
+	
 
 	Client_FixAngle(pl, pl.angles);
 	

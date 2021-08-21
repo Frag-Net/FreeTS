@@ -47,6 +47,7 @@ weapondata_ironsight_t weapon_mac10 =
 	weapon_mac10_onSecondaryAttackRelease,
 	weapon_mac10_onThink,
 	weapon_mac10_onColdCock,
+	NULL,
 	weaponseq_mac10::idle,
 	weaponseq_mac10::draw,
 	31.0f / 30.0f,

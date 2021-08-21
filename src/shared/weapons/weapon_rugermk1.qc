@@ -33,6 +33,7 @@ weapondata_gun_t weapon_rugermk1 =
 	weapon_rugermk1_onSecondaryAttackRelease,
 	weapon_rugermk1_onThink,
 	weapon_rugermk1_onColdCock,
+	NULL,
 	weaponseq_rugermk1::idle,
 	weaponseq_rugermk1::draw,
 	31.0f / 35.0f,

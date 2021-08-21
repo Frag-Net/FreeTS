@@ -185,6 +185,10 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::EQUIP_CALLBACK:{
 		EV_EquipCallback();
 	}break;
+	case EVENT_TS::TEST_CALLBACK:{
+		int arg_mesageID = readint();
+		EV_TestCallback(arg_mesageID);
+	}break;
 	case EVENT_TS::SOUNDPITCHED:{
 		SoundPitched_Receive();
 	}break;

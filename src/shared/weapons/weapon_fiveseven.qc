@@ -33,6 +33,7 @@ weapondata_gun_t weapon_fiveseven =
 	weapon_fiveseven_onSecondaryAttackRelease,
 	weapon_fiveseven_onThink,
 	weapon_fiveseven_onColdCock,
+	NULL,
 	weaponseq_fiveseven::idle,
 	weaponseq_fiveseven::draw,
 	31.0f / 30.0f,

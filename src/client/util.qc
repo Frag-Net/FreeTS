@@ -111,8 +111,6 @@ drawSpriteNumber(
 // Convenience methods for drawing without any font-related struct, just some font's
 // load ID. Otherwise close to the engine-provided drawstring and drawtextfield
 // methods. "drawfont" is a global provided by the engine (fteextensions.qc).
-// Compare with src/vgui/font.cpp's "Font_DrawText" and "Font_DrawField" which take a
-// font struct.
 void
 Gfx_Text(vector vPos, string sText, vector vSize, vector vRGB, float flAlpha, float flDrawFlag, float flFont)
 {

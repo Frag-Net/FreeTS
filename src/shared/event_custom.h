@@ -12,6 +12,7 @@ void TS_playerEquippedWeapon_Shared(player pl, int newWeaponEquipped, BOOL useAk
 void _TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo);
 void TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo);
 void EV_EquipCallback(void);
+void EV_TestCallback(int arg_messageID);
 #endif
 #ifdef SERVER
 void _TS_playerEquippedWeapon(player pl, int newWeaponEquipped, BOOL useAkimbo);

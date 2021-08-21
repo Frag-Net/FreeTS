@@ -31,6 +31,7 @@ weapondata_gun_t weapon_usas12 =
 	weapon_usas12_onSecondaryAttackRelease,
 	weapon_usas12_onThink,
 	weapon_usas12_onColdCock,
+	NULL,
 	weaponseq_usas12::idle,
 	weaponseq_usas12::draw,
 	31.0f / 30.0f,

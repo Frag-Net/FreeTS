@@ -19,8 +19,7 @@ void weapon_m61grenade_onSecondaryAttackRelease(player pl, weapondynamic_t arg_t
 }
 
 
-//Serverside only method, generates an entity
-// TODO - just be an entity in its own file at this point. 
+// Serverside only method, generates an entity
 #ifdef SERVER
 void weapon_m61grenade_spawnProjectile(player pl, weapondynamic_t arg_thisWeapon, BOOL wasToss, float heldDuration){
 	makevectors( GET_VIEW_ANGLES );	
@@ -149,6 +148,7 @@ weapondata_throwable_t weapon_m61grenade =
 	weapon_m61grenade_onSecondaryAttackRelease,
 	weapon_m61grenade_onThink,
 	weapon_m61grenade_onColdCock,
+	NULL,
 	weaponseq_m61grenade::idle,
 	weaponseq_m61grenade::draw,
 	31.0f / 40.0f,

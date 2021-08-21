@@ -29,8 +29,7 @@ vector g_hudres;
 /*
 // Do we need these?  Note the similarly named "g_hud_color" already above!
 // Going to keep the latter two for compatability.
-// Yes using old VGUI is kinda crappy but good for now.
-vector vHUDColor; // Defined in HUD_Draw (HUD.c)
+vector vHUDColor;
 */
 vector g_UI_Color;
 

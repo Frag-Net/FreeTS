@@ -63,6 +63,7 @@ weapondata_gun_t weapon_beretta_akimbo =
 	weapon_beretta_akimbo_onSecondaryAttackRelease,
 	weapon_beretta_akimbo_onThink,
 	weapon_beretta_akimbo_onColdCock,
+	NULL,
 	weaponseq_beretta_akimbo::idle_1,
 	weaponseq_beretta_akimbo::draw,
 	41.0f / 55.0f,

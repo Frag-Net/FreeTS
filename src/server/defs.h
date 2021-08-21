@@ -38,6 +38,9 @@ var int autocvar_mp_friendlyfire = FALSE;
 var int autocvar_fcs_swapteams = FALSE; /* Swaps spawnpoints */
 var int autocvar_fcs_maxmoney = 99999;  //TAGG - was 16000.
 
+var int autocvar_debug_spawnpointforced = 0;
+	
+
 //TAGGG - not used, don't know if the TS really supported denying weapon drop-ables.
 // Doesn't mean that can't be implemented anyway (check this CVar, and if on while about
 // to spawn a drop-able, deny the request and don't drop at all on player death)

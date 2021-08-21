@@ -35,6 +35,7 @@ weapondata_gun_t weapon_skorpion =
 	weapon_skorpion_onSecondaryAttackRelease,
 	weapon_skorpion_onThink,
 	weapon_skorpion_onColdCock,
+	NULL,
 	weaponseq_skorpion::idle,
 	weaponseq_skorpion::draw,
 	31.0f / 30.0f,

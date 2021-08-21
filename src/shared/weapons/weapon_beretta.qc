@@ -35,6 +35,7 @@ weapondata_gun_t weapon_beretta =
 	weapon_beretta_onSecondaryAttackRelease,
 	weapon_beretta_onThink,
 	weapon_beretta_onColdCock,
+	NULL,
 	weaponseq_beretta::idle,
 	weaponseq_beretta::draw,
 	31.0f / 30.0f,

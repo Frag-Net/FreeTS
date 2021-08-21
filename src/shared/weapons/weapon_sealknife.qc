@@ -31,6 +31,7 @@ weapondata_throwable_t weapon_sealknife =
 	weapon_sealknife_onSecondaryAttackRelease,
 	weapon_sealknife_onThink,
 	weapon_sealknife_onColdCock,
+	NULL,
 	weaponseq_sealknife::idle,
 	weaponseq_sealknife::draw,
 	31.0f / 30.0f,
@@ -138,8 +139,6 @@ w_sealknife_primary(void)
 	}
 #endif
 
-	//Animation_ShootWeapon( self );
-	//self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 
 	// actually do this animation the same regardless as far as we know.
 	int r = (float)input_sequence % 3;

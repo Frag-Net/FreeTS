@@ -27,19 +27,40 @@ extern var string g_damage_spr_l;
 extern var string g_damage_spr_r;
 
 
-void drawPainArrows(void);
-void drawPainFlash(void);
-void Custom_DamageDraw(void);
 
-
-
-// WARNING: don't try drawing any 2D things on screen here, they'll be rendered on top of
-// and ultimately lost, at least I think that's how it goes
+// WARNING: don't try drawing any 2D things on screen here, they'll be rendered
+// over soon and ultimately lost, at least I think that's how it goes
 void
 ClientGame_PreDraw(void) 
 {
+	player pl = (player)pSeat->m_ePlayer;
+	// TODO: may as well make TS_View_HandleZoom a player method at this point,
+	// do the state check inside player then
+	if(pl.iState == PLAYER_STATE::SPAWNED){
+		TS_View_HandleZoom();
+	}
 	
-}
+	
+	pl.viewzoom = pl.flZoomCurrent;
+	// PreDraw is called right after viewzoom is set by Nuclide, so this overrides
+	// it.  That is fine.
+	// Although, the 'setproperty' line already happened by the time this
+	// method was reached, so these areas from Nuclide need to be redone.
+	////////////////////////////////////////////////////////////////////
+	setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
+	
+	if (autocvar_zoom_sensitivity && pl.viewzoom < 1.0f) {
+		setsensitivityscaler(pl.viewzoom * autocvar_zoom_sensitivity);
+	} else {
+		setsensitivityscaler(pl.viewzoom);
+	}
+
+	if (pl.viewzoom <= 0.0f) {
+		setsensitivityscaler(1.0f);
+	}
+	////////////////////////////////////////////////////////////////////
+	
+}//ClientGame_PreDraw
 
 
 // Happens right before the CSQC_RenderScene call seen in Nuclide's client/draw.qc.
@@ -62,10 +83,6 @@ Custom_LatePreDraw(void)
 void
 ClientGame_PostDraw(void)
 {
-	// This is just the right place - occurs right beofre a HUD_Draw call so that the HUD
-	// is drawn on top of the potentially bright-red pain flash, rather than obscurred by it
-	Custom_DamageDraw();
-	
 	// To replicate what Nuclide does for the normal muzzle flash entity in frame-logic:
 	// reduce the alpha every frame to quickly fade away
 	entity m_eMuzzleflashAkimbo = pSeatLocal->m_eMuzzleflashAkimbo;
@@ -83,7 +100,7 @@ ClientGame_PostDraw(void)
 
 // copied from Nuclide
 void
-drawPainArrows(void)
+TS_HUD_drawPainArrows(void)
 {
 	vector center;
 	vector rel_pos;
@@ -133,7 +150,7 @@ drawPainArrows(void)
 
 // and now for the screen-wide pain flash.
 void
-drawPainFlash(void)
+TS_HUD_drawPainFlash(void)
 {
 	
 	//drawfill( video_mins, video_res, clrRed, VGUI_WINDOW_FGALPHA );
@@ -153,7 +170,7 @@ drawPainFlash(void)
 
 
 void
-Custom_DamageDraw(void){
+TS_HUD_DamageDraw(void){
 	
 	// No alpha, or dead?  No pain drawing
 	if(
@@ -163,8 +180,8 @@ Custom_DamageDraw(void){
 		return;
 	}
 
-	drawPainFlash();
-	drawPainArrows();
+	TS_HUD_drawPainFlash();
+	TS_HUD_drawPainArrows();
 
 	// Nuclide's default had no modifier on clframetime ( * 1).
 	pSeat->m_flDamageAlpha -= clframetime * 1.7;

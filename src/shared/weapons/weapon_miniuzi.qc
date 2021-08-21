@@ -46,6 +46,7 @@ weapondata_ironsight_t weapon_miniuzi =
 	weapon_miniuzi_onSecondaryAttackRelease,
 	weapon_miniuzi_onThink,
 	weapon_miniuzi_onColdCock,
+	NULL,
 	weaponseq_miniuzi::idle,
 	weaponseq_miniuzi::draw,
 	31.0f / 30.0f,

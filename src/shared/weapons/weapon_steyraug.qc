@@ -18,6 +18,12 @@ void weapon_steyraug_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_steyraug_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_steyraug_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.50f;break;
+	}
+}
 
 weapondata_gun_t weapon_steyraug =
 {
@@ -32,6 +38,7 @@ weapondata_gun_t weapon_steyraug =
 	weapon_steyraug_onSecondaryAttackRelease,
 	weapon_steyraug_onThink,
 	weapon_steyraug_onColdCock,
+	weapon_steyraug_onSetZoomLevel,
 	weaponseq_steyraug::idle,
 	weaponseq_steyraug::draw,
 	31.0f / 30.0f,
@@ -176,11 +183,8 @@ w_steyraug_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.50f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 2;
+		pl.setZoomLevel(newZoomLevel);
 	}
 	
 }

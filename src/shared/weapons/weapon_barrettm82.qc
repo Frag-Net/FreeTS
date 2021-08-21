@@ -20,6 +20,13 @@ void weapon_barrettm82_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_barrettm82_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_barrettm82_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.40f;break;
+	case 2:pl.flZoomTarget = 0.10f;break;
+	}
+}
 
 weapondata_gun_t weapon_barrettm82 =
 {
@@ -34,6 +41,7 @@ weapondata_gun_t weapon_barrettm82 =
 	weapon_barrettm82_onSecondaryAttackRelease,
 	weapon_barrettm82_onThink,
 	weapon_barrettm82_onColdCock,
+	weapon_barrettm82_onSetZoomLevel,
 	weaponseq_barrettm82::idle,
 	weaponseq_barrettm82::draw,
 	31.0f / 30.0f,
@@ -174,12 +182,8 @@ w_barrettm82_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 3;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.40f);break;
-		case 2:pl.setZoom(0.10f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 3;
+		pl.setZoomLevel(newZoomLevel);
 	}
 	
 }

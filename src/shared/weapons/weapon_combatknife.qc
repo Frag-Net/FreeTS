@@ -40,6 +40,7 @@ weapondata_throwable_t weapon_combatknife =
 	weapon_combatknife_onSecondaryAttackRelease,
 	weapon_combatknife_onThink,
 	weapon_combatknife_onColdCock,
+	NULL,
 	weaponseq_combatknife::idle,
 	weaponseq_combatknife::draw,
 	31.0f / 30.0f,
@@ -146,8 +147,6 @@ w_combatknife_primary(void)
 	}
 #endif
 
-	//Animation_ShootWeapon( self );
-	//self.fAttackFinished = time + wptKNIFE.fAttackFinished;
 
 	// actually do this animation the same regardless as far as we know.
 	// Do these go through some kind of cycle, I forget

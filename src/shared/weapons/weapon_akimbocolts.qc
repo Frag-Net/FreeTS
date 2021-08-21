@@ -39,6 +39,7 @@ weapondata_gun_t weapon_akimbocolts =
 	weapon_akimbocolts_akimbo_onSecondaryAttackRelease,
 	weapon_akimbocolts_akimbo_onThink,
 	weapon_akimbocolts_akimbo_onColdCock,
+	NULL,
 	weaponseq_akimbocolts::idle,
 	weaponseq_akimbocolts::draw,
 	31.0f / 30.0f,

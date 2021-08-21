@@ -34,6 +34,7 @@ weapondata_gun_t weapon_fiveseven_akimbo =
 	weapon_fiveseven_akimbo_onSecondaryAttackRelease,
 	weapon_fiveseven_akimbo_onThink,
 	weapon_fiveseven_akimbo_onColdCock,
+	NULL,
 	weaponseq_fiveseven_akimbo::idle,
 	weaponseq_fiveseven_akimbo::draw,
 	31.0f / 40.0f,

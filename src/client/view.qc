@@ -205,7 +205,8 @@ TS_View_ChangeViewModelPost(void)
 	SAVE_STATE(pl.weapontime);
 	//TAGGG - NEW VAR
 	SAVE_STATE(pl.w_attack_akimbo_next);
-	SAVE_STATE(pl.flZoomTarget);
+	SAVE_STATE(pl.iZoomLevel);
+	//SAVE_STATE(pl.flZoomTarget);
 
 	//TAGGG - also new line.  It is a good idea to reset the event
 	// on changing models, right?
@@ -789,6 +790,10 @@ TS_View_ShowMuzzleflash(int index, int akimboChoice)
 	}
 }
 
+
+
+//var int oldZoomLevel = 0;
+
 //TAGGG - loaned from The Wastes.
 void TS_View_HandleZoom(void)
 {
@@ -808,15 +813,23 @@ void TS_View_HandleZoom(void)
 	
 	//printfline("WHATS GOING ON %.2f %.2f %.2f %.2f %.2f", pl.flZoomEnd, pl.flZoomTarget, pl.flZoomStart, pl.flZoomLerp, pl.flZoomCurrent);
 	
-	//TAGGG - any references to STAT_VIEWZOOM are now garbage.
-	// Rely on pl.flZoomTarget instead, it's sent to the client every frame
-	// and should be handled serverside anyway.
-	// flZoomEnd is actually the "target" zoom we want to reach.
-	// flZoomStart is the zoom we started at, at the time of the change.
-	// flZoomLerp is how far along we are from oldZoom to currentZoom.
-	// flZoomCurrent is the actual zoom we are at this very moment.
+	//TAGGG - no other codebase refers to STAT_VIEWZOOM, best to replace anything
+	// involving that.
 	
+	// in case of some unexpected change.
+	// TODO: this might have an issue if the player were to change weapons and end up
+	// on the same zoom level as a previous weapon, despite the two weapons having
+	// different target values (like 0.4 vs. 0.6) at their own zoom level #1's.
+	// A check for being a different equipped weapon type
+	// (pl.activeweapon vs. pl.activeweapon_zoomprev, set only by setZoomLevel)
+	// ought to work.  But that would be a very strange case anyway
+	if(pl.iZoomLevel != pl.iZoomLevelPrev){
+		pl.setZoomLevel(pl.iZoomLevel);
+	}
+		
 	if (pl.flZoomEnd != pl.flZoomTarget ) {
+		//printfline("NEW ZOOM DETECTED: %.2f -> %.2f (zoomlev: %i)", pl.flZoomEnd, pl.flZoomTarget, pl.iZoomLevel);
+		
 		// is setting flZoomStart to flZoomEnd or flZoomCurrent a better idea?
 		// at flZoomEnd means, on changing before the current lerp has finished, it jumps to beginning
 		// at the end point of the lerp in progress.  But starting at flZoomCurrent might be smoother?
@@ -834,6 +847,7 @@ void TS_View_HandleZoom(void)
 		// 0.8 can be safe.
 		// The Wastes default was 4.
 		
+		// !!! clframetime, frametime, or input_timelength ?
 		pl.flZoomLerp += clframetime * 5.7;
 		
 		if(pl.flZoomLerp >= 1.0){
@@ -848,7 +862,7 @@ void TS_View_HandleZoom(void)
 	// Set this, since Nuclide will read it in and apply instantly.
 	// So same effect without having to edit Nuclide, this pipes it over for it
 	// to do the setproperty thing below to apply
-	pl.viewzoom = pl.flZoomCurrent;
+	//pl.viewzoom = pl.flZoomCurrent;
 
 	////setproperty(VF_AFOV, DEFAULT_FOV * pl.flZoomCurrent);
 	////setsensitivityscaler(pl.flZoomCurrent);

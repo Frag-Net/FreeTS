@@ -443,10 +443,8 @@ typedef struct{
 	// bind "c" "+alt2"
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
 	
-	// We'll handle firing animations (weapon recoil mainly) in their own methods.
-	// Little too much going on. Number of animations to cylce through (shoot1, shoot2)?
-	// separate batch for firing in semi-auto mode (sshoot1, sshoot2)?
-	// and new ones for ironsight firing sometimes?
+	// This event is for recently changing the zoom level on the player.
+	void(player pl) funOnSetZoomLevel;
 	
 	
 	int iAnim_Idle_Index;
@@ -512,7 +510,8 @@ typedef struct{
 
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
-	
+	void(player pl) funOnSetZoomLevel;
+
 	
 	int iAnim_Idle_Index;
 	
@@ -587,6 +586,7 @@ typedef struct{
 	
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
+	void(player pl) funOnSetZoomLevel;
 	
 	
 	int iAnim_Idle_Index;
@@ -651,6 +651,7 @@ typedef struct{
 	
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
+	void(player pl) funOnSetZoomLevel;
 	
 	
 	int iAnim_Idle_Index;
@@ -700,6 +701,7 @@ typedef struct{
 	
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnThink;
 	void(player pl, weapondynamic_t arg_thisWeapon) funOnColdCock;
+	void(player pl) funOnSetZoomLevel;
 	
 	
 	int iAnim_Idle_Index;
@@ -776,7 +778,6 @@ typedef struct{
 	int shotgunReload3_seq;
 	float shotgunReload3_Duration;
 } weapondata_shotgun_extra_t;
-
 
 
 //TODO. Is extern'ing these earlier possible?

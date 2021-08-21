@@ -20,6 +20,12 @@ void weapon_hkpdw_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_hkpdw_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_hkpdw_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.50f;break;
+	}
+}
 
 weapondata_gun_t weapon_hkpdw =
 {
@@ -34,6 +40,7 @@ weapondata_gun_t weapon_hkpdw =
 	weapon_hkpdw_onSecondaryAttackRelease,
 	weapon_hkpdw_onThink,
 	weapon_hkpdw_onColdCock,
+	weapon_hkpdw_onSetZoomLevel,
 	weaponseq_hkpdw::idle,
 	weaponseq_hkpdw::draw,
 	31.0f / 30.0f,
@@ -184,11 +191,8 @@ w_hkpdw_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.50f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 2;
+		pl.setZoomLevel(newZoomLevel);
 	}
 	
 }

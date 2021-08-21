@@ -54,6 +54,7 @@ weapondata_gun_t weapon_miniuzi_akimbo =
 	weapon_miniuzi_akimbo_onSecondaryAttackRelease,
 	weapon_miniuzi_akimbo_onThink,
 	weapon_miniuzi_akimbo_onColdCock,
+	NULL,
 	weaponseq_miniuzi_akimbo::akimbo_idle,
 	weaponseq_miniuzi_akimbo::akimbo_draw,
 	31.0f / 35.0f,

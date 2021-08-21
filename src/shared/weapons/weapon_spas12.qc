@@ -38,6 +38,7 @@ weapondata_gun_t weapon_spas12 =
 	weapon_spas12_onSecondaryAttackRelease,
 	weapon_spas12_onThink,
 	weapon_spas12_onColdCock,
+	NULL,
 	weaponseq_spas12::idle,
 	weaponseq_spas12::draw,
 	31.0f / 30.0f,

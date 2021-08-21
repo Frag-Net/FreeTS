@@ -45,6 +45,7 @@ weapondata_basic_t weapon_karate =
 	weapon_karate_onSecondaryAttackRelease,
 	weapon_karate_onThink,
 	weapon_karate_onColdCock,
+	NULL,
 	weaponseq_karate::idle,
 	weaponseq_karate::draw,
 	31 / 35,   // 31/35 ?
@@ -152,7 +153,6 @@ w_karate_primary(void)
 	}
 #endif
 	
-	//Animation_ShootWeapon( self );
 	pl.fKarateStamina = bound(0, pl.fKarateStamina - 0.085, 1);
 	
 	int r = (float)input_sequence % 4;
@@ -283,7 +283,6 @@ w_karate_secondary(void)
 	w_karate_determineSecondaryAttack(hitRep, meleeAnimToPlay);
 	
 	pl.fUncrouchBlockDelay = 1.0f;
-	//Animation_ShootWeapon( self );
 	
 #ifdef SERVER
 	// need the fleshhit sound

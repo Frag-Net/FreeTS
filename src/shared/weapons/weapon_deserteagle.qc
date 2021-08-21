@@ -26,6 +26,12 @@ void weapon_deserteagle_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_deserteagle_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_deserteagle_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.75f;break;
+	}
+}
 
 weapondata_ironsight_t weapon_deserteagle =
 {
@@ -40,6 +46,7 @@ weapondata_ironsight_t weapon_deserteagle =
 	weapon_deserteagle_onSecondaryAttackRelease,
 	weapon_deserteagle_onThink,
 	weapon_deserteagle_onColdCock,
+	weapon_deserteagle_onSetZoomLevel,
 	weaponseq_deserteagle::idle,
 	weaponseq_deserteagle::draw,
 	31.0f / 50.0f,
@@ -223,11 +230,8 @@ w_deserteagle_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.75f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 2;
+		pl.setZoomLevel(newZoomLevel);
 	}else{
 		if(pl.w_attack_next > 0){
 			return;

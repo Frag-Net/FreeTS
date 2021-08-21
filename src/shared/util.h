@@ -249,8 +249,9 @@ if (pl.inputSecondaryTapFrameCount == 0)\
 // be aware of the player
 class player;
 
+// extern?
+const vector g_vZero = [0,0,0];
 
-extern const vector g_vZero;
 
 
 

@@ -41,6 +41,7 @@ weapondata_ironsight_t weapon_socommk23 =
 	weapon_socommk23_onSecondaryAttackRelease,
 	weapon_socommk23_onThink,
 	weapon_socommk23_onColdCock,
+	NULL,
 	weaponseq_socommk23::idleb,
 	weaponseq_socommk23::drawb,
 	31.0f / 40.0f,

@@ -131,7 +131,10 @@ HUD_DrawCrosshair(void){
 
 	int thirdBelongingTo = 0;
 	
-	float ratioNumber = getViewPitchRelativeRatio(pl.pitch);
+	// pl.pitch is only updated on server pings, might not be wise to use here,
+	// looks choppy with any kind of ping time
+	
+	float ratioNumber = getViewPitchRelativeRatio(view_angles.x);
 	float newDegreeRad = (ratioNumber * (270 - 90) + 90) * (M_PI/180);
 	
 	//printfline("MY ANGLE? %.2f", (ratioNumber * (270 - 90) + 90) );

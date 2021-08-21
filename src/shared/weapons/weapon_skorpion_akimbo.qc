@@ -34,6 +34,7 @@ weapondata_gun_t weapon_skorpion_akimbo =
 	weapon_skorpion_akimbo_onSecondaryAttackRelease,
 	weapon_skorpion_akimbo_onThink,
 	weapon_skorpion_akimbo_onColdCock,
+	NULL,
 	weaponseq_skorpion_akimbo::idle,
 	weaponseq_skorpion_akimbo::draw,
 	31.0f / 30.0f,

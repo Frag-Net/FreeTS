@@ -24,6 +24,12 @@ void weapon_benellim3_onThink(player pl, weapondynamic_t arg_thisWeapon){
 void weapon_benellim3_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 }
+void weapon_benellim3_onSetZoomLevel(player pl){
+	switch(pl.iZoomLevel){
+	case 0:pl.flZoomTarget = 1.00f;break;
+	case 1:pl.flZoomTarget = 0.50f;break;
+	}
+}
 
 weapondata_gun_t weapon_benellim3 =
 {
@@ -38,6 +44,7 @@ weapondata_gun_t weapon_benellim3 =
 	weapon_benellim3_onSecondaryAttackRelease,
 	weapon_benellim3_onThink,
 	weapon_benellim3_onColdCock,
+	weapon_benellim3_onSetZoomLevel,
 	weaponseq_benellim3::idle,
 	weaponseq_benellim3::draw,
 	31.0f / 30.0f,
@@ -242,11 +249,8 @@ w_benellim3_secondary(void)
 	
 	if(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SCOPE){
 		// toggle through the zoom.
-		pl.iZoomLevel = (pl.iZoomLevel + 1) % 2;
-		switch(pl.iZoomLevel){
-		case 0:pl.setZoom(1.00f);break;
-		case 1:pl.setZoom(0.50f);break;
-		}
+		int newZoomLevel = ((float)pl.iZoomLevel + 1) % 2;
+		pl.setZoomLevel(newZoomLevel);
 	}
 }
 

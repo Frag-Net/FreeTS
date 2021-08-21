@@ -31,6 +31,7 @@ weapondata_gun_t weapon_m60 =
 	weapon_m60_onSecondaryAttackRelease,
 	weapon_m60_onThink,
 	weapon_m60_onColdCock,
+	NULL,
 	weaponseq_m60::idle,
 	weaponseq_m60::draw,
 	31.0f / 33.0f,

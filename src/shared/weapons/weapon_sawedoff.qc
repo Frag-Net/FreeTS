@@ -63,6 +63,7 @@ weapondata_ironsight_t weapon_sawedoff =
 	weapon_sawedoff_onSecondaryAttackRelease,
 	weapon_sawedoff_onThink,
 	weapon_sawedoff_onColdCock,
+	NULL,
 	weaponseq_sawedoff::idle,
 	weaponseq_sawedoff::draw,
 	31.0f / 33.0f,

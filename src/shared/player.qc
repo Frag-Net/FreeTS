@@ -18,7 +18,7 @@
 // little test
 //var float otherTimer = 0;
  
-//#define FORCE_NETWORK_ALL_INVENTORY
+#define FORCE_NETWORK_ALL_INVENTORY
 
 
 /* all potential SendFlags bits we can possibly send */
@@ -172,6 +172,12 @@ player::ReceiveEntity(float new, float fl)
 	//	printfline("WELL hey WHAT:%i new:%i", oldPlayerWeapEq, inventoryEquippedIndex);
 	//}
 	
+	
+	// TODO!  Test surrounding with this
+	if(!equippedWeaponWaitingForCallback){
+		
+	}
+	
 	// important to keep pl.activeweapon in sync
 	inventoryEquippedIndex = inventoryEquippedIndex_temp;
 	//setInventoryEquippedIndex(inventoryEquippedIndex_temp);
@@ -188,19 +194,25 @@ player::ReceiveEntity(float new, float fl)
 	isReloading = readbyte();
 	isChangingIronsight = readbyte();
 	
-	//flZoomTarget = readfloat();
-	float tempThing = readfloat();
-	/*
-	if(tempThing != flZoomTarget){
-		printfline("flZoomTarget change! %.2f - %.2f", flZoomTarget, tempThing);
-	}
-	*/
-	// That's a good thing, yes?
-	if(!equippedWeaponWaitingForCallback){
-		flZoomTarget = tempThing;
+	
+	if(fl & PLAYER_UNUSED2){
+		
+		//float flZoomTarget_temp = readfloat();
+		//flZoomTarget = flZoomTarget_temp;
+		
+		
+		int iZoomLevel_temp = readbyte();
+		if(iZoomLevel_temp != iZoomLevel){
+		//	printfline("!!! ZoomLevel change A.  %i -> %i (%.2f)", iZoomLevel, iZoomLevel_temp, time);
+		}
+		
+		if(!equippedWeaponWaitingForCallback){
+			iZoomLevel = iZoomLevel_temp;
+		}
 	}
 	
-	iZoomLevel = readbyte();
+	
+	
 	nextAkimboAttackPreference = readbyte();
 	akimboDualFireToleranceTime = readfloat();
 	grenadeFireIndex = readbyte() - 1;
@@ -291,8 +303,10 @@ player::ReceiveEntity(float new, float fl)
 	
 
 	// TODO! Check for any change in ammo values like this:
+	// Or maybe not, looks like Weapons_AmmoUpdate isn't needed for FreeTS, HUD draw methods
+	// already use the current weapon's ammo valus per weapon on the HUD without it
 	//    if (fl & PLAYER_AMMO1 || fl & PLAYER_AMMO2 || fl & PLAYER_AMMO3)
-	Weapons_AmmoUpdate(this);
+	//Weapons_AmmoUpdate(this);
 
 
 	setorigin(this, origin);
@@ -348,8 +362,11 @@ so we can roll them back later.
 void
 player::PredictPreFrame(void)
 {
+	//printfline("---PREDIT PRE FRAME");
+	
 	/* the generic client attributes */
 	base_player::PredictPreFrame();
+	
 	
 	// client's way of calling prethink
 	preThink();
@@ -394,7 +411,7 @@ player::PredictPreFrame(void)
 	SAVE_STATE(w_attack_akimbo_next);
 	SAVE_STATE(isReloading);
 	SAVE_STATE(isChangingIronsight);
-	SAVE_STATE(flZoomTarget);
+	//SAVE_STATE(flZoomTarget);
 	SAVE_STATE(iZoomLevel);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
@@ -450,6 +467,10 @@ player::PredictPreFrame(void)
 		SAVE_STATE_ARY(ary_ammoTotal, i);
 	}
 	
+	// viewzoom must be set by the end of PrePredict or else it will not
+	// reach the Nuclide logic looking at it in time to be applied.
+	// No need here now I think?
+	//this.viewzoom = this.flZoomCurrent;
 }
 
 /*
@@ -462,9 +483,21 @@ Where we roll back our values to the ones last sent/verified by the server.
 void
 player::PredictPostFrame(void)
 {
+	//printfline("---PREDIT POST FRAME");
+	
+	
+	/*
+#ifdef CLIENT
+	if(iState == PLAYER_STATE::SPAWNED){
+		TS_View_HandleZoom();
+	}
+#endif
+	*/
+	
 	/* the generic client attributes */
 	base_player::PredictPostFrame();
 
+	
 	// client's way of calling postthink
 	postThink();
 	
@@ -508,8 +541,17 @@ player::PredictPostFrame(void)
 	ROLL_BACK(w_attack_akimbo_next);
 	ROLL_BACK(isReloading);
 	ROLL_BACK(isChangingIronsight);
-	ROLL_BACK(flZoomTarget);
+	//ROLL_BACK(flZoomTarget);
+	
+	/*
+	if(iZoomLevel != iZoomLevel_net){
+		printfline("!!! ZoomLevel change B.  %i -> %i (%.2f)", iZoomLevel, iZoomLevel_net, time);
+	}
+	*/
 	ROLL_BACK(iZoomLevel);
+	
+	
+	
 	ROLL_BACK(nextAkimboAttackPreference);
 	ROLL_BACK(akimboDualFireToleranceTime);
 	ROLL_BACK(grenadeFireIndex);
@@ -567,6 +609,7 @@ player::PredictPostFrame(void)
 void
 player::EvaluateEntity(void)
 {
+	
 	/* the generic client attributes */
 	base_player::EvaluateEntity();
 	
@@ -699,7 +742,14 @@ player::EvaluateEntity(void)
 		
 	}
 	
-	
+	// iZoomLevel or flZoomTarget ?
+	if(
+		//ATTR_CHANGED(flZoomTarget)
+		//||
+		ATTR_CHANGED(iZoomLevel)
+	){
+		SendFlags |= PLAYER_UNUSED2;
+	}
 	
 
 	SAVE_STATE(anim_top);
@@ -714,7 +764,7 @@ player::EvaluateEntity(void)
 	SAVE_STATE(w_attack_akimbo_next);
 	SAVE_STATE(isReloading);
 	SAVE_STATE(isChangingIronsight);
-	SAVE_STATE(flZoomTarget);
+	//SAVE_STATE(flZoomTarget);
 	SAVE_STATE(iZoomLevel);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
@@ -883,8 +933,10 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, w_attack_akimbo_next );
 	WriteByte(MSG_ENTITY, isReloading );
 	WriteByte(MSG_ENTITY, isChangingIronsight );
-	WriteFloat(MSG_ENTITY, flZoomTarget);
-	WriteByte(MSG_ENTITY, iZoomLevel);
+	if(fChanged & PLAYER_UNUSED2){
+		//WriteFloat(MSG_ENTITY, flZoomTarget);
+		WriteByte(MSG_ENTITY, iZoomLevel);
+	}
 	WriteByte(MSG_ENTITY, nextAkimboAttackPreference);
 	WriteFloat(MSG_ENTITY, akimboDualFireToleranceTime);
 	WriteByte(MSG_ENTITY, grenadeFireIndex + 1);
@@ -1097,6 +1149,7 @@ player::reset(BOOL resetInventory){
 	// should this even make any assumptions about this?
 	//iState = ?;
 	
+	
 	resetZoom();
 	
 #ifdef CLIENT
@@ -1153,7 +1206,6 @@ player::reset(BOOL resetInventory){
 	doFiremodeChange = FALSE;
 	
 	//Grenade stuff
-	printfline("I set grenadeFireIndex to -1, D!");
 	grenadeFireIndex = -1;
 	grenadeHeldDuration = -1;
 	grenadeSpawnTime = -1;
@@ -1250,6 +1302,8 @@ vector
 player::View_approachAngleOffsetTarget(vector vecInputAngles)
 {
 	float frametimeUse;
+	
+	// is this wise?
 #ifdef CLIENT
 	frametimeUse = clframetime;
 #else
@@ -1287,7 +1341,7 @@ player::View_approachAngleOffsetTarget(vector vecInputAngles)
 
 
 // little test
-var float input_timelengthSum = 0;
+//var float input_timelengthSum = 0;
 
 // Count down my custom timers, called by ts/src/shared/input.qc, which is called
 // by Nuclide's PMove, same place that counts down w_attack_next.
@@ -1316,7 +1370,6 @@ player::updateTimers(void){
 	}
 	*/
 	
-	
 	fAccuracyKickbackStartCooldown = max(0, fAccuracyKickbackStartCooldown - input_timelength);
 	
 	if(fKarateStamina < 1.0){
@@ -1336,15 +1389,29 @@ player::updateTimers(void){
 		}
 	}//kickbackStartCooldown check
 	
+	
 }//updateTimers
 
 
+
 void
-player::setZoom(float arg_theZoom)
-{
-	//printfline("setZoom: %.2f", arg_theZoom);
-	flZoomTarget = arg_theZoom;
+player::setZoomLevel(int arg_iZoomLevel){
+	iZoomLevel = arg_iZoomLevel;
+	
+#ifdef CLIENT
+	iZoomLevelPrev = iZoomLevel;
+#endif
+	
+	weapondata_basic_t* myDat = getEquippedWeaponData();
+	
+	if(myDat != NULL){
+		if(myDat.funOnSetZoomLevel != NULL){
+			myDat.funOnSetZoomLevel(this);
+		}
+	}
+	
 }
+
 // forget any zoom-related settings instantly.
 // Unsure if a message should be sent to the client if called from the server, or assume the
 // calls coincide.
@@ -1353,18 +1420,30 @@ player::resetZoom(void)
 {
 	iZoomLevel = 0;
 	viewzoom = 1.0f;
-	setZoom(1.0f);  // sets flZoomTarget
+	flZoomTarget = 1.0f;
 	
 #ifdef CLIENT
 	// IMPORTANT!  ZoomLerp under 0 tries to involve flZoomOld, set or not
 	flZoomLerp = 1.0f;
+	/*
 	SAVE_STATE(iZoomLevel);
 	SAVE_STATE(viewzoom);
-	SAVE_STATE(flZoomTarget);
+	//SAVE_STATE(flZoomTarget);
+	*/
 	flZoomEnd = 1.0f;
 	flZoomCurrent = 1.0f;
 #endif
 }
+
+// similar as above, but still go for the transition smoothness,
+// not an instant change
+void
+player::resetZoomSoft(void)
+{
+	iZoomLevel = 0;
+	flZoomTarget = 1.0f;
+}
+
 
 void
 player::setInventoryEquippedIndex(int arg_newIndex)
@@ -1453,6 +1532,8 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 	// ...  Marvelous.  But at least that's a completely separate issue, again with or without below.
 	
 	// (force a sendoff, expect it area)
+	
+	
 	
 #ifdef SERVER
 	// Force a sendoff!
@@ -1592,6 +1673,8 @@ player::shotgunAddAmmoTime_setCooldownSetTime(void){
 
 
 #ifdef SERVER
+// (Comment may be out of date, verify if serverside postthink or setting think methods
+// anywhere still has issues)
 // runs every frame server-side.  postthink, oddly enough, does not.
 // Even cumulative 'frametime' readings do not at all add up to the real passage of time.
 // Looks like we have to do this with server calling our think instead... it's own frame
@@ -1606,15 +1689,10 @@ player::shotgunAddAmmoTime_setCooldownSetTime(void){
 void
 player::frameThink_fromServer(void){
 	
-	if(autocvar_sv_printoutspam == 1){
-		printfline("My state: %d", iState);
-		printfline("STATUS: %d, %i", activeweapon, inventoryEquippedIndex);
-	}
-	
 	// no, leave that to shared/input.qc
 	//updateTimers();
 	
-	preThinkShared();
+	//preThinkShared();
 	
 	
 }// frameThink_fromServer
@@ -1624,12 +1702,15 @@ player::frameThink_fromServer(void){
 
 
 
-#ifdef CLIENT
+// preThink & postThink are supporter client and serverside.
+// They're not built-in methods per entity nor called by Nuclide.
+// For clientside, preThink/postThink are called by prediction pre/post methods.
+// For serverside, gamerules "Player(Pre/Post)Frame" events call these for every
+// player.
+// An above comment says there were problems with serverside postthink, but unsure
+// if that is still the case.
 
-// Note that these pre/postThink's aren't game events, they're just called 
-// before/after prediction accordingly, and every single rendered frame.
-// Unlike serverside preThink / postThink, which (I think?) are called independent of any
-// logic frame-rate on the server.
+#ifdef CLIENT
 void 
 player::preThink(void){
 	weapondynamic_t dynaRef;
@@ -1639,14 +1720,10 @@ player::preThink(void){
 		gFun_UI_EventGrabber_DebugMethod();
 	}
 	
-	
 	if(time >= equippedWeaponWaitingForCallback_maxWaitTime){
 		// stop then
 		equippedWeaponWaitingForCallback = FALSE;
 	}
-	
-	// Called before rendering, so this is an acceptable place.
-	TS_View_HandleZoom();
 	
 	//callWeaponThink();
 	
@@ -1714,8 +1791,6 @@ player::preThink(void){
 	
 }//preThink
 
-
-
 void
 player::postThink(void){
 	
@@ -1742,23 +1817,24 @@ player::postThink(void){
 	}
 	
 }//postThink
-#endif
 
+#endif // CLIENT
 
-// preThink & postThink are serverside only.
-// Now supported clientside as separate implementations (see above)
-// we have other ways for handling logic clientside.
 
 #ifdef SERVER
 void
 player::preThink(void){
 	
+	if(autocvar_sv_printoutspam == 1){
+		printfline("My state: %d", iState);
+		printfline("STATUS: %d, %i", activeweapon, inventoryEquippedIndex);
+	}
+	
 	//self.angles += '0 0.3 0';
 	//self.v_angle = self.angles;
 	
-	// TODO - for clientside, this would need to involve the "view_angles" global
-	// instead!  Unsure if the macro GET_VIEW_ANGLES is good enough
-	v_angle = View_approachAngleOffsetTarget(v_angle);
+	preThinkShared();
+	
 	
 }// preThink
 
@@ -1774,6 +1850,22 @@ player::postThink(void){
 // could/should clframetime be used for clientside intead?  Unsure.
 void
 player::preThinkShared(void){
+	
+	
+	
+	// TODO: make this view kickback properly predicted
+#ifdef CLIENT
+	//printfline("So what is my view ang?? %.2f %.2f", view_angles[0], view_angles[1]);
+	// TODO - for clientside, this would need to involve the "view_angles" global
+	// instead!  Unsure if the macro GET_VIEW_ANGLES is good enough
+	//v_angle = View_approachAngleOffsetTarget(v_angle);
+	//view_angles = View_approachAngleOffsetTarget(view_angles);
+#else
+	//printfline("So what is my view ang?? %.2f %.2f", this.v_angle[0], this.v_angle[1]);
+	this.v_angle = View_approachAngleOffsetTarget(this.v_angle);
+#endif
+	
+	
 	
 	// little test
 	//otherTimer += frametime;

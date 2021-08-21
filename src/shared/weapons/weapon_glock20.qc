@@ -34,6 +34,7 @@ weapondata_gun_t weapon_glock20 =
 	weapon_glock20_onSecondaryAttackRelease,
 	weapon_glock20_onThink,
 	weapon_glock20_onColdCock,
+	NULL,
 	weaponseq_glock20::idle,
 	weaponseq_glock20::draw,
 	31.0f / 30.0f,

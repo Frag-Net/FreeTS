@@ -76,21 +76,24 @@ HUD_Draw(void)
 		
 		g_hud_color = autocvar_con_color * (1 / 255);
 
-		/* little point in not drawing these, even if you don't have a suit */
-		Weapons_DrawCrosshair();
-		TS_HUD_DrawWeaponSelect();
-		Obituary_Draw();
-		Textmenu_Draw();
-		
 		//TAGGG - NEw
 		//////////////////////////////////////////////////////////////
-		// moved to shared/player.qc, clientside player::preThink
+		// moved to shared/player.qc
 		//TS_View_HandleZoom();
 		
 		//printfline("SCOPE LEVEL %.2f", pl.flZoomCurrent);
 		if(pl.flZoomCurrent < 0.5){   //is this < 40/80 mag?	yes.
 			HUD_DrawScope();
+			
+			// TS custom damage draw method.
+			// Done here to be drawn on top of the Scope.
+			TS_HUD_DamageDraw();
 		}else{
+			
+			// Draw the crosshair over damage, rather not shade over important UI, but
+			// up to taste here
+			TS_HUD_DamageDraw();
+			
 			// We'll leave details like extra details for the lasersight and the
 			// weight bars at a bare minimum (should be drawn at all times, oversight
 			// in TS 2.1 that they're missing from melee views like with knives,
@@ -98,6 +101,17 @@ HUD_Draw(void)
 			HUD_DrawCrosshair();
 		}
 		//////////////////////////////////////////////////////////////
+		
+	
+		
+		// Assuming that drawing these on top of the scope is a good idea.
+		// "Weapons_DrawCrosshair" is for tapping into the weapon's drawHUD methods,
+		// Nuclide methods in its weapons struct
+		Weapons_DrawCrosshair();
+		TS_HUD_DrawWeaponSelect();
+		Obituary_Draw();
+		Textmenu_Draw();
+		
 		
 		//TAGGG - new
 		//////////////////////////////////////////////////////////////

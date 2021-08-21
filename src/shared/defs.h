@@ -1,5 +1,4 @@
 
-
 enum TS_GameMode{
 	DEATHMATCH,
 	TEAM_DEATHMATCH,

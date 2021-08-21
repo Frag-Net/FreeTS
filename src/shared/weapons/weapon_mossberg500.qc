@@ -45,6 +45,7 @@ weapondata_ironsight_t weapon_mossberg500 =
 	weapon_mossberg500_onSecondaryAttackRelease,
 	weapon_mossberg500_onThink,
 	weapon_mossberg500_onColdCock,
+	NULL,
 	weaponseq_mossberg500::idle,
 	weaponseq_mossberg500::draw,
 	31.0f / 35.0f,
