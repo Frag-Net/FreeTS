@@ -155,7 +155,9 @@ class player:base_player
 	
 	int recentLaserDistanceDisplay;
 	
+	// does anything use this?
 	BOOL forceViewModelUpdate;
+	
 	// NOTICE - individual dynamic weapons have "iForceBodygroup1Submodel".
 	// "prev_iForceBodygroup1Submodel" is player-wide (here) instead because we only need to
 	// keep track of changes in a weapon's iForceBodygroup1Submodel while that weapon is
@@ -224,8 +226,13 @@ class player:base_player
 	
 	PREDICTED_INT(iMeleeCycler);
 
-	//SHARED!!!
+	// SHARED
 	vector vViewAngleOffsetTarget;
+	vector vViewAngleOffsetTarget1;
+	vector vViewAngleOffsetTarget2;
+	vector vViewAngleOffsetTarget3;
+	vector vViewAngleOffsetTarget4;
+	
 	PREDICTED_FLOAT(fAccuracyKickback);
 	PREDICTED_FLOAT(fAccuracyKickbackStartCooldown);
 	

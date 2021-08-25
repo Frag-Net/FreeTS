@@ -3,6 +3,11 @@
 
 //---WARNINGS DISABLED---
 #pragma warning disable Q302 /*uninitialised locals*/
+
+// See ui_buymenu.qc for why this is disabled.
+// No idea how to make warnings disabled only per file, in there
+// would affect all files included in the compile after anyway
+#pragma warning disable F314 /*implicit cast*/
 /////////////////////////////////////////////////////////////////
 
 

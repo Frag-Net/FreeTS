@@ -1,4 +1,14 @@
 
+#define ASSIGN_AMMODATA(arg_constName) ary_ammoData[AMMO_ID::##arg_constName] = (ammodata_t*) &ammo_##arg_constName;
+#define DECLARE_AMMODATA(arg_varName, arg_sDisplayName, arg_fPricePerBullet, arg_iMax) ammodata_t ammo_##arg_varName = {arg_sDisplayName, arg_fPricePerBullet, arg_iMax};
+
+#define ASSIGN_SHELLEJECTDATA(arg_constName) ary_shellEjectData[SHELLEJECT_ID::##arg_constName] = (shellejectdata_t*) &shelleject_##arg_constName;
+#define DECLARE_SHELLEJECTDATA(arg_varName, arg_sModelPath, arg_sTouchSound) shellejectdata_t shelleject_##arg_varName = {arg_sModelPath, arg_sTouchSound};
+
+#define ASSIGN_MUZZLEFLASHDATA(arg_constName) ary_muzzleFlashData[MUZZLEFLASH_ID::##arg_constName] = (muzzleflashdata_t*) &muzzleflash_##arg_constName;
+#define DECLARE_MUZZLEFLASHDATA(arg_varName, arg_sSpritePath) var muzzleflashdata_t muzzleflash_##arg_varName = {0, arg_sSpritePath};
+
+
 DECLARE_AMMODATA(NONE, "_NONE_", 0, 0)
 DECLARE_AMMODATA(_9X19MM, "9 x 19mm", 1.6666666666, 210)
 DECLARE_AMMODATA(_45ACP, ".45Acp", 5.1, 200)

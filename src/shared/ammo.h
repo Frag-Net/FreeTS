@@ -1,13 +1,4 @@
 
-#define ASSIGN_AMMODATA(arg_constName) ary_ammoData[AMMO_ID::##arg_constName] = (ammodata_t*) &ammo_##arg_constName;
-#define DECLARE_AMMODATA(arg_varName, arg_sDisplayName, arg_fPricePerBullet, arg_iMax) ammodata_t ammo_##arg_varName = {arg_sDisplayName, arg_fPricePerBullet, arg_iMax};
-
-#define ASSIGN_SHELLEJECTDATA(arg_constName) ary_shellEjectData[SHELLEJECT_ID::##arg_constName] = (shellejectdata_t*) &shelleject_##arg_constName;
-#define DECLARE_SHELLEJECTDATA(arg_varName, arg_sModelPath, arg_sTouchSound) shellejectdata_t shelleject_##arg_varName = {arg_sModelPath, arg_sTouchSound};
-
-#define ASSIGN_MUZZLEFLASHDATA(arg_constName) ary_muzzleFlashData[MUZZLEFLASH_ID::##arg_constName] = (muzzleflashdata_t*) &muzzleflash_##arg_constName;
-#define DECLARE_MUZZLEFLASHDATA(arg_varName, arg_sSpritePath) var muzzleflashdata_t muzzleflash_##arg_varName = {0, arg_sSpritePath};
-
 
 enum AMMO_ID{
 	NONE = 0,

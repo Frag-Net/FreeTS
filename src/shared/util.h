@@ -236,6 +236,11 @@ if (pl.inputSecondaryTapFrameCount == 0)\
 #define GET_VIEW_ANGLES pl.v_angle
 #endif
 	
+#ifdef CLIENT
+#define GET_MY_VIEW_ANGLES view_angles
+#else
+#define GET_MY_VIEW_ANGLES this.v_angle
+#endif
 
 	
 // OLD UNDERWATER CHECK.  Using a new var for more accuracy.

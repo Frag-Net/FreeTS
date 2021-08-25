@@ -1,4 +1,17 @@
 
+
+
+#define ASSIGN_WEAPONDATA(arg_constName, arg_weaponName) ary_weaponData[WEAPON_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_weaponName;
+
+// NOTICE - the ID lacks the "_akimbo" suffix.  The actual variable name has the "_akimbo" suffix.
+// Just provide the name of the weapon without the "_akimbo" suffix and it will be added as needed
+// automatically.
+#define ASSIGN_AKIMBOUPGRADEDATA(arg_constName, arg_weaponName) ary_akimboUpgradeData[WEAPON_AKIMBO_UPGRADE_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_weaponName##_akimbo;
+
+
+
+
+
 weapon_t w_null = {};
 
 // Populate each slot with a member of the enum early on in runtime instead.
@@ -640,7 +653,7 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 // happens there.
 void
 weapon_gun_akimbo_semi_primaryAttack(
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+	MethodType_WeaponAttack arg_funAttack
 ){
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
@@ -678,7 +691,7 @@ weapon_gun_akimbo_semi_primaryAttack(
 // That version also needs the weapon type ID given for the ironsight-toggle call
 void
 weapon_gun_akimbo_semi_secondaryAttack(
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+	MethodType_WeaponAttack arg_funAttack
 ){
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
@@ -715,7 +728,7 @@ weapon_gun_akimbo_semi_secondaryAttack(
 
 void
 weapon_ironsight_akimbo_semi_secondaryAttack(
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack,
+	MethodType_WeaponAttack arg_funAttack,
 	int arg_weaponTypeID
 ){
 	player pl = (player)self;
@@ -751,14 +764,12 @@ weapon_ironsight_akimbo_semi_secondaryAttack(
 
 
 
-
-
 // And now for full semi weapons (holding down the mouse fires continuously)
 // They don't use the DUAL_TOLERANCE system regardless of the constant.
 // Also, no ironsight version, that combo never happens.
 void
 weapon_gun_akimbo_full_primaryAttack(
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+	MethodType_WeaponAttack arg_funAttack
 ){
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
@@ -776,7 +787,7 @@ weapon_gun_akimbo_full_primaryAttack(
 
 void
 weapon_gun_akimbo_full_secondaryAttack(
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+	MethodType_WeaponAttack arg_funAttack
 ){
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
@@ -797,7 +808,7 @@ weapon_gun_akimbo_full_secondaryAttack(
 BOOL
 weapon_akimbo_AttackDualHack(
 	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+	MethodType_WeaponAttack arg_funAttack
 ){
 	//printfline("WELL WHAT. %.2f, %i, %i", pl.akimboDualFireToleranceTime, pl.akimboFirePrev, arg_flagger);
 	if(arg_flagger == 0){
@@ -870,7 +881,7 @@ weapon_akimbo_AttackDualHack(
 BOOL
 weapon_akimbo_semiAttackDualHack(
 	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+	MethodType_WeaponAttack arg_funAttack
 ){
 	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_SEMI_AUTO){
 		return FALSE;
@@ -884,7 +895,7 @@ weapon_akimbo_semiAttackDualHack(
 BOOL
 weapon_akimbo_fullAttackDualHack(
 	player pl, weapondynamic_t arg_thisWeapon, int arg_flagger,
-	void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack
+	MethodType_WeaponAttack arg_funAttack
 ){
 	if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FULL_AUTO){
 		return FALSE;

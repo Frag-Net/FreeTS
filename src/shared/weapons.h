@@ -1,8 +1,5 @@
 
 
-class player;
-
-
 
 // Doing at least this because nuclide's src/server/weapons.qc
 // still expects it to exist.
@@ -10,6 +7,90 @@ class player;
 // with player.inventoryEquippedIndex for the currently selected aryWeapon
 // inventory element.
 #define WEAPON_NONE 0
+
+// Any preference for macro constants or 'enumflags', whatever does the auto-power-of-2?
+// No idea, doing macros for now
+
+
+#define BITS_AKIMBOCHOICE_NONE 0
+#define BITS_AKIMBOCHOICE_LEFT 1
+#define BITS_AKIMBOCHOICE_RIGHT 2
+#define BITS_AKIMBOCHOICE_BOTH (BITS_AKIMBOCHOICE_LEFT | BITS_AKIMBOCHOICE_RIGHT)
+
+
+
+// Firemodes, normal
+// melee weapons don't really do firemode.
+// Can be used for burst-fire bullets too for bypassing some requirements.
+#define BITS_FIREMODE_NONE 0
+#define BITS_FIREMODE_BURST 1
+#define BITS_FIREMODE_FULL 2
+#define BITS_FIREMODE_SEMI 4
+#define BITS_FIREMODE_PUMP 8
+
+
+// Akimbo firemodes
+#define BITS_FIREMODE_AKIMBO_NONE 0
+#define BITS_FIREMODE_AKIMBO_SEMI_AUTO 1
+#define BITS_FIREMODE_AKIMBO_FREE_SEMI 2
+#define BITS_FIREMODE_AKIMBO_FULL_AUTO 4
+#define BITS_FIREMODE_AKIMBO_FREE_FULL 8
+
+
+
+#define BITS_WEAPONOPT_NONE 0x00
+#define BITS_WEAPONOPT_SILENCER 0x01
+#define BITS_WEAPONOPT_LASERSIGHT 0x02
+#define BITS_WEAPONOPT_FLASHLIGHT 0x04
+#define BITS_WEAPONOPT_SCOPE 0x08
+#define BITS_WEAPONOPT_AKIMBO 0x10
+#define BITS_WEAPONOPT_FULLLOAD 0x20
+
+// This is a special flag to say, skip showing buyoptions altogether. The buy button goes straight to
+// buying the weapon.
+//good for items (stealh shoes, kevlar)
+#define BITS_WEAPONOPT_INSTANT 0x80000000
+
+// Types of weapons that, if present, can be toggled on/off by the player.  Only some can.
+// A lot of other behavior about this isn't automatic though, a change here does little elsewhere.
+#define BITMASK_WEAPONOPT_TOGGLEABLE BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_FLASHLIGHT
+// only min/max order of bits.
+#define BITMASK_WEAPONOPT_TOGGLEABLE_MIN BITS_WEAPONOPT_LASERSIGHT
+#define BITMASK_WEAPONOPT_TOGGLEABLE_MAX BITS_WEAPONOPT_FLASHLIGHT
+
+
+#define BUYCATEGORY_NONE 0
+#define BUYCATEGORY_HANDGUNS 1
+#define BUYCATEGORY_SMGS 2
+#define BUYCATEGORY_RIFLES 3
+#define BUYCATEGORY_SHOTGUNS 4
+#define BUYCATEGORY_SPECIALPURPOSE 5
+
+
+
+#define WEAPONDATA_TYPEID_BASIC 0
+#define WEAPONDATA_TYPEID_GUN 1
+#define WEAPONDATA_TYPEID_IRONSIGHT 2
+//#define WEAPONDATA_TYPEID_AKIMBO 3
+#define WEAPONDATA_TYPEID_MELEE 3
+//Note that THROWABLE is knives, not grenades.
+#define WEAPONDATA_TYPEID_THROWABLE 4
+
+
+
+#define ary_myWeapons_length 16
+
+
+
+
+
+class player;
+class weapondynamic_t;
+
+// commonly used in akimbo-fire methods for weapon-specific firint script.
+// Parameter list commonly looks like:
+//     player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed
+typedef void(player, weapondynamic_t, int) MethodType_WeaponAttack;
 
 
 //returned by weapon_base_onPrimaryAttack_melee to tell what type of thing was hit, since some
@@ -148,44 +229,6 @@ int ary_AKIMBO_UPGRADE_TO_WEAPON[] = {
 
 
 
-// What akimbo weapons are involved, if asked?
-// no, let's bitmask it.
-/*
-enum AkimboChoice{
-	NONE = 0,  //???
-	LEFT = 1,
-	RIGHT = 2,
-	BOTH = 3
-};
-*/
-#define BITS_AKIMBOCHOICE_NONE 0
-#define BITS_AKIMBOCHOICE_LEFT 1
-#define BITS_AKIMBOCHOICE_RIGHT 2
-#define BITS_AKIMBOCHOICE_BOTH (BITS_AKIMBOCHOICE_LEFT | BITS_AKIMBOCHOICE_RIGHT)
-
-
-
-
-// melee weapons don't really do firemode.
-// Can be used for burst-fire bullets too for bypassing some requirements.
-#define BITS_FIREMODE_NONE 0
-
-#define BITS_FIREMODE_BURST 1
-#define BITS_FIREMODE_FULL 2
-#define BITS_FIREMODE_SEMI 4
-#define BITS_FIREMODE_PUMP 8
-
-
-//AKIMBO
-
-//???
-#define BITS_FIREMODE_AKIMBO_NONE 0
-
-#define BITS_FIREMODE_AKIMBO_SEMI_AUTO 1
-#define BITS_FIREMODE_AKIMBO_FREE_SEMI 2
-#define BITS_FIREMODE_AKIMBO_FULL_AUTO 4
-#define BITS_FIREMODE_AKIMBO_FREE_FULL 8
-
 
 //string getFiremodeName(int firemodeBit);
 //string getAkimboFiremodeName(int firemodeBit);
@@ -217,59 +260,6 @@ string getAkimboFiremodeName(int firemodeBit){
 		return "???";
 	}
 }
-
-
-
-#define BITS_WEAPONOPT_NONE 0x00
-#define BITS_WEAPONOPT_SILENCER 0x01
-#define BITS_WEAPONOPT_LASERSIGHT 0x02
-#define BITS_WEAPONOPT_FLASHLIGHT 0x04
-#define BITS_WEAPONOPT_SCOPE 0x08
-#define BITS_WEAPONOPT_AKIMBO 0x10
-#define BITS_WEAPONOPT_FULLLOAD 0x20
-
-// This is a special flag to say, skip showing buyoptions altogether. The buy button goes straight to
-// buying the weapon.
-//good for items (stealh shoes, kevlar)
-#define BITS_WEAPONOPT_INSTANT 0x80000000
-
-// Types of weapons that, if present, can be toggled on/off by the player.  Only some can.
-// A lot of other behavior about this isn't automatic though, a change here does little elsewhere.
-#define BITMASK_WEAPONOPT_TOGGLEABLE BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_FLASHLIGHT
-// only min/max order of bits.
-#define BITMASK_WEAPONOPT_TOGGLEABLE_MIN BITS_WEAPONOPT_LASERSIGHT
-#define BITMASK_WEAPONOPT_TOGGLEABLE_MAX BITS_WEAPONOPT_FLASHLIGHT
-
-
-#define BUYCATEGORY_NONE 0
-#define BUYCATEGORY_HANDGUNS 1
-#define BUYCATEGORY_SMGS 2
-#define BUYCATEGORY_RIFLES 3
-#define BUYCATEGORY_SHOTGUNS 4
-#define BUYCATEGORY_SPECIALPURPOSE 5
-
-
-
-#define WEAPONDATA_TYPEID_BASIC 0
-#define WEAPONDATA_TYPEID_GUN 1
-#define WEAPONDATA_TYPEID_IRONSIGHT 2
-//#define WEAPONDATA_TYPEID_AKIMBO 3
-#define WEAPONDATA_TYPEID_MELEE 3
-//Note that THROWABLE is knives, not grenades.
-#define WEAPONDATA_TYPEID_THROWABLE 4
-
-
-
-#define ASSIGN_WEAPONDATA(arg_constName, arg_weaponName) ary_weaponData[WEAPON_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_weaponName;
-
-// NOTICE - the ID lacks the "_akimbo" suffix.  The actual variable name has the "_akimbo" suffix.
-// Just provide the name of the weapon without the "_akimbo" suffix and it will be added as needed
-// automatically.
-#define ASSIGN_AKIMBOUPGRADEDATA(arg_constName, arg_weaponName) ary_akimboUpgradeData[WEAPON_AKIMBO_UPGRADE_ID::##arg_constName] = (weapondata_basic_t*) &weapon_##arg_weaponName##_akimbo;
-
-
-
-#define ary_myWeapons_length 16
 
 
 
@@ -824,16 +814,16 @@ BOOL weapon_shotgun_onInterrupt(player pl, weapondata_basic_t* basePRef, weapond
 void weapon_shotgun_reload(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon);
 void weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_thisWeapon);
 
-void weapon_gun_akimbo_semi_primaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
-void weapon_gun_akimbo_semi_secondaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
-void weapon_ironsight_akimbo_semi_secondaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack, int arg_weaponTypeID);
+void weapon_gun_akimbo_semi_primaryAttack(MethodType_WeaponAttack arg_funAttack);
+void weapon_gun_akimbo_semi_secondaryAttack(MethodType_WeaponAttack arg_funAttack);
+void weapon_ironsight_akimbo_semi_secondaryAttack(MethodType_WeaponAttack arg_funAttack, int arg_weaponTypeID);
 
-void weapon_gun_akimbo_full_primaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
-void weapon_gun_akimbo_full_secondaryAttack(void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+void weapon_gun_akimbo_full_primaryAttack(MethodType_WeaponAttack arg_funAttack);
+void weapon_gun_akimbo_full_secondaryAttack(MethodType_WeaponAttack arg_funAttack);
 
-BOOL weapon_akimbo_semiAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
-BOOL weapon_akimbo_fullAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
-BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, void(player pl, weapondynamic_t arg_thisWeapon, int attackTypeUsed) arg_funAttack);
+BOOL weapon_akimbo_semiAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, MethodType_WeaponAttack arg_funAttack);
+BOOL weapon_akimbo_fullAttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, MethodType_WeaponAttack arg_funAttack);
+BOOL weapon_akimbo_AttackDualHack(player pl, weapondynamic_t arg_thisWeapon, int arg_flagger, MethodType_WeaponAttack arg_funAttack);
 
 int weapon_akimbo_semiAttackChoice(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
 int weapon_akimbo_fullAttackChoice(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
