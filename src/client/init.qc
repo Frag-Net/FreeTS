@@ -211,7 +211,7 @@ ClientGame_RendererRestart(string rstr)
 		
 		// TODO - if this becomes a lot of lines, go to a method
 		// "pSeatLocal_RendererRestart" instead
-		if(pl != NULL){
+		if(pl != NULL && pl.iState == PLAYER_STATE::SPAWNED){
 			pl.prev_iForceBodygroup1Submodel = 0;
 			TS_View_SetViewModelFromStats();
 		}

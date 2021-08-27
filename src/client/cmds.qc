@@ -23,10 +23,11 @@ ClientGame_ConsoleCommand(void)
 	
 	switch(argv(0)) {
 		
-	case "+speed":
+	// Can't be exactly "speed".  No idea why.
+	case "+speedcustom":
 		pSeatLocal->m_iInputSpeed = TRUE;
 		break;
-	case "-speed":
+	case "-speedcustom":
 		pSeatLocal->m_iInputSpeed = FALSE;
 		break;
 		
@@ -43,7 +44,7 @@ ClientGame_ConsoleCommand(void)
 	case "useitems":
 		TS_playerUseItems();
 		//pSeatLocal->m_bUseItemsFreshPress = TRUE;
-		//pSeatLocal->m_bUseItems = TRUE;
+		pSeatLocal->m_bUseItems = TRUE;
 		break;
 	case "usepowerup":
 		TS_playerUsePowerup();

@@ -85,6 +85,11 @@ TS_View_SetViewModelFromStats(void)
 	weapondata_basic_t* basicP;
 	weapondynamic_t dynaRef;
 	
+	if(pl.inventoryEquippedIndex == -1){
+		// what.
+		return;
+	}
+	
 	//printfline("TS_View_SetViewModelFromStats:  I happen? activeweap:%d", pl.activeweapon);
 	
 	basicP = pl.getEquippedWeaponData();

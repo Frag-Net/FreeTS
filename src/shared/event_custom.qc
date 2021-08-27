@@ -622,6 +622,7 @@ TS_playerUseItems(void){
 	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
+	
 	//_TS_playerUseItems();
 	
 	
@@ -633,6 +634,7 @@ TS_playerUseItems(void){
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
 	
 #endif
+	
 }
 
 

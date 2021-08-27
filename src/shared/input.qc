@@ -366,6 +366,11 @@ void processInputs(void){
 		//printfline("!!! SECO !!! (%d %d)", ((input_buttons & INPUT_BUTTON0)!=0), ((input_buttons & INPUT_BUTTON3)!=0));
 		Weapons_Secondary();
 		
+		// TEST!
+		//if(!(pl.gflags & GF_SEMI_SECONDARY_TOGGLED)){
+		//	TS_playerUseItems();
+		//}
+		
 		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
 		return;
 	}
