@@ -39,14 +39,13 @@ CUIEventGrabber::Draw(void)
 void
 CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
-	
 	// no need to do this.
 	//g_vguiWidgetCount++;
 	
 	switch (flEVType) {
 		
 	case IE_KEYDOWN:
-		printf("CUIEventGrabber::Input %d time:%.2f\n", flKey, time);
+		//printf("CUIEventGrabber::Input %d time:%.2f\n", flKey, time);
 		
 		pSeatLocal->m_inputKeyDown = flKey;
 		pSeatLocal->m_inputKeyTapped = flKey;  //lasts only this frame
@@ -78,9 +77,8 @@ void gFun_UI_EventGrabber_Initialize(void){
 	g_UI_EventGrabber = spawn(CUIEventGrabber);
 	g_uiDesktop.Add(g_UI_EventGrabber);
 	
-	printfline("gFun_UI_EventGrabber_Initialize: Added to VGUI.  Right?");
-	
-	printfline("(g_vguiWidgetCount: %i)", g_vguiWidgetCount);
+	//printfline("gFun_UI_EventGrabber_Initialize: Added to VGUI.  Right?");
+	//printfline("(g_vguiWidgetCount: %i)", g_vguiWidgetCount);
 	
 	
 	// make it "visible", or rather, "active" for grabbing input events?
@@ -101,6 +99,6 @@ void gFun_UI_EventGrabber_Hide(void){
 
 
 void gFun_UI_EventGrabber_DebugMethod(void){
-		printfline("HOW IS EVENGRAB DOIN %i %i", g_UI_EventGrabber.m_iFlags, (g_UI_EventGrabber.m_iFlags & 1) );
+	printfline("HOW IS EVENGRAB DOIN %i %i", g_UI_EventGrabber.m_iFlags, (g_UI_EventGrabber.m_iFlags & 1) );
 }
 

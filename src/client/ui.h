@@ -48,6 +48,8 @@ void UI_Draw(void);
 void UI_MouseClick(void);
 void UI_KeyDown(void);
 void UI_ChangeScreen(UI_SCREEN fNewScreenID);
+void UI_HideCurrentScreen(void);
+
 BOOL UI_CheckMouse(vector vPos, vector vReg);
 
 void UI_determineDrawGlobals(void);

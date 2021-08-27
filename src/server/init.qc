@@ -258,13 +258,9 @@ Game_Worldspawn(void)
 		error("[MAPCYCLE] Loading failed.\n");	
 	}
 */
-
-	// Let's make our version information clear
-	localcmd(sprintf("serverinfo fcs_ver %s\n", __DATE__));
-
-
+	
 	/*Bot_Init();*/
-
+	
 	
 	//How many weight slots does this player have?
 	//...oh wait, we already receive whatever the actual playerSlots is, even if the inventorylogic

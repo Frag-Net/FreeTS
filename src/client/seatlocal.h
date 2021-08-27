@@ -31,22 +31,27 @@ struct
 	float m_flHUDWeaponSelectTime;
 	
 	
-	
 	//TAGGG - assuming this is a fine place to put this
 	// It's the slower movement from holding shift down.
 	int m_iInputSpeed;
 	// Keeping for now, remove later
 	float m_flUI_Display;
 	
-	// CRITICAL:
-	// Should these be per pSeat instead?  Unsure if that makes sense.
 	float m_inputKeyTapped;
 	float m_inputKeyDown;
 	float m_inputMouseClicked;
 
 	ClientInfo_t m_clientinfo;
 	
-	float flBlockSpawnTime;
+	float m_flBlockSpawnInputTime;
+	
+	BOOL m_bUseItemsFreshPress;
+	// How many times has the use button been pressed before getting a server callback?
+	// Also need to handle determining what in a server callback lets this be reduced
+	int m_iUseItemsLatencyPresses;
+	
+	BOOL m_bUseItems;
+	
 	
 } g_seatslocal[4], *pSeatLocal;
 

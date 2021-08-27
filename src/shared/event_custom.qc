@@ -602,7 +602,15 @@ _TS_playerChangeFiremode(void ) {
 // Server receives the message
 void
 CSEv_TS_playerUseItems_(void){
+	player pl = (player)self;
 	_TS_playerUseItems();
+	
+	// Send a message back too!
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EVENT_TS::USEITEMS_CHANGE_CALLBACK );
+	msg_entity = pl;
+	multicast( [0,0,0], MULTICAST_ONE );
+	
 }
 #endif
 
@@ -614,12 +622,16 @@ TS_playerUseItems(void){
 	if(pl.inventoryEquippedIndex == -1){
 		return;
 	}
+	//_TS_playerUseItems();
+	
+	
 #ifdef CLIENT
 		sendevent("TS_playerUseItems", "");
 		// and do it my side too?
 		_TS_playerUseItems();
 #else
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
+	
 #endif
 }
 
@@ -655,10 +667,11 @@ _TS_playerUseItems(void){
 			}else{
 				
 	
-#if defined(CLIENT_CMD_SAFEMODE) && defined(CLIENT)
+	
+#if defined(CLIENT_CMD_SAFEMODE)
 				// Have a much simpler version instead
 #ifdef CLIENT
-					localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
+				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
 #endif
 				return;
 #endif
@@ -671,7 +684,6 @@ _TS_playerUseItems(void){
 					}else{
 						dynaRef.iBitsUpgrade_on = legalBuyOpts;
 					}
-					
 					
 				}else{
 					//variable number of bits?  See how many bits are on right now.
@@ -699,6 +711,7 @@ _TS_playerUseItems(void){
 				}
 				
 				
+				
 				// Let's be a clientside sound only.
 #ifdef CLIENT
 				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
@@ -722,14 +735,50 @@ _TS_playerUseItems(void){
 			}// bitcount checks
 			
 			
-			
-		}/// _GUN or _IRONSIGHT type checks
+		}// _GUN or _IRONSIGHT type checks
 	}// weaponEquippedID check
 	
 	
-	printfline("CSEv_TS_playerUseItems_");
 }
 
+
+
+// TEST, might get abandoned
+#ifdef CLIENT
+void
+_TS_FRESH_playerUseItems(void){
+	player pl = (player)self;
+	
+	printfline("CSEv_TS_playerUseItems_");
+	
+	sendevent("TS_playerUseItems", "");
+	
+	
+	if(pl.inventoryEquippedIndex != -1){
+	
+		weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+		
+		if(dynaRef.weaponTypeID == WEAPONDATA_TYPEID_GUN || dynaRef.weaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
+			weapondata_basic_t* basicP = pl.getEquippedWeaponData();
+			
+			
+			int legalBuyOpts = (dynaRef.iBitsUpgrade & (*basicP).iBitsUpgrade) & (BITMASK_WEAPONOPT_TOGGLEABLE);
+			int bitCount = count1Bits(legalBuyOpts, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
+			
+			if(bitCount == 0){
+				
+			}else{
+				// Let's be a clientside sound only.
+//#ifdef CLIENT
+				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
+//#endif
+			}
+				
+		}// _GUN or _IRONSIGHT type checks
+	}// weaponEquippedID check
+	
+}
+#endif
 
 
 

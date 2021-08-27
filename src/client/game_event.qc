@@ -203,6 +203,9 @@ ClientGame_EventParse(float fHeader)
 		EV_TS_playerDropWeapon(pl);
 	}break;
 	*/
+	case EVENT_TS::USEITEMS_CHANGE_CALLBACK:{
+		pl.clientUseItemsCallback();
+	}break;
 	case EVENT_TS::TEST:{
 		//printfline("EVENT_TS::TEST HAPPENED");
 		//clearscene();

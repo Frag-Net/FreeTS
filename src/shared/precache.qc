@@ -13,7 +13,7 @@
 
 
 void SharedGame_Precache(void){
-	//printfline("***SharedGame_Precache called***");
+	printfline("***SharedGame_Precache called***");
 	
 	
 	// good idea to have precache shared?  Unsure, but it has script client and serverside
@@ -68,9 +68,6 @@ void SharedGame_Precache(void){
 	// TODO - precache only clientside later, UI-only sound.
 	// Same for others where that applies
 	precache_sound("weapons/switch.wav");
-	
-	// from Valve, no need to clone this
-	precache_model("sprites/glow02.spr");
 	
 	//precache_sound("weapons/weapondrop.wav");
 	

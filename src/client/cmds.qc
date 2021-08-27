@@ -23,39 +23,40 @@ ClientGame_ConsoleCommand(void)
 	
 	switch(argv(0)) {
 		
-	//TAGGG - is that ok?
-	case "+speedcustom":
+	case "+speed":
 		pSeatLocal->m_iInputSpeed = TRUE;
 		break;
-	case "-speedcustom":
+	case "-speed":
 		pSeatLocal->m_iInputSpeed = FALSE;
 		break;
 		
-	//TAGGG - NEW ONES
 	case "getorigin":
 		sendevent("TS_Debug_getOrigin", "");
-	break;
+		break;
 	case "getangle":
 		sendevent("TS_Debug_getAngle", "");
-	break;
+		break;
 	case "firemode":
 		TS_playerChangeFiremode();
-	break;
+		//pSeatLocal->m_bFireModeFreshPress = TRUE;
+		break;
 	case "useitems":
 		TS_playerUseItems();
-	break;
+		//pSeatLocal->m_bUseItemsFreshPress = TRUE;
+		//pSeatLocal->m_bUseItems = TRUE;
+		break;
 	case "usepowerup":
 		TS_playerUsePowerup();
-	break;
+		break;
 	// I think the plus is good here then?
 	// ...wait, not continuously reacted to in original TS.  I have no idea.
 	// Oh well, catch the - anyway too to stop an annoying printout about that command being missing (release)
 	case "+alt1":
 		TS_playerCallAlt1();
-	break;
+		break;
 	case "-alt1":
 	
-	break;
+		break;
 	//TAGGG - TODO: low priority.
 	// Let holding down the coldcock key (C by default) continuously use it, just like
 	// holding down primary fire to continuously fire.  Something about setting a var
@@ -64,10 +65,10 @@ ClientGame_ConsoleCommand(void)
 	case "+alt2":
 		TS_playerCallAlt2();
 		//pSeat->m_iInputAlt2 = TRUE;
-	break;
+		break;
 	case "-alt2":
 		//pSeat->m_iInputAlt2 = FALSE;
-	break;
+		break;
 	
 	case "dev_testorbituary":
 	//TAGGG - CRITICAL.  Orbituary stuff...
@@ -95,7 +96,7 @@ ClientGame_ConsoleCommand(void)
 		
 		printfline("CMD: BUY COMMAND RECEIVED!  Should I react?  %s (1=yes) : %d", getplayerkeyvalue( player_localnum, "*spec" ), pl.iState);
 		
-		// Should this use a "pl.iState != PLAYER_STATE::SPAWNED" check instead?
+		// Is there any reason to prefer a player key value or iState check?
 		//if(getplayerkeyvalue( player_localnum, "*spec" ) != "0"){
 		if(pl.iState != PLAYER_STATE::SPAWNED){
 			//we can show it!
@@ -104,6 +105,7 @@ ClientGame_ConsoleCommand(void)
 		
 		break;
 	case "chooseteam":
+		// TODO.
 		
 		break;
 	
@@ -116,7 +118,7 @@ ClientGame_ConsoleCommand(void)
 		break;
 	
 		
-		default:
+	default:
 		return (0);
 	}
 	return (1);

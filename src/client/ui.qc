@@ -82,16 +82,11 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 	g_UI_queueInit = FALSE;
 	
 	if(
-		pSeatLocal->m_flUI_Display != UI_SCREEN::NONE &&
 		arg_NewScreenID != pSeatLocal->m_flUI_Display
 	){
 		// First, check the existing m_flUI_Display.  If valid, call funHide for it
 		// (does not apply to setting the screen to the same choice)
-		if(
-			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funHide != NULL
-		){
-			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funHide();
-		}
+		UI_HideCurrentScreen();
 	}
 	
 	pSeatLocal->m_flUI_Display = (float)arg_NewScreenID;
@@ -113,7 +108,7 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 		// Questionably effective but better than nothing maybe.
 		player pl = (player)pSeat->m_ePlayer;
 		pl.gflags |= GF_SEMI_TOGGLED;
-		pSeatLocal->flBlockSpawnTime = time + 0.20;
+		pSeatLocal->m_flBlockSpawnInputTime = time + 0.13;
 		return;
 	}
 	
@@ -138,6 +133,18 @@ UI_ChangeScreen(UI_SCREEN arg_NewScreenID)
 	UI_InitCheck();
 	
 }
+
+// call the "funHide" method of the currently visible screen if it exists.
+void
+UI_HideCurrentScreen(void){
+		
+	if(pSeatLocal->m_flUI_Display != UI_SCREEN::NONE){
+		if(ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funHide != NULL){
+			ary_UI_Screen[pSeatLocal->m_flUI_Display-1].funHide();
+		}
+	}
+}
+
 
 // helper method to load the MoTD text from the server into this client's memory
 void
@@ -253,7 +260,7 @@ UI_determineDrawGlobals(void){
 		// font script file most likely, see examples in other codebaes.
 		//Font_Load("folder/some_file.ext", &FONT_ARIAL_TITLE_TEST);
 		
-		// This works, but not completely.  Want some things to have differnet fonts,
+		// This works, but not completely.  Want some things to have different fonts,
 		// like the _title and normal variants of FONT_ARIAL above.
 		/*
 		Font_Load_Easy("arial", (int)font_arial_title_size, FONT_ARIAL_TITLE_EX);

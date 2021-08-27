@@ -85,7 +85,7 @@ TS_View_SetViewModelFromStats(void)
 	weapondata_basic_t* basicP;
 	weapondynamic_t dynaRef;
 	
-	printfline("TS_View_SetViewModelFromStats:  I happen? activeweap:%d", pl.activeweapon);
+	//printfline("TS_View_SetViewModelFromStats:  I happen? activeweap:%d", pl.activeweapon);
 	
 	basicP = pl.getEquippedWeaponData();
 	dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
@@ -346,6 +346,13 @@ TS_View_DrawCustom(player pl){
 
 // another helper method
 // Draw the lasersight, and flashlight effects
+
+// IDEA: any way to give the effect of RF_DEPTHHACK (always draw on top of the map
+// so that flashlight muzzle glow-effects don't clip through the map), or the RF_ADDITIVE
+// that muzzle flashes use for being an effect in general?  Probably unnecessary anyway.
+// Flashlight glow effects do clip through the map in original TS so not a huge priority anyway,
+// and showing up in front of the weapon would not be amazing.
+// Effects like muzzleflashes don't even do anything special with depth-hackery so, eh.
 void
 TS_View_DrawExtraEffects(player pl, int thirdperson)
 {
@@ -399,7 +406,7 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	//for glock it is 40.
 	//vector gunpos = gettaginfo(pSeat->eViewModel, 33);
 	
-	float daDrawAlphahz = 1.0;
+	float drawAlpha = 1.0;
 	const vector lasColor = [1.0, 0, 0];
 	const vector fsize = [2,2];
 	const vector fsizeDot = [18,18];
@@ -619,10 +626,10 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 					//makevectors(view_angles);  //???   it seems we do not need this perhaps...
 					// IN SHORT, we're riding the prior "makevectors(angGun);".
 					R_BeginPolygon("sprites/laserbeam.spr_0.tga", 1, 0);
-					R_PolygonVertex(gunpos + v_right * fsize[0] - v_up * fsize[1], [1,1], lasColor, daDrawAlphahz);
-					R_PolygonVertex(gunpos - v_right * fsize[0] - v_up * fsize[1], [0,1], lasColor, daDrawAlphahz);
-					R_PolygonVertex(trace_endpos - v_right * fsize[0] + v_up * fsize[1], [0,0], lasColor, daDrawAlphahz);
-					R_PolygonVertex(trace_endpos + v_right * fsize[0] + v_up * fsize[1], [1,0], lasColor, daDrawAlphahz);
+					R_PolygonVertex(gunpos + v_right * fsize[0] - v_up * fsize[1], [1,1], lasColor, drawAlpha);
+					R_PolygonVertex(gunpos - v_right * fsize[0] - v_up * fsize[1], [0,1], lasColor, drawAlpha);
+					R_PolygonVertex(trace_endpos - v_right * fsize[0] + v_up * fsize[1], [0,0], lasColor, drawAlpha);
+					R_PolygonVertex(trace_endpos + v_right * fsize[0] + v_up * fsize[1], [1,0], lasColor, drawAlpha);
 					R_EndPolygon();
 				}
 				
@@ -697,10 +704,10 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 						// IN SHORT, we're riding the prior "makevectors(angGun2);".
 						
 						R_BeginPolygon("sprites/laserbeam.spr_0.tga", 1, 0);
-						R_PolygonVertex(gunpos2 + v_right * fsize[0] - v_up * fsize[1], [1,1], lasColor, daDrawAlphahz);
-						R_PolygonVertex(gunpos2 - v_right * fsize[0] - v_up * fsize[1], [0,1], lasColor, daDrawAlphahz);
-						R_PolygonVertex(trace_endpos - v_right * fsize[0] + v_up * fsize[1], [0,0], lasColor, daDrawAlphahz);
-						R_PolygonVertex(trace_endpos + v_right * fsize[0] + v_up * fsize[1], [1,0], lasColor, daDrawAlphahz);
+						R_PolygonVertex(gunpos2 + v_right * fsize[0] - v_up * fsize[1], [1,1], lasColor, drawAlpha);
+						R_PolygonVertex(gunpos2 - v_right * fsize[0] - v_up * fsize[1], [0,1], lasColor, drawAlpha);
+						R_PolygonVertex(trace_endpos - v_right * fsize[0] + v_up * fsize[1], [0,0], lasColor, drawAlpha);
+						R_PolygonVertex(trace_endpos + v_right * fsize[0] + v_up * fsize[1], [1,0], lasColor, drawAlpha);
 						R_EndPolygon();
 					}
 					

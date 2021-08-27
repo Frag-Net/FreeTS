@@ -21,13 +21,20 @@ void ClientGame_Precache(void){
 	FX_Impact_Init();
 	////////////////////////////////////////////////////////////////////////////////////
 	
-	// NEW
 	CTSShellEject::precache();
 	FX_TS_Explosion_Grenade_Init();
 	FX_Impact_Melee_Init();
 	MuzzleFlash_precache();
 	
 	
+	// from Valve
+	// ALSO - important note.  If this is precached serverside - at all, exclusively
+	// or in addition to this - this will still show up clientside at first.
+	// However, any "vid_restart" (or simialr reason to restart the window I assume)
+	// will make this model disappear (go checkerboard).
+	// And yes, even SharedGame_Precache is called by RendererRestart (in fact the
+	// very call is above in here, and ClientGame_Preche is called by RendererRestart).
+	precache_model("sprites/glow02.spr");
 	
 	precache_sound("weapons/draw.wav");
 	

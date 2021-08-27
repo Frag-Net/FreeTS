@@ -334,7 +334,7 @@ void entityRemoveRespawnFlag(CBaseEntity arg_this){
 void
 TS_Weapons_ViewAnimation(int i, float fDuration)
 {
-	printfline("TS_Weapons_ViewAnimation: %i %.2f", i, fDuration);
+	//printfline("TS_Weapons_ViewAnimation: %i %.2f", i, fDuration);
 	player pl = (player)self;
 	
 	pl.w_idle_next = fDuration;
@@ -349,7 +349,7 @@ TS_Weapons_ViewAnimation(int i, float fDuration)
 void
 TS_Weapons_ViewAnimation_noLaserLock(int i, float fDuration)
 {
-	printfline("TS_Weapons_ViewAnimation_noLaserLock: %i %.2f", i, fDuration);
+	//printfline("TS_Weapons_ViewAnimation_noLaserLock: %i %.2f", i, fDuration);
 	player pl = (player)self;
 	
 	pl.w_idle_next = fDuration;
@@ -365,7 +365,7 @@ TS_Weapons_ViewAnimation_noLaserLock(int i, float fDuration)
 void
 TS_Weapons_ViewAnimation_EndIdle(int i, float fDuration)
 {
-	printfline("TS_Weapons_ViewAnimation_EndIdle: %i %.2f", i, fDuration);
+	//printfline("TS_Weapons_ViewAnimation_EndIdle: %i %.2f", i, fDuration);
 	player pl = (player)self;
 	
 	pl.w_idle_next = fDuration;
@@ -380,7 +380,7 @@ TS_Weapons_ViewAnimation_EndIdle(int i, float fDuration)
 void
 TS_Weapons_ViewAnimation_EndIdle_custom(int i, float fDuration, float fIdleEndOffset)
 {
-	printfline("TS_Weapons_ViewAnimation_EndIdle_custom: %i %.2f %.2f", i, fDuration, fIdleEndOffset);
+	//printfline("TS_Weapons_ViewAnimation_EndIdle_custom: %i %.2f %.2f", i, fDuration, fIdleEndOffset);
 	player pl = (player)self;
 	
 	pl.w_idle_next = fDuration;

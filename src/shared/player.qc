@@ -362,7 +362,7 @@ so we can roll them back later.
 void
 player::PredictPreFrame(void)
 {
-	//printfline("---PREDIT PRE FRAME");
+	//printfline("---PREDICT PRE FRAME");
 	
 	/* the generic client attributes */
 	base_player::PredictPreFrame();
@@ -483,7 +483,7 @@ Where we roll back our values to the ones last sent/verified by the server.
 void
 player::PredictPostFrame(void)
 {
-	//printfline("---PREDIT POST FRAME");
+	//printfline("---PREDICT POST FRAME");
 	
 	
 	/*
@@ -1391,6 +1391,45 @@ player::updateTimers(void){
 	
 	
 }//updateTimers
+
+
+
+
+
+#ifdef CLIENT
+
+void
+_TS_FRESH_playerUseItems(void);
+
+// client only, check some other input-related CVars.
+void
+player::clientInputUpdate(void){
+	
+	//printfline("---clientInputUpdate");
+	
+	/*
+	if(pSeatLocal->m_bUseItemsFreshPress){
+		pSeatLocal->m_bUseItemsFreshPress = FALSE;
+		pSeatLocal->m_iUseItemsLatencyPresses++;
+		_TS_FRESH_playerUseItems();
+	}
+	
+	int i;
+	for(i = 0; i < pSeatLocal->m_iUseItemsLatencyPresses; i++){
+		TS_playerUseItems();
+	}
+	*/
+}
+
+void
+player::clientUseItemsCallback(void){
+	
+	//pSeatLocal->m_iUseItemsLatencyPresses--;
+}
+
+#endif
+
+
 
 
 

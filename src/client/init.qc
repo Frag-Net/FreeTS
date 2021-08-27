@@ -15,8 +15,7 @@
  */
 
 
-// should this even be defaulted?
-var float numclientseats_highest = 0;
+var float numclientseats_highest;
 
 /*
 =================
@@ -28,10 +27,17 @@ Comparable to worldspawn in SSQC in that it's mostly used for precaches
 void
 ClientGame_Init(float apilevel, string enginename, float engineversion)
 {
+	numclientseats_highest = 0;
+	
 	int s;
 	printfline("---ClientGame_Init---");
-	
 	printf("What is numclientseats? %d\n", numclientseats);
+	
+	
+	// wait, numclientseats isn't even known right at startup?  Just 0 here?
+	// And the RendererRestart event further down also isn't called after the
+	// first client is added so it sees 0 too?
+	// I GIVE UP just do this for all possible g_seats and be done with it
 	
 	// !!!
 	// Use g_seats.length instead to fill all seats, even those not intended for use, or
@@ -45,11 +51,11 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	// Moved to our ClientGame_RendererRestart for safety, change how this works if my
 	// understanding of pSeat isn't quite there.
 	
-	// safety
-	if(numclientseats > g_seats.length){numclientseats = g_seats.length;}
-	for(s = numclientseats-1; s >= 0; s--){
+	//if(numclientseats > g_seats.length){numclientseats = g_seats.length;}
+	for(s = 0; s < g_seats.length; s++){  // < numclientseats
 		pSeat = &g_seats[s];
 		pSeatLocal = &g_seatslocal[s];
+		
 		pSeatLocal_init();
 		ClientInfo_init(&pSeatLocal->m_clientinfo);
 	}
@@ -126,9 +132,9 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	// BLABLABLA.  "arialbd.ttf" without the "gfx/shell/" in front is searching the OS,
 	// not your own gamemod or platform directories (which ought to have it in gfx/shell).
 	// Forget it!  I'm using our own platform supplied one, "gfx/shell/" it is.
-	FONT_ARIAL_STD = loadfont( "", "gfx/shell/arialbd.ttf", "14", -1 );
-	FONT_ARIAL_NUMSLASH = loadfont( "", "gfx/shell/arialbd.ttf", "16", -1 );
-	FONT_ARIAL_SCOPEMAG = loadfont( "", "gfx/shell/arialbd.ttf", "17", -1 );
+	FONT_ARIAL_STD = loadfont( "", "gfx/shell/arialbd.ttf", "16", -1 );
+	FONT_ARIAL_NUMSLASH = loadfont( "", "gfx/shell/arialbd.ttf", "17", -1 );
+	FONT_ARIAL_SCOPEMAG = loadfont( "", "gfx/shell/arialbd.ttf", "18", -1 );
 	
 	// safe default for whatever doesn't specify it?
 	// Beware that draw calls that don't set the drawfont will still rely
@@ -163,29 +169,55 @@ Custom_ViewInit(void){
 	}
 }
 
+
 void
 ClientGame_RendererRestart(string rstr)
 {
 	int s;
 	
 	printfline("---ClientGame_RendererRestart---");
-	printf("What is numclientseats? %d\n", numclientseats);
+	//printf("What is numclientseats? %d highest:%d\n", numclientseats, numclientseats_highest);
 	
-	// safety
+	// NEVERMIND.
+	/*
 	if(numclientseats > g_seats.length){numclientseats = g_seats.length;}
-	
-	
 	// Did numclientseats change, and it's higher than the previous choice?
 	// Just init the additional ones then.
 	if(numclientseats > numclientseats_highest){
+		printfline("---Need to init new pseats? %d vs. %d", numclientseats, numclientseats_highest);
 		for(s = numclientseats-1; s >= numclientseats_highest; s--){
 			pSeat = &g_seats[s];
 			pSeatLocal = &g_seatslocal[s];
+			
 			pSeatLocal_init();
 			ClientInfo_init(&pSeatLocal->m_clientinfo);
 		}
+		printfline("numclientseats_highest D SET TO %d", numclientseats);
 		numclientseats_highest = numclientseats;
 	}
+	*/
+	
+	
+	// this is ok.
+	// Mainly, some things about viewmodels need to be refreshed on vid_restart,
+	// like submodel choice (silencer, scope, laser/flashlight, bloodied melee weapons).
+	// If anything else should be handled, in there it goes
+	for(s = 0; s < numclientseats; s++){  // < numclientseats
+		pSeat = &g_seats[s];
+		pSeatLocal = &g_seatslocal[s];
+		player pl = (player)pSeat->m_ePlayer;
+		
+		//pSeatLocal->m_bRecentRendererRestart = TRUE;
+		
+		// TODO - if this becomes a lot of lines, go to a method
+		// "pSeatLocal_RendererRestart" instead
+		if(pl != NULL){
+			pl.prev_iForceBodygroup1Submodel = 0;
+			TS_View_SetViewModelFromStats();
+		}
+	}
+	
+	
 	
 	Custom_ViewInit();
 	// Hook into precache.qc

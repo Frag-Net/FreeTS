@@ -379,7 +379,7 @@ w_karate_hud(void)
 	
 	//title
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vHUDFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 #endif
 }

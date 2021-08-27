@@ -34,10 +34,6 @@
 
 
 
-// TODO - are the default player and crouch collision bounds still fitting for TS?
-//        Foggy on the details there, could've been some change in height
-
-
 // First something config-oriented.  If uncommented, a modified clone of Nuclide's
 // base_player::Physics_Crouch (overridden by player) is used to insert the checks for
 // stopping uncrouching too soon after certain melee attacks.  Example: katana melee attack.
@@ -47,8 +43,6 @@
 
 
 ///////////////////////////////////////////////////////////////////// 
- 
- 
 
 // Are these even used anywhere anymore?
 /*
@@ -56,10 +50,6 @@
 #define PHY_JUMP_CHAIN		100
 #define PHY_JUMP_CHAINDECAY	50
 */
-
-// No need to override, same as nuclide's defaults.  CS just did something different.
-//#define PHY_VIEWPOS [0,0,24]
-//#define PHY_VIEWPOS_CROUCHED [0,0,12]
 
 /*
 const vector VEC_HULL_MIN = [-16,-16,-36];
@@ -77,9 +67,11 @@ const vector VEC_CHULL_MAX = [16,16,18];
 */
 
 
-// From Nuclide, needed for cloned crouch logic
-#define PHY_VIEWPOS [0,0,24]
-#define PHY_VIEWPOS_CROUCHED [0,0,12]
+// TS does use different viewpos offsets (original: heights of 24 and 12)
+#define PHY_VIEWPOS [0,0,28]
+#define PHY_VIEWPOS_CROUCHED [0,0,16]
+
+// I think these have to stay the same in goldsrc, I doubt TS could change them
 #define PHY_HULL_MIN [-16,-16,-36]
 #define PHY_HULL_MAX [16,16,36]
 #define PHY_HULL_CROUCHED_MIN [-16,-16,-18]
@@ -99,7 +91,7 @@ void TS_Physics_LedgeCheck(player pl);
 
 
 // TODO!  Is this accurate to TS?  Copied from FreeHL.
-// Worth comparing with FreeCS too if it does anything differnetly here.
+// Worth comparing with FreeCS too if it does anything differently here.
 // Anyway, doing this to remove the viewpunch vertical effect,
 // seems TS only does roll.
 void
@@ -375,8 +367,7 @@ player::Physics_Run(void)
 	//maxspeed = Physics_MaxSpeed();
 	//self.maxspeed = GamePMove_Maxspeed((player)self);
 	
-	// unfortunately, this setting is useless for now.
-	// See a note in src/shared/sound.qc.  In my files that is, not in raw Nuclide.
+	// this setting is useless for now
 	this.maxspeed_raw = GamePMove_MaxspeedRaw(this);
 	
 	// Cheap way to alter the friction for now, any deeper of a way without a Nuclide

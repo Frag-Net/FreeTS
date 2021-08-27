@@ -99,6 +99,10 @@ typedef struct CBuyMenu_BasicButton_s{
 	
 } CBuyMenu_BasicButton;
 
+// "instantiate" methods are like imaginary constructors that aren't chained since they set
+// the vtable to be for the child class of the struct-instance only.
+// "init" methods called after are chained to get parent vars initialized too.
+// "create" sets the button up with a lot of specifics at a time.
 void CBuyMenu_BasicButton_instantiate(CBuyMenu_BasicButton* arg_this);
 void CBuyMenu_BasicButton_init(CBuyMenu_BasicButton* arg_this);
 
@@ -556,6 +560,7 @@ CBuyMenu_WeaponButton_funOnShow_Base(CBuyMenu_WeaponButton* arg_this)
 	}
 }
 
+// lots of custom behavior needed
 void
 CBuyMenu_WeaponButton_funOnRender_Base
 (
@@ -565,8 +570,7 @@ CBuyMenu_WeaponButton_funOnRender_Base
 )
 {
 	CBuyMenu_BasicButton_funOnRender_Base(
-		(CBuyMenu_BasicButton*)arg_this, arg_suggestedDrawPos, arg_iLayer,
-		arg_iButtonRow, arg_fIsSelected
+		(CBuyMenu_BasicButton*)arg_this, arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected
 	);
 	
 	// I want to draw my sWeaponImagePath above myself.
@@ -612,7 +616,7 @@ CBuyMenu_RemoveWeaponButton_init(CBuyMenu_RemoveWeaponButton* arg_this)
 
 
 
-
+// Now with the BuyMenu button implementations over, onto the vtables:
 
 void CBuyMenu_BasicButton_vtable[] = {
 	(void)CBuyMenu_BasicButton_funOnClick_Base,
@@ -631,6 +635,7 @@ void CBuyMenu_RemoveWeaponButton_vtable[] = {
 };
 
 
+// Be aware of the vtable for this class/subclass
 void
 CBuyMenu_BasicButton_instantiate(CBuyMenu_BasicButton* arg_this)
 {
@@ -655,6 +660,9 @@ typedef void(CBuyMenu_BasicButton*) CBuyMenu_BasicButton_funOnClick_Base_type;
 typedef void(CBuyMenu_BasicButton*) CBuyMenu_BasicButton_funOnShow_Base_type;
 typedef void(CBuyMenu_BasicButton*, vector, int, int, BOOL) CBuyMenu_BasicButton_funOnRender_Base_type;
 
+// And finally, make a virtual call.  These use the name of the base "BasicButton" class but
+// still end up calling the most specific method given the actual type of the instance
+// (WeaponButton's call WeaponButton methods when present).
 void CBuyMenu_BasicButton_funOnClick_Base_vcall(CBuyMenu_BasicButton* arg_this){
 	void* method_raw = &arg_this->my_vtable[0];
 	CBuyMenu_BasicButton_funOnClick_Base_type myMethod = *(((CBuyMenu_BasicButton_funOnClick_Base_type*) method_raw));
@@ -669,6 +677,10 @@ void CBuyMenu_BasicButton_funOnRender_Base_vcall(CBuyMenu_BasicButton* arg_this,
 	void* method_raw = &arg_this->my_vtable[2];
 	CBuyMenu_BasicButton_funOnRender_Base_type myMethod = *(((CBuyMenu_BasicButton_funOnRender_Base_type*) method_raw));
 	myMethod(arg_this, arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected);
+	
+	// WRONG WAY!  Do a straight call to BasicButton instead of the above to see
+	// WeaponButtons lose custom weapon-icon drawing
+	//CBuyMenu_BasicButton_funOnRender_Base(arg_this, arg_suggestedDrawPos, arg_iLayer, arg_iButtonRow, arg_fIsSelected);
 }
 
 
@@ -1059,22 +1071,19 @@ buymenu_btn_RemoveItem_clicked(CBuyMenu_BasicButton* arg_this)
 		weaponconfig_weapon_t* thisWeapo = &pSeatLocal->m_clientinfo.weaponconfig_temp.ary_myWeapons[i];
 		
 		weapondata_basic_t* basicPointer = (weapondata_basic_t*) ary_weaponData[thisWeapo->weaponID];
-		weapondata_basic_t basicRef = *(basicPointer);
 		
 		string buttonDisplayText;
 		int hotKeyCode;
 		if(i < 9)
 		{
 			// for i choices 0 through 8, use "i+1" to give 1-9.
-			buttonDisplayText = sprintf("%i: %s", (i+1i), basicRef.sDisplayName);
+			buttonDisplayText = sprintf("%i: %s", (i+1i), basicPointer->sDisplayName);
 			hotKeyCode = 48+(i+1);  // '0' + (i+1)
 		}
 		else if(i < 9+26)
 		{
-			//now pick letters of the alphabet for the rest.
-			//uhhh. I don't know how to work with characters as a type or with ASCII values, so 
-			//we'll just use this array of letters in the alphabet.
-			buttonDisplayText = sprintf("%s: %s", chr2str((float)i+65), basicRef.sDisplayName);
+			// now pick letters of the alphabet for the rest.
+			buttonDisplayText = sprintf("%s: %s", chr2str((float)i+65), basicPointer->sDisplayName);
 			hotKeyCode = 97+(i-9);  // 'a' + (i-9)
 		}else{
 			// surpass that range?  Not possible!
@@ -1683,7 +1692,6 @@ UI_BuyMenu_Draw(void)
 				backButtonRow = ary_layerFirstButton_softLength;
 			}
 			
-			//buymenu_btn_Back.funOnRender_Base(vBtnPos, i, backButtonRow, fIsSelected);
 			CBuyMenu_BasicButton_funOnRender_Base_vcall(&buymenu_btn_Back, vBtnPos, i, backButtonRow, fIsSelected);
 			vBtnPos.y += (vButtonSizStandard.y + 1);
 		}

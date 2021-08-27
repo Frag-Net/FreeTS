@@ -46,10 +46,13 @@ var float FONT_ARIAL_SCOPEMAG;
 
 // Be sure to keep this up to date with the font FONT_ARIAL_STD as it's loaded in
 // ui.qc, notice this is always one less than the actual expected corresponding font.
+// Except vButtonFontSize it is 2 less in width, I think it would be better to make
+// the buy buttons a little wider though.
 // TODO - a some things may be unused at this point, check.
-const vector vButtonFontSize = [13, 13, 0];
-const vector vFontSizeNumSlash = [15, 15, 0];
-const vector vFontArialScopeMag = [16, 16, 0];
+const vector vButtonFontSize = [14, 15, 0];
+const vector vHUDFontSize = [15, 15, 0];
+const vector vFontSizeNumSlash = [17, 17, 0];
+const vector vFontArialScopeMag = [18, 18, 0];
 
 const vector vButtonSizStandard = [127, 19, 0];
 

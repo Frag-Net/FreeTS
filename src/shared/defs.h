@@ -14,6 +14,11 @@ enum TS_Team{
 	TEAM_4 = 3
 };
 
+
+// Uhh.  Please work?
+#define INPUT_BUTTON9 0x00000100
+
+
 #ifdef SERVER
 	//server CVar
 	var float autocvar_weaponstay = 60;  //default originally 15

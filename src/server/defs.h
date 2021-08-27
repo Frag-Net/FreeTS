@@ -26,17 +26,14 @@
 // Server cvars
 var int autocvar_mp_winlimit = 0;
 var int autocvar_mp_halftime = 0;
-var int autocvar_mp_startmoney = 30000;  //was 800
-//var float autocvar_mp_buytime = 90;
+var int autocvar_mp_startmoney = 30000;// was 800
+var int autocvar_mp_maxmoney = 99999;  // was 16000.
 var float autocvar_mp_freezetime = 6;
 var float autocvar_mp_roundtime = 5;
 var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
 var int autocvar_mp_friendlyfire = FALSE;
 
-//TAGGG - are we even using all these?
-var int autocvar_fcs_swapteams = FALSE; /* Swaps spawnpoints */
-var int autocvar_fcs_maxmoney = 99999;  //TAGG - was 16000.
 
 var int autocvar_debug_spawnpointforced = 0;
 	

@@ -90,7 +90,8 @@ TSMultiplayerRules::RespawnMain(void){
 // respawn only breakables every so often.
 void
 TSMultiplayerRules::RespawnRoutine(void){
-	printfline("TSMultiplayerRules::TimerUpdate - I HAVE RESPAWNED THE BREAKABLES. time:%d : starttime:%d : nextrespawntime:%d", time, global_gameStartTime, global_nextBreakableRespawn);
+	// Thanks, you can stop now
+	//printfline("TSMultiplayerRules::TimerUpdate - I HAVE RESPAWNED THE BREAKABLES. time:%d : starttime:%d : nextrespawntime:%d", time, global_gameStartTime, global_nextBreakableRespawn);
 	
 	//for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
 	for (entity a = world; (a = findfloat(a, ::identity, IDENTITY_CANRESPAWN));) {
@@ -316,7 +317,7 @@ TSMultiplayerRules::PlayerDeath(base_player pp)
 	}// excess negative health gib check
 	
 	
-	printfline("setInventoryEquippedIndex Flag Z");
+	//printfline("setInventoryEquippedIndex Flag Z");
 	TS_resetViewModel(pl);
 	pl.setInventoryEquippedIndex(-1);
 	

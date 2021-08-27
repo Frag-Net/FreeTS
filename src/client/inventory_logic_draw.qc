@@ -8,7 +8,7 @@ drawWeaponOptionBar(
 )
 {
 	drawfill( arg_vDrawOrigin, [128, 19], clrPaleBlue, arg_opac - 0.55f );
-	Gfx_Text( [arg_vDrawOrigin.x + 2, arg_vDrawOrigin.y + 4], arg_sOptionName, vButtonFontSize, clrPaleBlue, 0.90f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [arg_vDrawOrigin.x + 2, arg_vDrawOrigin.y + 4], arg_sOptionName, vHUDFontSize, clrPaleBlue, 0.90f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	
 	vector tempVec = [arg_vDrawOrigin.x + 112, arg_vDrawOrigin.y + 1];
 	
@@ -33,12 +33,12 @@ drawPlayerInventory_TopBar(int arg_iSlotSelected, BOOL arg_fBuyMode)
 		
 		// TODO - fetch these globally
 		if(!getstati(STAT_RULE_MONEYALLOWED)){
-			Gfx_Text( [8, 8 + 2], sprintf("Order Value: %i", pSeatLocal->m_clientinfo.weaponconfig_temp.iTotalPrice), vButtonFontSize, clrPaleBlue, 0.93f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+			Gfx_Text( [8, 8 + 2], sprintf("Order Value: %i", pSeatLocal->m_clientinfo.weaponconfig_temp.iTotalPrice), vHUDFontSize, clrPaleBlue, 0.93f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 		}else{
-			Gfx_Text( [8, 8 + 2], sprintf("Cash: %i (Order Cost: %i)", getstati(STAT_MONEY), pSeatLocal->m_clientinfo.weaponconfig_temp.iTotalPrice), vButtonFontSize, clrPaleBlue, 0.93f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+			Gfx_Text( [8, 8 + 2], sprintf("Cash: %i (Order Cost: %i)", getstati(STAT_MONEY), pSeatLocal->m_clientinfo.weaponconfig_temp.iTotalPrice), vHUDFontSize, clrPaleBlue, 0.93f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 			
 		}
-		Gfx_Text( [8 + 128*2, 8 + 2], sprintf("Weight Slots: %i / %i", pSeatLocal->m_clientinfo.weaponconfig_temp.iTotalSlots, getstati(STAT_RULE_MAXWEIGHTSLOTS)), vButtonFontSize, clrPaleBlue, 0.93f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( [8 + 128*2, 8 + 2], sprintf("Weight Slots: %i / %i", pSeatLocal->m_clientinfo.weaponconfig_temp.iTotalSlots, getstati(STAT_RULE_MAXWEIGHTSLOTS)), vHUDFontSize, clrPaleBlue, 0.93f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	}else{
 		vWeaponsBar_drawBase = [8, 8];
 	}
@@ -283,7 +283,7 @@ drawPlayerInventory_place
 		// Then just make arg_sSelectedWeaponDisplayName into arg_fIsSelected.
 		fOpac = 1.00f;
 		
-		Gfx_Text( [vDrawPos.x + 128, vDrawPos.y + 4], arg_sSelectedWeaponDisplayName, vButtonFontSize, clrPaleBlue, 0.95f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( [vDrawPos.x + 128, vDrawPos.y + 4], arg_sSelectedWeaponDisplayName, vHUDFontSize, clrPaleBlue, 0.95f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	}else{
 		if(arg_fBuyMode){
 			// always bright?
@@ -332,7 +332,7 @@ drawPlayerInventory_place
 		
 		if(upgradeString != ""){
 			//if there is anything to draw...
-			Gfx_Text( [vDrawPos.x + 3, vDrawPos.y + 3 + 16], sprintf("(%s)", upgradeString), vButtonFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+			Gfx_Text( [vDrawPos.x + 3, vDrawPos.y + 3 + 16], sprintf("(%s)", upgradeString), vHUDFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 		}
 		
 	}//buymodecheck FOR drawing the upgrade options short-hand near the weapon.
@@ -379,7 +379,7 @@ drawPlayerStats(void)
 		string myTeamName = "team name here";
 		// like pointer vars setup in server/main.c to refer to each index? It might just work.
 		drawfill( [drawerX, drawerY - 20], [127, 19], clrPaleBlue, 0.96f - 0.60f );
-		Gfx_Text( [drawerX + 2, drawerY - 20 + 4], myTeamName, vButtonFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( [drawerX + 2, drawerY - 20 + 4], myTeamName, vHUDFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	//}
 	
 	
@@ -426,12 +426,12 @@ drawPlayerStats(void)
 	if(getstati(STAT_RULE_MONEYALLOWED)){
 		drawfill( [drawerX, drawerY], [127, 19], clrPaleBlue, 0.96f - 0.60f );
 		offsetRight = drawSpriteNumber(ary_LCD_numberSet, drawerX + 8, drawerY + 2, getstati(STAT_MONEY), 8, BITS_DIGITOPT_NONE, clrPaleBlue, 0.92f);
-		Gfx_Text( [drawerX + 8 + offsetRight + 6, drawerY + 4], "Credits", vButtonFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( [drawerX + 8 + offsetRight + 6, drawerY + 4], "Credits", vHUDFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	}//money allowed check
 	
 	drawfill( [drawerX, drawerY + 20], [127, 19], clrPaleBlue, 0.96f - 0.60f );
 	offsetRight = drawSpriteNumber(ary_LCD_numberSet, drawerX + 8, drawerY + 20 + 2, getstati(STAT_RULE_MAXWEIGHTSLOTS) - pl.iTotalSlots, 8, BITS_DIGITOPT_NONE, clrPaleBlue, 0.92f);
-	Gfx_Text( [drawerX + 8 + offsetRight + 6, drawerY + 20 + 4], "free slots", vButtonFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [drawerX + 8 + offsetRight + 6, drawerY + 20 + 4], "free slots", vHUDFontSize, clrPaleBlue, 0.96f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 
 }// drawPlayerStats
 
@@ -468,7 +468,7 @@ drawTimer(void)
 	}
 	
 	drawSpriteNumber(ary_LCD_numberSet, drawerX, drawerY, iMinutes, 3, BITS_DIGITOPT_DEFAULT, clrDraw, fOpac);
-	Gfx_Text( [drawerX + numberFontWidth*3 + 4, drawerY + 1], ":", vFontSizeNumSlash, clrDraw, fOpac, DRAWFLAG_ADDITIVE, FONT_ARIAL_NUMSLASH );
+	Gfx_Text( [drawerX + numberFontWidth*3 + 3, drawerY + 0], ":", vFontSizeNumSlash, clrDraw, fOpac, DRAWFLAG_ADDITIVE, FONT_ARIAL_NUMSLASH );
 	drawSpriteNumber(ary_LCD_numberSet, drawerX + numberFontWidth*4, drawerY, iSeconds, 2, BITS_DIGITOPT_FILLER0, clrDraw, fOpac);
 	
 }// drawTimer

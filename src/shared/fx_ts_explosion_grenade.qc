@@ -67,7 +67,7 @@ FX_TS_Explosion_Grenade_PlaySound(entity eSelf){
 	
 	// there is a command, soundlength("x") that takes a path to a .wav file I think?
 	// Probably unnecessary
-	Client_ShakeOnce(eSelf.origin, 512, 1.7, 2.1, 3.4);
+	Client_ShakeOnce(eSelf.origin, 950, 1.7, 2.1, 3.4);
 
 	float randomChoice = random();
 	if(randomChoice < 0.2){

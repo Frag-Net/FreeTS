@@ -97,128 +97,32 @@ weapon_base_setRightAttackDelay_AtLeast(player pl, float amount)
 }
 
 
-MELEE_HIT_RESPONSE
-weapon_base_coldcock(
-	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
-	float damageToDeal, float range
-){
-	MELEE_HIT_RESPONSE resultHit = MELEE_HIT_RESPONSE::NONE;
+
+
+
 #ifdef SERVER
-	weapondata_basic_t baseRef = *basePRef;
-	makevectors( GET_VIEW_ANGLES );
-	
-	vector vSource = (pl.origin + pl.view_ofs);
-	traceline(vSource, vSource + (v_forward * range), MOVE_HITMODEL, pl);
-	
-	if ( trace_fraction == 1.0 ) {
-		//did not hit anything
-		return MELEE_HIT_RESPONSE::NONE;
-	}else{
-		// ?   For what purpose now?
-		//vOrigin = trace_endpos - vTraceDirection * 2;
-
-		if ( trace_ent.takedamage ) {
-			if ( trace_ent.iBleeds == TRUE ) {
-				//TAGGG - TODO, CHECK.  Do FX_Impact parameters still line up with this.
-				FX_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
-				resultHit = MELEE_HIT_RESPONSE::FLESH;
-			}else{
-				// assume metal then?
-				resultHit = MELEE_HIT_RESPONSE::METAL;
-			}
-			Damage_Apply( trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_BLUNT);
-		} else {
-			resultHit = MELEE_HIT_RESPONSE::NONE;
-		}
-	}
-	
-#endif
-
-	return resultHit;
-}//weapon_base_coldcock
-
-
+// Server-only helper method for melee hit effects.  Handles calling FX_Impact_melee
+// and gives the hit response for custom weapons script to work with.
+// Assumes a recent "traceline" call has filled trace_ent and trace_endpos.
 MELEE_HIT_RESPONSE
-weapon_base_onPrimaryAttack_melee(
-	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
-	float damageToDeal, float range
-){
-	makevectors( GET_VIEW_ANGLES );
-	return weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, basePRef, arg_thisWeapon, damageToDeal, range, v_forward);
-}// weapon_base_onPrimaryAttack_melee
-
-// After the server calls this method (possibly client later?),
-// we expect trace_ent to store the thing we recently hit for playing custom sounds.
-// Anything that doesn't want the general material-hit sounds / sparks on hitting metalic/generic stuff
-// should not use this method, just copy it and work as needed (looking at you karate).
-MELEE_HIT_RESPONSE
-weapon_base_onPrimaryAttack_melee_fromCustomDirection(
-	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
-	float damageToDeal, float range, vector vTraceDirection
-){
-	MELEE_HIT_RESPONSE resultHit = MELEE_HIT_RESPONSE::NONE;
-	
-#ifdef SERVER
-	// safe default in case this method finds nothing.
-	// Might be unnecessary to do this?
-	trace_ent = NULL;
-	
-	weapondata_basic_t baseRef = *basePRef;
-	
-	vector vSource;
-	
-	vSource = ( pl.origin + pl.view_ofs );
-	traceline( vSource, vSource + ( vTraceDirection * range ), MOVE_HITMODEL, pl );
-	
-	
-	if ( trace_fraction == 1.0 ) {
-		// did not hit anything
-		return MELEE_HIT_RESPONSE::NONE;
-	}
-
-	// ?   For what purpose now?
-	//vOrigin = trace_endpos - vTraceDirection * 2;
-
-	
-	if ( trace_ent.takedamage ){
-		if ( trace_ent.iBleeds == TRUE ) {
-			FX_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
-			resultHit = MELEE_HIT_RESPONSE::FLESH;
-			// end early!
-			
-			//TAGGG - other Damage_Apply examples:
-			// snark hit
-			//Damage_Apply(this, world, 1, 0, DMG_GENERIC);
-			// crossbow bolt touch
-			//Damage_Apply(other, self.owner, Skill_GetValue("plr_xbow_bolt_monster", 50), WEAPON_CROSSBOW, DMG_BLUNT);
-			
-			// Also calling the damage type 'SLASH' for now, all dedicated melee weapons are knife or sword-like
-			Damage_Apply( trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_SLASH);
-			return resultHit;
-		}else{
-			// let the logic run as normal below, don't assume metal
-			// resultHit = MELEE_HIT_RESPONSE::METAL;
-			// return resultHit;
-		}
-	}
-
+weapon_base_meleeHitEffect(void)
+{
 	// Not very useful
 	//FX_Impact( IMPACT_MELEE, trace_endpos, trace_plane_normal );
 	
+	MELEE_HIT_RESPONSE resultHit = MELEE_HIT_RESPONSE::NONE;
+	
 	float surf;
-	string tex;
+	string texName;
 	string texFilter;
 	
 	surf = getsurfacenearpoint(trace_ent, trace_endpos);
-	tex = getsurfacetexture(trace_ent, surf);
-	
-	// no strtolower needed on tex first?  Nuclide's shared/src/traceattack.qc doesn't
-	texFilter = Materials_FixName(tex);
+	texName = getsurfacetexture(trace_ent, surf);
+	texFilter = Materials_FixName(texName);
 	
 	//--- HELPFUL PRINTOUT ---
 	//printfline("I hit: %s ::: %s", floatToChar((float)hash_get(hashMaterials, texFilter)), texFilter );
-	//printfline("weapon_base_onPrimaryAttack_melee_fromCustomDirection - I hit: %s", chr2str((float)hash_get(hashMaterials, texFilter)) );
-	
+	//printfline("weapon_base_meleeHitEffect - I hit: %s", chr2str((float)hash_get(hashMaterials, texFilter)) );
 	
 	// FLESH, BLOODYFLESH, SLOSH, FOLIAGE, ALIEN, and CONCRETE are all guesses.
 	// Several others might be anyway, just extra unsure of these, if any TS map
@@ -273,15 +177,126 @@ weapon_base_onPrimaryAttack_melee_fromCustomDirection(
 		resultHit = MELEE_HIT_RESPONSE::METAL;
 		break;
 	}
+	return resultHit;
+}
+#endif
+
+
+// For the melee attack some guns have.
+// Why no hit sound?  It's that way in original TS, probably fine to just pipe calls to
+// weapon_base_onPrimaryAttack_melee instead if those are wanted, nothing special in here
+MELEE_HIT_RESPONSE
+weapon_base_coldcock(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	float damageToDeal, float range
+){
+	MELEE_HIT_RESPONSE resultHit = MELEE_HIT_RESPONSE::NONE;
+#ifdef SERVER
+	trace_ent = NULL;
 	
+	weapondata_basic_t baseRef = *basePRef;
+	makevectors( GET_VIEW_ANGLES );
 	
-	if ( trace_ent.takedamage ){
-		// Deal it now then
-		Damage_Apply( trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_SLASH);
+	vector vSource = (pl.origin + pl.view_ofs);
+	traceline(vSource, vSource + (v_forward * range), MOVE_HITMODEL, pl);
+	
+	if ( trace_fraction == 1.0 ) {
+		//did not hit anything
+		return MELEE_HIT_RESPONSE::NONE;
+	}else{
+		// ?   For what purpose now?
+		//vOrigin = trace_endpos - vTraceDirection * 2;
+
+		if ( trace_ent.takedamage ) {
+			if ( trace_ent.iBleeds == TRUE ) {
+				//TAGGG - TODO, CHECK.  Do FX_Impact parameters still line up with this.
+				FX_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
+				resultHit = MELEE_HIT_RESPONSE::FLESH;
+			}else{
+				// assume metal then?
+				resultHit = MELEE_HIT_RESPONSE::METAL;
+			}
+			Damage_Apply(trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_BLUNT);
+		} else {
+			resultHit = MELEE_HIT_RESPONSE::NONE;
+		}
 	}
 	
 #endif
 
+	return resultHit;
+}//weapon_base_coldcock
+
+
+MELEE_HIT_RESPONSE
+weapon_base_onPrimaryAttack_melee(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	float damageToDeal, float range
+){
+	makevectors( GET_VIEW_ANGLES );
+	return weapon_base_onPrimaryAttack_melee_fromCustomDirection(pl, basePRef, arg_thisWeapon, damageToDeal, range, v_forward);
+}// weapon_base_onPrimaryAttack_melee
+
+// After the server calls this method (possibly client later?),
+// we expect trace_ent to store the thing we recently hit for playing custom sounds.
+// Anything that doesn't want the general material-hit sounds / sparks on hitting metalic/generic stuff
+// should not use this method, just copy it and work as needed (looking at you karate).
+MELEE_HIT_RESPONSE
+weapon_base_onPrimaryAttack_melee_fromCustomDirection(
+	player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon,
+	float damageToDeal, float range, vector vTraceDirection
+){
+	MELEE_HIT_RESPONSE resultHit = MELEE_HIT_RESPONSE::NONE;
+	
+#ifdef SERVER
+	weapondata_basic_t baseRef = *basePRef;
+	vector vSource;
+	
+	// safe default in case this method finds nothing.
+	// Might be unnecessary to do this?
+	trace_ent = NULL;
+	
+	vSource = ( pl.origin + pl.view_ofs );
+	traceline( vSource, vSource + ( vTraceDirection * range ), MOVE_HITMODEL, pl );
+	
+	if ( trace_fraction == 1.0 ) {
+		// did not hit anything
+		return MELEE_HIT_RESPONSE::NONE;
+	}
+
+	// For what purpose now?  Where to put a hit-effect cloud sometime maybe like
+	// original TS does?
+	//vOrigin = trace_endpos - vTraceDirection * 2;
+
+	if ( trace_ent.takedamage ){
+		if ( trace_ent.iBleeds == TRUE ) {
+			// The thing I hit takes damage and is organic?
+			// Do something different from weapon_base_meleeHitEffect.
+			
+			// Also calling the damage type 'SLASH' for now, all dedicated melee weapons are knife or sword-like
+			FX_Impact( IMPACT_FLESH, trace_endpos, trace_plane_normal );
+			resultHit = MELEE_HIT_RESPONSE::FLESH;
+			Damage_Apply(trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_SLASH);
+			
+			// other Damage_Apply examples:
+			// snark hit
+			//Damage_Apply(this, world, 1, 0, DMG_GENERIC);
+			// crossbow bolt touch
+			//Damage_Apply(other, self.owner, Skill_GetValue("plr_xbow_bolt_monster", 50), WEAPON_CROSSBOW, DMG_BLUNT);
+			
+		}else{
+			// don't assume metal
+			// resultHit = MELEE_HIT_RESPONSE::METAL;
+			
+			resultHit = weapon_base_meleeHitEffect();
+			Damage_Apply(trace_ent, pl, damageToDeal, (int)pl.activeweapon, DMG_SLASH);
+		}
+		
+	}else{
+		// Does not take damage?  That is all
+		resultHit = weapon_base_meleeHitEffect();
+	}
+#endif
 	return resultHit;
 }// weapon_base_onPrimaryAttack_melee
 
@@ -905,7 +920,7 @@ weapon_akimbo_fullAttackDualHack(
 
 
 // Used for akimbo weapons with semi fire modes (all akimbo pistols I think).
-// Some akimbo SMG supports hold-fire in akimbo though, that will be handled a little differnetly.
+// Some akimbo SMG supports hold-fire in akimbo though, that will be handled a little differently.
 // Same method with a choice or not, unsure what's best yet.
 // TAGGG - TODO, of course.
 // -----------------------------
@@ -1708,7 +1723,7 @@ weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_
 			clrDraw = clrMedRed;
 		}
 		drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iClipLeft, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
-		Gfx_Text( [vEquippedWeaponInfoDraw.x + 64, vEquippedWeaponInfoDraw.y + 4], "/", vButtonFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( [vEquippedWeaponInfoDraw.x + 64, vEquippedWeaponInfoDraw.y + 4], "/", vHUDFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 		if(pl.ary_ammoTotal[baseRef.iAmmoDataID] > 0){
 			clrDraw = clrPaleBlue;
 		}else{
@@ -1734,7 +1749,7 @@ weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_
 			clrDraw = clrMedRed;
 		}
 		drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iClipAkimboLeft, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
-		Gfx_Text( [vEquippedWeaponInfoDraw.x + 64, vEquippedWeaponInfoDraw.y + 4], "/", vButtonFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( [vEquippedWeaponInfoDraw.x + 64, vEquippedWeaponInfoDraw.y + 4], "/", vHUDFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 		if(pl.ary_ammoTotal[baseRef.iAmmoDataID] > 0){
 			clrDraw = clrPaleBlue;
 		}else{
@@ -1751,7 +1766,7 @@ weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_
 			clrDraw = clrMedRed;
 		}
 		drawSpriteNumber(ary_LCD_numberSet, vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 0, arg_thisWeapon.iClipLeft, 3, BITS_DIGITOPT_DEFAULT, clrDraw, 0.92f);
-		Gfx_Text( [vEquippedWeaponInfoDraw.x + 64, vEquippedWeaponInfoDraw.y + 4], "/", vButtonFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( [vEquippedWeaponInfoDraw.x + 64, vEquippedWeaponInfoDraw.y + 4], "/", vHUDFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 		if(pl.ary_ammoTotal[baseRef.iAmmoDataID] > 0){
 			clrDraw = clrPaleBlue;
 		}else{
@@ -1783,17 +1798,17 @@ weapon_gun_onDrawHUD(player pl, weapondata_gun_t* basePRef, weapondynamic_t arg_
 	// IMPORTANT. If this weapon is akimbo we have to use the "getAkimboFiremodeName"
 	// variant!
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], fireModeName, vButtonFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], fireModeName, vHUDFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 	
 	// ammo type name
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], ammoRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], ammoRef.sDisplayName, vHUDFontSize, clrPaleBlue, 0.86f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 	
 	// title
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vHUDFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 #endif
 }// weapon_gun_onDrawHUD
@@ -1819,7 +1834,7 @@ weapon_throwable_onDrawHUD(player pl, weapondata_throwable_t* basePRef, weapondy
 		
 	// title
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vHUDFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 #endif
 }// weapon_throwable_onDrawHUD
@@ -1846,7 +1861,7 @@ weapon_melee_onDrawHUD(player pl, weapondata_melee_t* basePRef, weapondynamic_t 
 		
 	// title
 	drawfill( vEquippedWeaponInfoDraw, [128, 19], clrPaleBlue, 0.86f - 0.60f );
-	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vButtonFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+	Gfx_Text( [vEquippedWeaponInfoDraw.x + 2, vEquippedWeaponInfoDraw.y + 4], baseRef.sDisplayName, vHUDFontSize, clrPaleBlue, 0.98f, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	vEquippedWeaponInfoDraw.y -= 20;
 #endif
 }// weapon_throwable_onDrawHUD

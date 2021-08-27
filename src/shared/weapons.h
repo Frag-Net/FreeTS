@@ -459,7 +459,7 @@ typedef struct{
 	                       // on purchase.
 						   // TODO - it might be a good idea to make the buy's upgrade
 						   // options convey automatic upgrades.
-	//These may be overridden by a differnet buy config file later (TODO).
+	//These may be overridden by a different buy config file later (TODO).
 	//--------------------------------------------------------------------------
 	int iPrice;
 	int iSlots;  // same idea as "Weight". More slots slows the player down and counts toward

@@ -58,11 +58,11 @@ float VGUI_Button( string sLabel, vector vPosition, vector vSize) {
 	
 	
 	if ( UI_CheckMouse( vPosition, vSize ) ) {
-		Gfx_Text( vLabelPos, sLabel, vButtonFontSize, g_UI_Color, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( vLabelPos, sLabel, vHUDFontSize, g_UI_Color, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 		drawfill( vLabelPos + '0 10 0', [ stringwidth( sLabel, TRUE, '12 12' ), 1], g_UI_Color, VGUI_WINDOW_FGALPHA );
 		return TRUE;
 	} else {
-		Gfx_Text( vLabelPos, sLabel, vButtonFontSize, g_UI_Color * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
+		Gfx_Text( vLabelPos, sLabel, vHUDFontSize, g_UI_Color * 0.8, VGUI_WINDOW_FGALPHA, DRAWFLAG_ADDITIVE, FONT_ARIAL_STD );
 	}
 	
 	return FALSE;

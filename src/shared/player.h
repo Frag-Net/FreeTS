@@ -228,10 +228,6 @@ class player:base_player
 
 	// SHARED
 	vector vViewAngleOffsetTarget;
-	vector vViewAngleOffsetTarget1;
-	vector vViewAngleOffsetTarget2;
-	vector vViewAngleOffsetTarget3;
-	vector vViewAngleOffsetTarget4;
 	
 	PREDICTED_FLOAT(fAccuracyKickback);
 	PREDICTED_FLOAT(fAccuracyKickbackStartCooldown);
@@ -552,6 +548,10 @@ class player:base_player
 	virtual void(int arg_weaponID, BOOL completeDrop) dropWeapon;
 	virtual BOOL(void) anyAmmoPoolNonEmpty;
 	virtual void(void) dropAmmo;
+#else
+	
+	virtual void(void) clientInputUpdate;
+	virtual void(void) clientUseItemsCallback;
 #endif
 	
 	

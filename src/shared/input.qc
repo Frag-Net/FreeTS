@@ -70,7 +70,14 @@ Game_Input(void)
 	}// pi.iState checks
 #endif
 	
+	
 	// Must be ingame to reach beyond here
+	///////////////////////////////////////////////////////////
+	
+	// Anything special with my own vars for networking to work right here?
+#ifdef CLIENT
+	pl.clientInputUpdate();
+#endif
 	
 	
 	// This method, Game_Input, is called by Nuclide's pmove.qc in the same place
@@ -93,7 +100,6 @@ Game_Input(void)
 
 	self.impulse = 0;
 #endif
-
 
 
 
@@ -210,7 +216,7 @@ Game_Input(void)
 		// passes the w_attack_next check, but, being another frame while held-down, this is not
 		// a fresh semi-tap and so it does not count.
 		// In a primary attack method, if everything else goes right, it calls the view animation
-		// method, which does something a bit differnet client and serverside.
+		// method, which does something a bit different client and serverside.
 		// Both set w_attack_next, but only clientside changes the sequence played.
 		// So only serverside being called resets the anim to re-play the previously picked sequence
 		// (becuase w_attack_next is networked, so it reaches the client from there anyway).
@@ -328,13 +334,24 @@ Game_Input(void)
 	*/
 	
 	
+	
+	
+	if(input_buttons & INPUT_BUTTON9){
+		//printfline("IM here what");
+		//TS_playerUseItems();
+	}
+	
+	
+	
+	
+	
+	
 }//Game_Input
+
 
 
 void processInputs(void){
 	player pl = (player)self;
-	
-	
 	
 	if (input_buttons & INPUT_BUTTON0){
 		//printfline("!!! PRIMA !!! (%d %d)", ((input_buttons & INPUT_BUTTON0)!=0), ((input_buttons & INPUT_BUTTON3)!=0));
@@ -395,18 +412,18 @@ void PreSpawn_Input(void){
 		pSeatLocal->m_flUI_Display == UI_SCREEN::NONE &&
 		(input_buttons & INPUT_BUTTON0) &&
 		!(pl.gflags & GF_SEMI_TOGGLED) &&
-		pSeatLocal->flBlockSpawnTime <= time
+		pSeatLocal->m_flBlockSpawnInputTime <= time
 	){
 		sendevent( "GamePlayerSpawn", "");
 	}
 	
 	/*
 	if(
-		((input_buttons & INPUT_BUTTON0) && pSeatLocal->flBlockSpawnTime > time) ||
+		((input_buttons & INPUT_BUTTON0) && pSeatLocal->m_flBlockSpawnInputTime > time) ||
 		pSeat->m_flInputBlockTime > time
 	)
 	{
-		pSeatLocal->flBlockSpawnTime = time + 0.20f;
+		pSeatLocal->m_flBlockSpawnInputTime = time + 0.20f;
 		pl.gflags |= GF_SEMI_TOGGLED;
 		return;
 	}
@@ -446,8 +463,20 @@ void ClientGame_Input_Frame(void){
 	// inputs per some condition, like weapon-select being up.
 	
 	// TODO - changing what m_flInputBlockTime affects might be a good idea,
-	// affecting other inputs like crouch is unnecessary, that causes the player to uncrouch
-	// if changing weapons while crouched.
+	// affecting other inputs like crouch is unnecessary, that causes the player to
+	// uncrouch if changing weapons while crouched.
+	
+	
+	player pl = (player)pSeat->m_ePlayer;
+	
+	if(pl.iState != PLAYER_STATE::SPAWNED && pSeatLocal->m_flUI_Display != UI_SCREEN::NONE){
+		// If buying, don't allow any movement inputs.
+		// The above is a similar check as "g_vguiWidgetCount > 0", but the buymenu does not
+		// use VGUI.
+		input_movevalues = [0,0,0];
+		// does not stop rotation from left/right arrows, not that this was very important.
+		//input_angles = [0,0,0];
+	}
 	
 	if(pSeat->m_iHUDWeaponSelected && pSeat->m_iInputAttack2){   //input_buttons & INPUT_BUTTON3
 		if(TS_HUD_CloseWeaponSelect(TRUE)){
@@ -475,6 +504,12 @@ void ClientGame_Input_Frame(void){
 		//self.flags &= ~FL_SNEAK;
 	}
 	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
+	
+	if(pSeatLocal->m_bUseItems){
+		pSeatLocal->m_bUseItems = FALSE;
+		input_buttons |= INPUT_BUTTON9;
+	}
+	
 		
 }
 #endif

@@ -251,8 +251,8 @@ Money_AddMoney(player pl, int iMoneyValue)
 	//dprint(sprintf("^2Money_AddMoney^7: giving %s $%i\n", pl.netname, iMoneyValue));
 	pl.money += iMoneyValue;
 
-	if (pl.money > autocvar_fcs_maxmoney) {
-		pl.money = autocvar_fcs_maxmoney;
+	if (pl.money > autocvar_mp_maxmoney) {
+		pl.money = autocvar_mp_maxmoney;
 	}
 
 	if (pl.money < 0) {
