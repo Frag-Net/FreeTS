@@ -13,7 +13,7 @@
  * IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
- 
+
 
 void
 TSMultiplayerRules::TSMultiplayerRules(void)
@@ -941,6 +941,11 @@ TSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 	// wait why not use pl.SetModel?
 	//setmodel(pl, pl.model);
 	*/
+	
+	
+	//TAGGG - TEST.  Has to be copied from the valve folder and named this to make sense
+	//pl.model = "models/player_valve.mdl";
+	
 	pl.SetModel(pl.model);
 	////////////////////////////////////////////////////////////////////////////
 	

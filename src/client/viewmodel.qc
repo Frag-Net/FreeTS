@@ -155,5 +155,13 @@ Viewmodel_ApplyBob(entity gun)
 	gun.origin += v_up * (0.5 + autocvar_v_gunofs[2] + (pViewBob->m_flBob * (-0.48 + 0.196 * fabs(sin(pViewBob->m_flBobCycle)) )) + 0.98 * pViewBob->m_vCam[2] );
 
 	//TAGGG - mock-event
-	Custom_LatePreDraw();
+	// WARNING!  This place is called by Nuclide only if in first-person, not reliable.
+	// Need a new nuclide method.  For now this CVar defaults to 0, I'll make it 1 to use
+	// only my Nucldie hack-in for now.
+	// I put it in Nuclide's src/client/entry.qc, after the if-else of
+	//    autocvar_r_viewmodelpass && pl.health > 0
+	// and right before the CSQC_RenderScene call below that.
+	if(autocvar_old_latepredraw_call != 0){
+		Custom_LatePreDraw();
+	}
 }

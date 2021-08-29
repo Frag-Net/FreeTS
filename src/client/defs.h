@@ -26,6 +26,7 @@ vector g_hudmins;
 vector g_hudres;
 
 
+
 /*
 // Do we need these?  Note the similarly named "g_hud_color" already above!
 // Going to keep the latter two for compatability.
@@ -84,6 +85,9 @@ var float autocvar_fov_default =  80.0f;
 
 // TODO.  Is this even used yet?
 var int autocvar_sv_autoweaponswitch = TRUE;
+
+// Probably won't last too long
+var float autocvar_old_latepredraw_call = 1.0f;
 
 // Very situational, not all debug printouts, nowhere near.
 var float autocvar_cl_printoutspam = 0;

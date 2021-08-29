@@ -171,9 +171,15 @@ void
 Player_PreDraw(base_player pp, int thirdperson)
 {
 	player pl = (player)pp;
+	
 	// OLD WAY.  Now called from draw.c's Custom_LatePreDraw to avoid a one-frame-lag issue
 	// on lasersight/flashlight effects
-	//Player_DrawViewmodelExtraEffects(pl, thirdperson);
+	// ...although for drawing other players (they get calls that make it to here), this your
+	// only choice, any other precision for view-bob related things would be pointless anyway.
+	
+	if(pl.entnum != player_localentnum){
+		TS_View_DrawExtraEffects(pl, thirdperson);
+	}
 	
 	pl.Physics_SetViewParms();
 	Animation_PlayerUpdate((player)pl);

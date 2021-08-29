@@ -18,6 +18,10 @@ void ServerGame_Precache(void){
 	Sound_Precache("player.lightfall");
 
 	precache_model("models/player.mdl");
+	
+	//TAGGG - TEST. have to make this exist, from the valve folder
+	//precache_model("models/player_valve.mdl");
+	
 	////////////////////////////////////////////////////////////
 	
 	TS_GrenadeProjectile::precache();

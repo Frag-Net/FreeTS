@@ -349,6 +349,118 @@ TS_View_DrawCustom(player pl){
 }
 
 
+
+
+
+// For drawing the special effects for one of the weapons.
+// Not to be confused with TS_)View_DrawSpecialEffects, that is called straight from rendering,
+// and calls this once for sigular weapons, twice for akimbo.  Modular to avoid duplicate script.
+// So yes, a helper method of a helper method.
+// ALSO - does not draw the lighting from a flashlight, this only does the glow effect on the
+// viewmodel.
+void
+TS_View_DrawSpecialEffects_Weapon(
+	player pl, int thirdperson, BOOL canRenderLaserSight, BOOL canRenderFlashlight, vector posView,
+	vector angView, vector gunpos, vector angGun, vector shortForwardEndRelative,
+	vector* recentLaserHitPosVar
+)
+{
+	const float drawAlpha = 1.0;
+	const vector lasColor = [1.0, 0, 0];
+	
+	const vector fsize = [2,2];
+	const vector fsizeDot = [18,18];
+	const vector fsizeFlashlightMuzzleGlow = [3, 3];
+	
+	vector shortForwardEnd;
+	vector flashPos;
+	
+	makevectors(angGun);
+	rotatevectorsbyangle( [-0.45, 0.27, 0] );
+	
+	flashPos = gunpos;
+	flashPos += v_up * -0.08;
+	// HACK - for now this will do
+	if(shortForwardEndRelative.y >= 0){
+		flashPos += v_right * 0.06;
+	}else{
+		flashPos += v_right * -0.06;
+	}
+	
+	shortForwardEnd = gunpos;
+	shortForwardEnd += v_forward * shortForwardEndRelative.x;
+	shortForwardEnd += v_right * shortForwardEndRelative.y;
+	shortForwardEnd += v_up * shortForwardEndRelative.z;
+	
+	traceline(posView, shortForwardEnd, FALSE, pl);
+	
+	// Is there a clear path from posView to a little away from the gunpos?  Required for these
+	// effects to even be attempted.
+	// It is then used for trace_endpos
+	if(trace_fraction >= 1.0){
+		
+		traceline(shortForwardEnd, shortForwardEnd + v_forward * 1024, MOVE_HITMODEL, pl);
+		
+		// other places care about this.
+		if (pl.entnum == player_localentnum && recentLaserHitPosVar != NULL) {
+			//pl.recentLaserHitPos = trace_endpos;
+			(*recentLaserHitPosVar) = trace_endpos;
+		}
+		
+		if(canRenderLaserSight){ 
+		
+			if (!thirdperson) {
+				// relying on v_ direction globals as set by makevectors(angGun) earlier
+				R_BeginPolygon("sprites/laserbeam.spr_0.tga", 1, 0);
+				
+				// Looks like just being offset by -1 in the Y direction for both begin and end vertices is best,
+				// instead of negatives for the first two and negatives for the last two PolygonVertex calls.
+				// In that old way, getting close to a wall causes the laser to look like it's going upward.
+				// Not sure where the idea for that came from to begin with, maybe other places could always add
+				// in a constant direction and do away with 'fsize'-like things.  But low priority for now.
+				R_PolygonVertex(gunpos + v_right * fsize[0] - v_up * fsize[1], [1,1], lasColor, drawAlpha);
+				R_PolygonVertex(gunpos - v_right * fsize[0] - v_up * fsize[1], [0,1], lasColor, drawAlpha);
+				R_PolygonVertex(trace_endpos - v_right * fsize[0] - v_up * fsize[1], [0,0], lasColor, drawAlpha);
+				R_PolygonVertex(trace_endpos + v_right * fsize[0] - v_up * fsize[1], [1,0], lasColor, drawAlpha);
+				R_EndPolygon();
+			}
+			
+			// The larger laser dot graphic that only players other than the current one see,
+			// because this still receives calls to draw weapons for other players.
+			// Not to be confused with the laser dot drawn on the HUD for the local player.
+			if (pl.entnum != player_localentnum) {
+				makevectors(angView);
+			
+				trace_endpos += trace_plane_normal * fsizeDot[0]/6;
+				R_BeginPolygon("sprites/laserdot.spr_0.tga", 1, 0);
+				R_PolygonVertex(trace_endpos + v_right * fsizeDot[0] - v_up * fsizeDot[1], [1,1], lasColor, 0.80f);
+				R_PolygonVertex(trace_endpos - v_right * fsizeDot[0] - v_up * fsizeDot[1], [0,1], lasColor, 0.80f);
+				R_PolygonVertex(trace_endpos - v_right * fsizeDot[0] + v_up * fsizeDot[1], [0,0], lasColor, 0.80f);
+				R_PolygonVertex(trace_endpos + v_right * fsizeDot[0] + v_up * fsizeDot[1], [1,0], lasColor, 0.80f);
+				R_EndPolygon();
+			}
+		}
+		
+		// Flashlight glow-sprite effect on the viewmodel, does not really involve lighting, that is elsewhere.
+		// Pretty sure original TS has nothing like this for third person or looking at other players.
+		if(canRenderFlashlight){
+			if(!thirdperson){
+				makevectors(angView);
+				
+				//trace_endpos += trace_plane_normal * fsizeDot[0]/6;
+				R_BeginPolygon("sprites/glow02.spr_0.tga", 1, 0);
+				R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [1,1], [1,1,1], 0.45f);
+				R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [0,1], [1,1,1], 0.45f);
+				R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [0,0], [1,1,1], 0.45f);
+				R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [1,0], [1,1,1], 0.45f);
+				R_EndPolygon();
+			}
+		}
+	}// trace pre-check
+	
+}// TS_View_DrawSpecialEffects_Weapon
+
+
 // another helper method
 // Draw the lasersight, and flashlight effects
 
@@ -367,12 +479,27 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	BOOL canRenderFlashlight = FALSE;
 	BOOL canRenderLaserSight = FALSE;
 	
-	//player pl = (player)pp;
+	vector posView;
+	vector angView;
+	
+	vector gunpos;
+	vector gunpos2 = [0,0,0];
+	vector gunpos_tempEnd;
+	
+	vector dirGun = [0,0,0];
+	vector dirGun2 = [0,0,0];
+	vector angGun = [0,0,0];
+	vector angGun2 = [0,0,0];
+	
+	BOOL canDrawAkimboEffects = FALSE;
+	pl.recentLaserHitPosSet = TRUE;
+	
+	// BEWARE "view_angles", it is a client global (what a confusing term), meaning it pertains only to THIS
+	// client (local player), no matter what player is being rendered by this call.
+	// wait... shouldn't we do the third-person check for the flash-light check above too?
+	
 	//we're going to use the buyopts of our current weapon + the one actually turned on, yah?
 	
-	// DEBUG: printouts about the other player.
-	// Start a server with over 1 max players allowed in one window, 
-	// connect to it in another window.  Boom, read printouts.
 	/*
 	if(entnum != player_localentnum){
 		// so other player's "pl.weaponEquippedID" are not sent over to our clientside copies of them... I guess?
@@ -381,18 +508,14 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	}
 	*/
 	
-	
 	if(pl.inventoryEquippedIndex != -1){
-		
 		weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 		
 		if(dynaRef.weaponTypeID == WEAPONDATA_TYPEID_GUN || dynaRef.weaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
-			weapondata_basic_t* basePRef = pl.getEquippedWeaponData();
-			weapondata_basic_t baseRef = *basePRef;
-			
+			weapondata_basic_t* baseP = pl.getEquippedWeaponData();
 			
 			// We must have the flashlight bit on, AND support it on our weapon, AND it be a possibility according to weapon data.
-			int legalBuyOpts_on = (dynaRef.iBitsUpgrade_on & (dynaRef.iBitsUpgrade & baseRef.iBitsUpgrade));
+			int legalBuyOpts_on = (dynaRef.iBitsUpgrade_on & (dynaRef.iBitsUpgrade & baseP->iBitsUpgrade));
 			
 			if(legalBuyOpts_on & BITS_WEAPONOPT_FLASHLIGHT){
 				canRenderFlashlight = TRUE;
@@ -400,42 +523,12 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 			if(legalBuyOpts_on & BITS_WEAPONOPT_LASERSIGHT){
 				canRenderLaserSight = TRUE;
 			}
-		}///END OF _GUN or _IRONSIGHT type checks
-	}//END OF weaponEquippedID check
+		}// _GUN or _IRONSIGHT type checks
+	}// weaponEquippedID check
 	
-	
-	
-	vector posView;
-	vector angView;
-	
-	//for glock it is 40.
-	//vector gunpos = gettaginfo(pSeat->eViewModel, 33);
-	
-	float drawAlpha = 1.0;
-	const vector lasColor = [1.0, 0, 0];
-	const vector fsize = [2,2];
-	const vector fsizeDot = [18,18];
-	const vector fsizeFlashlightMuzzleGlow = [3, 3];
-	
-	vector flashPos;
-	vector gunpos;
-	vector gunpos2 = [0,0,0];
-	vector gunpos_tempEnd;
-	
-	
-	vector dirGun = [0,0,0];
-	vector dirGun2 = [0,0,0];
-	vector angGun = [0,0,0];
-	vector angGun2 = [0,0,0];
-	
-	//TAGGG - IMPORTANT NOTE!!!
-	// BEWARE "view_angles", it is a client global (what a confusing term), meaning it pertains only to THIS
-	// client (local player), no matter what player is being rendered by this call.
-	// wait... shouldn't we do the third-person check for the flash-light check above too?
-	
-	BOOL canDrawAkimboLaser = FALSE;
-	pl.recentLaserHitPosSet = TRUE;
-	
+	// DEBUG
+	//canRenderLaserSight = TRUE;
+	//canRenderFlashlight = TRUE;
 	
 	
 	// TAGGG - QUESTION:  Is it better to use the bool "thirdperson"
@@ -458,7 +551,13 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 		//posView = getproperty(VF_ORIGIN) + [0,0,-8];
 		//angView = getproperty(VF_CL_VIEWANGLES);
 		
-		posView = pSeat->m_vecPredictedOrigin + [0,0,-8];
+		
+		//posView = pSeat->m_vecPredictedOrigin + [0,0,-8];
+		// Why not just that then, why the minus 8?  We want positions exactly to start where
+		// the viewOFS is.
+		posView = pSeat->m_vecPredictedOrigin + pl.view_ofs;
+		angView = view_angles;
+		
 		angView = view_angles;
 		
 		// CHECK: is "getproperty(VF_CL_VIEWANGLES)" always the same as "view_angles"?
@@ -478,7 +577,7 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 			
 		
 		}else{
-			canDrawAkimboLaser = TRUE;
+			canDrawAkimboEffects = TRUE;
 			
 			gunpos = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 0i);
 			gunpos_tempEnd = gettaginfo(pSeat->m_eViewModel, pSeat->m_iVMBones + 1i);
@@ -509,15 +608,9 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 		pl.recentLaserDistanceDisplay = (int)(vlen(trace_endpos - posView) / 40 );
 	}
 	
-	
-	// DEBUG!!!
-	//canRenderLaserSight = TRUE;
-	//canRenderFlashlight = TRUE;
-	
+	// Draw the flashlight lighting here, it is only done once regardless of akimbo-ness after all.
 	if(canRenderFlashlight){
-		//TAGGG - FLASHLIGHT STUFF HERE..
-		// oh wait a comment above already said that
-		// HOWEVER... in TS flashlights have a range limit.  Up to so far they have max brightness,
+		// In TS flashlights have a range limit.  Up to so far they have max brightness,
 		// then it lowers with a bit of range, then it's nothing.
 		
 		
@@ -541,9 +634,9 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 		
 		
 		if(trace_fraction == 1.0){
-			//uh-oh.
+			// too far, no light at all
 			flashlightBrightnessFactor = 0;
-		}if(traceDist >= flashlightRangeMax - rangeDimPriorStart){
+		}else if(traceDist >= flashlightRangeMax - rangeDimPriorStart){
 			//the flashlight gets dimmer the further it is at this point.
 			// rangeDimPriorStart from the end: max bright still.
 			// very end: 0% bright.
@@ -558,12 +651,12 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 				dynamiclight_set(p, LFIELD_ANGLES, angView);
 				dynamiclight_set(p, LFIELD_FLAGS, 3);
 			}
-		}//END OF brightness check
+		}// brightness check
 		
-		
-	}//END OF "flashlight is on" criteria
+	}// flashlight-on check
 
 
+	
 	if(canRenderLaserSight || canRenderFlashlight){
 		// TRY IT SOMEHOW?	RF_DEPTHHACK
 		//pSeat->m_eViewModel.renderflags = RF_DEPTHHACK;
@@ -571,182 +664,17 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 		//	return;
 		//}
 		
-		makevectors(angGun);
-		
-		//rotatevectorsbyangle( [-0.42, 0.75, 0] );
-		//rotatevectorsbyangle( [-0.52, 0.85, 0] );
-		rotatevectorsbyangle( [-0.45, 0.27, 0] );
-		
-		
-		flashPos = gunpos + v_up * -0.08 + v_right * 0.06;
-		
-		
-		vector shortForwardEnd = gunpos;
-		shortForwardEnd += v_forward * -1;
-		shortForwardEnd += v_up * (0.22);  //why is this 'up'??
-		shortForwardEnd += v_right * (0.35);  //why is this 'up'??
-		
-		//makevectors(m_vecAngle);   really now
-		//makevectors(input_angles);   //maybe this if we need to do this.
-		
-		// v_up * 2.  or.. 1.6, for size [3,3] at least.
-		//   for size [5,5],   we need v_up*3, v_right*2.  I DONT KNOW.
-		// for size [2, 2], we want v_up*5, v_right*5.  Go figure that one out.
-		
-		// Keep in mind, the global vectors (v_up, etc.) are set to the orientation of the recently received
-		// viewmodel attachment (gettaginfo above). Don't 'makevectors' at all to simply rely on that.
-		// ...unfortunately the orientation we get back is not great either.   oh well.
-		
-		// NEW TEST.  Can we even get a straight line from the player's center to the gunpos?
-		
-		traceline(posView, shortForwardEnd, FALSE, pl);
-		if(trace_fraction >= 1.0){
-			//woohoo!
-			
-			traceline(shortForwardEnd, shortForwardEnd + v_forward * 1024, MOVE_HITMODEL, pl);
-			
-			// other places care about this.
-			if (pl.entnum == player_localentnum) {
-				pl.recentLaserHitPos = trace_endpos;
-			}
-			
-			if(canRenderLaserSight){ 
-			
-				// In original TS, the 'laster' does not render for the local player if they are
-				// in thirdperson to see their own playermodel.  I... don't really understand that,
-				// feels like a mistake.  The lasers from other players are visible.
-				
-				// TAGGG - TODO - SUPER LOW PRIORITY
-				// Lasers only for not in 3rd person and local player.
-				// Could work for the third-person model or other players if there were a way to determine
-				// the muzzle-end point for player models.  Unsure if that is possible.
-				// To see it in third-person anyway, just change the "!thirdperson" condition below
-				// to "TRUE"; always do it.  There is no separate place that does only first-person lasers
-				// to worry about being redundant with.
-				// Note the laser will try to face the direction the player model is, which may not
-				// necessarily be where the player is looking, although that same issue would come up
-				// with firing anyway; you would look like you're firing sideways anyway, this would be
-				// just as "off".
-				if (!thirdperson) {
-					//makevectors(view_angles);  //???   it seems we do not need this perhaps...
-					// IN SHORT, we're riding the prior "makevectors(angGun);".
-					R_BeginPolygon("sprites/laserbeam.spr_0.tga", 1, 0);
-					R_PolygonVertex(gunpos + v_right * fsize[0] - v_up * fsize[1], [1,1], lasColor, drawAlpha);
-					R_PolygonVertex(gunpos - v_right * fsize[0] - v_up * fsize[1], [0,1], lasColor, drawAlpha);
-					R_PolygonVertex(trace_endpos - v_right * fsize[0] + v_up * fsize[1], [0,0], lasColor, drawAlpha);
-					R_PolygonVertex(trace_endpos + v_right * fsize[0] + v_up * fsize[1], [1,0], lasColor, drawAlpha);
-					R_EndPolygon();
-				}
-				
-				// Draw the laser sprite effect at where the laser is hitting, but ONLY for every other player
-				// except this one.  That's because, for the local player, we already are drawing the laserdot
-				// projected onto the screen in the HUD logic.
-				
-				if (pl.entnum != player_localentnum) {
-					makevectors(angView);
-				
-					trace_endpos += trace_plane_normal * fsizeDot[0]/6;
-					R_BeginPolygon("sprites/laserdot.spr_0.tga", 1, 0);
-					R_PolygonVertex(trace_endpos + v_right * fsizeDot[0] - v_up * fsizeDot[1], [1,1], lasColor, 0.80f);
-					R_PolygonVertex(trace_endpos - v_right * fsizeDot[0] - v_up * fsizeDot[1], [0,1], lasColor, 0.80f);
-					R_PolygonVertex(trace_endpos - v_right * fsizeDot[0] + v_up * fsizeDot[1], [0,0], lasColor, 0.80f);
-					R_PolygonVertex(trace_endpos + v_right * fsizeDot[0] + v_up * fsizeDot[1], [1,0], lasColor, 0.80f);
-					R_EndPolygon();
-				}
-				
-			}//END OF canRenderLaserSight
-			
-			
-			// glow effect on top of the gun muzzle while the flashlight is on?
-			if(canRenderFlashlight){
-				if(!thirdperson){
-					makevectors(angView);
-					
-					//trace_endpos += trace_plane_normal * fsizeDot[0]/6;
-					R_BeginPolygon("sprites/glow02.spr_0.tga", 1, 0);
-					R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [1,1], [1,1,1], 0.45f);
-					R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [0,1], [1,1,1], 0.45f);
-					R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [0,0], [1,1,1], 0.45f);
-					R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [1,0], [1,1,1], 0.45f);
-					R_EndPolygon();
-				}
-			}
-		}//END OF trace pre-check
-		
+		// Singular form.
+		TS_View_DrawSpecialEffects_Weapon(pl, thirdperson, canRenderLaserSight, canRenderFlashlight, posView, angView, gunpos, angGun, [-1, 0.35, 0.22], &pl.recentLaserHitPos);
 		
 		// This requires the current weapon to be akimbo, player is in first person,
 		// and the local player is being rendered.
-		if(canDrawAkimboLaser){
-			// test for the 2nd gun's laser too then.
-			// makevectors(theDir);
-			makevectors(angGun2);
-			rotatevectorsbyangle( [-0.45, 0.27, 0] );
-			
-			//gunpos2 += v_forward * -18;
-			
-			flashPos = gunpos2 + v_up * -0.08 + v_right * 0.06;
-			
-			shortForwardEnd = gunpos2;
-			shortForwardEnd += v_forward * -1;
-			shortForwardEnd += v_up * (0.22);  //why is this 'up'??
-			shortForwardEnd += -v_right * (0.35);  //why is this 'up'??
-			
-			
-			traceline(posView, shortForwardEnd, FALSE, pl);
-			if(trace_fraction >= 1.0){
-				
-				traceline(shortForwardEnd, shortForwardEnd + v_forward * 1024, MOVE_HITMODEL, pl);
-				
-				// other places care about this.
-				if (pl.entnum == player_localentnum) {
-					pl.recentLaserHitPos2 = trace_endpos;
-				}
-				
-				if(canRenderLaserSight){
-					if (!thirdperson) {
-						// ONLY render the polygon
-						// makevectors(view_angles);  //???   it seems we do not need this perhaps...
-						// IN SHORT, we're riding the prior "makevectors(angGun2);".
-						
-						R_BeginPolygon("sprites/laserbeam.spr_0.tga", 1, 0);
-						R_PolygonVertex(gunpos2 + v_right * fsize[0] - v_up * fsize[1], [1,1], lasColor, drawAlpha);
-						R_PolygonVertex(gunpos2 - v_right * fsize[0] - v_up * fsize[1], [0,1], lasColor, drawAlpha);
-						R_PolygonVertex(trace_endpos - v_right * fsize[0] + v_up * fsize[1], [0,0], lasColor, drawAlpha);
-						R_PolygonVertex(trace_endpos + v_right * fsize[0] + v_up * fsize[1], [1,0], lasColor, drawAlpha);
-						R_EndPolygon();
-					}
-					
-					if (pl.entnum != player_localentnum) {
-						//makevectors(view_angles);
-						makevectors(angView);
-						
-						trace_endpos += trace_plane_normal * fsizeDot[0]/6;
-						R_BeginPolygon("sprites/laserdot.spr_0.tga", 1, 0);
-						R_PolygonVertex(trace_endpos + v_right * fsizeDot[0] - v_up * fsizeDot[1], [1,1], lasColor, 0.80f);
-						R_PolygonVertex(trace_endpos - v_right * fsizeDot[0] - v_up * fsizeDot[1], [0,1], lasColor, 0.80f);
-						R_PolygonVertex(trace_endpos - v_right * fsizeDot[0] + v_up * fsizeDot[1], [0,0], lasColor, 0.80f);
-						R_PolygonVertex(trace_endpos + v_right * fsizeDot[0] + v_up * fsizeDot[1], [1,0], lasColor, 0.80f);
-						R_EndPolygon();
-					}
-				}
-				
-				
-				if(canRenderFlashlight){
-					if(!thirdperson){
-						//makevectors(view_angles);
-						makevectors(angView);
-						
-						//trace_endpos += trace_plane_normal * fsizeDot[0]/6;
-						R_BeginPolygon("sprites/glow02.spr_0.tga", 1, 0);
-						R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [1,1], [1,1,1], 0.45f);
-						R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] - v_up * fsizeFlashlightMuzzleGlow[1], [0,1], [1,1,1], 0.45f);
-						R_PolygonVertex(flashPos - v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [0,0], [1,1,1], 0.45f);
-						R_PolygonVertex(flashPos + v_right * fsizeFlashlightMuzzleGlow[0] + v_up * fsizeFlashlightMuzzleGlow[1], [1,0], [1,1,1], 0.45f);
-						R_EndPolygon();
-					}
-				}
-				
-			}//END OF trace pre-check
+		
+		// How about akimbo too if wanted, first-person only.  3rd person akimbo is not portrayed.
+		// also, this condition is the same as, if(!thirdperson && pl.weaponEquippedAkimbo)
+		if(canDrawAkimboEffects){
+			// Do the 2nd weapon's effects too
+			TS_View_DrawSpecialEffects_Weapon(pl, thirdperson, canRenderLaserSight, canRenderFlashlight, posView, angView, gunpos2, angGun2, [-1, -0.35, 0.22], &pl.recentLaserHitPos2);
 		}//END OF akimbo check
 		
 		/*
@@ -759,12 +687,12 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 		
 	}else{
 		pl.recentLaserHitPosSet = FALSE;
-	}//END OF canRenderLaserSight || canRenderFlashlight
+	}// canRenderLaserSight || canRenderFlashlight
 	
 }
 
 
-//TAGGG - NEW.  Similar to Nuclide's provided "View_SetMuzzleflash", but also acts
+// NEW.  Similar to Nuclide's provided "View_SetMuzzleflash", but also acts
 // as though the first frame were an event by doing the same lines as a 5000-ish
 // event.  This is because TS weapons don't have events for the muzzle flash
 // unlike HL ones, must be hardcoded to show up.
@@ -804,8 +732,6 @@ TS_View_ShowMuzzleflash(int index, int akimboChoice)
 
 
 
-//var int oldZoomLevel = 0;
-
 //TAGGG - loaned from The Wastes.
 void TS_View_HandleZoom(void)
 {
@@ -825,7 +751,7 @@ void TS_View_HandleZoom(void)
 	
 	//printfline("WHATS GOING ON %.2f %.2f %.2f %.2f %.2f", pl.flZoomEnd, pl.flZoomTarget, pl.flZoomStart, pl.flZoomLerp, pl.flZoomCurrent);
 	
-	//TAGGG - no other codebase refers to STAT_VIEWZOOM, best to replace anything
+	// - No other codebase refers to STAT_VIEWZOOM, best to replace anything
 	// involving that.
 	
 	// in case of some unexpected change.

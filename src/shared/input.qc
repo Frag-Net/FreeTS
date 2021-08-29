@@ -515,7 +515,7 @@ void ClientGame_Input_Frame(void){
 		input_buttons |= INPUT_BUTTON9;
 	}
 	
-		
+	
 }
 #endif
 
