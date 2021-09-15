@@ -41,12 +41,6 @@ enum PLAYER_STATE{
 #define SAVE_STATE_ARRAY_MEMBER(ary, i, sub) x ##_net = x    // did not do
 */
 
-
-// NOTE - it seems this is the only place this var is declared?  Unsure what the 'noref' means.
-// Nuclide expects it, used as a random seed, whole number.  Not sure the best way to get a decimal
-// out of it yet but some ideas should be good enough.
-noref int input_sequence;
-
 class player:base_player
 {
 	
