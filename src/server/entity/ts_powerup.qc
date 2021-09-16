@@ -149,7 +149,7 @@ CTSPowerUp::CustomInit(void)
 	//takedamage = DAMAGE_NO;
 	
 	// start at where I spawned, already recorded by CBaseEntity for us.
-	origin = m_oldOrigin;
+	origin = GetSpawnOrigin();
 	
 	// Tone the gravity down to see them fall better / prove their positions are reset on spawn.
 	//this.gravity = 0.006;
