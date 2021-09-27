@@ -41,11 +41,33 @@ ClientGame_ConsoleCommand(void)
 		TS_playerChangeFiremode();
 		//pSeatLocal->m_bFireModeFreshPress = TRUE;
 		break;
-	case "useitems":
-		TS_playerUseItems();
+		
+#if USE_ITEMS_PREDICTION_TEST == 0
+	//case "useitems"
+	//	TS_playerUseItems();
+	//	break;
+	case "+useitems":
+		pl = (player)pSeat->m_ePlayer;
+		if( !(pl.gflags & GF_UNUSED3)){
+			TS_playerUseItems();
+		}
+		pl.gflags |= GF_UNUSED3;
+		break;
+	case "-useitems":
+		pl = (player)pSeat->m_ePlayer;
+		pl.gflags &= ~GF_UNUSED3;
+		break;
+#else
+	case "+useitems":
+		//TS_playerUseItems();
 		//pSeatLocal->m_bUseItemsFreshPress = TRUE;
 		pSeatLocal->m_bUseItems = TRUE;
 		break;
+	case "-useitems":
+		pSeatLocal->m_bUseItems = FALSE;
+		break;
+#endif
+		
 	case "usepowerup":
 		TS_playerUsePowerup();
 		break;

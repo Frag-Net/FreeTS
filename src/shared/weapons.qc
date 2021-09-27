@@ -11,14 +11,10 @@
 
 
 
-
 weapon_t w_null = {};
 
 // Populate each slot with a member of the enum early on in runtime instead.
 weapon_t g_weapons[WEAPON_ID::LAST_ID];
-
-// Not needed here anymore?
-//var int g_weapon_weights[g_weapons.lengdth];
 
 
 void
@@ -322,7 +318,12 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 {
 	
 	weapondata_gun_t baseRef = *((weapondata_gun_t*)basePRef);
+	
+	//TAGGG - shared random test
 	float randoAngFactor = randomInRange_f(0, 1);
+	//float randoAngFactor = 0.5;
+	
+	
 	
 	//float finalAng = (40 + randoAngFactor*( (90-40)*2 ) ) *(M_PI/180);
 	
@@ -332,7 +333,7 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	float kickbackToApply = pl.fAccuracyKickback;
 	
 	if(baseAcc < 0.001){
-		//minimum enforced, per notes in wepon_official.txt
+		// minimum enforced, per notes in weapons_official.txt
 		baseAcc = 0.001;
 	}
 	
@@ -387,15 +388,17 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	//TAGGG - TODO!  The last parameter of TraceAttack_FireBullets should use the Weapon ID,
-	// like "WEAPON_ID::Glock18".  Consider sending that as a parameter to be available here
+	//TAGGG - TODO!  Re-picking the angle to kickback per hit may make more sense than varrying the intensity
+	// of the exact same direction for both shots, just a thought
 	if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
 		//left
 #ifdef SERVER
 		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
 #endif
 		arg_thisWeapon.iClipLeft -= 1;
+		//TAGGG - shared random test
 		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
+		//toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * 0.7;
 		pl.vViewAngleOffsetTarget += toGo;
 	}
 	if(attackTypeUsed & BITS_AKIMBOCHOICE_RIGHT){
@@ -405,7 +408,9 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
 #endif
 		arg_thisWeapon.iClipAkimboLeft -= 1;
+		//TAGGG - shared random test
 		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
+		//toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * 0.7;
 		pl.vViewAngleOffsetTarget += toGo;
 	}
 	
@@ -940,13 +945,14 @@ weapon_akimbo_semiAttackChoice(
 	int finalAkimboChoice = BITS_AKIMBOCHOICE_NONE;
 	weapondata_basic_t baseRef = *basePRef;
 	
-	//printfline("PRE - EVERYBODY GET DOWN x - next:%d", pl.nextAkimboAttackPreference);
+	//printfline("PRE - weapon_akimbo_semiAttackChoice x - next:%d", pl.nextAkimboAttackPreference);
 
 	/*
 	if(pl.akimboTest != 0){
 		return BITS_AKIMBOCHOICE_BOTH;
 	}
 	*/
+
 
 	//if(pl.akimboTest == 0)
 	if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
@@ -1119,7 +1125,7 @@ weapon_akimbo_semiAttackChoice(
 		
 	}
 		
-	//printfline("EVERYBODY GET DOWN %i - next:%d", finalAkimboChoice, pl.nextAkimboAttackPreference);
+	//printfline("POST - weapon_akimbo_semiAttackChoice %i - next:%d", finalAkimboChoice, pl.nextAkimboAttackPreference);
 	
 	return finalAkimboChoice;
 }// weapon_akimbo_semiAttackChoice
@@ -2345,6 +2351,10 @@ viewEv_weapon_EjectShell(void)
 	*/
 }
 
+
+var int testCount1 = 0;
+var int testCount2 = 0;
+
 void 
 viewEv_weapon_ShowMuzzleFlash(void)
 {
@@ -2352,6 +2362,14 @@ viewEv_weapon_ShowMuzzleFlash(void)
 	if(pl.iMuzzleFlashType != MUZZLEFLASH_ID::NONE){
 		muzzleflashdata_t* tempRef = ary_muzzleFlashData[pl.iMuzzleFlashType];
 		TS_View_ShowMuzzleflash(tempRef->iSpritePrecacheID, pl.iMuzzleFlashAkimboChoice);
+		
+		if(pl.iMuzzleFlashAkimboChoice==BITS_AKIMBOCHOICE_LEFT){
+			testCount1++;
+		}else if(pl.iMuzzleFlashAkimboChoice==BITS_AKIMBOCHOICE_RIGHT){ 
+			testCount2++;
+		}
+		printf("Hello? %i %i\n", testCount1, testCount2);
+		
 	}
 }
 

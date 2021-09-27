@@ -1,12 +1,23 @@
-#pragma target fte
-#pragma progs_dat  "../../progs.dat"
+
+// SHARED CONFIG SETTING - set this consistently between client/server progs!
+// If 0, nothing special.
+// If 1, Makes some changes to enable prediction for useitems.
+// Spams the turn-on click noise though.
+// Doubt this is worth further support as I don't know how to support this for
+// more than one extra feature, the INPUT_BUTTON# list is exhausted after this.
+#define USE_ITEMS_PREDICTION_TEST 0
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 //---WARNINGS DISABLED---
 // As of now, the only warnings left are for the server/gamerules.qc unused globals
 // like sRule_TeamNames.
 #pragma warning disable Q302 /*uninitialised locals*/
-/////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+#pragma target fte
+#pragma progs_dat  "../../progs.dat"
 
 #define QWSSQC
 #define SERVER

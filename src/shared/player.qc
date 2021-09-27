@@ -1892,6 +1892,8 @@ player::preThinkShared(void){
 	
 	
 	
+	//TAGGG - any use for input_angles here?  Shared, predicted?
+	
 	// TODO: make this view kickback properly predicted
 #ifdef CLIENT
 	//printfline("So what is my view ang?? %.2f %.2f", view_angles[0], view_angles[1]);

@@ -1,5 +1,14 @@
-#pragma target fte
-#pragma progs_dat  "../../csprogs.dat"
+
+// SHARED CONFIG SETTING - set this consistently between client/server progs!
+// If 0, nothing special.
+// If 1, Makes some changes to enable prediction for useitems.
+// Spams the turn-on click noise though.
+// Doubt this is worth further support as I don't know how to support this for
+// more than one extra feature, the INPUT_BUTTON# list is exhausted after this.
+#define USE_ITEMS_PREDICTION_TEST 0
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 //---WARNINGS DISABLED---
 #pragma warning disable Q302 /*uninitialised locals*/
@@ -8,8 +17,10 @@
 // No idea how to make warnings disabled only per file, in there
 // would affect all files included in the compile after anyway
 #pragma warning disable F314 /*implicit cast*/
-/////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
+#pragma target fte
+#pragma progs_dat  "../../csprogs.dat"
 
 #define CSQC
 #define CLIENT

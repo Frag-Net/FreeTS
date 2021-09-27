@@ -78,7 +78,10 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	registercommand("getangle");
 	
 	registercommand("firemode");
-	registercommand("useitems");
+	
+	registercommand("+useitems");
+	registercommand("-useitems");
+	
 	registercommand("usepowerup");
 	registercommand("+alt1");
 	registercommand("-alt1");

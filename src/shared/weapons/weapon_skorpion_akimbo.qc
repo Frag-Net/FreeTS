@@ -222,6 +222,12 @@ void weapon_skorpion_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, in
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);
 	}
 	
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffectsAkimbo(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+	} else {
+		weapon_EjectShellAkimbo(SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+	}
+	
 }// weapon_skorpion_akimbo_attack
 
 

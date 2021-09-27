@@ -623,8 +623,8 @@ TS_playerUseItems(void){
 		return;
 	}
 	
-	//_TS_playerUseItems();
 	
+#if USE_ITEMS_PREDICTION_TEST == 0
 	
 #ifdef CLIENT
 		sendevent("TS_playerUseItems", "");
@@ -634,6 +634,13 @@ TS_playerUseItems(void){
 		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
 	
 #endif
+
+#else
+	// always do this then
+	_TS_playerUseItems();
+#endif
+
+
 	
 }
 

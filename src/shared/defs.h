@@ -16,7 +16,8 @@ enum TS_Team{
 
 
 // Uhh.  Please work?
-#define INPUT_BUTTON9 0x00000100
+// nope.  it does not.
+//#define INPUT_BUTTON9 0x00000100
 
 
 #ifdef SERVER

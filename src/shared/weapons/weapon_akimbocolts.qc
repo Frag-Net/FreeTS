@@ -253,6 +253,12 @@ void weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon,
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);
 	}
 	
+	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
+		weapon_ClientEffectsAkimbo(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+	} else {
+		weapon_EjectShellAkimbo(SHELLEJECT_ID::GENERIC, finalAkimboChoice);
+	}
+	
 }// weapon_akimbocolts_akimbo_attack
 
 
@@ -278,8 +284,6 @@ w_akimbocolts_reload(void)
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
 	
-	leftCount = 0;
-	rightCount = 0;
 }
 
 float

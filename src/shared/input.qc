@@ -335,14 +335,22 @@ Game_Input(void)
 	
 	
 	
-	
-	if(input_buttons & INPUT_BUTTON9){
+#if USE_ITEMS_PREDICTION_TEST == 1
+	//INPUT_BUTTON2 reserved for jump...
+	//INPUT_BUTTON6
+	//INPUT_BUTTON7 (used for sneaking currently)
+	if(input_buttons & INPUT_BUTTON6){
 		//printfline("IM here what");
-		//TS_playerUseItems();
+		
+		if( !(pl.gflags & GF_UNUSED3)){
+			TS_playerUseItems();
+		}
+		pl.gflags |= GF_UNUSED3;
+	}else{
+		pl.gflags &= ~GF_UNUSED3;
+
 	}
-	
-	
-	
+#endif
 	
 	
 	
@@ -502,7 +510,6 @@ void ClientGame_Input_Frame(void){
 	// unless there is some other way that I'm missing.
 	
 	if (pSeatLocal->m_iInputSpeed == TRUE) {
-		//input_buttons |= INPUT_BUTTON9;
 		input_buttons |= INPUT_BUTTON7;
 		//self.flags |= FL_SNEAK;
 	}else{
@@ -510,10 +517,15 @@ void ClientGame_Input_Frame(void){
 	}
 	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
 	
+	
+#if USE_ITEMS_PREDICTION_TEST == 1
 	if(pSeatLocal->m_bUseItems){
-		pSeatLocal->m_bUseItems = FALSE;
-		input_buttons |= INPUT_BUTTON9;
+		//pSeatLocal->m_bUseItems = FALSE;
+		input_buttons |= INPUT_BUTTON6;
 	}
+#endif
+	
+	
 	
 	
 }

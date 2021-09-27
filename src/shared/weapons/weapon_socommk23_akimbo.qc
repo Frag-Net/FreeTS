@@ -50,7 +50,11 @@ weapondata_ironsight_t weapon_socommk23_akimbo =
 	weaponseq_socommk23_akimbo::idle,
 	weaponseq_socommk23_akimbo::draw,
 	31.0f / 40.0f,
+	
 	0.19f,  //fire delay
+	//0.03f,
+	//0.15f,
+	
 	15.0f,  //dmg
 	TRUE,
 	BITS_WEAPONOPT_SILENCER | BITS_WEAPONOPT_LASERSIGHT | BITS_WEAPONOPT_FLASHLIGHT | BITS_WEAPONOPT_AKIMBO,
@@ -143,9 +147,10 @@ w_socommk23_akimbo_holster(void)
 }
 
 
-
+/*
 var int leftCount = 0;
 var int rightCount = 0;
+*/
 
 // General attack method to be called by primary or secondary fire as needed.
 // The firemode used determines whether only pressing primary fire works (alternate b/w
@@ -195,6 +200,7 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		return;
 	}
 	
+	/*
 	// DEBUG!!!
 	if((finalAkimboChoice & BITS_AKIMBOCHOICE_LEFT)){
 		leftCount++;
@@ -203,6 +209,7 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		rightCount++;
 	}
 	printfline("COUNTS!  %i %i", leftCount, rightCount);
+	*/
 	
 	// Use me for things the recent firing round already did to avoid redundancy.
 	// That is, if left-click was pressed a fraction of a second ago and then right-click
@@ -319,7 +326,6 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		weapon_EjectShellAkimbo(SHELLEJECT_ID::GENERIC, finalAkimboChoice);
 	}
 	
-	
 }// weapon_socommk23_akimbo_attack
 
 
@@ -344,8 +350,8 @@ w_socommk23_akimbo_reload(void)
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO], arg_thisWeapon);
 	
-	leftCount = 0;
-	rightCount = 0;
+	//leftCount = 0;
+	//rightCount = 0;
 }
 
 float
