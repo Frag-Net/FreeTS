@@ -365,6 +365,8 @@ TS_View_DrawSpecialEffects_Weapon(
 	vector* recentLaserHitPosVar
 )
 {
+	
+	
 	const float drawAlpha = 1.0;
 	const vector lasColor = [1.0, 0, 0];
 	
@@ -473,6 +475,17 @@ TS_View_DrawSpecialEffects_Weapon(
 void
 TS_View_DrawExtraEffects(player pl, int thirdperson)
 {
+	
+	
+	if(pl.inventoryEquippedIndex > -1){
+		weapondynamic_t dynaRef2 = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+		//printfline("---TS_View_DrawSpecialEffects_Weapon--- %d", (float)((dynaRef2.iBitsUpgrade_on & BITS_WEAPONOPT_FLASHLIGHT) != 0));
+		
+		//dynaRef2.iBitsUpgrade_on = 0;
+	}
+	
+	
+	
 	//int thirdperson = (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum);
 	//base_player pp = (base_player)this;
 

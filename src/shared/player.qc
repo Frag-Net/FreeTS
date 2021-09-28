@@ -69,6 +69,8 @@ player::ReceiveEntity(float new, float fl)
 {
 	/* the generic client attributes */
 	base_player::ReceiveEntity(new, fl);
+	
+	
 
 	/* animation */
 	if (fl & PLAYER_TOPFRAME) {
@@ -324,7 +326,9 @@ void player::ReceiveEntity_ary_myWeapons(int i){
 	//ary_myWeapons[i].iSlots = readbyte();
 	ary_myWeapons[i].iClipLeft = readbyte();
 	ary_myWeapons[i].iClipAkimboLeft = readbyte();
+#if OTHER_PREDICTION_TEST != 1
 	ary_myWeapons[i].iBitsUpgrade_on = readbyte();
+#endif
 	
 	int newFir = readbyte();
 	
@@ -471,6 +475,12 @@ player::PredictPreFrame(void)
 	// reach the Nuclide logic looking at it in time to be applied.
 	// No need here now I think?
 	//this.viewzoom = this.flZoomCurrent;
+	
+	
+#if OTHER_PREDICTION_TEST == 1
+	Custom_Predict_PlayerPreFrame(this);
+#endif
+	
 }
 
 /*
@@ -484,7 +494,6 @@ void
 player::PredictPostFrame(void)
 {
 	//printfline("---PREDICT POST FRAME");
-	
 	
 	/*
 #ifdef CLIENT
@@ -603,7 +612,12 @@ player::PredictPostFrame(void)
 		ROLL_BACK_ARY(ary_ammoTotal, i);
 	}
 	
+#if OTHER_PREDICTION_TEST == 1
+	Custom_Predict_PlayerPostFrame(this);
+#endif
+	
 }
+
 
 #else
 void
@@ -830,6 +844,11 @@ player::EvaluateEntity(void)
 		}
 	}
 	
+	
+#if OTHER_PREDICTION_TEST == 1
+	Custom_EvaluateEntity(this);
+#endif
+
 }
 
 /*
@@ -1011,8 +1030,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	// no need to send again until this flag is set freshly.
 	this.completeInventorySend = FALSE;
 	
-	
-
 	return (1);
 }
 
@@ -1025,7 +1042,9 @@ void player::SendEntity_ary_myWeapons(int i){
 	//WriteByte(MSG_ENTITY, ary_myWeapons[i].iSlots );
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iClipLeft );
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iClipAkimboLeft );
+#if OTHER_PREDICTION_TEST != 1
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iBitsUpgrade_on );
+#endif
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireMode );
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iFireModeAkimbo );
 	WriteByte(MSG_ENTITY, ary_myWeapons[i].iIronSight );

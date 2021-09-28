@@ -15,11 +15,30 @@
  */
  
  
+ 
 
 void processInputs(void);
 #ifdef CLIENT
 void PreSpawn_Input(void);
+// externs
+void HUD_DrawWeaponSelect_Trigger(void);
+BOOL TS_HUD_CloseWeaponSelect(BOOL);
 #endif
+
+
+
+
+
+
+
+#if OTHER_PREDICTION_TEST == 1
+float custom_input_buttons;
+float ary_custom_input_buttons[512];
+BOOL ary_custom_input_sentYet[512];
+
+void Custom_Game_Input(void);
+#endif
+
 
 
 // WARNING!  This is only called by PMove_Run, which is only called
@@ -333,25 +352,13 @@ Game_Input(void)
 	}
 	*/
 	
-	
-	
-#if USE_ITEMS_PREDICTION_TEST == 1
-	//INPUT_BUTTON2 reserved for jump...
-	//INPUT_BUTTON6
-	//INPUT_BUTTON7 (used for sneaking currently)
-	if(input_buttons & INPUT_BUTTON6){
-		//printfline("IM here what");
-		
-		if( !(pl.gflags & GF_UNUSED3)){
-			TS_playerUseItems();
-		}
-		pl.gflags |= GF_UNUSED3;
-	}else{
-		pl.gflags &= ~GF_UNUSED3;
-
+#if OTHER_PREDICTION_TEST == 2
+	if(input_impulse == 115){
+		TS_playerUseItems();
 	}
+	// great.  So that won't even work.
+	//isFreshInput = FALSE;
 #endif
-	
 	
 	
 }//Game_Input
@@ -415,6 +422,8 @@ void processInputs(void){
 
 
 
+
+
 #ifdef CLIENT
 
 // called when not ingame for sending a spawn request.
@@ -455,8 +464,55 @@ void PreSpawn_Input(void){
 
 
 
-void HUD_DrawWeaponSelect_Trigger(void);
-BOOL TS_HUD_CloseWeaponSelect(BOOL);
+
+#ifdef CLIENT
+
+// redirects from cmd.qc to be less of a mess over there.
+void Input_useItems_press(void){
+	player pl = (player)pSeat->m_ePlayer;
+	
+#if OTHER_PREDICTION_TEST == 0
+	if( !(pl.gflags & GF_UNUSED3)){
+		TS_playerUseItems();
+	}
+	pl.gflags |= GF_UNUSED3;
+#elif OTHER_PREDICTION_TEST == 1
+	pSeatLocal->m_bUseItems = TRUE;
+#elif OTHER_PREDICTION_TEST == 2
+	pSeatLocal->m_bUseItems = TRUE;
+	//TAGGG - play the click only this once
+	if( !(pl.gflags & GF_UNUSED3)){
+		localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
+	}
+	pl.gflags |= GF_UNUSED3;
+#endif
+}//Input_useItems_press
+
+
+void Input_useItems_release(void){
+	player pl = (player)pSeat->m_ePlayer;
+	
+#if OTHER_PREDICTION_TEST == 0
+	pl.gflags &= ~GF_UNUSED3;
+#elif OTHER_PREDICTION_TEST == 1
+	pSeatLocal->m_bUseItems = FALSE;
+#elif OTHER_PREDICTION_TEST == 2
+	pSeatLocal->m_bUseItems = FALSE;
+	pl.gflags &= ~GF_UNUSED3;
+#endif
+}//Input_useItems_release
+
+#endif
+
+
+
+
+
+
+
+
+
+
 
 // Not yet called by Nuclide!  A series of notes for now
 // (move to clientside files then)
@@ -479,8 +535,10 @@ void ClientGame_Input_Frame(void){
 	// affecting other inputs like crouch is unnecessary, that causes the player to
 	// uncrouch if changing weapons while crouched.
 	
-	
 	player pl = (player)pSeat->m_ePlayer;
+	
+	if(pl == NULL)return;  // ???
+	
 	
 	if(pl.iState != PLAYER_STATE::SPAWNED && pSeatLocal->m_flUI_Display != UI_SCREEN::NONE){
 		// If buying, don't allow any movement inputs.
@@ -512,23 +570,216 @@ void ClientGame_Input_Frame(void){
 	if (pSeatLocal->m_iInputSpeed == TRUE) {
 		input_buttons |= INPUT_BUTTON7;
 		//self.flags |= FL_SNEAK;
+		
 	}else{
 		//self.flags &= ~FL_SNEAK;
 	}
 	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
 	
 	
-#if USE_ITEMS_PREDICTION_TEST == 1
+	// NOTE - GF_UNUSED3 is being used for playing the toggle-switch sound in
+	// 
+#if OTHER_PREDICTION_TEST == 2
+	// using GF_UNUSED4 instead of GF_UNUSED3 because that one is
+	// being used to play the click-noise on toggling instead.
+	// Yes, really.
 	if(pSeatLocal->m_bUseItems){
-		//pSeatLocal->m_bUseItems = FALSE;
-		input_buttons |= INPUT_BUTTON6;
+		if( !(pl.gflags & GF_UNUSED4)){
+			input_impulse = 115;
+			//isFreshInput = TRUE;
+		}
+		pl.gflags |= GF_UNUSED4;
+	}else{
+		pl.gflags &= ~GF_UNUSED4;
 	}
 #endif
 	
 	
+}// ClientGame_InputFrame
+
+
+#endif // CLIENT
+
+
+
+
+
+
+
+
+//TAGGG - most of the alternate prediction demo.
+// Replicates what's seen in Nuclide's src/predict.qc to make
+// the toggle-options feature predicted without involving FTE's
+// input_buttons.
+//////////////////////////////////////////////////////////////////////////////////
+#if OTHER_PREDICTION_TEST == 1
+
+// Shared
+void Custom_Game_Input(void){
+	player pl = (player)self;
 	
+	if(custom_input_buttons == TRUE){
+		if( !(pl.gflags & GF_UNUSED3)){
+			//printfline("---CLICK---");
+			TS_playerUseItems();
+		}
+		pl.gflags |= GF_UNUSED3;
+	}else{
+		pl.gflags &= ~GF_UNUSED3;
+
+	}
+}//Custom_Game_Input
+
+
+
+#ifdef CLIENT
+
+void Custom_ClientGame_Input_Frame(void){
+	
+	if(pSeatLocal->m_bUseItems){
+		//pSeatLocal->m_bUseItems = FALSE;
+		//input_buttons |= INPUT_BUTTON6;
+		ary_custom_input_buttons[custom_clientcommandframe % 512] = TRUE;
+	}
+	
+	if(!ary_custom_input_sentYet[custom_clientcommandframe % 512]){
+		sendevent("GSVRCC", "ff", custom_clientcommandframe, ary_custom_input_buttons[custom_clientcommandframe % 512]);
+		ary_custom_input_sentYet[custom_clientcommandframe % 512] = TRUE;
+	}
+	//printfline("CURRENT CLIENTCOMMAND FRAME: %d", custom_clientcommandframe);
+	
+	// And refresh the entry in the queue somewhere before this point, so that
+	// loop-arounds don't cause issues from running into leftover/out-of-date
+	// memory being set but not being worth paying attention to.
+	float subtr = custom_clientcommandframe - 256;
+	if(subtr < 0){subtr += 512;}
+	float modulo = subtr % 512;
+	ary_custom_input_buttons[modulo] = 0;
+	ary_custom_input_sentYet[modulo] = FALSE;
+}
+
+
+void Custom_Predict_EntityUpdate(player pl){
+	
+	if (pl.entnum == player_localentnum) {
+		/* run the player physics from the last approved servercommandframe to the current one */
+		for (int i = pl.custom_sequence+1; i <= custom_servercommandframe; i++) {
+			/* ...maybe the input state is too old? */
+			//if (!getinputstate(i)) {
+			//	break;
+			//}
+			custom_input_sequence = i;
+			//pl.Physics_Run();
+			
+			custom_input_buttons = ary_custom_input_buttons[custom_input_sequence % 512];
+			Custom_Game_Input();
+		}
+	}
+	
+	pl.custom_sequence = custom_servercommandframe;
+}
+
+void Custom_Predict_PlayerPreFrame(player pl){
+	
+	//printfline("---PREFRAME---");
+	
+	for (int i = pl.custom_sequence + 1; i <= custom_clientcommandframe; i++) {
+		
+		//float flSuccess = getinputstate(i);
+		//if (flSuccess == FALSE) {
+		//	continue;
+		//}
+
+		if (i==custom_clientcommandframe){
+			//CSQC_Input_Frame();
+			Custom_ClientGame_Input_Frame();
+		}
+
+		/* don't do partial frames, aka incomplete input packets */
+		//if (input_timelength == 0) {
+		//	break;
+		//}
+
+		/* this global is for our shared random number seed */
+		custom_input_sequence = i;
+
+		/* run our custom physics */
+		//pl.Physics_Run();
+		
+		custom_input_buttons = ary_custom_input_buttons[custom_input_sequence % 512];
+		Custom_Game_Input();
+	}
+	custom_clientcommandframe++;
+}
+
+void Custom_Predict_PlayerPostFrame(player pl){
+	//printfline("---ROLLBACK---");
+}
+
+
+// called by server
+void Custom_Prediction_Server_Callback(player pl){
+	
+	float received_servercommandframe = readfloat();
+	custom_servercommandframe = received_servercommandframe;
+	
+	if(pl != NULL){
+		Custom_Predict_EntityUpdate(pl);
+	}
+	
+	if(pl != NULL){
+		int EXTRA = readint();
+		if(EXTRA > -1){
+			pl.ary_myWeapons[pl.inventoryEquippedIndex].iBitsUpgrade_on = EXTRA;
+			//pl.ary_myWeapons[pl.inventoryEquippedIndex].iBitsUpgrade_on_net = pl.ary_myWeapons[pl.inventoryEquippedIndex].iBitsUpgrade_on;
+		}
+	}
 	
 }
-#endif
+
+#else
+	
+	// SERVER
+
+// short for GameServer_RunClientCommand.
+void
+CSEv_GSVRCC_ff(float arg_scf, float arg_ibc){
+	//TS_playerUseItems();
+	
+	custom_servercommandframe = arg_scf;
+	custom_input_buttons = arg_ibc;
+	Custom_Game_Input();
+	
+	// send a message back!
+	player pl = (player)self;
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EVENT_TS::CUSTOM_PREDICTION_CALLBACK );
+	WriteFloat( MSG_MULTICAST, custom_servercommandframe );
+	
+	if(pl.inventoryEquippedIndex > -1){
+		WriteInt( MSG_MULTICAST, pl.ary_myWeapons[pl.inventoryEquippedIndex].iBitsUpgrade_on );
+	}else{
+		WriteInt( MSG_MULTICAST, -1 );
+	}
+	
+	msg_entity = pl;
+	multicast( [0,0,0], MULTICAST_ONE );
+	
+}
+
+void Custom_EvaluateEntity(player pl){
+
+	// SAVE_STATE
+	//if(pl.inventoryEquippedIndex > -1){
+	//	pl.ary_myWeapons[pl.inventoryEquippedIndex].iBitsUpgrade_on_net = pl.ary_myWeapons[pl.inventoryEquippedIndex].iBitsUpgrade_on;
+	//}
+	
+}
+
+#endif// CLIENT vs. SERVER
+
+
+#endif// OTHER_PREDICTION_TEST
+//////////////////////////////////////////////////////////////////////////////////
 
 

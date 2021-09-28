@@ -44,6 +44,10 @@ enum PLAYER_STATE{
 class player:base_player
 {
 	
+#ifdef CLIENT
+	int custom_sequence;
+#endif
+	
 	// On death, the player cannot change the camera to fake-specator until at least 1 second
 	// has passed.
 	// On death, set this to 2.5.  If it is less than 1.5,

@@ -206,6 +206,13 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::USEITEMS_CHANGE_CALLBACK:{
 		pl.clientUseItemsCallback();
 	}break;
+	
+#if OTHER_PREDICTION_TEST == 1
+	case EVENT_TS::CUSTOM_PREDICTION_CALLBACK:{
+		Custom_Prediction_Server_Callback(pl);
+	}break;
+#endif
+	
 	case EVENT_TS::TEST:{
 		//printfline("EVENT_TS::TEST HAPPENED");
 		//clearscene();

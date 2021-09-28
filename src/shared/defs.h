@@ -100,3 +100,23 @@ void Weapons_Draw(void);
 void Weapons_Holster(void);
 
 
+
+#if OTHER_PREDICTION_TEST == 1
+#ifdef CLIENT
+// test
+void Custom_Prediction_Server_Callback(player pl);
+void Custom_Predict_EntityUpdate(player pl);
+void Custom_Predict_PlayerPreFrame(player pl);
+void Custom_Predict_PlayerPostFrame(player pl);
+var float custom_input_sequence = 0;
+var float custom_clientcommandframe = 0;
+var float custom_servercommandframe = 0;
+#else
+var float custom_servercommandframe = 0;
+void Custom_EvaluateEntity(player pl);
+#endif
+
+#elif OTHER_PREDICTION_TEST == 2
+//var BOOL isFreshInput = FALSE;
+#endif//OTHER_PREDICTION_TEST
+

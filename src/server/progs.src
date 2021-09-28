@@ -2,10 +2,15 @@
 // SHARED CONFIG SETTING - set this consistently between client/server progs!
 // If 0, nothing special.
 // If 1, Makes some changes to enable prediction for useitems.
-// Spams the turn-on click noise though.
-// Doubt this is worth further support as I don't know how to support this for
-// more than one extra feature, the INPUT_BUTTON# list is exhausted after this.
-#define USE_ITEMS_PREDICTION_TEST 0
+// See all mentions of this throughout the codebase for the places it changes.
+// Mainly it adds a chunk that immitates FTE prediction at the end of
+// ts/src/shared/input.qc, as a demonstration more than anything.  This is likely
+// overkill.  This also stops sending the weapon's "iBitsUpgrade_on" in normal
+// player.qc script and does so along custom inputframe updates in input.qc.
+// If 2, use "input_impulse" instead.  Well gee, look at that.
+// Also comes with a separate check for playing the click noise as the 
+// 'input_sequence==clientcommandframe' check does not work like the custom version.
+#define OTHER_PREDICTION_TEST 2
 
 
 ///////////////////////////////////////////////////////////////////////////////

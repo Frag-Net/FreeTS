@@ -623,8 +623,7 @@ TS_playerUseItems(void){
 		return;
 	}
 	
-	
-#if USE_ITEMS_PREDICTION_TEST == 0
+#if OTHER_PREDICTION_TEST == 0
 	
 #ifdef CLIENT
 		sendevent("TS_playerUseItems", "");
@@ -639,8 +638,6 @@ TS_playerUseItems(void){
 	// always do this then
 	_TS_playerUseItems();
 #endif
-
-
 	
 }
 
@@ -723,7 +720,21 @@ _TS_playerUseItems(void){
 				
 				// Let's be a clientside sound only.
 #ifdef CLIENT
+
+
+#if OTHER_PREDICTION_TEST == 1
+// enforce a check that this is the first inputframe, not repeats, to avoid sound spam
+if(custom_input_sequence==custom_clientcommandframe){
+#elif OTHER_PREDICTION_TEST == 2
+//if(input_sequence==clientcommandframe){
+//if(isFreshInput){
+if(0){  // never do it here, elsewhere instead
+#else
+// nothing special
+if(1){
+#endif
 				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
+}
 #endif
 				
 				
