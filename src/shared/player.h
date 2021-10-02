@@ -247,11 +247,9 @@ class player:base_player
 	
 	//vector vViewAngleOffsetTotalChange;
 	PREDICTED_VECTOR(vViewAngleOffsetTotalChange);
+#ifdef SERVER
 	vector vViewAngleOffsetTotalChangeAlt;
-	
-	vector receivedViewAngles;
-	vector oldViewAngles;
-	
+#endif
 	
 	
 	

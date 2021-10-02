@@ -50,7 +50,26 @@ enumflags
 };
 
 
-// player class wuz here
+
+
+#ifdef SERVER
+void CSEv_ViewAnglesR_fff(float arg_x, float arg_y, float arg_z){
+	player pl = (player)self;
+	pl.v_angle.x = arg_x;
+	pl.v_angle.y = arg_y;
+	pl.v_angle.z = arg_z;
+	pl.vViewAngleOffsetTotalChangeAlt = [0,0,0];
+}
+void CSEv_ViewOffsetR_fff(float arg_x, float arg_y, float arg_z){
+	player pl = (player)self;
+	pl.vViewAngleOffsetTotalChangeAlt.x = arg_x;
+	pl.vViewAngleOffsetTotalChangeAlt.y = arg_y;
+	pl.vViewAngleOffsetTotalChangeAlt.z = arg_z;
+	//pl.vViewAngleOffsetTotalChangeAlt = [0,0,0];
+}
+#endif
+
+
 
 
 
@@ -229,14 +248,6 @@ player::ReceiveEntity(float new, float fl)
 	//flKarateBlockCooldown
 	iMeleeCycler = readbyte();
 	
-	/*
-	vViewAngleOffsetTargetDir[0] = readcoord();
-	vViewAngleOffsetTargetDir[1] = readcoord();
-	vViewAngleOffsetTargetDir[2] = readcoord();
-	*/
-	
-	
-	
 	
 	vViewAngleOffsetTotalChange[0] = readcoord();
 	vViewAngleOffsetTotalChange[1] = readcoord();
@@ -247,7 +258,6 @@ player::ReceiveEntity(float new, float fl)
 	// with prediction!
 	setproperty(VF_CL_VIEWANGLES, GET_MY_VIEW_ANGLES + vViewAngleOffsetTotalChange);
 	vViewAngleOffsetTotalChange = [0,0,0];
-	
 	
 	
 	fAccuracyKickback = readfloat();
@@ -266,12 +276,10 @@ player::ReceiveEntity(float new, float fl)
 	fKarateStamina = readfloat();
 	
 	
-	
 	shotgunReloadIndex = readbyte();
 	shotgunAddAmmoTime = readfloat();
 	shotgunAddAmmoSoundTime = readfloat();
 		
-	
 	
 	ary_myWeapons_softMax = readbyte();
 	
@@ -320,11 +328,6 @@ player::ReceiveEntity(float new, float fl)
 		*/
 	}
 	/////////////////////////////////////////////////////
-	
-	
-	// safe?
-	receivedViewAngles = this.v_angle;
-	
 	
 	
 
@@ -379,8 +382,6 @@ void
 player::PredictPreFrame(void)
 {
 	//printfline("---PREDICT PRE FRAME");
-	
-	//sendevent("ViewOffsetR", "fff", vViewAngleOffsetTotalChange[0], vViewAngleOffsetTotalChange[1], vViewAngleOffsetTotalChange[2]);
 	
 		
 	/* the generic client attributes */
@@ -729,22 +730,6 @@ player::EvaluateEntity(void)
 
 }
 
-
-
-void CSEv_ViewAnglesR_fff(float arg_x, float arg_y, float arg_z){
-	player pl = (player)self;
-	pl.v_angle.x = arg_x;
-	pl.v_angle.y = arg_y;
-	pl.v_angle.z = arg_z;
-	pl.vViewAngleOffsetTotalChangeAlt = [0,0,0];
-}
-void CSEv_ViewOffsetR_fff(float arg_x, float arg_y, float arg_z){
-	player pl = (player)self;
-	pl.vViewAngleOffsetTotalChangeAlt.x = arg_x;
-	pl.vViewAngleOffsetTotalChangeAlt.y = arg_y;
-	pl.vViewAngleOffsetTotalChangeAlt.z = arg_z;
-	//pl.vViewAngleOffsetTotalChangeAlt = [0,0,0];
-}
 	
 
 /*
@@ -1218,19 +1203,19 @@ player::updateTimers(void){
 		}
 	}
 	
-	
 	vector finalChange = flViewChange * vViewChangeDir;
 	
 	
 	this.vViewAngleOffsetTotalChange += finalChange;
-	this.vViewAngleOffsetTotalChangeAlt += finalChange;
 	
 	// test?  main one
-	#ifndef CLIENT
+#ifndef CLIENT
 	GET_MY_VIEW_ANGLES = GET_MY_VIEW_ANGLES + finalChange;
-	#else
-		
-	#endif
+#else
+	// (this might be pointless?)
+	this.vViewAngleOffsetTotalChangeAlt += finalChange;
+#endif
+	
 	
 	
 }//updateTimers
@@ -1241,23 +1226,6 @@ player::updateTimers(void){
 // add kickback that pushes the camera by some angle.
 // Cumulative with existing kickback not yet finished being applied.
 void player::addViewAngleOffset(float arg_ang, float arg_len){
-	
-	
-	/*
-	#ifdef CLIENT
-	
-	printfline("--- %d - %d", input_sequence, tempQueue2[input_sequence % 512]);
-	
-	if(!tempQueue2[input_sequence % 512]){
-		return;
-	}else{
-		tempQueue2[input_sequence % 512] = FALSE;
-	}
-	
-	printfline("!!! addViewAngleOffset !!! %d", input_sequence);
-	#endif
-	*/
-	
 	
 	
 	if(flViewAngleOffsetTarget == 0){
