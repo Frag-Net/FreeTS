@@ -805,6 +805,7 @@ MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee(player pl, weapondata_basic
 MELEE_HIT_RESPONSE weapon_base_onPrimaryAttack_melee_fromCustomDirection(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, float damageToDeal, float range, vector customAngle );
 
 void weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int attackTypeUsed);
+void weapon_base_onAttack_individual(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount);
 void weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed);
 
 

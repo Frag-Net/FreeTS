@@ -571,8 +571,6 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 		posView = pSeat->m_vecPredictedOrigin + pl.view_ofs;
 		angView = view_angles;
 		
-		angView = view_angles;
-		
 		// CHECK: is "getproperty(VF_CL_VIEWANGLES)" always the same as "view_angles"?
 		
 		if(!pl.weaponEquippedAkimbo){
@@ -742,85 +740,4 @@ TS_View_ShowMuzzleflash(int index, int akimboChoice)
 		pSeatLocal->m_eMuzzleflashAkimbo.skin = pSeat->m_iVMBones + 2;
 	}
 }
-
-
-
-//TAGGG - loaned from The Wastes.
-void TS_View_HandleZoom(void)
-{
-	player pl = (player)pSeat->m_ePlayer;
-	
-	if(pl == NULL){
-		return;
-	}
-	
-	// test
-	/*
-	pl.flZoomCurrent = pl.flZoomTarget;
-	pl.viewzoom = pl.flZoomTarget;
-	printfline("flZoomTarget: %.2f", pl.flZoomTarget);
-	return;
-	*/
-	
-	//printfline("WHATS GOING ON %.2f %.2f %.2f %.2f %.2f", pl.flZoomEnd, pl.flZoomTarget, pl.flZoomStart, pl.flZoomLerp, pl.flZoomCurrent);
-	
-	// - No other codebase refers to STAT_VIEWZOOM, best to replace anything
-	// involving that.
-	
-	// in case of some unexpected change.
-	// TODO: this might have an issue if the player were to change weapons and end up
-	// on the same zoom level as a previous weapon, despite the two weapons having
-	// different target values (like 0.4 vs. 0.6) at their own zoom level #1's.
-	// A check for being a different equipped weapon type
-	// (pl.activeweapon vs. pl.activeweapon_zoomprev, set only by setZoomLevel)
-	// ought to work.  But that would be a very strange case anyway
-	if(pl.iZoomLevel != pl.iZoomLevelPrev){
-		pl.setZoomLevel(pl.iZoomLevel);
-	}
-		
-	if (pl.flZoomEnd != pl.flZoomTarget ) {
-		//printfline("NEW ZOOM DETECTED: %.2f -> %.2f (zoomlev: %i)", pl.flZoomEnd, pl.flZoomTarget, pl.iZoomLevel);
-		
-		// is setting flZoomStart to flZoomEnd or flZoomCurrent a better idea?
-		// at flZoomEnd means, on changing before the current lerp has finished, it jumps to beginning
-		// at the end point of the lerp in progress.  But starting at flZoomCurrent might be smoother?
-		// if it isn't glitchy that could be nice.  Trying that out.
-		
-		pl.flZoomStart = pl.flZoomCurrent;
-		//pl.flZoomStart = pl.flZoomEnd;
-		
-		pl.flZoomEnd = pl.flZoomTarget;
-		pl.flZoomLerp = 0.0f;
-	}
-
-	if (pl.flZoomLerp < 1.0f) {
-		// Slow this down for debugging purposes, this is meant to be fast.
-		// 0.8 can be safe.
-		// The Wastes default was 4.
-		
-		// !!! clframetime, frametime, or input_timelength ?
-		pl.flZoomLerp += clframetime * 5.7;
-		
-		if(pl.flZoomLerp >= 1.0){
-			//enforce the cap.
-			pl.flZoomLerp = 1.0;
-		}
-		
-		//pl.flZoomCurrent = getstatf(STAT_VIEWZOOM);
-		pl.flZoomCurrent = Math_Lerp(pl.flZoomStart, pl.flZoomEnd, pl.flZoomLerp);
-	}
-	
-	// Set this, since Nuclide will read it in and apply instantly.
-	// So same effect without having to edit Nuclide, this pipes it over for it
-	// to do the setproperty thing below to apply
-	//pl.viewzoom = pl.flZoomCurrent;
-
-	////setproperty(VF_AFOV, DEFAULT_FOV * pl.flZoomCurrent);
-	////setsensitivityscaler(pl.flZoomCurrent);
-	
-	// here's the way old FreeCS did it
-	//setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
-	//setsensitivityscaler(pl.viewzoom);
-}
-
 

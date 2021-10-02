@@ -37,14 +37,12 @@ ClientGame_ConsoleCommand(void)
 	case "getangle":
 		sendevent("TS_Debug_getAngle", "");
 		break;
-	case "firemode":
-		TS_playerChangeFiremode();
-		//pSeatLocal->m_bFireModeFreshPress = TRUE;
+	case "+firemode":
+		Input_firemode_press();
 		break;
-		
-	//case "useitems"
-	//	TS_playerUseItems();
-	//	break;
+	case "-firemode":
+		Input_firemode_release();
+		break;
 	case "+useitems":
 		Input_useItems_press();
 		break;
@@ -124,7 +122,6 @@ ClientGame_ConsoleCommand(void)
 		TS_playerDropWeapon();  //I do it fine.
 		break;
 	
-		
 	default:
 		return (0);
 	}

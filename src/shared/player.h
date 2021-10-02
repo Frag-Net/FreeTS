@@ -224,8 +224,37 @@ class player:base_player
 	
 	PREDICTED_INT(iMeleeCycler);
 
+	
 	// SHARED
+	// PREDICTED_whatever(...);
+	//vector vViewAngleOffsetTarget;
+	
+	/*
+	vector vViewAngleOffsetEnd;
+	vector vViewAngleOffsetStart;
+	float flViewAngleOffsetLerp;
+	vector vViewAngleOffsetCurrent;
 	vector vViewAngleOffsetTarget;
+	vector vViewAngleMemory;
+	*/
+	//vector vViewAngleOffsetEnd;
+	//vector vViewAngleOffsetStart;
+	//float flViewAngleOffsetLerp;
+	//vector vViewAngleOffsetCurrent;
+	PREDICTED_FLOAT(flViewAngleOffsetTarget);
+	PREDICTED_VECTOR(vViewAngleOffsetTargetDir);
+	//vector vViewAngleMemory;
+	
+	//vector vViewAngleOffsetTotalChange;
+	PREDICTED_VECTOR(vViewAngleOffsetTotalChange);
+	vector vViewAngleOffsetTotalChangeAlt;
+	
+	vector receivedViewAngles;
+	vector oldViewAngles;
+	
+	
+	
+	
 	
 	PREDICTED_FLOAT(fAccuracyKickback);
 	PREDICTED_FLOAT(fAccuracyKickbackStartCooldown);
@@ -350,9 +379,6 @@ class player:base_player
 	int iShotgunExtraDataID;
 	
 	
-	// was BOOL  (a test, not even networked though)
-	PREDICTED_FLOAT(doFiremodeChange);
-	
 	
 //////////////////////////////////////////////////////////////////////////////
 
@@ -473,10 +499,6 @@ class player:base_player
 	// nothing uses this?  Whoops
 	//float lastweapon;
 #endif
-
-#ifdef FIREMODE_PREDICTION_TEST
-	float ignoreFiremodeReceiveTime;
-#endif
 	
 	void(void) player;
 	
@@ -489,8 +511,8 @@ class player:base_player
 		
 	virtual void(BOOL resetInventory) reset;
 
-	virtual vector(vector vecInputAngles)View_approachAngleOffsetTarget;
 	virtual void (void)updateTimers;
+	virtual void (float arg_ang, float arg_len)addViewAngleOffset;
 
 	virtual void(int arg_iZoomLevel) setZoomLevel;
 	virtual void(void) resetZoom;
@@ -509,11 +531,6 @@ class player:base_player
 	virtual BOOL(int arg_invID) inventoryWeaponDeleteCheck;
 	
 	virtual void(void) callWeaponThink;
-	
-	/*
-	virtual BOOL(void) shotgunAddAmmoTime_canSet;
-	virtual void(void) shotgunAddAmmoTime_setCooldownSetTime;
-	*/
 	
 	//TAGGG - CRITICAL.
 	// overriding Nuclide player physics method!
@@ -550,6 +567,7 @@ class player:base_player
 	
 	virtual void(void) clientInputUpdate;
 	virtual void(void) clientUseItemsCallback;
+	virtual void(void) handleZoom;
 #endif
 	
 	

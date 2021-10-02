@@ -157,30 +157,10 @@ Game_Input(void)
 */
 
 
-#ifdef FIREMODE_PREDICTION_TEST
-	if(pl.doFiremodeChange){
-		
-		// so they say?
-#ifdef CLIENT
-		//sendevent("TS_playerChangeFiremode", "");
-#endif
-		int iOldFiremode = pl.ary_myWeapons[pl.inventoryEquippedIndex].iFireMode;
-		_TS_playerChangeFiremode();
-		pl.doFiremodeChange = FALSE;
-		int iNewFiremode = pl.ary_myWeapons[pl.inventoryEquippedIndex].iFireMode;
-		printfline("!!! pl.doFiremodeChange seen!  Firemode, old:%i new:%i", iOldFiremode, iNewFiremode);
-	}
-#endif
-
 	// TS way, weapon thinks happen alongside checking inputs
 	pl.callWeaponThink();
 
 
-	/*
-	if(pl.w_attack_next > 0){
-		printfline("w_attack_next > 0  at:%.2f - t:%.2f", pl.w_attack_next, time);
-	}
-	*/
 	
 	// HACK: If, this frame, w_attack_next was 0, for most weapons to allow firing,
 	// make that a signal to reset inputPrimaryTapFrameCount.
@@ -330,36 +310,31 @@ Game_Input(void)
 	
 	//pl.callWeaponThink();
 	
-	/*
-	// primary fire.
-	if (input_buttons & INPUT_BUTTON0){
-		// mark as held down for future frames.
-		pl.gflags |= GF_SEMI_TOGGLED;
-		pl.gflags_net |= GF_SEMI_TOGGLED;
-	}else{
-		// mark as not held down (for the next time held down to be a fresh press)
-		pl.gflags &= ~GF_SEMI_TOGGLED;
-		pl.gflags_net &= ~GF_SEMI_TOGGLED;
-	}
-		
-	// And for secondary fire.
-	if (input_buttons & INPUT_BUTTON3){
-		pl.gflags |= GF_SEMI_SECONDARY_TOGGLED;
-		pl.gflags_net |= GF_SEMI_SECONDARY_TOGGLED;
-	}else{
-		pl.gflags &= ~GF_SEMI_SECONDARY_TOGGLED;
-		pl.gflags_net &= ~GF_SEMI_SECONDARY_TOGGLED;
-	}
-	*/
 	
 #if OTHER_PREDICTION_TEST == 2
+	
+	/*
 	if(input_impulse == 115){
 		TS_playerUseItems();
 	}
-	// great.  So that won't even work.
-	//isFreshInput = FALSE;
+	*/
+	if(input_impulse == 115){
+		if( !(pl.gflags & GF_UNUSED4)){
+			TS_playerUseItems();
+		}
+		pl.gflags |= GF_UNUSED4;
+	}else{
+		pl.gflags &= ~GF_UNUSED4;
+	}
 #endif
-	
+	if(input_impulse == 116){
+		if( !(pl.gflags & GF_UNUSED5)){
+			TS_playerChangeFiremode();
+		}
+		pl.gflags |= GF_UNUSED5;
+	}else{
+		pl.gflags &= ~GF_UNUSED5;
+	}
 	
 }//Game_Input
 
@@ -479,12 +454,14 @@ void Input_useItems_press(void){
 #elif OTHER_PREDICTION_TEST == 1
 	pSeatLocal->m_bUseItems = TRUE;
 #elif OTHER_PREDICTION_TEST == 2
-	pSeatLocal->m_bUseItems = TRUE;
-	//TAGGG - play the click only this once
+
 	if( !(pl.gflags & GF_UNUSED3)){
-		localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
+		canPlaySwitchSound = TRUE;
+	}else{
+		pl.gflags |= GF_UNUSED3;
 	}
-	pl.gflags |= GF_UNUSED3;
+
+	pSeatLocal->m_bUseItems = TRUE;
 #endif
 }//Input_useItems_press
 
@@ -498,6 +475,7 @@ void Input_useItems_release(void){
 	pSeatLocal->m_bUseItems = FALSE;
 #elif OTHER_PREDICTION_TEST == 2
 	pSeatLocal->m_bUseItems = FALSE;
+	
 	pl.gflags &= ~GF_UNUSED3;
 #endif
 }//Input_useItems_release
@@ -507,7 +485,13 @@ void Input_useItems_release(void){
 
 
 
+void Input_firemode_press(void){
+	pSeatLocal->m_bChangeFiremode = TRUE;
+}
 
+void Input_firemode_release(void){
+	pSeatLocal->m_bChangeFiremode = FALSE;
+}
 
 
 
@@ -538,6 +522,16 @@ void ClientGame_Input_Frame(void){
 	player pl = (player)pSeat->m_ePlayer;
 	
 	if(pl == NULL)return;  // ???
+	
+	
+	
+	/*
+	// does... funky things, not cumulative, only an offset forced this frame.
+	// Don't do that.
+	input_angles[0] += 36;
+	input_angles[1] += 36;
+	input_angles[2] += 36;
+	*/
 	
 	
 	if(pl.iState != PLAYER_STATE::SPAWNED && pSeatLocal->m_flUI_Display != UI_SCREEN::NONE){
@@ -577,24 +571,31 @@ void ClientGame_Input_Frame(void){
 	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
 	
 	
-	// NOTE - GF_UNUSED3 is being used for playing the toggle-switch sound in
-	// 
 #if OTHER_PREDICTION_TEST == 2
-	// using GF_UNUSED4 instead of GF_UNUSED3 because that one is
-	// being used to play the click-noise on toggling instead.
-	// Yes, really.
+
+	if(pSeatLocal->m_bUseItems){
+		input_impulse = 115;
+	}
+
+/*
 	if(pSeatLocal->m_bUseItems){
 		if( !(pl.gflags & GF_UNUSED4)){
 			input_impulse = 115;
-			//isFreshInput = TRUE;
 		}
 		pl.gflags |= GF_UNUSED4;
 	}else{
 		pl.gflags &= ~GF_UNUSED4;
 	}
+	*/
 #endif
-	
-	
+
+
+	if(pSeatLocal->m_bChangeFiremode){
+		input_impulse = 116;
+	}
+
+
+
 }// ClientGame_InputFrame
 
 

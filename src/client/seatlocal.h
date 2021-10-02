@@ -45,12 +45,8 @@ struct
 	
 	float m_flBlockSpawnInputTime;
 	
-	BOOL m_bUseItemsFreshPress;
-	// How many times has the use button been pressed before getting a server callback?
-	// Also need to handle determining what in a server callback lets this be reduced
-	int m_iUseItemsLatencyPresses;
-	
 	BOOL m_bUseItems;
+	BOOL m_bChangeFiremode;
 	
 	
 } g_seatslocal[4], *pSeatLocal;

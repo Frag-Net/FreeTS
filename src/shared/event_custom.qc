@@ -475,21 +475,6 @@ CSEv_TS_playerDropWeapon_(){
 
 
 
-
-#ifdef SERVER
-// Server receives the message
-void
-CSEv_TS_playerChangeFiremode_(void){
-	player pl = (player)self;
-	
-#ifdef FIREMODE_PREDICTION_TEST
-	pl.doFiremodeChange = TRUE;
-#else
-	_TS_playerChangeFiremode();
-#endif//FIREMODE_PREDICTION_TEST
-}
-#endif
-
 // For now, only the client will expect direct calls to these.
 // Client sends the input, server receives a message in response to perform things on
 // its end too.
@@ -500,20 +485,9 @@ TS_playerChangeFiremode(void){
 		return;
 	}
 	
-#ifdef CLIENT
-		sendevent("TS_playerChangeFiremode", "");
-
-#ifdef FIREMODE_PREDICTION_TEST
-		pl.ignoreFiremodeReceiveTime = time + 0.4f;
-		pl.doFiremodeChange = TRUE;
-#else
-		// do it for the client too?
-		_TS_playerChangeFiremode();
-#endif//FIREMODE_PREDICTION_TEST
-		
-#else
-		// SHOULD NOT HAPPEN, should call the CSEv_ version instead
-#endif
+	// always now
+	_TS_playerChangeFiremode();
+	
 }
 
 
@@ -522,11 +496,6 @@ _TS_playerChangeFiremode(void ) {
 	player pl = (player)self;
 	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	
-#if defined(CLIENT_CMD_SAFEMODE) && defined(CLIENT)
-	// nope!
-	return;
-#endif
 	
 	if(dynaRef.weaponTypeID == WEAPONDATA_TYPEID_GUN || dynaRef.weaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
 		weapondata_gun_t* basicPointer = (weapondata_gun_t*) pl.getEquippedWeaponData();
@@ -540,13 +509,10 @@ _TS_playerChangeFiremode(void ) {
 		}
 		
 		int* fireModeVar;
-		int* fireModeVar_net;
 		if(!pl.weaponEquippedAkimbo){
 			fireModeVar = &dynaRef.iFireMode;
-			fireModeVar_net = &dynaRef.iFireMode_net;
 		}else{
 			fireModeVar = &dynaRef.iFireModeAkimbo;
-			fireModeVar_net = &dynaRef.iFireModeAkimbo_net;
 		}
 		
 		if( (*fireModeVar) == basicRef.iBitsFireModes){
@@ -580,11 +546,6 @@ _TS_playerChangeFiremode(void ) {
 				//this power of 2 is a valid fireMode?  pick it
 				(*fireModeVar) = currentChoice;
 				
-#ifdef CLIENT
-				// effectively SAVE_STATE on whatever choice
-				(*fireModeVar_net) = currentChoice;
-#endif
-				
 				return;
 			}
 			
@@ -598,21 +559,6 @@ _TS_playerChangeFiremode(void ) {
 
 
 
-#ifdef SERVER
-// Server receives the message
-void
-CSEv_TS_playerUseItems_(void){
-	player pl = (player)self;
-	_TS_playerUseItems();
-	
-	// Send a message back too!
-	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
-	WriteByte( MSG_MULTICAST, EVENT_TS::USEITEMS_CHANGE_CALLBACK );
-	msg_entity = pl;
-	multicast( [0,0,0], MULTICAST_ONE );
-	
-}
-#endif
 
 // For now, only the client will expect direct calls to these.
 // Client sends the input, server receives a message in response to perform things on its end too.
@@ -648,77 +594,62 @@ void
 _TS_playerUseItems(void){
 	player pl = (player)self;
 	
+
+	weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	
-	if(pl.inventoryEquippedIndex != -1){
-	
-		weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+	if(dynaRef.weaponTypeID == WEAPONDATA_TYPEID_GUN || dynaRef.weaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
+		weapondata_basic_t* basicP = pl.getEquippedWeaponData();
 		
-		if(dynaRef.weaponTypeID == WEAPONDATA_TYPEID_GUN || dynaRef.weaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
-			weapondata_basic_t* basicP = pl.getEquippedWeaponData();
+		int legalBuyOpts = (dynaRef.iBitsUpgrade & (*basicP).iBitsUpgrade) & (BITMASK_WEAPONOPT_TOGGLEABLE);
+		// We must have the flashlight bit on, AND support it on our weapon, AND it be a possibility according to weapon data.
+		int legalBuyOpts_on = (dynaRef.iBitsUpgrade_on & legalBuyOpts);
+		
+		
+		int bitCount = count1Bits(legalBuyOpts, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
+		int bitCount_on = count1Bits(legalBuyOpts_on, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
+		
+		int firstBit;
+		int firstBit_on;
+		
+		if(bitCount == 0){
+			//no togglable buyopts at all?  I guess that's it.
+		}else{
 			
-			int legalBuyOpts = (dynaRef.iBitsUpgrade & (*basicP).iBitsUpgrade) & (BITMASK_WEAPONOPT_TOGGLEABLE);
-			// We must have the flashlight bit on, AND support it on our weapon, AND it be a possibility according to weapon data.
-			int legalBuyOpts_on = (dynaRef.iBitsUpgrade_on & legalBuyOpts);
 			
-			
-			int bitCount = count1Bits(legalBuyOpts, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
-			int bitCount_on = count1Bits(legalBuyOpts_on, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
-			
-			int firstBit;
-			int firstBit_on;
-			
-			if(bitCount == 0){
-				//no togglable buyopts at all?  I guess that's it.
-			}else{
-				
-	
-	
-#if defined(CLIENT_CMD_SAFEMODE)
-				// Have a much simpler version instead
-#ifdef CLIENT
-				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
-#endif
-				return;
-#endif
-				
-				
-				if(bitCount == 1){
-					//one bit available?  just toggle on/off then.
-					if(bitCount_on){
-						dynaRef.iBitsUpgrade_on = 0;
-					}else{
-						dynaRef.iBitsUpgrade_on = legalBuyOpts;
-					}
-					
+			if(bitCount == 1){
+				//one bit available?  just toggle on/off then.
+				if(bitCount_on){
+					dynaRef.iBitsUpgrade_on = 0;
 				}else{
-					//variable number of bits?  See how many bits are on right now.
-					if(bitCount_on == 0){
-						// No bits on?
-						// Turn the first one on.
-						firstBit = findFirst1Bit(legalBuyOpts, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
-						dynaRef.iBitsUpgrade_on |= firstBit;
-					}else if(bitCount_on == 1){
-						// If we're not the last bit, turn the next one on.
-						// Start by looking at the next bit (bit << 1)
-						firstBit_on = findFirst1Bit(legalBuyOpts, legalBuyOpts_on << 1, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
-						
-						if(firstBit_on != 0){
-							//we'll take it!
-							dynaRef.iBitsUpgrade_on = firstBit_on;
-						}else{
-							//ran out of available bits?  Take them all.
-							dynaRef.iBitsUpgrade_on = legalBuyOpts;
-						}
-					}else{
-						//more than 1?  Turn them all off then.
-						dynaRef.iBitsUpgrade_on = 0;
-					}
+					dynaRef.iBitsUpgrade_on = legalBuyOpts;
 				}
 				
-				
-				
-				// Let's be a clientside sound only.
+			}else{
+				//variable number of bits?  See how many bits are on right now.
+				if(bitCount_on == 0){
+					// No bits on?
+					// Turn the first one on.
+					firstBit = findFirst1Bit(legalBuyOpts, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
+					dynaRef.iBitsUpgrade_on |= firstBit;
+				}else if(bitCount_on == 1){
+					// If we're not the last bit, turn the next one on.
+					// Start by looking at the next bit (bit << 1)
+					firstBit_on = findFirst1Bit(legalBuyOpts, legalBuyOpts_on << 1, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
+					
+					if(firstBit_on != 0){
+						//we'll take it!
+						dynaRef.iBitsUpgrade_on = firstBit_on;
+					}else{
+						//ran out of available bits?  Take them all.
+						dynaRef.iBitsUpgrade_on = legalBuyOpts;
+					}
+				}else{
+					//more than 1?  Turn them all off then.
+					dynaRef.iBitsUpgrade_on = 0;
+				}
+			}
+			
+			// Let's be a clientside sound only.
 #ifdef CLIENT
 
 
@@ -726,79 +657,42 @@ _TS_playerUseItems(void){
 // enforce a check that this is the first inputframe, not repeats, to avoid sound spam
 if(custom_input_sequence==custom_clientcommandframe){
 #elif OTHER_PREDICTION_TEST == 2
-//if(input_sequence==clientcommandframe){
-//if(isFreshInput){
-if(0){  // never do it here, elsewhere instead
+
+if(canPlaySwitchSound){
+// only happens once, not during prediction rewinds.
+// that would get spammy
+canPlaySwitchSound = FALSE;
 #else
 // nothing special
 if(1){
 #endif
-				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
+			localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
 }
 #endif
-				
-				
-				// (METHOD MADE SINCE: TS_Weapons_PlaySoundChannelDirect)
-				
-				// Any bits?  Play this sound, some change happened
-				//sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_PLAYER_SHARED, 0);
-				
-				/*
-				// unicast demo .  Why does the sound play clientside the first few times anyway?
-				// It shouldn't ever, with the clientside-call here disabled.
+			
+			
+			// (METHOD MADE SINCE: TS_Weapons_PlaySoundChannelDirect)
+			
+			// Any bits?  Play this sound, some change happened
+			//sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_PLAYER_SHARED, 0);
+			
+			/*
+			// unicast demo .  Why does the sound play clientside the first few times anyway?
+			// It shouldn't ever, with the clientside-call here disabled.
 #ifdef CLIENT
-				//sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_NONE, 0);
+			//sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_NONE, 0);
 #else
-				sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_UNICAST, 0);
+			sound(pl, CHAN_ITEM, "weapons/switch.wav", 1, ATTN_NONE, 100.0f, SOUNDFLAG_UNICAST, 0);
 #endif
-				*/
-			}// bitcount checks
-			
-			
-		}// _GUN or _IRONSIGHT type checks
-	}// weaponEquippedID check
-	
-	
-}
-
-
-
-// TEST, might get abandoned
-#ifdef CLIENT
-void
-_TS_FRESH_playerUseItems(void){
-	player pl = (player)self;
-	
-	printfline("CSEv_TS_playerUseItems_");
-	
-	sendevent("TS_playerUseItems", "");
-	
-	
-	if(pl.inventoryEquippedIndex != -1){
-	
-		weapondynamic_t dynaRef = pl.ary_myWeapons[pl.inventoryEquippedIndex];
+			*/
+		}// bitcount checks
 		
-		if(dynaRef.weaponTypeID == WEAPONDATA_TYPEID_GUN || dynaRef.weaponTypeID == WEAPONDATA_TYPEID_IRONSIGHT){
-			weapondata_basic_t* basicP = pl.getEquippedWeaponData();
-			
-			
-			int legalBuyOpts = (dynaRef.iBitsUpgrade & (*basicP).iBitsUpgrade) & (BITMASK_WEAPONOPT_TOGGLEABLE);
-			int bitCount = count1Bits(legalBuyOpts, BITMASK_WEAPONOPT_TOGGLEABLE_MIN, BITMASK_WEAPONOPT_TOGGLEABLE_MAX);
-			
-			if(bitCount == 0){
-				
-			}else{
-				// Let's be a clientside sound only.
-//#ifdef CLIENT
-				localsound("weapons/switch.wav", CHAN_AUTO, 1.0f);
-//#endif
-			}
-				
-		}// _GUN or _IRONSIGHT type checks
-	}// weaponEquippedID check
+		
+	}// _GUN or _IRONSIGHT type checks
+	
 	
 }
-#endif
+
 
 
 

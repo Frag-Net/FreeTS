@@ -90,10 +90,6 @@ enum {
 var float autocvar_movemodmulti = 1;
 
 
-//float Game_GetFriction(entity eTarget);
-//float Game_GetMaxSpeed( entity eTarget );
-
-
 // Prototype for weapons_common.qc method(s)!
 // For things here to be aware of these earlier
 void Weapons_Draw(void);
@@ -101,22 +97,26 @@ void Weapons_Holster(void);
 
 
 
-#if OTHER_PREDICTION_TEST == 1
 #ifdef CLIENT
-// test
-void Custom_Prediction_Server_Callback(player pl);
-void Custom_Predict_EntityUpdate(player pl);
-void Custom_Predict_PlayerPreFrame(player pl);
-void Custom_Predict_PlayerPostFrame(player pl);
-var float custom_input_sequence = 0;
-var float custom_clientcommandframe = 0;
-var float custom_servercommandframe = 0;
-#else
-var float custom_servercommandframe = 0;
-void Custom_EvaluateEntity(player pl);
+var BOOL canPlaySwitchSound = FALSE;
+var vector view_angles_unmodified;
 #endif
 
-#elif OTHER_PREDICTION_TEST == 2
-//var BOOL isFreshInput = FALSE;
+
+#if OTHER_PREDICTION_TEST == 1
+#ifdef CLIENT
+	// test
+	void Custom_Prediction_Server_Callback(player pl);
+	void Custom_Predict_EntityUpdate(player pl);
+	void Custom_Predict_PlayerPreFrame(player pl);
+	void Custom_Predict_PlayerPostFrame(player pl);
+	var float custom_input_sequence = 0;
+	var float custom_clientcommandframe = 0;
+	var float custom_servercommandframe = 0;
+#else
+	var float custom_servercommandframe = 0;
+	void Custom_EvaluateEntity(player pl);
+#endif
 #endif//OTHER_PREDICTION_TEST
+
 

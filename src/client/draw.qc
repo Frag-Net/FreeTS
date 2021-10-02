@@ -34,11 +34,8 @@ void
 ClientGame_PreDraw(void) 
 {
 	player pl = (player)pSeat->m_ePlayer;
-	// TODO: may as well make TS_View_HandleZoom a player method at this point,
-	// do the state check inside player then
-	if(pl.iState == PLAYER_STATE::SPAWNED){
-		TS_View_HandleZoom();
-	}
+	
+	pl.handleZoom();
 	
 	
 	pl.viewzoom = pl.flZoomCurrent;
@@ -60,6 +57,12 @@ ClientGame_PreDraw(void)
 	}
 	////////////////////////////////////////////////////////////////////
 	
+	
+	// save the view_angles before adding in the predicted frame-total view kickback
+	// from pl.vViewAngleOffset.
+	view_angles_unmodified = view_angles;
+	view_angles += pl.vViewAngleOffsetTotalChange;
+	
 }//ClientGame_PreDraw
 
 
@@ -77,6 +80,8 @@ Custom_LatePreDraw(void)
 	int thirdperson = (autocvar_cl_thirdperson == TRUE || pl.entnum != player_localentnum);
 	TS_View_DrawExtraEffects(pl, thirdperson);
 	
+	// restore.
+	view_angles = view_angles_unmodified;
 }
 
 
@@ -141,7 +146,7 @@ TS_HUD_drawPainArrows(void)
 		drawpic(center + [-102,-64], g_damage_spr_l,
 			[48,128], [1,1,1], rt_alpha, DRAWFLAG_ADDITIVE);
 	}
-
+	
 }
 
 

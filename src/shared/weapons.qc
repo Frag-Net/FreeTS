@@ -304,31 +304,18 @@ weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t ar
 }// weapon_base_onAttack
 
 
-// Was considering making this client-callable, buuuuut
-// the fire-viewcamera-kickback thing is going a different direciton though, so never mind that.
-// In short, this is effectively serverside-only, clientside script in any weapon is never expected to call this method.
-// If we ever need that changed, that would need to be edited in every single weapon.. ehhhhhh.
-// TODO!  Mass rename this to weapon_gun_onAttack_multi, same for above.
-// Why would this ever be called for a non-gun?  Melee uses a different method completely,
-// and we refer to fRange here, a weapon-only attribute.
-// (effectively becomes 'max number of penetrations allowed', which is still something only for guns)
-// NOTE - checks for being unable to fire yet not included!
+
+// For firing once the left or right has been picked for firing, does not matter which as this has
+// no effect on the weapon stats.  Also applies kickback for firing once.
 void
-weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed)
-{
-	
+weapon_base_onAttack_individual(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount){
+		
 	weapondata_gun_t baseRef = *((weapondata_gun_t*)basePRef);
 	
-	//TAGGG - shared random test
-	float randoAngFactor = randomInRange_f(0, 1);
-	//float randoAngFactor = 0.5;
-	
-	
-	
-	//float finalAng = (40 + randoAngFactor*( (90-40)*2 ) ) *(M_PI/180);
-	
+	float randoAngFactor;
+	float finalAng;
+	float finalAmount;
 	float angleRange = 115;
-	float finalAng = ( 90 - (angleRange/2) + randoAngFactor*( angleRange ) ) *(M_PI/180);
 	float baseAcc = baseRef.firestats.fAccuracy;
 	float kickbackToApply = pl.fAccuracyKickback;
 	
@@ -341,7 +328,6 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	// The lasersight can be turned  off, so check for "_on" instead in that case.
 	int legalBuyOpts_on = (arg_thisWeapon.iBitsUpgrade_on & legalBuyOpts);
 	
-	
 	if(legalBuyOpts_on & BITS_WEAPONOPT_LASERSIGHT){
 		baseAcc *= 0.72;
 		kickbackToApply *= 0.87;
@@ -352,10 +338,6 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 	}
 	
 	float acc = baseAcc + kickbackToApply;
-	
-	
-	//TODO - factor in 'fAccuracyKickback' too.
-	
 	vector toGo;
 	float miner = 0.65 * 1;
 	float maxer = 1.00 * 1;
@@ -387,32 +369,27 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 #endif
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	#ifdef SERVER
+		// Now, adjust the v_angle to account for the knockback I expet
+		// the user to have at this point, might not have completely
+		// accurate view angles from the client t the moment.
+		// BEWARE: using only a vViewAngleOffsetTotalChangeAlt given
+		// by the client is asking to get this modified, unsure of
+		// alternatives yet, see where this is received from the client
+		// in ts/src/shared/player.qc.
+		vector oldAng = pl.v_angle;
+		pl.v_angle += pl.vViewAngleOffsetTotalChangeAlt;
+		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
+		pl.v_angle = oldAng;
+	#endif
 	
-	//TAGGG - TODO!  Re-picking the angle to kickback per hit may make more sense than varrying the intensity
-	// of the exact same direction for both shots, just a thought
-	if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
-		//left
-#ifdef SERVER
-		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
-#endif
-		arg_thisWeapon.iClipLeft -= 1;
-		//TAGGG - shared random test
-		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
-		//toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * 0.7;
-		pl.vViewAngleOffsetTarget += toGo;
-	}
-	if(attackTypeUsed & BITS_AKIMBOCHOICE_RIGHT){
-		
-		//right
-#ifdef SERVER
-		TraceAttack_FireBullets(shellCount, (pl.origin + pl.view_ofs), baseRef.fAttackDamage, [acc, acc], (int)pl.activeweapon);
-#endif
-		arg_thisWeapon.iClipAkimboLeft -= 1;
-		//TAGGG - shared random test
-		toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
-		//toGo = [-sin(finalAng), cos(finalAng), 0] * baseRef.firestats.fViewKickback * 0.7;
-		pl.vViewAngleOffsetTarget += toGo;
-	}
+	//TAGGG - shared random test
+	//randoAngFactor = randomInRange_f(0, 1);
+	//finalAmount = baseRef.firestats.fViewKickback * randomInRange_f(miner, maxer);
+	randoAngFactor = 0.5;
+	finalAmount = baseRef.firestats.fViewKickback * 0.7;
+	finalAng = ( 90 - (angleRange/2) + randoAngFactor*( angleRange ) ) * (M_PI/180);
+	pl.addViewAngleOffset(finalAng, finalAmount);
 	
 	// TODO - be better shared later?
 	// Syncing view kickback would need the random-ness to be handled between server/client,
@@ -426,6 +403,29 @@ weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynami
 		//cap it.
 		pl.fAccuracyKickback = 0.1;
 	}
+}// weapon_base_onAttack_individual
+
+
+
+// Most weapons firing should call this to start, turns LEFT and RIGHT akimbo choices into their
+// own "individual" calls, so twice if both are fired in the same frame.  Same for view/accuracy
+// kickback applied
+void
+weapon_base_onAttack_multi(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount, int attackTypeUsed)
+{
+	
+	//TAGGG - TODO!  Re-picking the angle to kickback per hit may make more sense than varrying the intensity
+	// of the exact same direction for both shots, just a thought
+	if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
+		//left
+		weapon_base_onAttack_individual(pl, basePRef, arg_thisWeapon, shellCount);
+		arg_thisWeapon.iClipLeft -= 1;
+	}
+	if(attackTypeUsed & BITS_AKIMBOCHOICE_RIGHT){
+		weapon_base_onAttack_individual(pl, basePRef, arg_thisWeapon, shellCount);
+		arg_thisWeapon.iClipAkimboLeft -= 1;
+	}
+	
 	
 	
 	// TODO - third person.  This is mad old isn't it
@@ -457,7 +457,7 @@ weapon_gun_burstFire(
 	
 	// and fire this very first frame.
 	weapon_gun_fireBurstBullet(pl, basePRef, arg_thisWeapon);
-}//weapon_gun_burstFire
+}// weapon_gun_burstFire
 
 
 
@@ -613,16 +613,12 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 		if (pl.ary_ammoTotal[baseRef.iAmmoDataID] <= 0 || arg_thisWeapon.iClipLeft >= baseRef.iClipMax) {
 			//pl.shotgunReloadIndex = 3;
 			
-			//if(pl.shotgunAddAmmoTime_canSet()){
-			//	pl.shotgunAddAmmoTime_setCooldownSetTime();
-				
-				shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
+			shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
 
-				TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
-				weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload3_Duration);
-				pl.shotgunReloadIndex = 0;
-				pl.isReloading = FALSE;
-			//}
+			TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
+			weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload3_Duration);
+			pl.shotgunReloadIndex = 0;
+			pl.isReloading = FALSE;
 		}else{
 			shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
 
@@ -630,19 +626,15 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 			weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload2_Duration);
 			pl.shotgunReloadIndex = 2;
 
-			//if(pl.shotgunAddAmmoTime_canSet()){
-			//	pl.shotgunAddAmmoTime_setCooldownSetTime();
-				printfline("I SET shotgunAddAmmoTime!");
-				
-				//pl.shotgunAddAmmoSoundTime = (*shotgunExtraRef).shotgunReload2_Duration - ((*shotgunExtraRef).shotgunReload2_ammoLoadDelay - 0.03f);
-				#ifdef CLIENT
-				View_AddEvent(viewEv_playShotgunInsertShellSound, (*shotgunExtraRef).shotgunReload2_Duration - ((*shotgunExtraRef).shotgunReload2_ammoLoadDelay - 0.03f));
-				#endif
-				
-				pl.shotgunAddAmmoTime = (*shotgunExtraRef).shotgunReload2_Duration - (*shotgunExtraRef).shotgunReload2_ammoLoadDelay;
-			//}
+			printfline("I SET shotgunAddAmmoTime!");
 			
+			//pl.shotgunAddAmmoSoundTime = (*shotgunExtraRef).shotgunReload2_Duration - ((*shotgunExtraRef).shotgunReload2_ammoLoadDelay - 0.03f);
+			#ifdef CLIENT
+			View_AddEvent(viewEv_playShotgunInsertShellSound, (*shotgunExtraRef).shotgunReload2_Duration - ((*shotgunExtraRef).shotgunReload2_ammoLoadDelay - 0.03f));
+			#endif
 			
+			pl.shotgunAddAmmoTime = (*shotgunExtraRef).shotgunReload2_Duration - (*shotgunExtraRef).shotgunReload2_ammoLoadDelay;
+		
 			//arg_thisWeapon.iClipLeft++;
 			//pl.ary_ammoTotal[baseRef.iAmmoDataID]--;
 			
@@ -2368,8 +2360,6 @@ viewEv_weapon_ShowMuzzleFlash(void)
 		}else if(pl.iMuzzleFlashAkimboChoice==BITS_AKIMBOCHOICE_RIGHT){ 
 			testCount2++;
 		}
-		printf("Hello? %i %i\n", testCount1, testCount2);
-		
 	}
 }
 

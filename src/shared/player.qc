@@ -18,7 +18,7 @@
 // little test
 //var float otherTimer = 0;
  
-#define FORCE_NETWORK_ALL_INVENTORY
+//#define FORCE_NETWORK_ALL_INVENTORY
 
 
 /* all potential SendFlags bits we can possibly send */
@@ -228,9 +228,28 @@ player::ReceiveEntity(float new, float fl)
 	
 	//flKarateBlockCooldown
 	iMeleeCycler = readbyte();
-	//vViewAngleOffsetTarget[0] = readcoord();
-	//vViewAngleOffsetTarget[1] = readcoord();
-	//vViewAngleOffsetTarget[2] = readcoord();
+	
+	/*
+	vViewAngleOffsetTargetDir[0] = readcoord();
+	vViewAngleOffsetTargetDir[1] = readcoord();
+	vViewAngleOffsetTargetDir[2] = readcoord();
+	*/
+	
+	
+	
+	
+	vViewAngleOffsetTotalChange[0] = readcoord();
+	vViewAngleOffsetTotalChange[1] = readcoord();
+	vViewAngleOffsetTotalChange[2] = readcoord();
+	
+	
+	//TAGGG - vital to the viewangle-modifying kickback looking right
+	// with prediction!
+	setproperty(VF_CL_VIEWANGLES, GET_MY_VIEW_ANGLES + vViewAngleOffsetTotalChange);
+	vViewAngleOffsetTotalChange = [0,0,0];
+	
+	
+	
 	fAccuracyKickback = readfloat();
 	fAccuracyKickbackStartCooldown = readfloat();
 	
@@ -251,9 +270,7 @@ player::ReceiveEntity(float new, float fl)
 	shotgunReloadIndex = readbyte();
 	shotgunAddAmmoTime = readfloat();
 	shotgunAddAmmoSoundTime = readfloat();
-	
-	//doFiremodeChange = readbyte();
-	
+		
 	
 	
 	ary_myWeapons_softMax = readbyte();
@@ -274,11 +291,13 @@ player::ReceiveEntity(float new, float fl)
 		}
 	}else if(fl & PLAYER_UNUSED1){
 		
-		i = inventoryEquippedIndex;
+		//i = inventoryEquippedIndex;
+		i = readbyte() - 1;
+		
 		/// could this ever be -1?
 		if(i != -1){
 			ReceiveEntity_ary_myWeapons(i);
-
+			
 			
 			//int myAmmoType = getAmmoTypeOfWeapon(this.activeweapon);
 			int betterID = ary_myWeapons[inventoryEquippedIndex].weaponID;
@@ -301,6 +320,11 @@ player::ReceiveEntity(float new, float fl)
 		*/
 	}
 	/////////////////////////////////////////////////////
+	
+	
+	// safe?
+	receivedViewAngles = this.v_angle;
+	
 	
 	
 
@@ -330,19 +354,7 @@ void player::ReceiveEntity_ary_myWeapons(int i){
 	ary_myWeapons[i].iBitsUpgrade_on = readbyte();
 #endif
 	
-	int newFir = readbyte();
-	
-#if defined(FIREMODE_PREDICTION_TEST)
-	if(i == this.inventoryEquippedIndex && ary_myWeapons[i].iFireMode != newFir){
-		printfline("!!! player::ReceiveEntity, iFireMode update, changed firemode, WAS: %i NOW: %i", ary_myWeapons[i].iFireMode, newFir);
-	}
-	if(time >= this.ignoreFiremodeReceiveTime){
-		printfline("X Change blocked, too soon");
-		ary_myWeapons[i].iFireMode = newFir;
-	}
-#else
-	ary_myWeapons[i].iFireMode = newFir;
-#endif
+	ary_myWeapons[i].iFireMode = readbyte();
 	
 	ary_myWeapons[i].iFireModeAkimbo = readbyte();
 	ary_myWeapons[i].iIronSight = readbyte();
@@ -368,6 +380,9 @@ player::PredictPreFrame(void)
 {
 	//printfline("---PREDICT PRE FRAME");
 	
+	//sendevent("ViewOffsetR", "fff", vViewAngleOffsetTotalChange[0], vViewAngleOffsetTotalChange[1], vViewAngleOffsetTotalChange[2]);
+	
+		
 	/* the generic client attributes */
 	base_player::PredictPreFrame();
 	
@@ -380,34 +395,6 @@ player::PredictPreFrame(void)
 	SAVE_STATE(anim_top_time);
 	SAVE_STATE(anim_bottom);
 	SAVE_STATE(anim_bottom_time);
-	
-	
-/*
-	SAVE_STATE(glock_mag);
-	SAVE_STATE(mp5_mag);
-	SAVE_STATE(python_mag);
-	SAVE_STATE(shotgun_mag);
-	SAVE_STATE(crossbow_mag);
-	SAVE_STATE(rpg_mag);
-	SAVE_STATE(satchel_chg);
-	
-	SAVE_STATE(ammo_9mm);
-	SAVE_STATE(ammo_357);
-	SAVE_STATE(ammo_buckshot);
-	SAVE_STATE(ammo_bolt);
-	SAVE_STATE(ammo_rocket);
-	SAVE_STATE(ammo_uranium);
-	SAVE_STATE(ammo_handgrenade);
-	SAVE_STATE(ammo_satchel);
-	SAVE_STATE(ammo_tripmine);
-	SAVE_STATE(ammo_snark);
-	SAVE_STATE(ammo_hornet);
-
-	SAVE_STATE(ammo_m203_grenade);
-	SAVE_STATE(ammo_gauss_volume);
-	SAVE_STATE(ammo_rpg_state);
-	SAVE_STATE(mode_tempstate);
-	*/
 	
 	SAVE_STATE(iState);
 	SAVE_STATE(inventoryEquippedIndex);
@@ -425,9 +412,13 @@ player::PredictPreFrame(void)
 	
 	//flKarateBlockCooldown
 	SAVE_STATE(iMeleeCycler);
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
+	
+	
+	SAVE_STATE(vViewAngleOffsetTargetDir);
+	SAVE_STATE(vViewAngleOffsetTotalChange);
+	SAVE_STATE(flViewAngleOffsetTarget);
+	
+	
 	SAVE_STATE(fAccuracyKickback);
 	SAVE_STATE(fAccuracyKickbackStartCooldown);
 	
@@ -441,9 +432,7 @@ player::PredictPreFrame(void)
 	
 	SAVE_STATE(shotgunAddAmmoTime);
 	SAVE_STATE(shotgunAddAmmoSoundTime);
-	
-	//SAVE_STATE(doFiremodeChange);
-	
+		
 	
 	SAVE_STATE(ary_myWeapons_softMax);
 	for(int i = 0; i < ary_myWeapons_softMax; i++){
@@ -476,7 +465,6 @@ player::PredictPreFrame(void)
 	// No need here now I think?
 	//this.viewzoom = this.flZoomCurrent;
 	
-	
 #if OTHER_PREDICTION_TEST == 1
 	Custom_Predict_PlayerPreFrame(this);
 #endif
@@ -495,17 +483,11 @@ player::PredictPostFrame(void)
 {
 	//printfline("---PREDICT POST FRAME");
 	
-	/*
-#ifdef CLIENT
-	if(iState == PLAYER_STATE::SPAWNED){
-		TS_View_HandleZoom();
-	}
-#endif
-	*/
+	sendevent("ViewOffsetR", "fff", vViewAngleOffsetTotalChange[0], vViewAngleOffsetTotalChange[1], vViewAngleOffsetTotalChange[2]);
+	
 	
 	/* the generic client attributes */
 	base_player::PredictPostFrame();
-
 	
 	// client's way of calling postthink
 	postThink();
@@ -515,34 +497,6 @@ player::PredictPostFrame(void)
 	ROLL_BACK(anim_top_time);
 	ROLL_BACK(anim_bottom);
 	ROLL_BACK(anim_bottom_time);
-
-	/*
-	ROLL_BACK(glock_mag);
-	ROLL_BACK(mp5_mag);
-	ROLL_BACK(python_mag);
-	ROLL_BACK(shotgun_mag);
-	ROLL_BACK(crossbow_mag);
-	ROLL_BACK(rpg_mag);
-	ROLL_BACK(satchel_chg);
-
-	ROLL_BACK(ammo_9mm);
-	ROLL_BACK(ammo_357);
-	ROLL_BACK(ammo_buckshot);
-	ROLL_BACK(ammo_m203_grenade);
-	ROLL_BACK(ammo_bolt);
-	ROLL_BACK(ammo_rocket);
-	ROLL_BACK(ammo_uranium);
-	ROLL_BACK(ammo_handgrenade);
-	ROLL_BACK(ammo_satchel);
-	ROLL_BACK(ammo_tripmine);
-	ROLL_BACK(ammo_snark);
-	ROLL_BACK(ammo_hornet);
-
-	ROLL_BACK(ammo_m203_grenade);
-	ROLL_BACK(ammo_gauss_volume);
-	ROLL_BACK(ammo_rpg_state);
-	ROLL_BACK(mode_tempstate);
-	*/
 	
 	ROLL_BACK(iState);
 	ROLL_BACK(inventoryEquippedIndex);
@@ -552,11 +506,6 @@ player::PredictPostFrame(void)
 	ROLL_BACK(isChangingIronsight);
 	//ROLL_BACK(flZoomTarget);
 	
-	/*
-	if(iZoomLevel != iZoomLevel_net){
-		printfline("!!! ZoomLevel change B.  %i -> %i (%.2f)", iZoomLevel, iZoomLevel_net, time);
-	}
-	*/
 	ROLL_BACK(iZoomLevel);
 	
 	
@@ -568,9 +517,13 @@ player::PredictPostFrame(void)
 	
 	//flKarateBlockCooldown
 	ROLL_BACK(iMeleeCycler);
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
+	
+	
+	ROLL_BACK(vViewAngleOffsetTargetDir);
+	ROLL_BACK(vViewAngleOffsetTotalChange);
+	ROLL_BACK(flViewAngleOffsetTarget);
+	
+	
 	ROLL_BACK(fAccuracyKickback);
 	ROLL_BACK(fAccuracyKickbackStartCooldown);
 	
@@ -584,7 +537,6 @@ player::PredictPostFrame(void)
 	ROLL_BACK(shotgunAddAmmoTime);
 	ROLL_BACK(shotgunAddAmmoSoundTime);
 	
-	//ROLL_BACK(doFiremodeChange);
 	
 	ROLL_BACK(ary_myWeapons_softMax);
 	for(int i = 0; i < ary_myWeapons_softMax; i++){
@@ -604,13 +556,14 @@ player::PredictPostFrame(void)
 		ROLL_BACK(ary_myWeapons[i].bNeedsPump);
 	}
 
-	//UNNECESSARY. This array is of fixed length, so known at all times.
+	// UNNECESSARY. This array is of fixed length, so known at all times.
 	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
 	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
 		// See serverside equivalent, too much info was lost from some pools being over 255
 		// (well I guess that's all there is to it)
 		ROLL_BACK_ARY(ary_ammoTotal, i);
 	}
+	
 	
 #if OTHER_PREDICTION_TEST == 1
 	Custom_Predict_PlayerPostFrame(this);
@@ -636,83 +589,6 @@ player::EvaluateEntity(void)
 		SendFlags |= PLAYER_BOTTOMFRAME;
 	if (ATTR_CHANGED(anim_top) || ATTR_CHANGED(anim_top_time) || ATTR_CHANGED(anim_top_delay))
 		SendFlags |= PLAYER_TOPFRAME;
-
-
-/*
-	// ammo 1 type updates
-	if (ATTR_CHANGED(glock_mag))
-		SendFlags |= PLAYER_AMMO1;
-	if (ATTR_CHANGED(mp5_mag))
-		SendFlags |= PLAYER_AMMO1;
-	if (ATTR_CHANGED(python_mag))
-		SendFlags |= PLAYER_AMMO1;
-	if (ATTR_CHANGED(shotgun_mag))
-		SendFlags |= PLAYER_AMMO1;
-	if (ATTR_CHANGED(crossbow_mag))
-		SendFlags |= PLAYER_AMMO1;
-	if (ATTR_CHANGED(rpg_mag))
-		SendFlags |= PLAYER_AMMO1;
-	if (ATTR_CHANGED(satchel_chg))
-		SendFlags |= PLAYER_AMMO1;
-
-	// ammo 2 type updates
-	if (ATTR_CHANGED(ammo_9mm))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_357))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_buckshot))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_bolt))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_rocket))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_uranium))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_handgrenade))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_satchel))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_tripmine))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_snark))
-		SendFlags |= PLAYER_AMMO2;
-	if (ATTR_CHANGED(ammo_hornet))
-		SendFlags |= PLAYER_AMMO2;
-
-	if (ATTR_CHANGED(ammo_m203_grenade))
-		SendFlags |= PLAYER_AMMO3;
-	if (ATTR_CHANGED(ammo_gauss_volume))
-		SendFlags |= PLAYER_AMMO3;
-	if (ATTR_CHANGED(ammo_rpg_state))
-		SendFlags |= PLAYER_AMMO3;
-	if (ATTR_CHANGED(mode_tempstate))
-		SendFlags |= PLAYER_AMMO3;
-
-	SAVE_STATE(glock_mag);
-	SAVE_STATE(mp5_mag);
-	SAVE_STATE(python_mag);
-	SAVE_STATE(shotgun_mag);
-	SAVE_STATE(crossbow_mag);
-	SAVE_STATE(rpg_mag);
-	SAVE_STATE(satchel_chg);
-	SAVE_STATE(ammo_9mm);
-	SAVE_STATE(ammo_357);
-	SAVE_STATE(ammo_buckshot);
-	SAVE_STATE(ammo_bolt);
-	SAVE_STATE(ammo_rocket);
-	SAVE_STATE(ammo_uranium);
-	SAVE_STATE(ammo_handgrenade);
-	SAVE_STATE(ammo_satchel);
-	SAVE_STATE(ammo_tripmine);
-	SAVE_STATE(ammo_snark);
-	SAVE_STATE(ammo_hornet);
-
-	SAVE_STATE(ammo_m203_grenade);
-	SAVE_STATE(ammo_gauss_volume);
-	SAVE_STATE(ammo_rpg_state);
-	SAVE_STATE(mode_tempstate);
-*/
-
 
 	// IDEA: do a full-send, all weapons stats on executing a buyconfig order?
 	// set some flag to convey that?
@@ -787,9 +663,13 @@ player::EvaluateEntity(void)
 	
 	//flKarateBlockCooldown
 	SAVE_STATE(iMeleeCycler);
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
+	
+	
+	SAVE_STATE(vViewAngleOffsetTargetDir);
+	SAVE_STATE(vViewAngleOffsetTotalChange);
+	SAVE_STATE(flViewAngleOffsetTarget);
+	
+	
 	SAVE_STATE(fAccuracyKickback);
 	SAVE_STATE(fAccuracyKickbackStartCooldown);
 	
@@ -802,9 +682,7 @@ player::EvaluateEntity(void)
 	
 	SAVE_STATE(shotgunAddAmmoTime);
 	SAVE_STATE(shotgunAddAmmoSoundTime);
-	
-	//SAVE_STATE(doFiremodeChange);
-	
+		
 	
 	SAVE_STATE(ary_myWeapons_softMax);
 	
@@ -851,6 +729,24 @@ player::EvaluateEntity(void)
 
 }
 
+
+
+void CSEv_ViewAnglesR_fff(float arg_x, float arg_y, float arg_z){
+	player pl = (player)self;
+	pl.v_angle.x = arg_x;
+	pl.v_angle.y = arg_y;
+	pl.v_angle.z = arg_z;
+	pl.vViewAngleOffsetTotalChangeAlt = [0,0,0];
+}
+void CSEv_ViewOffsetR_fff(float arg_x, float arg_y, float arg_z){
+	player pl = (player)self;
+	pl.vViewAngleOffsetTotalChangeAlt.x = arg_x;
+	pl.vViewAngleOffsetTotalChangeAlt.y = arg_y;
+	pl.vViewAngleOffsetTotalChangeAlt.z = arg_z;
+	//pl.vViewAngleOffsetTotalChangeAlt = [0,0,0];
+}
+	
+
 /*
 =================
 player::SendEntity
@@ -868,20 +764,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	if (clienttype(ePEnt) != CLIENTTYPE_REAL) {
 		return (0);
 	}
-
-	//TAGGG - REPLACED.
-	/*
-	// other players don't need to know about these attributes
-	if (ePEnt != self) {
-		fChanged &= ~PLAYER_ITEMS;
-		fChanged &= ~PLAYER_HEALTH;
-		fChanged &= ~PLAYER_ARMOR;
-		fChanged &= ~PLAYER_VIEWOFS;
-		fChanged &= ~PLAYER_AMMO1;
-		fChanged &= ~PLAYER_AMMO2;
-		fChanged &= ~PLAYER_AMMO3;
-	}
-	*/
 
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
 	WriteFloat(MSG_ENTITY, fChanged);
@@ -903,42 +785,6 @@ player::SendEntity(entity ePEnt, float fChanged)
 	}
 	
 	WriteFloat(MSG_ENTITY, flViewModelFrame);
-	
-	
-
-	//TAGGG - REPLACED.
-	/*
-	if (fChanged & PLAYER_AMMO1) {
-		WriteByte(MSG_ENTITY, glock_mag);
-		WriteByte(MSG_ENTITY, mp5_mag);
-		WriteByte(MSG_ENTITY, python_mag);
-		WriteByte(MSG_ENTITY, shotgun_mag);
-		WriteByte(MSG_ENTITY, crossbow_mag);
-		WriteByte(MSG_ENTITY, rpg_mag);
-		WriteByte(MSG_ENTITY, satchel_chg);
-	}
-
-	if (fChanged & PLAYER_AMMO2) {
-		WriteByte(MSG_ENTITY, ammo_9mm);
-		WriteByte(MSG_ENTITY, ammo_357);
-		WriteByte(MSG_ENTITY, ammo_buckshot);
-		WriteByte(MSG_ENTITY, ammo_bolt);
-		WriteByte(MSG_ENTITY, ammo_rocket);
-		WriteByte(MSG_ENTITY, ammo_uranium);
-		WriteByte(MSG_ENTITY, ammo_handgrenade);
-		WriteByte(MSG_ENTITY, ammo_satchel);
-		WriteByte(MSG_ENTITY, ammo_tripmine);
-		WriteByte(MSG_ENTITY, ammo_snark);
-		WriteByte(MSG_ENTITY, ammo_hornet);
-	}
-
-	if (fChanged & PLAYER_AMMO3) {
-		WriteByte(MSG_ENTITY, ammo_m203_grenade);
-		WriteByte(MSG_ENTITY, ammo_gauss_volume);
-		WriteByte(MSG_ENTITY, ammo_rpg_state);
-		WriteByte(MSG_ENTITY, mode_tempstate);
-	}
-	*/
 	
 	
 	// TODO MAJOR!!! 
@@ -966,9 +812,14 @@ player::SendEntity(entity ePEnt, float fChanged)
 	
 	//flKarateBlockCooldown
 	WriteByte(MSG_ENTITY, iMeleeCycler);
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[0] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[1] );
-	//WriteCoord(MSG_ENTITY, vViewAngleOffsetTarget[2] );
+	
+
+	WriteCoord(MSG_ENTITY, vViewAngleOffsetTotalChange[0] );
+	WriteCoord(MSG_ENTITY, vViewAngleOffsetTotalChange[1] );
+	WriteCoord(MSG_ENTITY, vViewAngleOffsetTotalChange[2] );
+	
+	vViewAngleOffsetTotalChange = [0,0,0];
+	
 	WriteFloat(MSG_ENTITY, fAccuracyKickback);
 	WriteFloat(MSG_ENTITY, fAccuracyKickbackStartCooldown);
 	
@@ -981,9 +832,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteByte(MSG_ENTITY, shotgunReloadIndex );
 	WriteFloat(MSG_ENTITY, shotgunAddAmmoTime );
 	WriteFloat(MSG_ENTITY, shotgunAddAmmoSoundTime );
-	
-	//WriteByte(MSG_ENTITY, doFiremodeChange);
-	
+		
 
 	
 	//weapondynamic_t ary_myWeapons[ary_myWeapons_length];
@@ -1006,7 +855,9 @@ player::SendEntity(entity ePEnt, float fChanged)
 		}
 	}else if(fChanged & PLAYER_UNUSED1){
 		
-		i = inventoryEquippedIndex;
+		i = (int)inventoryEquippedIndex;
+		WriteByte(MSG_ENTITY, i + 1);
+		
 		/// could this ever be -1?
 		if(i != -1){
 			SendEntity_ary_myWeapons(i);
@@ -1069,9 +920,6 @@ player::player(void){
 	iState = PLAYER_STATE::NOCLIP;
 	completeInventorySend = FALSE;
 	
-#ifdef FIREMODE_PREDICTION_TEST
-	ignoreFiremodeReceiveTime = -1;
-#endif
 
 #ifdef SERVER
 	money = 0;  //safety?
@@ -1108,51 +956,6 @@ player::player(void){
 	
 	reset(TRUE);  //cover anything specified in here too
 	
-	/*
-#ifdef SERVER
-	
-	player someThingy = this;
-	printfline("***CHECKPOINT player2***");
-	printfline("CBaseEntity: %i", someThingy.CBaseEntity);
-	printfline("Respawn: %i", someThingy.Respawn);
-	printfline("Hide: %i", someThingy.Hide);
-	printfline("ParentUpdate: %i", someThingy.ParentUpdate);
-	printfline("SendEntity: %i", someThingy.SendEntity);
-	printfline("Pain: %i", someThingy.Pain);
-	printfline("Death: %i", someThingy.Death);
-	printfline("SetEffects: %i", someThingy.SetEffects);
-	printfline("SetFrame: %i", someThingy.SetFrame);
-	printfline("SetModel: %i", someThingy.SetModel);
-	printfline("SetModelindex: %i", someThingy.SetModelindex);
-	printfline("SetMovetype: %i", someThingy.SetMovetype);
-	printfline("SetSkin: %i", someThingy.SetSkin);
-	printfline("SetSolid: %i", someThingy.SetSolid);
-	printfline("SetBody: %i", someThingy.SetBody);
-	printfline("SetAngles: %i", someThingy.SetAngles);
-	printfline("SetOrigin: %i", someThingy.SetOrigin);
-	printfline("SetSize: %i", someThingy.SetSize);
-	printfline("SetRenderFX: %i", someThingy.SetRenderFX);
-	printfline("SetRenderMode: %i", someThingy.SetRenderMode);
-	printfline("SetRenderAmt: %i", someThingy.SetRenderAmt);
-	printfline("SetRenderColor: %i", someThingy.SetRenderColor);
-
-	printfline("player: %i", someThingy.player);
-	printfline("reset: %i", someThingy.reset);
-	printfline("View_approachAngleOffsetTarget: %i", someThingy.View_approachAngleOffsetTarget);
-	printfline("updateTimers: %i", someThingy.updateTimers);
-	printfline("frameThink: %i", someThingy.frameThink);
-	printfline("frameThink_fromServer: %i", someThingy.frameThink_fromServer);
-	printfline("preThink: %i", someThingy.preThink);
-	printfline("postThink: %i", someThingy.postThink);
-	printfline("attemptAddWeaponFromPickup: %i", someThingy.attemptAddWeaponFromPickup);
-	printfline("dropWeapon: %i", someThingy.dropWeapon);
-	printfline("anyAmmoPoolNonEmpty: %i", someThingy.anyAmmoPoolNonEmpty);
-	printfline("dropAmmo: %i", someThingy.dropAmmo);
-	printfline("***END***");
-	
-#endif
-	*/
-	
 	
 }// player constructor
 
@@ -1170,6 +973,8 @@ player::reset(BOOL resetInventory){
 	
 	
 	resetZoom();
+	
+	//this.flViewAngleOffsetLerp = 1.0f;
 	
 #ifdef CLIENT
 	// For safety, doing this.
@@ -1221,9 +1026,7 @@ player::reset(BOOL resetInventory){
 	shotgunReloadIndex = 0;
 	shotgunAddAmmoTime = -1;
 	shotgunAddAmmoSoundTime = -1;
-	
-	doFiremodeChange = FALSE;
-	
+		
 	//Grenade stuff
 	grenadeFireIndex = -1;
 	grenadeHeldDuration = -1;
@@ -1257,7 +1060,10 @@ player::reset(BOOL resetInventory){
 #endif
 
 		// do this at spawn too. oh right, this 'reset' method is called from there.
-		vViewAngleOffsetTarget = [0, 0, 0];
+		
+		//vViewAngleOffsetTarget = [0, 0, 0];
+		flViewAngleOffsetTarget = 0;
+		
 		fAccuracyKickback = 0;
 		fAccuracyKickbackStartCooldown = -1;
 		
@@ -1317,46 +1123,6 @@ player::reset(BOOL resetInventory){
 
 
 
-vector
-player::View_approachAngleOffsetTarget(vector vecInputAngles)
-{
-	float frametimeUse;
-	
-	// is this wise?
-#ifdef CLIENT
-	frametimeUse = clframetime;
-#else
-	frametimeUse = frametime;
-#endif
-	
-	// !!! Not involving frametimeUse yet?  Whoops.
-	
-	
-	// do we have an offset at all?
-	if( vlen(vViewAngleOffsetTarget) != 0){
-		
-		//shift our view to get closer to looking in the direction suggested by it.		
-		vector vecToMove;
-		
-		vecToMove = vViewAngleOffsetTarget * 0.22;
-		float vecToMoveLen = vlen(vecToMove);
-		
-		if(vecToMoveLen < 0.001 || vecToMoveLen >= vlen(vViewAngleOffsetTarget)  ){
-			//nah nevermind, just move to the target already.
-			//printfline("View_approachAngleOffsetTarget: LAST ONE");
-			vecToMove = vViewAngleOffsetTarget;
-		}else{
-			
-		}
-		
-		vecInputAngles += vecToMove * 1.28;
-		vViewAngleOffsetTarget -= vecToMove;
-		
-	}
-	
-	return vecInputAngles;
-}//View_approachAngleOffsetTarget
-
 
 
 // little test
@@ -1367,7 +1133,6 @@ player::View_approachAngleOffsetTarget(vector vecInputAngles)
 // Best to put things here that involve input_timelength.
 void
 player::updateTimers(void){
-	
 	
 	
 	// good place for this?  Cloned from w_attack_next as a separate counter
@@ -1395,6 +1160,9 @@ player::updateTimers(void){
 		//fKarateStamina = bound(0, fKarateStamina + frametime * 0.1667, 1);
 		fKarateStamina = bound(0, fKarateStamina + input_timelength * 0.1667, 1);
 	}
+	
+	//printfline("KARATE STAMINA? %.2f", fKarateStamina);
+	
 	if(fAccuracyKickbackStartCooldown != -1){
 		if(fAccuracyKickbackStartCooldown <= 0){
 			// begin reducing
@@ -1409,16 +1177,112 @@ player::updateTimers(void){
 	}//kickbackStartCooldown check
 	
 	
+	/*
+	#ifdef CLIENT
+	#define my_frametime clframetime
+	#else
+	#define my_frametime frametime
+	#endif
+	*/
+	
+	#define my_frametime input_timelength
+	
+	//vector viewChange;
+	float flViewChange;
+	vector vViewChangeDir;
+	
+	
+	if(flViewAngleOffsetTarget <= 0.02){
+		flViewChange = this.flViewAngleOffsetTarget;
+		vViewChangeDir = this.vViewAngleOffsetTargetDir;
+		this.flViewAngleOffsetTarget = 0;
+	}else{
+		float lenOfVAOT = this.flViewAngleOffsetTarget;
+		float amountToChangeBy = this.flViewAngleOffsetTarget * 36 * my_frametime;
+		float amountToReduceBy = this.flViewAngleOffsetTarget * 18 * my_frametime;
+		
+		//printfline("COMPARISON? cb:%.2f rb:%.2f - total:%.2f", amountToChangeBy, amountToReduceBy, lenOfVAOT);
+		
+		// if changing the vViewOffsetTarget by this much would
+		// go past the offset into pushing it past what was intended,
+		// don't allow that!  Might not even be possible
+		if(amountToReduceBy >= lenOfVAOT){
+			flViewChange = this.flViewAngleOffsetTarget;
+			vViewChangeDir = this.vViewAngleOffsetTargetDir;
+			this.flViewAngleOffsetTarget = 0;
+		}else{
+			this.flViewAngleOffsetTarget -= amountToReduceBy;
+			
+			flViewChange = amountToChangeBy;
+			vViewChangeDir = this.vViewAngleOffsetTargetDir;
+		}
+	}
+	
+	
+	vector finalChange = flViewChange * vViewChangeDir;
+	
+	
+	this.vViewAngleOffsetTotalChange += finalChange;
+	this.vViewAngleOffsetTotalChangeAlt += finalChange;
+	
+	// test?  main one
+	#ifndef CLIENT
+	GET_MY_VIEW_ANGLES = GET_MY_VIEW_ANGLES + finalChange;
+	#else
+		
+	#endif
+	
+	
 }//updateTimers
 
 
 
 
+// add kickback that pushes the camera by some angle.
+// Cumulative with existing kickback not yet finished being applied.
+void player::addViewAngleOffset(float arg_ang, float arg_len){
+	
+	
+	/*
+	#ifdef CLIENT
+	
+	printfline("--- %d - %d", input_sequence, tempQueue2[input_sequence % 512]);
+	
+	if(!tempQueue2[input_sequence % 512]){
+		return;
+	}else{
+		tempQueue2[input_sequence % 512] = FALSE;
+	}
+	
+	printfline("!!! addViewAngleOffset !!! %d", input_sequence);
+	#endif
+	*/
+	
+	
+	
+	if(flViewAngleOffsetTarget == 0){
+		// easy, replace completely
+		flViewAngleOffsetTarget = arg_len;
+		vViewAngleOffsetTargetDir = [-sin(arg_ang), cos(arg_ang), 0];
+	}else{
+		// Have to unpack the vector, add it, and re-do the split value/dir way.
+		// Might be a smarter way to do that math-wise but this works for now
+		vector tempVec = flViewAngleOffsetTarget * vViewAngleOffsetTargetDir;
+		vector newVec = arg_len * [-sin(arg_ang), cos(arg_ang), 0];
+		tempVec = tempVec + newVec;
+		flViewAngleOffsetTarget = vlen(tempVec);
+		if(flViewAngleOffsetTarget != 0){
+			vViewAngleOffsetTargetDir = tempVec / flViewAngleOffsetTarget;
+		}else{
+			// what.
+			// Nothing to do, leave flViewAngleOffsetTarget at 0 to be ignored
+		}
+	}
+}
+
+
 
 #ifdef CLIENT
-
-void
-_TS_FRESH_playerUseItems(void);
 
 // client only, check some other input-related CVars.
 void
@@ -1426,27 +1290,107 @@ player::clientInputUpdate(void){
 	
 	//printfline("---clientInputUpdate");
 	
-	/*
-	if(pSeatLocal->m_bUseItemsFreshPress){
-		pSeatLocal->m_bUseItemsFreshPress = FALSE;
-		pSeatLocal->m_iUseItemsLatencyPresses++;
-		_TS_FRESH_playerUseItems();
-	}
-	
-	int i;
-	for(i = 0; i < pSeatLocal->m_iUseItemsLatencyPresses; i++){
-		TS_playerUseItems();
-	}
-	*/
 }
 
 void
 player::clientUseItemsCallback(void){
 	
-	//pSeatLocal->m_iUseItemsLatencyPresses--;
+	
 }
 
+
+
+
+
+
+// - initially from The Wastes.
+void player::handleZoom(void)
+{
+	
+	if(this.iState != PLAYER_STATE::SPAWNED){
+		// zoom is only allowed for ingame.
+		return;
+	}
+	
+	// test
+	/*
+	this.flZoomCurrent = this.flZoomTarget;
+	this.viewzoom = this.flZoomTarget;
+	printfline("flZoomTarget: %.2f", this.flZoomTarget);
+	return;
+	*/
+	
+	//printfline("WHATS GOING ON %.2f %.2f %.2f %.2f %.2f", this.flZoomEnd, this.flZoomTarget, this.flZoomStart, this.flZoomLerp, this.flZoomCurrent);
+	
+	// - No other codebase refers to STAT_VIEWZOOM, best to replace anything
+	// involving that.
+	
+	// in case of some unexpected change.
+	// TODO: this might have an issue if the player were to change weapons and end up
+	// on the same zoom level as a previous weapon, despite the two weapons having
+	// different target values (like 0.4 vs. 0.6) at their own zoom level #1's.
+	// A check for being a different equipped weapon type
+	// (this.activeweapon vs. this.activeweapon_zoomprev, set only by setZoomLevel)
+	// ought to work.  But that would be a very strange case anyway
+	if(this.iZoomLevel != this.iZoomLevelPrev){
+		this.setZoomLevel(this.iZoomLevel);
+	}
+		
+	if (this.flZoomEnd != this.flZoomTarget ) {
+		//printfline("NEW ZOOM DETECTED: %.2f -> %.2f (zoomlev: %i)", this.flZoomEnd, this.flZoomTarget, this.iZoomLevel);
+		
+		// is setting flZoomStart to flZoomEnd or flZoomCurrent a better idea?
+		// at flZoomEnd means, on changing before the current lerp has finished, it jumps to beginning
+		// at the end point of the lerp in progress.  But starting at flZoomCurrent might be smoother?
+		// if it isn't glitchy that could be nice.  Trying that out.
+		
+		this.flZoomStart = this.flZoomCurrent;
+		//this.flZoomStart = this.flZoomEnd;
+		
+		this.flZoomEnd = this.flZoomTarget;
+		this.flZoomLerp = 0.0f;
+	}
+
+	if (this.flZoomLerp < 1.0f) {
+		// Slow this down for debugging purposes, this is meant to be fast.
+		// 0.8 can be safe.
+		// The Wastes default was 4.
+		
+		// !!! clframetime, frametime, or input_timelength ?
+		this.flZoomLerp += clframetime * 5.7;
+		
+		if(this.flZoomLerp >= 1.0){
+			//enforce the cap.
+			this.flZoomLerp = 1.0;
+		}
+		
+		//this.flZoomCurrent = getstatf(STAT_VIEWZOOM);
+		this.flZoomCurrent = Math_Lerp(this.flZoomStart, this.flZoomEnd, this.flZoomLerp);
+	}
+	
+	// Set this, since Nuclide will read it in and apply instantly.
+	// So same effect without having to edit Nuclide, this pipes it over for it
+	// to do the setproperty thing below to apply
+	//this.viewzoom = this.flZoomCurrent;
+
+	////setproperty(VF_AFOV, DEFAULT_FOV * this.flZoomCurrent);
+	////setsensitivityscaler(this.flZoomCurrent);
+	
+	// here's the way old FreeCS did it
+	//setproperty(VF_AFOV, cvar("fov") * this.viewzoom);
+	//setsensitivityscaler(this.viewzoom);
+	
+	
+	
+	
+}// TS_View_HandleZoom
+
+
+
 #endif
+
+
+
 
 
 
@@ -1705,30 +1649,6 @@ player::callWeaponThink(void){
 }
 
 
-// well that didn't work.
-/*
-BOOL
-player::shotgunAddAmmoTime_canSet(void){
-	#ifdef CLIENT
-		// require the cooldown
-		// is cltime better?  Unsure
-		return (time >= shotgunAddAmmoTime_cooldownSetTime);
-	#else
-		// Server? Always
-		return TRUE;
-	#endif
-}
-void
-player::shotgunAddAmmoTime_setCooldownSetTime(void){
-	#ifdef CLIENT
-		// do it
-		shotgunAddAmmoTime_cooldownSetTime = time + 0.02f;
-	#else
-		// Server? I don't.
-	#endif
-}
-*/
-
 
 #ifdef SERVER
 // (Comment may be out of date, verify if serverside postthink or setting think methods
@@ -1756,7 +1676,6 @@ player::frameThink_fromServer(void){
 }// frameThink_fromServer
 
 #endif
-
 
 
 
@@ -1859,7 +1778,6 @@ player::postThink(void){
 	// is that wise?  There is also "frametime".
 	//printfline("-------postThink %.3f - %.3f------", cltime_delta, frametime);
 	
-	
 	/*
 	// if anything like this were ever needed?
 	w_attack_next_nonet -= cltime_delta;
@@ -1909,36 +1827,9 @@ player::postThink(void){
 void
 player::preThinkShared(void){
 	
+	// Empty, for now.
 	
-	
-	//TAGGG - any use for input_angles here?  Shared, predicted?
-	
-	// TODO: make this view kickback properly predicted
-#ifdef CLIENT
-	//printfline("So what is my view ang?? %.2f %.2f", view_angles[0], view_angles[1]);
-	// TODO - for clientside, this would need to involve the "view_angles" global
-	// instead!  Unsure if the macro GET_VIEW_ANGLES is good enough
-	//v_angle = View_approachAngleOffsetTarget(v_angle);
-	//view_angles = View_approachAngleOffsetTarget(view_angles);
-#else
-	//printfline("So what is my view ang?? %.2f %.2f", this.v_angle[0], this.v_angle[1]);
-	this.v_angle = View_approachAngleOffsetTarget(this.v_angle);
-#endif
-	
-	
-	
-	// little test
-	//otherTimer += frametime;
-	
-	//changedWeaponRecentlyTimer = max(0, changedWeaponRecentlyTimer - frametime);
-	
-	//if(fUncrouchBlockDelay > 0){
-	//	printfline("WHAT IS IT %.2f", fUncrouchBlockDelay);
-	//}
-	//fMoveBlockDelay = max(0, fMoveBlockDelay - frametime);
-	//fUncrouchBlockDelay = max(0, fUncrouchBlockDelay - frametime);
 }
-
 
 
 

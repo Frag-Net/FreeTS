@@ -64,14 +64,10 @@ void CSEv_TS_playerDropWeapon_(void);
 
 
 #ifdef SERVER
-void CSEv_TS_playerChangeFiremode_(void);
 #endif
 void TS_playerChangeFiremode(void);
 void _TS_playerChangeFiremode(void )
 
-#ifdef SERVER
-void CSEv_TS_playerUseItems_(void);
-#endif
 void TS_playerUseItems(void);
 void _TS_playerUseItems(void);
 

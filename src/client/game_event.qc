@@ -212,6 +212,12 @@ ClientGame_EventParse(float fHeader)
 		Custom_Prediction_Server_Callback(pl);
 	}break;
 #endif
+
+	case EVENT_TS::VIEWANGLES_REQUEST:{
+		
+		sendevent("ViewAnglesR", "fff", view_angles.x, view_angles.y, view_angles.z);
+	}break;
+
 	
 	case EVENT_TS::TEST:{
 		//printfline("EVENT_TS::TEST HAPPENED");
