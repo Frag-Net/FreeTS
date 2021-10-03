@@ -307,6 +307,10 @@ weapon_base_onAttack(player pl, weapondata_basic_t* basePRef, weapondynamic_t ar
 
 // For firing once the left or right has been picked for firing, does not matter which as this has
 // no effect on the weapon stats.  Also applies kickback for firing once.
+// TODO: restore random-ness of kickback, going left/right angle-wise and
+// varrying the intensity, 65% to 100%, as shown commented out below.
+// Need shared randoms for that to work, input_sequence is not relayed
+// to the server on processing an input it seems.
 void
 weapon_base_onAttack_individual(player pl, weapondata_basic_t* basePRef, weapondynamic_t arg_thisWeapon, int shellCount){
 		
@@ -391,12 +395,15 @@ weapon_base_onAttack_individual(player pl, weapondata_basic_t* basePRef, weapond
 	finalAng = ( 90 - (angleRange/2) + randoAngFactor*( angleRange ) ) * (M_PI/180);
 	pl.addViewAngleOffset(finalAng, finalAmount);
 	
-	// TODO - be better shared later?
-	// Syncing view kickback would need the random-ness to be handled between server/client,
-	// maybe seeded randoms?  I forget.
-	// Properly predicted shotgun firing would be a good demonstration of that too,
-	// so what happens instantly (client sees) and what actually happened (server sees; everyone
-	// else sees) line up.
+	// separate accuracy-kickback that spaces the crosshairs out and causes the weapon-spread
+	// to be higher to discourage firing too much, even beyon the view-kickback that forces
+	// the camera up.  I don't think it has any random component, determined by weapon
+	// stats only.
+	// Also this is going off what makes sense with the as-is game stats, 0.1 is the
+	// highest accuracy kickback allowed and it slows down at a rate of 10% real-time.
+	// When reached, the 0.1 cap takes 1 second of not-firing to be completely reset.
+	// fAccuracyKickbackStartCooldown is still real-time, so 0.14 seconds, and the reduction
+	// starts happening after it runs out.
 	pl.fAccuracyKickbackStartCooldown = 0.14;
 	pl.fAccuracyKickback += baseRef.firestats.fAccuracyKickback;
 	if(pl.fAccuracyKickback >= 0.1){

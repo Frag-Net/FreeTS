@@ -236,7 +236,10 @@ player::ReceiveEntity(float new, float fl)
 	
 	nextAkimboAttackPreference = readbyte();
 	akimboDualFireToleranceTime = readfloat();
-	grenadeFireIndex = readbyte() - 1;
+	
+	grenadeFireIndex = readbyte();
+	grenadeHeldDuration = readfloat();
+	grenadeSpawnTime = readfloat();
 	bGrenadeToss = readbyte();
 	
 	
@@ -275,6 +278,12 @@ player::ReceiveEntity(float new, float fl)
 	
 	fKarateStamina = readfloat();
 	
+	
+	aryNextBurstShotTime_softLength = readbyte();
+	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
+		aryNextBurstShotTime[i] = readfloat();
+	}
+	aryNextBurstShotTime_listenIndex = readbyte() - 1;
 	
 	shotgunReloadIndex = readbyte();
 	shotgunAddAmmoTime = readfloat();
@@ -381,6 +390,7 @@ so we can roll them back later.
 void
 player::PredictPreFrame(void)
 {
+	int i;
 	//printfline("---PREDICT PRE FRAME");
 	
 		
@@ -407,7 +417,10 @@ player::PredictPreFrame(void)
 	SAVE_STATE(iZoomLevel);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
+	
 	SAVE_STATE(grenadeFireIndex);
+	SAVE_STATE(grenadeHeldDuration);
+	SAVE_STATE(grenadeSpawnTime);
 	SAVE_STATE(bGrenadeToss);
 	
 	
@@ -428,6 +441,12 @@ player::PredictPreFrame(void)
 	SAVE_STATE(fKarateStamina);
 	
 	
+	SAVE_STATE(aryNextBurstShotTime_softLength);
+	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
+		SAVE_STATE_ARY(ary_ammoTotal, i);
+	}
+	SAVE_STATE(aryNextBurstShotTime_listenIndex);
+
 	
 	SAVE_STATE(shotgunReloadIndex);
 	
@@ -436,7 +455,7 @@ player::PredictPreFrame(void)
 		
 	
 	SAVE_STATE(ary_myWeapons_softMax);
-	for(int i = 0; i < ary_myWeapons_softMax; i++){
+	for(i = 0; i < ary_myWeapons_softMax; i++){
 		SAVE_STATE(ary_myWeapons[i].weaponID);
 		SAVE_STATE(ary_myWeapons[i].weaponTypeID);
 		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade);
@@ -455,7 +474,7 @@ player::PredictPreFrame(void)
 
 	//UNNECESSARY. This array is of fixed length, so known at all times.
 	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
-	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
+	for(i = 0; i < AMMO_ID::LAST_ID; i++){
 		// See serverside equivalent, too much info was lost from some pools being over 255
 		// (well I guess that's all there is to it)
 		SAVE_STATE_ARY(ary_ammoTotal, i);
@@ -482,6 +501,7 @@ Where we roll back our values to the ones last sent/verified by the server.
 void
 player::PredictPostFrame(void)
 {
+	int i;
 	//printfline("---PREDICT POST FRAME");
 	
 	sendevent("ViewOffsetR", "fff", vViewAngleOffsetTotalChange[0], vViewAngleOffsetTotalChange[1], vViewAngleOffsetTotalChange[2]);
@@ -513,7 +533,10 @@ player::PredictPostFrame(void)
 	
 	ROLL_BACK(nextAkimboAttackPreference);
 	ROLL_BACK(akimboDualFireToleranceTime);
+	
 	ROLL_BACK(grenadeFireIndex);
+	ROLL_BACK(grenadeHeldDuration);
+	ROLL_BACK(grenadeSpawnTime);
 	ROLL_BACK(bGrenadeToss);
 	
 	//flKarateBlockCooldown
@@ -532,15 +555,21 @@ player::PredictPostFrame(void)
 	ROLL_BACK(fUncrouchBlockDelay);
 	ROLL_BACK(fKarateStamina);
 	
+	ROLL_BACK(aryNextBurstShotTime_softLength);
+	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
+		ROLL_BACK_ARY(ary_ammoTotal, i);
+	}
+	ROLL_BACK(aryNextBurstShotTime_listenIndex);
+
+	
 	
 	ROLL_BACK(shotgunReloadIndex);
-	
 	ROLL_BACK(shotgunAddAmmoTime);
 	ROLL_BACK(shotgunAddAmmoSoundTime);
 	
 	
 	ROLL_BACK(ary_myWeapons_softMax);
-	for(int i = 0; i < ary_myWeapons_softMax; i++){
+	for(i = 0; i < ary_myWeapons_softMax; i++){
 		ROLL_BACK(ary_myWeapons[i].weaponID);
 		ROLL_BACK(ary_myWeapons[i].weaponTypeID);
 		ROLL_BACK(ary_myWeapons[i].iBitsUpgrade);
@@ -559,7 +588,7 @@ player::PredictPostFrame(void)
 
 	// UNNECESSARY. This array is of fixed length, so known at all times.
 	//WriteByte(MSG_ENTITY, ary_ammoTotal_softMax);
-	for(int i = 0; i < AMMO_ID::LAST_ID; i++){
+	for(i = 0; i < AMMO_ID::LAST_ID; i++){
 		// See serverside equivalent, too much info was lost from some pools being over 255
 		// (well I guess that's all there is to it)
 		ROLL_BACK_ARY(ary_ammoTotal, i);
@@ -659,7 +688,10 @@ player::EvaluateEntity(void)
 	SAVE_STATE(iZoomLevel);
 	SAVE_STATE(nextAkimboAttackPreference);
 	SAVE_STATE(akimboDualFireToleranceTime);
+	
 	SAVE_STATE(grenadeFireIndex);
+	SAVE_STATE(grenadeHeldDuration);
+	SAVE_STATE(grenadeSpawnTime);
 	SAVE_STATE(bGrenadeToss);
 	
 	//flKarateBlockCooldown
@@ -678,6 +710,13 @@ player::EvaluateEntity(void)
 	SAVE_STATE(fUncrouchBlockDelay);
 	SAVE_STATE(fKarateStamina);
 	
+	
+	SAVE_STATE(aryNextBurstShotTime_softLength);
+	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
+		SAVE_STATE_ARY(ary_ammoTotal, i);
+	}
+	SAVE_STATE(aryNextBurstShotTime_listenIndex);
+
 	
 	SAVE_STATE(shotgunReloadIndex);
 	
@@ -789,7 +828,10 @@ player::SendEntity(entity ePEnt, float fChanged)
 	}
 	WriteByte(MSG_ENTITY, nextAkimboAttackPreference);
 	WriteFloat(MSG_ENTITY, akimboDualFireToleranceTime);
-	WriteByte(MSG_ENTITY, grenadeFireIndex + 1);
+	
+	WriteByte(MSG_ENTITY, grenadeFireIndex);
+	WriteFloat(MSG_ENTITY, grenadeHeldDuration);
+	WriteFloat(MSG_ENTITY, grenadeSpawnTime);
 	WriteByte(MSG_ENTITY, bGrenadeToss);
 	
 	WriteByte(MSG_ENTITY, armor );
@@ -812,6 +854,12 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, fUncrouchBlockDelay);
 	WriteFloat(MSG_ENTITY, fKarateStamina);
 	
+	
+	WriteByte(MSG_ENTITY, aryNextBurstShotTime_softLength);
+	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
+		WriteFloat(MSG_ENTITY, aryNextBurstShotTime[i]);
+	}
+	WriteByte(MSG_ENTITY, aryNextBurstShotTime_listenIndex + 1);
 	
 	
 	WriteByte(MSG_ENTITY, shotgunReloadIndex );
@@ -1013,7 +1061,7 @@ player::reset(BOOL resetInventory){
 	shotgunAddAmmoSoundTime = -1;
 		
 	//Grenade stuff
-	grenadeFireIndex = -1;
+	grenadeFireIndex = 0;
 	grenadeHeldDuration = -1;
 	grenadeSpawnTime = -1;
 	bGrenadeToss = FALSE;
@@ -1152,7 +1200,7 @@ player::updateTimers(void){
 		if(fAccuracyKickbackStartCooldown <= 0){
 			// begin reducing
 			//fAccuracyKickback -= frametime * 0.1;
-			fAccuracyKickback = max(0, fAccuracyKickback - input_timelength);
+			fAccuracyKickback = max(0, fAccuracyKickback - input_timelength * 0.1);
 			
 			if(fAccuracyKickback <= 0){
 				// stop!
@@ -1211,9 +1259,10 @@ player::updateTimers(void){
 	// test?  main one
 #ifndef CLIENT
 	GET_MY_VIEW_ANGLES = GET_MY_VIEW_ANGLES + finalChange;
-#else
 	// (this might be pointless?)
 	this.vViewAngleOffsetTotalChangeAlt += finalChange;
+#else
+	
 #endif
 	
 	

@@ -38,7 +38,7 @@ void weapon_m61grenade_onThink(player pl, weapondynamic_t arg_thisWeapon){
 	// If using to keep track of what animation to play (like HL having different throw anims for
 	// range), that should be networked so that this gives an accurate viewmodel.
 	// ALTHOUGH, this applies to the time of picking a throw anim, not spawning the grenade.
-	if(pl.grenadeSpawnTime != -1 && pl.grenadeFireIndex > 0){
+	if(pl.grenadeSpawnTime != -1 && pl.grenadeFireIndex > 1){
 		pl.grenadeHeldDuration = min(pl.grenadeHeldDuration + input_timelength, 3);
 		
 		if(pl.w_attack_next <= pl.grenadeSpawnTime){
@@ -71,44 +71,43 @@ void weapon_m61grenade_onThink(player pl, weapondynamic_t arg_thisWeapon){
 		printfline("!!! w_attack_next FINISHED WITH GRENFIREIN: %i", pl.grenadeFireIndex);
 		prevChoice = pl.grenadeFireIndex;
 	}
-	if(pl.grenadeFireIndex > 0){
+	if(pl.grenadeFireIndex > 1){
 		printfline("pl.grenadeFireIndex resolved: %i", pl.grenadeFireIndex);
 	}
 	*/
 	
-	if(pl.grenadeFireIndex == 0){
+	if(pl.grenadeFireIndex == 1){
 		// pin pull animation is finished, ready to throw when the input is not held down.
 		pl.grenadeHeldDuration = min(pl.grenadeHeldDuration + input_timelength, 3);
 		
 		if(!(input_buttons & INPUT_BUTTON0) && !(input_buttons & INPUT_BUTTON3)){
 			// neither input held down?  Move on
 			//printfline("!!! RELEASE");
-			pl.grenadeFireIndex = 1;
+			pl.grenadeFireIndex = 2;
 		}
 	}
 	// should this be joined by else or no?
-	if(pl.grenadeFireIndex == 1){
+	if(pl.grenadeFireIndex == 2){
 		// Release detected, do the throw anim + spawn the grenade soon
 		if(!pl.bGrenadeToss){
 			TS_Weapons_ViewAnimation(weaponseq_m61grenade::throw, 11.0f/30.0f);
 		}else{
 			TS_Weapons_ViewAnimation(weaponseq_m61grenade::throw_slide, 11.0f/30.0f);
 		}
-		pl.grenadeFireIndex = 2;
+		pl.grenadeFireIndex = 3;
 		// re-use shotgunAddAmmoTime instead, make the var more genericly named maybe???
-		//pl.grenadeSpawnTime = time + 4.0f/30.0f;
 		weapon_base_setWholeAttackDelay(pl, (11.0f/30.0f) * 1);
-		
 		pl.grenadeSpawnTime = pl.w_attack_next - 4.0f/30.0f;
-	}else if(pl.grenadeFireIndex == 2){
+		
+	}else if(pl.grenadeFireIndex == 3){
 		// Throw anim is over, decide whether to deploy another grenade or remove the
 		// weapon if out of grenades.
 		
 		//printfline("Remove grenade? Count:%i", arg_thisWeapon.iCount);
 		if(arg_thisWeapon.iCount > 0){
 			TS_Weapons_ViewAnimation(weaponseq_m61grenade::draw, 31.0f / 40.0f );
-			printfline("I set grenadeFireIndex to -1, B!");
-			pl.grenadeFireIndex = -1;
+			printfline("I set grenadeFireIndex to 0, B!");
+			pl.grenadeFireIndex = 0;
 			weapon_base_setWholeAttackDelay(pl, (31.0f/40.0f));
 		}else{
 			
@@ -122,8 +121,8 @@ void weapon_m61grenade_onThink(player pl, weapondynamic_t arg_thisWeapon){
 			
 			//printfline("removeWeaponFromInventory POST cur weapo: %i", pl.inventoryEquippedIndex);
 			
-			printfline("I set grenadeFireIndex to -1, C!");
-			pl.grenadeFireIndex = -1;  // paranoia?
+			printfline("I set grenadeFireIndex to 0, C!");
+			pl.grenadeFireIndex = 0;  // paranoia?
 			return;
 		}
 		
@@ -183,8 +182,8 @@ void weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int 
 	// Initiating a throw is only do-able when the attack delay is up, and a fresh key press.
 	// Don't allow to interrupt the deploy anim.
 	if(pl.w_attack_next <= 0 && (INPUT_PRIMARY_TAP_CHECK(pl) || INPUT_SECONDARY_TAP_CHECK(pl))){
-		if(pl.grenadeFireIndex == -1){
-			pl.grenadeFireIndex = 0;
+		if(pl.grenadeFireIndex == 0){
+			pl.grenadeFireIndex = 1;
 			printfline("WHAT THE heckin heck IS THIS %.2f", time);
 			pl.grenadeSpawnTime = -1;  // not yet!
 			pl.grenadeHeldDuration = 0;
@@ -194,7 +193,7 @@ void weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int 
 	}
 	
 	// Once already started, this can affect being a normal throw or slide-throw.
-	if(pl.grenadeFireIndex == 0){
+	if(pl.grenadeFireIndex == 1){
 		if(attackTypeUsed & BITS_AKIMBOCHOICE_LEFT){
 			pl.bGrenadeToss = FALSE;  //throw, this was primary.
 		}else if(attackTypeUsed & BITS_AKIMBOCHOICE_RIGHT){
@@ -221,12 +220,12 @@ void weapon_grenade_onInputRelease(player pl, weapondynamic_t arg_thisWeapon){
 		// (except above, checks a bit differently for spawning the grenade)
 		return;
 	}
-	if(pl.grenadeFireIndex == 0){
+	if(pl.grenadeFireIndex == 1){
 		// pin pull animation is finished, ready to throw when the input is not held down.
 		if(!(input_buttons & INPUT_BUTTON0) && !(input_buttons & INPUT_BUTTON3)){
 			// primary not held down?  Move on then
 			//printfline("!!! RELEASE DETECT");
-			pl.grenadeFireIndex = 1;
+			pl.grenadeFireIndex = 2;
 		}
 	}
 }
@@ -277,8 +276,8 @@ w_m61grenade_draw(void)
 	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
-	printfline("I set grenadeFireIndex to -1, A!");
-	pl.grenadeFireIndex = -1;
+	printfline("I set grenadeFireIndex to 0, A!");
+	pl.grenadeFireIndex = 0;
 	pl.grenadeSpawnTime = -1;
 	pl.grenadeHeldDuration = 0;
 	

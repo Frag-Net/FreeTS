@@ -31,6 +31,7 @@ enum PLAYER_STATE{
 #define ATTR_CHANGED_ARY(ary, i) (ary ##_net[i] != ary[i])
 
 #define PREDICTED_ARY_INT(ary, size) int ary[size]; int ary ##_net[size]
+#define PREDICTED_ARY_FLOAT(ary, size) float ary[size]; float ary ##_net[size]
 
 #define ROLL_BACK_ARY(ary, i) ary[i] = ary ##_net[i]
 #define SAVE_STATE_ARY(ary, i) ary ##_net[i] = ary[i]
@@ -339,10 +340,19 @@ class player:base_player
 
 
 	// Shared, but don't network!  I think?
-	int aryNextBurstShotTime_softLength;
-	float aryNextBurstShotTime[5];
-	int aryNextBurstShotTime_listenIndex;
+	// apparently we do need to do this, at least network somewhat.
+	// Unsure how much, maybe the 'aryNextBurstShotTime' every single frame
+	// is a bit overkill, should only need to be set at the start of a burst-fire.
+	// So no need for networking as the client/server should set those to the same
+	// values independently, but no idea of the prediction-rollbacks on clientside
+	// would complicate that, maybe still do the SAVE/ROLL_BACK stuff?
+	// aryNextBurstShotTime_listenIndex depends on the time and updates a lot,
+	// that one most likely has to stay networked and predicted.
+	PREDICTED_INT(aryNextBurstShotTime_softLength);
+	PREDICTED_ARY_FLOAT(aryNextBurstShotTime, 5);
+	PREDICTED_INT(aryNextBurstShotTime_listenIndex);
 	
+	PREDICTED_ARY_INT(ary_ammoTotal, AMMO_ID::LAST_ID);
 
 //shotgun stuff
 //////////////////////////////////////////////////////////////////////////////
@@ -384,21 +394,22 @@ class player:base_player
 //////////////////////////////////////////////////////////////////////////////
 	
 	
-	// -1 = nothing special, holding grenade normally.  Pressing primary/secondary
+	//  0 = nothing special, holding grenade normally.  Pressing primary/secondary
 	//      starts the next phase.
-	//  0 = pull-pin animation, and stays this way until the animation finishes and
+	//  1 = pull-pin animation, and stays this way until the animation finishes and
 	//      neither input is held down.  Then the next phase starts.
-	//  1 = throw or throw-slide anim picked, based on primary or secondary being 
+	//  2 = throw or throw-slide anim picked, based on primary or secondary being 
 	//      pressed the most recently.  Jumps to phase 2.
-	//  2 = throw/slide anim playing.  Grenade spawns very soon.  After the anim
+	//  3 = throw/slide anim playing.  Grenade spawns very soon.  After the anim
 	//      finishes, decide whether to bring another grenade up (has ammo), other-
 	//      wise, discard the weapon and pick another.
 	
 	PREDICTED_INT(grenadeFireIndex);
-	
 	// at what time do I throw the grenade after starting the throw/toss anim?
-	float grenadeSpawnTime;
-	float grenadeHeldDuration;
+	//TAGGG - should these be predicted too?  Unsure.  Possibly not.
+	PREDICTED_FLOAT(grenadeSpawnTime);
+	PREDICTED_FLOAT(grenadeHeldDuration);
+	// Same for this, but it has been for a while
 	PREDICTED_FLOAT(bGrenadeToss);   //set to FALSE if it's a typical throw instead.
 	
 	
@@ -472,7 +483,7 @@ class player:base_player
 	// to. Sounds like a lot of extra work for a single ammo counter per type of ammo which
 	// is all this is.
 	//int ary_ammoTotal[AMMO_ID::LAST_ID];
-	PREDICTED_ARY_INT(ary_ammoTotal,AMMO_ID::LAST_ID);
+	PREDICTED_ARY_INT(ary_ammoTotal, AMMO_ID::LAST_ID);
 	
 	// Provided for quick reference.  How many slots does the current loadout take?
 	// There is a record of how much money has been spent, similar to config, but that isn't
