@@ -144,6 +144,7 @@ Obituary_Add(string attacker, string victim, float weapon, float flags)
 void
 Obituary_Draw(void)
 {
+	
 	int i;
 	vector pos;
 	vector item;

@@ -15,9 +15,11 @@ enum PLAYER_STATE{
 	// Nothing special. Collision, gravity, equips things.
 	SPAWNED = 0,
 	// Like a third-person view of the player's most recent position, unsure
-	// if it follows the corpse, try dying while moving in TS to see.
-	// Slowly zooms out to a point.
-	// Changes to DEAD_NOCLIP (aka "Fake Spectator") on clicking between 1
+	// if it follows the corpse, try dying while moving in TS to see, my guess
+	// is yes because it appears to behave like third-person.
+	// Slowly zooms out to a point.  I doubt wonkiness in dying in third-person
+	// (already) was intentional.
+	// Changes to NOCLIP (aka "Fake Spectator") on clicking between 1
 	// and 2.5 seconds, or waiting out the 2.5 seconds (happens anyway)
 	DEAD_RECENT,
 	// Starts at the exact point where the dead player was.
@@ -51,9 +53,21 @@ class player:base_player
 	
 	// On death, the player cannot change the camera to fake-specator until at least 1 second
 	// has passed.
-	// On death, set this to 2.5.  If it is less than 1.5,
+	// On death, set this to 2.5.  If it is less than 1.5, allow clicking to reach 
+#ifdef CLIENT
+	BOOL displayMinimumRespawnTimeCountdown;
+	int old_cl_thirdperson;
+#else
+	// SERVER
 	float deathCameraChangeTime;
+	float minimumRespawnTime;
+	BOOL waitingForSpawn;
+	BOOL waitingForEarlyNoclip;
 	
+#endif
+	
+	// Send everything in the inventory to the client this frame?
+	// If not, only the one of the currently equipped weapon gets updated.
 	BOOL completeInventorySend;
 
 	
@@ -142,8 +156,6 @@ class player:base_player
 	int equippedWeaponWaitingForCallback_ID;
 	float equippedWeaponWaitingForCallback_maxWaitTime;
 	
-	
-	
 	// For telling how long it's been since I've been on the ground.
 	// Don't oscillate the view model bob on going down short steps.
 	float flRecentGroundTime;
@@ -211,48 +223,24 @@ class player:base_player
 	// ...also, this variable will be shared.  Serverside since it must be presistent 
 	// (not just something to step away from after it happens the first frame), and
 	// clientside to keep track of how to behave in case the connection is broken since.
-	//vector vViewAngleOffsetTarget;
-	
 	
 #else
 	
 #endif
 
-	
 	// should be better networked when it's better understood what the block feature
 	// (reload with karate out, I assume?) is supposed to do.
 	float flKarateBlockCooldown;
 	
 	PREDICTED_INT(iMeleeCycler);
 
-	
-	// SHARED
-	// PREDICTED_whatever(...);
-	//vector vViewAngleOffsetTarget;
-	
-	/*
-	vector vViewAngleOffsetEnd;
-	vector vViewAngleOffsetStart;
-	float flViewAngleOffsetLerp;
-	vector vViewAngleOffsetCurrent;
-	vector vViewAngleOffsetTarget;
-	vector vViewAngleMemory;
-	*/
-	//vector vViewAngleOffsetEnd;
-	//vector vViewAngleOffsetStart;
-	//float flViewAngleOffsetLerp;
-	//vector vViewAngleOffsetCurrent;
 	PREDICTED_FLOAT(flViewAngleOffsetTarget);
 	PREDICTED_VECTOR(vViewAngleOffsetTargetDir);
-	//vector vViewAngleMemory;
 	
-	//vector vViewAngleOffsetTotalChange;
 	PREDICTED_VECTOR(vViewAngleOffsetTotalChange);
 #ifdef SERVER
 	vector vViewAngleOffsetTotalChangeAlt;
 #endif
-	
-	
 	
 	
 	PREDICTED_FLOAT(fAccuracyKickback);
@@ -260,8 +248,6 @@ class player:base_player
 	
 	// The client can keep its own in mind as prediction between frames if needed.  Server
 	// time and client time aren't really compatible to send like this.
-	
-	
 	
 	PREDICTED_FLOAT(fMoveBlockDelay);
 	PREDICTED_FLOAT(fUncrouchBlockDelay);
@@ -271,8 +257,8 @@ class player:base_player
 	PREDICTED_FLOAT(fKarateStamina);
 
 
-//These will be shared and help with slowdown logic.
-  //They are all 0 to 1.0 (normal) unless there are further restrictions.
+	// These will be shared and help with slowdown logic.
+	// They are all 0 to 1.0 (normal) unless there are further restrictions.
 	float flBaseSpeedMulti;  //How should miscelaneous things be affected (client animation)?
 	float flMoveSpeedMulti;  //how is move speed affected?
 	float flSoundSpeedMulti;   //can range from 0.5 to 1.
@@ -283,8 +269,6 @@ class player:base_player
 	float flProjectileSpeedMulti;  //how are non-projectiles (grenades, knives, etc.) affected?
 
 
-
-	
 	//TODO - see how to handle saving / loadig these on the client's end.
 	//Server probably dosen't need to store config stuff at all.
 #ifdef CLIENT
@@ -323,8 +307,6 @@ class player:base_player
 	float flViewShake;
 	
 #else
-	//serverside
-	float nextUseCooldown;
 	
 #endif
 

@@ -113,7 +113,9 @@ class TSMultiplayerRules:TSGameRules
 
 	virtual void(player pl) MakePlayerInvisible;
 	virtual void(base_player) PlayerMakePlayable;
+	virtual void(base_player pp) PlayerMakePlayableWithDefaultMoney;
 	virtual void(base_player) PlayerMakeSpectator;
+	virtual void(base_player) PlayerMakeSpectatorAndNotify;
 	virtual void(base_player pp) PlayerMakeSpectatorDelayed;
 	virtual void(base_player, int) PlayerRespawn;
 	virtual entity(float) PlayerFindSpawn;

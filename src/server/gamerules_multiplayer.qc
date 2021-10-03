@@ -360,10 +360,16 @@ TSMultiplayerRules::PlayerDeath(base_player pp)
 	// Redundant for gibbing but doesn't hurt
 	MakePlayerInvisible(pl);
 	
-	PlayerMakeSpectatorDelayed(pl);
+	// Now doing this instead
+	//PlayerMakeSpectatorDelayed(pl);
 	
+	pl.iState = PLAYER_STATE::DEAD_RECENT;
+	pl.deathCameraChangeTime = 2.5;
+	pl.minimumRespawnTime = autocvar_respawntime;
+	
+	// Not done just for this player, still a check on all alive players
+	// that happens to involve this deceased player.  Strange.
 	DeathCheck(pl);
-	
 	
 }
 
@@ -580,45 +586,19 @@ TSMultiplayerRules::RestartRound(int iWipe)
 		
 		// TAGGG - CRITICAL.
 		// If gamemodes where the starting cash isn't reset to a static amount at every spawn
-		// are ever intended, this is bad!
-		// Skipping a clean reset for all currently in spectator (classname="spectator") is bad!
+		// are ever intended, this has to be adjusted.
 		for (entity eFind = world; (eFind = find(eFind, ::classname, "player"));) {
 			//self = eFind;
 			player pl = (player)eFind;
 			
-			// only affect players ingame!
-			if(pl.iState != PLAYER_STATE::SPAWNED){
-				continue;
+			if(pl.iState == PLAYER_STATE::SPAWNED){
+				PlayerMakePlayableWithDefaultMoney(pl);
 			}
-
-			//printfline("PLAYER MONEY 1: %i", pl.money);
-
-			// only respawn players that were ingame. Those that weren't may want to stay in spectator.
-			if(pl.health > 0){
-				//pl.reset(TRUE);
-				
-				// Something about this resets the player money..?  Is it changing to Spectator
-				// right before Player that did it here?
-				//PlayerMakeSpectator(pl);
-				// just let PlayerMakePlayable work.
-				pl.iState = PLAYER_STATE::NOCLIP;
-				PlayerMakePlayable(pl);
-			}
-			
-			// do the money set here and it works out fine, doesn't leave the player on
-			// initial-round-respawn with 0 money.
-			setPlayerMoneyDefault(pl);
-			//printfline("PLAYER MONEY 3: %i", pl.money);
-			
 		}
 		
-		// anything to do with spectators.
-		//TAGGG - CRITICAL!  As spectators, changing "pl.money" would not make sense.  Not a player now.
-		/*
-		for (entity eFind = world; (eFind = find(eFind, ::classname, "spectator"));) {
-			
-		}
-		*/
+		// anything to do with spectators?
+		// Remember, any classname="spectator" is an authentic spectator, not players that can open the
+		// buymenu and click to spawn after.
 		
 	}//END OF !startingGame check
 	
@@ -679,6 +659,8 @@ TSMultiplayerRules::RestartRound(int iWipe)
 
 
 
+// From FreeCS, to check if all players on a team are dead for doing something
+// gamerules-wise like ending in the other side's favor.
 void
 TSMultiplayerRules::DeathCheck(base_player pl)
 {
@@ -806,7 +788,6 @@ TSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
 	//pl.classname = "player";
 	
 	// fresh inventory for you
-	//TAGGG - QUESTION: Why reset the player on death or going to spectator instead?
 	TS_resetPlayer(pl, TRUE);
 	
 	// Also, FreeHL did these, but it looks like a simple way of 0'ing everything out.
@@ -1006,12 +987,6 @@ void
 TSMultiplayerRules::PlayerMakePlayable(base_player pp)
 {
 	player pl = (player)pp;
-	if(pl.iState == PLAYER_STATE::SPAWNED){
-		// no need to do this again.
-		// Set pl.iState to something else first if this was an intentional re-spawn
-		// for an ingame player
-		return;
-	}
 	
 	pl.iState = PLAYER_STATE::SPAWNED;
 	// Nope!
@@ -1021,32 +996,40 @@ TSMultiplayerRules::PlayerMakePlayable(base_player pp)
 	PlayerRespawn(pl, pl.team);
 }
 
-/*
-=================
-PlayerMakeSpectator
 
-Force the player to become an observer.
-=================
-*/
+void
+TSMultiplayerRules::PlayerMakePlayableWithDefaultMoney(base_player pp){
+	player pl = (player)pp;
+	PlayerMakePlayable(pp);
+	setPlayerMoneyDefault(pl);
+}
+
+
+
+void
+TSMultiplayerRules::PlayerMakeSpectatorAndNotify(base_player pp){
+	
+	PlayerMakeSpectator(pp);
+	
+	// let the client know of the chane to revert any 'cl_thirdperson' change
+	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
+	WriteByte( MSG_MULTICAST, EVENT_TS::PLAYER_NOCLIP );
+	msg_entity = pp;
+	multicast( [0,0,0], MULTICAST_ONE_R );
+}
+
+// Turns the player into a fake spectator (open buymenu and fire to spawn
+// when its closed)
 void
 TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
 {
 	player pl = (player)pp;
-	
-	if(pl.iState == PLAYER_STATE::NOCLIP){
-		// Already in fake spectator!  Stop.
-		return;
-	}
 	
 	if(pl.modelindex != 0){
 		// assume this is necessary
 		MakePlayerInvisible(pl);
 	}
 	
-	// is that necessary still?
-	//TS_resetPlayer(pl, TRUE);
-	// And don't do this!  Just change iState
-	//MakeSpectator(pl);
 	pl.iState = PLAYER_STATE::NOCLIP;
 	
 	// And do the rest of the lines to finish that
@@ -1056,12 +1039,8 @@ TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
 	pl.think = NULL;
 	pl.nextthink = 0.0f;
 	pl.maxspeed = 250;
-	//pl.spec_ent = 0;
-	//pl.spec_mode = 0;
 
-	//#ifdef SERVER
-		forceinfokey(pl, "*spec", "1");
-	//#endif
+	forceinfokey(pl, "*spec", "1");
 	
 	pl.armor = pl.activeweapon = pl.g_items = 0;
 	pl.health = 0;
@@ -1080,27 +1059,6 @@ TSMultiplayerRules::PlayerMakeSpectatorDelayed(base_player pp)
 	player pl = (player)pp;
 	PlayerMakeSpectator(pp);
 	
-	/*
-	player pl = (player)pp;
-	if(pl.classname != "spectator" && pl.modelindex != 0){
-		// assume this is necessary
-		MakePlayerInvisible(pl);
-	}
-	
-	//TS_resetPlayer(pl, TRUE);
-	static void GoSpec(void) {
-		spawnfunc_spectator();
-	}
-	pl.think = GoSpec;
-	pl.nextthink = time;
-	// ?  Is this for the specator-spawn to sense that the classname
-	// wasn't already "spectator" in case this happens twice in the
-	// same frame?
-	pl.classname = "player";
-	// "dead" should already be set.
-	//forceinfokey(pl, "*dead", "1"); 
-	//forceinfokey(pl, "*team", ftos(pl.team));
-	*/
 }
 
 /*
@@ -1136,16 +1094,12 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	//pl.team = TEAM_SPECTATOR;
 	
 	
-	// immediately put us into spectating mode
-	// (iState forced to a wrong value to stop MakeSpectator from being skipped)
-	pl.iState = PLAYER_STATE::SPAWNED;
+	// immediately put us into fake spectating mode (MoTD followed by buy-menu)
 	PlayerMakeSpectator(pl);
 	// Use our game's custom ObserverCam instead.
 	Game_Spawn_ObserverCam(pl);
 
 	// give the initial server-joining money
-	//TAGGG - WARNING!  This sets 'pl.money', should that be some infokey stat instead
-	// for player/spectator entity-change reasons?
 	setPlayerMoneyDefault(pl);
 
 	// I guess this state counts as "dead"?
@@ -1156,8 +1110,11 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	forceinfokey(pl, "*deaths", "0"); //ftos(pl.deaths));
 	
 	forceinfokey(pl, "done_connecting", "1");
+	
+	// ALSO - start the minimum spawn delay.
+	pl.minimumRespawnTime = autocvar_respawntime;
+	
 }
-
 
 
 void
@@ -1169,30 +1126,51 @@ TSMultiplayerRules::setPlayerMoneyDefault(player pl)
 
 
 
+void
+CSEv_GameEarlyNoclip(void)
+{
+	TSMultiplayerRules rules;
+	player pl = (player)self;
+	
+	if(pl.iState != PLAYER_STATE::DEAD_RECENT){
+		// This is for looking at a recently dead player only.
+		return;
+	}
+	
+	if(pl.deathCameraChangeTime > 1.5){
+		if(pl.deathCameraChangeTime < 1.5 + 0.5){
+			pl.waitingForEarlyNoclip = TRUE;
+		}
+		return;
+	}
+	
+	rules = (TSMultiplayerRules)g_grMode;
+	rules.PlayerMakeSpectatorAndNotify(pl);
+	
+	
+}
+
 // An order from the client (while in spectator) that they want to spawn.
 void
 CSEv_GamePlayerSpawn(void)
 {
-	TSMultiplayerRules rules = (TSMultiplayerRules)g_grMode;
+	TSMultiplayerRules rules;
 	player pl = (player)self;
 	
 	if(pl.iState == PLAYER_STATE::SPAWNED){
-		// what.
+		// already spawned?
 		return;
 	}
 	
-	//self.dmg_take = 0;
-	//self.dmg_inflictor = NULL; //good idea?
-
-	// For now stop deathspammin'
-	if (pl.health > 0) {
+	if(pl.minimumRespawnTime > 0){
+		// the spawn-delay hasn't expired yet, then no.
+		// Although, if close enough, mark this as 'waitingToSpawn' to happen as it finishes
+		if(pl.minimumRespawnTime < 0.5){
+			pl.waitingForSpawn = TRUE;
+		}
 		return;
 	}
 	
-	rules.PlayerMakeSpectator(pl);
-	rules.PlayerMakePlayable(pl);
-	
-	// reset the money
-	rules.setPlayerMoneyDefault(pl);
+	rules = (TSMultiplayerRules)g_grMode;
+	rules.PlayerMakePlayableWithDefaultMoney(pl);
 }
-

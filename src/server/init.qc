@@ -289,8 +289,9 @@ Game_Worldspawn(void)
 	// see what calls that if uncertain from nuclide.
 	initSpawnMem();
 	
-	
 	clientstat(STAT_MONEY, EV_INTEGER, player::money);
+	clientstat(STAT_DEATHCAMERACHANGETIME, EV_FLOAT, player::deathCameraChangeTime);
+	clientstat(STAT_MINIMUMRESPAWNTIME, EV_FLOAT, player::minimumRespawnTime);
 	pointerstat(STAT_GAMETIME, EV_FLOAT, &g_ts_gametime);
 	pointerstat(STAT_GAMESTATE, EV_INTEGER, &g_ts_gamestate);
 	

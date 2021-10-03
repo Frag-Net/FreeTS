@@ -296,7 +296,7 @@ player::ReceiveEntity(float new, float fl)
 	this.completeInventorySend = readbyte();
 	
 #ifdef FORCE_NETWORK_ALL_INVENTORY
-	completeInventorySend = TRUE;
+	this.completeInventorySend = TRUE;
 #endif
 	
 	if(this.completeInventorySend){
@@ -1004,6 +1004,11 @@ player::reset(BOOL resetInventory){
 	// should this even make any assumptions about this?
 	//iState = ?;
 	
+	// seem like good ideas?
+#ifdef SERVER
+	dmg_take = 0;
+	dmg_inflictor = NULL;
+#endif
 	
 	resetZoom();
 	
@@ -1037,12 +1042,19 @@ player::reset(BOOL resetInventory){
 	
 	forceViewModelUpdate = FALSE;
 	prev_iForceBodygroup1Submodel = 0;
-		
+	
+	// assuming the player is in spectator and wanting to spawn soon.
+	displayMinimumRespawnTimeCountdown = TRUE;
+	old_cl_thirdperson = 0;
 #endif
 	
 #ifdef SERVER
 	switchToRecentlyAddedWeapon = FALSE;
-	nextUseCooldown = 0;
+	
+	deathCameraChangeTime = 0;
+	minimumRespawnTime = 0;
+	waitingForSpawn = FALSE;
+	waitingForEarlyNoclip = FALSE;
 #endif
 	
 	
@@ -1683,11 +1695,47 @@ player::callWeaponThink(void){
 
 void
 player::frameThink_fromServer(void){
+	TSMultiplayerRules rules;
 	
 	// no, leave that to shared/input.qc
 	//updateTimers();
 	
 	//preThinkShared();
+
+	// only in DEAD_RECENT.  This is the temporary third-person for looking at the recently
+	// dead player (self).  After the countdown is over, goto the NOCLIP one.
+	if(iState == PLAYER_STATE::DEAD_RECENT){
+		
+		if(deathCameraChangeTime > 0){
+			deathCameraChangeTime -= frametime;
+		}
+		if(deathCameraChangeTime <= 0 || (waitingForEarlyNoclip && deathCameraChangeTime <= 1.5) ){
+			// time's up?  Go ahead and change
+			deathCameraChangeTime = 0;
+			rules = (TSMultiplayerRules)g_grMode;
+			rules.PlayerMakeSpectatorAndNotify(this);
+			
+		}
+	}
+	
+	if(iState != PLAYER_STATE::SPAWNED){
+		// Once this delay has passed, spawning is allowed.
+		// If the click was very close to the end (waitingForSpawn), count it and spawn
+		// as soon as possible anyway, helps with some lag perhaps.
+		if(minimumRespawnTime > 0){
+			minimumRespawnTime -= frametime;
+			if(minimumRespawnTime <= 0){
+				minimumRespawnTime = 0;
+				if(waitingForSpawn){
+					// do it!
+					rules = (TSMultiplayerRules)g_grMode;
+					rules.PlayerMakePlayableWithDefaultMoney(this);
+				}else{
+					// Nothing special happens, user must click to spawn.
+				}
+			}
+		}
+	}// not-SPAWNED check
 	
 	
 }// frameThink_fromServer

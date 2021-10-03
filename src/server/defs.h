@@ -34,6 +34,12 @@ var float autocvar_mp_timelimit = 60;
 var string autocvar_motdfile = "motd.txt";
 var int autocvar_mp_friendlyfire = FALSE;
 
+var float autocvar_weaponstay = 60;  //default originally 15
+
+// orignal TS name.  Minimum allowed time before respawns for self-respawnable gamemodes,
+// deathmatch and team-deathmatch, I forget if there's anything else.  Not round-based ones.
+var float autocvar_respawntime = 5.0;
+
 
 var int autocvar_debug_spawnpointforced = 0;
 	

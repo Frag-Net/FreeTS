@@ -182,6 +182,9 @@ ClientGame_EventParse(float fHeader)
 	case EVENT_TS::PLAYER_DEATH:{
 		EV_PlayerDeath();
 	}break;
+	case EVENT_TS::PLAYER_NOCLIP:{
+		EV_PlayerNoclip();
+	}break;
 	case EVENT_TS::EQUIP_CALLBACK:{
 		EV_EquipCallback();
 	}break;

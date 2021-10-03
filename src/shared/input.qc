@@ -64,6 +64,12 @@ Game_Input(void)
 		// not ingame (fake spectator)?  Do another check instead: spawning.
 #ifdef CLIENT
 		PreSpawn_Input();
+		// since PreSpawn_Input may end early, guarantee this runs
+		if(input_buttons & INPUT_BUTTON0){
+			pl.gflags |= GF_SEMI_TOGGLED;
+		}else{
+			pl.gflags &= ~GF_SEMI_TOGGLED;
+		}
 #endif
 		// client or server, don't pay attention to the rest of this file if not spawned
 		return;
@@ -411,9 +417,49 @@ void PreSpawn_Input(void){
 		!(pl.gflags & GF_SEMI_TOGGLED) &&
 		pSeatLocal->m_flBlockSpawnInputTime <= time
 	){
-		sendevent( "GamePlayerSpawn", "");
+		
+		if(pl.iState == PLAYER_STATE::DEAD_RECENT){
+			
+			if(getstatf(STAT_DEATHCAMERACHANGETIME) <= 1.5 + 0.35){
+				// change, and fall-through to do the minimum respawn timer too.
+				sendevent("GameEarlyNoclip", "");
+			}else{
+				// don't do anything
+				return;
+			}
+		}
+		
+		if(getstatf(STAT_MINIMUMRESPAWNTIME) < 0.35){
+			// allow a little time before the countdown finishes to send the message anyway in case of lag,
+			// should reach the server soon, no need for the countdown notice
+			sendevent("GamePlayerSpawn", "");
+		}else{
+			
+		}
+		
+		
 	}
 	
+	// show a printout of how long until the player can click to spawn.
+	// TODO - use our own system instead to use a larger font, and the same one
+	// used for the buymenu buttons, most things seem to do that.
+	// Also, any 'Using New Config' centerprint will be overwritten by this instantly,
+	// so there should probably be a check to let that one appear independently of this
+	// countdown and below if both need to be shown.
+	if(pl.iState == PLAYER_STATE::NOCLIP && pl.displayMinimumRespawnTimeCountdown){
+		int roundedMinimumRespawnTime = (int)ceil(getstatf(STAT_MINIMUMRESPAWNTIME));
+		if(roundedMinimumRespawnTime != 0){
+			CSQC_Parse_CenterPrint(sprintf("%i", roundedMinimumRespawnTime));
+		}else{
+			// last one.
+			pl.displayMinimumRespawnTimeCountdown = FALSE;
+			CSQC_Parse_CenterPrint("Press fire to play!");
+		}
+	}
+	
+		
+	
+
 	/*
 	if(
 		((input_buttons & INPUT_BUTTON0) && pSeatLocal->m_flBlockSpawnInputTime > time) ||
@@ -426,12 +472,6 @@ void PreSpawn_Input(void){
 	}
 	*/
 	
-	// since the rest of this method is about to be skipped.
-	if(input_buttons & INPUT_BUTTON0){
-		pl.gflags |= GF_SEMI_TOGGLED;
-	}else{
-		pl.gflags &= ~GF_SEMI_TOGGLED;
-	}
 }//PreSpawn_Input
 
 

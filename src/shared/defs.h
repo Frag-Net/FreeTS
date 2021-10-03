@@ -20,12 +20,6 @@ enum TS_Team{
 //#define INPUT_BUTTON9 0x00000100
 
 
-#ifdef SERVER
-	//server CVar
-	var float autocvar_weaponstay = 60;  //default originally 15
-#endif
-
-
 // for convenience and clarity, see fteextensions.qc for the rest of the SOUNDFLAG choices
 #define SOUNDFLAG_NONE 0
 
@@ -66,10 +60,14 @@ enum TS_Team{
 
 //TAGGG - Still need to remove some irrelevant ones like BUYZONE,, ESCAPEZONE, WON_T, etc.
 // Also starting at stat 34?  Feel some constant would be more comfortable for that, might not be an option though.
+// ALSO - don't exceed 127, going by fteextensions.qc
 enum { 
 	STAT_MONEY = STAT_BUILTIN_SEPARATOR,
 	
-	//STAT_TEAM, // will we ever need that?
+	STAT_DEATHCAMERACHANGETIME,
+	STAT_MINIMUMRESPAWNTIME,
+	
+	//STAT_TEAM, // later
 	STAT_GAMETIME,
 	STAT_GAMESTATE,
 	STAT_RULE_MONEYALLOWED,

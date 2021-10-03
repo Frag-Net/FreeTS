@@ -390,8 +390,6 @@ EV_TS_resetPlayer(player pl, BOOL resetInventory){
 // keeping the event in case it has some use later.
 void
 EV_PlayerDeath(void){
-	printfline("EV_PlayerDeath");
-	
 	// Require a tiny amount of time and a mouse release before a respawn, so that
 	// dying with the mouse held down isn't enough to trigger a respawn request.
 	//pSeatLocal->m_bNeedPrimaryRelease = TRUE;
@@ -406,9 +404,25 @@ EV_PlayerDeath(void){
 	
 	player pl = (player)self;
 	pl.resetZoom();
+	
+	// also this, anticipating that it will be shown after the DEAD_RECENT state is over
+	pl.displayMinimumRespawnTimeCountdown = TRUE;
+	
+	// force third-person while the player is in RECENT_DEAD at least
+	pl.old_cl_thirdperson = cvar("cl_thirdperson");
+	//autocvar_cl_thirdperson = 1i;
+	cvar_set("cl_thirdperson", itos(1i));
+}
+
+void
+EV_PlayerNoclip(void){
+	player pl = (player)self;
+	//autocvar_cl_thirdperson = pl.old_cl_thirdperson;
+	cvar_set("cl_thirdperson", itos(pl.old_cl_thirdperson));
+	//cvar_set("cl_thirdperson", ftos(0));
+	
 }
 #endif
-
 
 
 #ifdef CLIENT

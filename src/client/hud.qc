@@ -71,6 +71,10 @@ HUD_Draw(void)
 	player pl = (player)pSeat->m_ePlayer;
 	
 	
+	//TAGGG - outside the rest for now
+	Obituary_Draw();
+	Textmenu_Draw();
+	
 	if(pl.iState == PLAYER_STATE::SPAWNED){
 		// A player
 		
@@ -109,8 +113,6 @@ HUD_Draw(void)
 		// Nuclide methods in its weapons struct
 		Weapons_DrawCrosshair();
 		TS_HUD_DrawWeaponSelect();
-		Obituary_Draw();
-		Textmenu_Draw();
 		
 		
 		//TAGGG - new

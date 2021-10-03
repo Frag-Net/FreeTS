@@ -37,6 +37,7 @@ void EV_TS_resetPlayer(player pl, BOOL resetInventory)
 
 #ifdef CLIENT
 void EV_PlayerDeath(void)
+void EV_PlayerNoclip(void);
 #endif
 
 
