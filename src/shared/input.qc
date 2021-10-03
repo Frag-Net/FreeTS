@@ -440,38 +440,6 @@ void PreSpawn_Input(void){
 		
 	}
 	
-	// show a printout of how long until the player can click to spawn.
-	// TODO - use our own system instead to use a larger font, and the same one
-	// used for the buymenu buttons, most things seem to do that.
-	// Also, any 'Using New Config' centerprint will be overwritten by this instantly,
-	// so there should probably be a check to let that one appear independently of this
-	// countdown and below if both need to be shown.
-	if(pl.iState == PLAYER_STATE::NOCLIP && pl.displayMinimumRespawnTimeCountdown){
-		int roundedMinimumRespawnTime = (int)ceil(getstatf(STAT_MINIMUMRESPAWNTIME));
-		if(roundedMinimumRespawnTime != 0){
-			CSQC_Parse_CenterPrint(sprintf("%i", roundedMinimumRespawnTime));
-		}else{
-			// last one.
-			pl.displayMinimumRespawnTimeCountdown = FALSE;
-			CSQC_Parse_CenterPrint("Press fire to play!");
-		}
-	}
-	
-		
-	
-
-	/*
-	if(
-		((input_buttons & INPUT_BUTTON0) && pSeatLocal->m_flBlockSpawnInputTime > time) ||
-		pSeat->m_flInputBlockTime > time
-	)
-	{
-		pSeatLocal->m_flBlockSpawnInputTime = time + 0.20f;
-		pl.gflags |= GF_SEMI_TOGGLED;
-		return;
-	}
-	*/
-	
 }//PreSpawn_Input
 
 

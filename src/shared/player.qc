@@ -1829,6 +1829,30 @@ player::preThink(void){
 		}// inventoryEquippedIndex
 	}// w_freeze_idle_next check
 	
+	
+	
+	// show a printout of how long until the player can click to spawn.
+	// TODO - use our own system instead to use a larger font, and the same one
+	// used for the buymenu buttons, most things seem to do that.
+	// Also, any 'Using New Config' centerprint will be overwritten by this instantly,
+	// so there should probably be a check to let that one appear independently of this
+	// countdown and below if both need to be shown.
+	// ALSO, making the "iState == PLAYER_STATE::NOCLIP" check less strict.
+	// It is possible to stop this slightly early, but may as well send the
+	// "Press fire to play" anyway, not much earlier is allowed.
+	if(iState != PLAYER_STATE::DEAD_RECENT && displayMinimumRespawnTimeCountdown){
+		int roundedMinimumRespawnTime = (int)ceil(getstatf(STAT_MINIMUMRESPAWNTIME));
+		if(roundedMinimumRespawnTime != 0){
+			CSQC_Parse_CenterPrint(sprintf("%i", roundedMinimumRespawnTime));
+		}else{
+			// last one.
+			displayMinimumRespawnTimeCountdown = FALSE;
+			CSQC_Parse_CenterPrint("Press fire to play!");
+		}
+	}
+	
+	
+	
 	preThinkShared();
 	
 }//preThink
