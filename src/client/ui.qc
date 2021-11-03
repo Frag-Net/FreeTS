@@ -401,9 +401,9 @@ UI_CheckMouse(vector vPos, vector vReg)
 void
 Font_Load_Easy(string strFontPath, int iFontScale, font_s &fntNew)
 {
-	fntNew.iScale = iFontScale;
+	fntNew.iScaleX = fntNew.iScaleY = iFontScale;
 	fntNew.vecColor = [1,1,1];
 	fntNew.flAlpha = 1.0f;
 	fntNew.iFlags = 0;
-	fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScale), -1, 0, 0);
+	fntNew.iID = (int)loadfont("", strFontPath, ftos((float)fntNew.iScaleY), -1, 0, 0);
 }

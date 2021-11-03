@@ -174,48 +174,6 @@ Gfx_ScalePicPreserveBounds(string sImage, vector arg_vDrawPos, vector vSize, vec
 }
 
 
-
-// Cloned from src/menu-fn/w_label.qc
-string
-Colors_RGB8_to_HEX(vector color)
-{
-	string out = "^x";
-	//string out = "";
-
-	for (int i = 0; i < 3; i++) {
-		string a = "";
-		float b = rint(color[i] * 15);
-
-		switch (b) {
-		case 10:
-			a = "A";
-			break;
-		case 11:
-			a = "B";
-			break;
-		case 12:
-			a = "C";
-			break;
-		case 13:
-			a = "D";
-			break;
-		case 14:
-			a = "E";
-			break;
-		case 15:
-			a = "F";
-			break;
-		default:
-			a = ftos(b);
-		}
-		out = sprintf("%s%s", out, a);
-	}
-	return out;
-}
-
-
-
-
 // Load the map description
 // Do we have any use for this though?  Check original TS, the "Select Team"
 // screen does (press enter to close or after closing the MoTD, probably)
