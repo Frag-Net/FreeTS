@@ -142,7 +142,7 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	// safe default for whatever doesn't specify it?
 	// Beware that draw calls that don't set the drawfont will still rely
 	// on the previously set one, although that could be intentional too.
-	drawfont = FONT_CON;
+	drawfont = Font_GetID(FONT_CON);
 	//////////////////////////////////////////////////////////////////
 	
 	UI_Init();

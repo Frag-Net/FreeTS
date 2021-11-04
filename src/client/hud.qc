@@ -144,7 +144,7 @@ HUD_Draw(void)
 	}else{
 		// Fake spectator, or the temporary forced third-person on death (not yet implemented).
 		
-		drawfont = FONT_20;
+		drawfont = Font_GetID(FONT_20);
 		// TAGGG - could have some message from server-to-client on changing from
 		// player to spectator to call this only then, but I think doing this every
 		// frame for spectator is harmless anyway. Changing the FOV isn't necessary,
@@ -184,7 +184,7 @@ HUD_DrawSpectator(void)
 
 	spectator spec = (spectator)pSeat->m_ePlayer;
 
-	drawfont = FONT_20;
+	drawfont = Font_GetID(FONT_20);
 	vector vecPos;
 	string strText;
 
