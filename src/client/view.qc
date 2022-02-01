@@ -604,7 +604,7 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	}else{
 		
 		posView = pl.origin + pl.view_ofs;
-		angView = [pl.pitch, pl.angles[1], pl.angles[2]];
+		angView = pl.v_angle;
 		gunpos = posView;
 		angGun = angView;
 	}
