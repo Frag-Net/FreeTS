@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void
+int
 ClientGame_EventParse(float fHeader)
 {
 	player pl = (player)pSeat->m_ePlayer;
@@ -223,6 +223,8 @@ ClientGame_EventParse(float fHeader)
 		//printfline("EVENT_TS::TEST HAPPENED");
 		//clearscene();
 	}break;
+	default:
+		return (0);
 	}
-		
+	return (1);
 }
