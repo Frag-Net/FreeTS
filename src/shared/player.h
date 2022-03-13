@@ -482,13 +482,6 @@ class player:base_player
 	//TAGGG - TODO.  See if these need other lines to be supported & actually used, remove
 	// if not needed at all for what TS does.
 #ifdef CLIENT
-	/* External model */
-	entity p_model;
-	int p_hand_bone;
-	int p_model_bone;
-	
-	// nothing uses this?  Whoops
-	//float lastweapon;
 #endif
 	
 	void(void) player;
