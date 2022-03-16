@@ -149,10 +149,10 @@ w_fiveseven_primary(player pl)
 	}
 
 	if(arg_thisWeapon.iClipLeft > 0){
-		TS_Weapons_ViewAnimation(weaponseq_fiveseven::shoot, 31.0f/40.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_fiveseven::shoot, 31.0f/40.0f);
 	}else{
 		// that was our last bullet?
-		TS_Weapons_ViewAnimation(weaponseq_fiveseven::shootlast, 31.0f/40.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_fiveseven::shootlast, 31.0f/40.0f);
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){

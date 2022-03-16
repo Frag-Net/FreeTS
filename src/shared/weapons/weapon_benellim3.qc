@@ -177,9 +177,9 @@ w_benellim3_primary(player pl)
 			// why the cast to float here?  No idea
 			int r = (float)input_sequence % 2;
 			if(r == 0){
-				TS_Weapons_ViewAnimation(weaponseq_benellim3::pump, 29.0f/35.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_benellim3::pump, 29.0f/35.0f);
 			}else{
-				TS_Weapons_ViewAnimation(weaponseq_benellim3::pump2, 25.0f/35.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_benellim3::pump2, 25.0f/35.0f);
 			}
 			
 			arg_thisWeapon.bNeedsPump = FALSE;
@@ -201,12 +201,12 @@ w_benellim3_primary(player pl)
 	SoundPitched_Send(pl, SNDP_BENELLIM3_FIRE);
 
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
-		TS_Weapons_ViewAnimation(weaponseq_benellim3::shootpump, (31.0f/35.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_benellim3::shootpump, (31.0f/35.0f) );
 		// no shell!  Pumping does that.
 		arg_thisWeapon.bNeedsPump = TRUE;
 		weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::WEIRD);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_benellim3::shootsemi, (31.0f/35.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_benellim3::shootsemi, (31.0f/35.0f) );
 		weapon_ClientEffects(MUZZLEFLASH_ID::WEIRD, SHELLEJECT_ID::SHOTGUN_BLUE);
 	}
 	

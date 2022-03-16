@@ -35,7 +35,7 @@ void weapon_sawedoff_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 	MELEE_HIT_RESPONSE hitRep = weapon_base_coldcock(pl, ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon, 40, 66);
 	weapon_base_setWholeAttackDelay(pl, 0.73f);
-	TS_Weapons_ViewAnimation_noLaserLock(weaponseq_sawedoff::coldcock, (30.0f/30.0f) );
+	TS_Weapons_ViewAnimation_noLaserLock(pl,weaponseq_sawedoff::coldcock, (30.0f/30.0f) );
 	
 	arg_thisWeapon.iIronSight = 0;  // disable, coldcock returns to non-ironsight look
 	
@@ -186,16 +186,16 @@ w_sawedoff_primary(player pl)
 	if(!arg_thisWeapon.iIronSight){
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot1, 31.0f/33.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_sawedoff::shoot1, 31.0f/33.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot2, 31.0f/33.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_sawedoff::shoot2, 31.0f/33.0f);
 		}
 	}else{
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot1b, 31.0f/33.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_sawedoff::shoot1b, 31.0f/33.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_sawedoff::shoot2b, 31.0f/33.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_sawedoff::shoot2b, 31.0f/33.0f);
 		}
 	}
 	

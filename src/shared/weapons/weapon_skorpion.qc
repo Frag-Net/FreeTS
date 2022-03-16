@@ -136,11 +136,11 @@ w_skorpion_primary(player pl)
 	
 	int r = (float)input_sequence % 3;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_skorpion::fire1, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_skorpion::fire1, 31.0f/30.0f);
 	}else if(r == 1){
-		TS_Weapons_ViewAnimation(weaponseq_skorpion::fire2, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_skorpion::fire2, 31.0f/30.0f);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_skorpion::fire3, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_skorpion::fire3, 31.0f/30.0f);
 	}
 	
 	weapon_ClientEffects(MUZZLEFLASH_ID::SMALL, SHELLEJECT_ID::GENERIC);

@@ -183,7 +183,7 @@ void weapon_skorpion_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, in
 		
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_LEFT){
 			//printfline("VM: UZI: LEFT");
-			TS_Weapons_ViewAnimation(weaponseq_skorpion_akimbo::fireleft, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_skorpion_akimbo::fireleft, (31.0f/30.0f) );
 			
 			weapon_base_setLeftAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay);
 			if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FULL_AUTO){
@@ -194,7 +194,7 @@ void weapon_skorpion_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, in
 			
 		}else if(finalAkimboChoice == BITS_AKIMBOCHOICE_RIGHT){
 			//printfline("VM: UZI: RIGHT");
-			TS_Weapons_ViewAnimation(weaponseq_skorpion_akimbo::fireright, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_skorpion_akimbo::fireright, (31.0f/30.0f) );
 			
 			weapon_base_setRightAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay);
 			if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FULL_AUTO){
@@ -211,9 +211,9 @@ void weapon_skorpion_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, in
 		//printfline("VM: UZI: BOTH");
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_skorpion_akimbo::fire1ak, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_skorpion_akimbo::fire1ak, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_skorpion_akimbo::fire2ak, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_skorpion_akimbo::fire2ak, (31.0f/30.0f) );
 		}
 		
 		pl.akimboDualFireToleranceTime = 0;

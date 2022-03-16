@@ -1815,15 +1815,15 @@ player::preThink(void){
 				// we ever care about some delay for this in the future.
 				if(!usingIronSight){
 					// use this one (plain)
-					TS_Weapons_ViewAnimation(ironsightRef.iAnim_Idle_Index, 2 );
+					TS_Weapons_ViewAnimation(this, ironsightRef.iAnim_Idle_Index, 2 );
 				}else{
 					// use this one
-					TS_Weapons_ViewAnimation(ironsightRef.ironsightdata.iAnim_Idle_Index, 2 );
+					TS_Weapons_ViewAnimation(this, ironsightRef.ironsightdata.iAnim_Idle_Index, 2 );
 				}
 				
 			}else{
 				//baseRef = *((weapondata_basic_t*) basePRef);
-				TS_Weapons_ViewAnimation(baseRef.iAnim_Idle_Index, 2 );
+				TS_Weapons_ViewAnimation(this, baseRef.iAnim_Idle_Index, 2 );
 			}
 			
 		}// inventoryEquippedIndex

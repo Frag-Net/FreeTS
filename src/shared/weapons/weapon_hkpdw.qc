@@ -153,11 +153,11 @@ w_hkpdw_primary(player pl)
 
 	int r = (float)input_sequence % 3;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_hkpdw::shoot, 21.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_hkpdw::shoot, 21.0f/30.0f);
 	}else if(r == 1){
-		TS_Weapons_ViewAnimation(weaponseq_hkpdw::shoot2, 21.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_hkpdw::shoot2, 21.0f/30.0f);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_hkpdw::shoot3, 21.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_hkpdw::shoot3, 21.0f/30.0f);
 	}
 	
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){

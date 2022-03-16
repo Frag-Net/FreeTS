@@ -195,13 +195,13 @@ w_mossberg500_primary(player pl)
 			weapon_EjectShell(SHELLEJECT_ID::SHOTGUN_GOLD);
 			
 			if(!arg_thisWeapon.iIronSight){
-				TS_Weapons_ViewAnimation(weaponseq_mossberg500::pump, 31.0f/35.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_mossberg500::pump, 31.0f/35.0f);
 			}else{
 				int r = (float)input_sequence % 2;
 				if(r == 0){
-					TS_Weapons_ViewAnimation(weaponseq_mossberg500::pumpb, 31.0f/35.0f);
+					TS_Weapons_ViewAnimation(pl, weaponseq_mossberg500::pumpb, 31.0f/35.0f);
 				}else{
-					TS_Weapons_ViewAnimation(weaponseq_mossberg500::pumpb2, 31.0f/35.0f);
+					TS_Weapons_ViewAnimation(pl, weaponseq_mossberg500::pumpb2, 31.0f/35.0f);
 				}
 			}
 			
@@ -223,9 +223,9 @@ w_mossberg500_primary(player pl)
 
 	//if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
 		if(!arg_thisWeapon.iIronSight){
-			TS_Weapons_ViewAnimation(weaponseq_mossberg500::shoot, 31.0f/35.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mossberg500::shoot, 31.0f/35.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_mossberg500::shootb, 31.0f/35.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mossberg500::shootb, 31.0f/35.0f);
 		}
 		
 		// no shell!  Pumping does that.

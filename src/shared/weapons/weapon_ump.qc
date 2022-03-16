@@ -156,11 +156,11 @@ w_ump_primary(player pl)
 	
 	int r = (float)input_sequence % 3;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_ump::shoot1, 19.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_ump::shoot1, 19.0f/30.0f);
 	}else if(r == 1){
-		TS_Weapons_ViewAnimation(weaponseq_ump::shoot2, 19.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_ump::shoot2, 19.0f/30.0f);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_ump::shoot3, 19.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_ump::shoot3, 19.0f/30.0f);
 	}
 
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){

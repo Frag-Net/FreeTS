@@ -169,9 +169,9 @@ w_spas12_primary(player pl)
 			
 			int r = (float)input_sequence % 2;
 			if(r == 0){
-				TS_Weapons_ViewAnimation(weaponseq_spas12::pump, 31.0f/35.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_spas12::pump, 31.0f/35.0f);
 			}else{
-				TS_Weapons_ViewAnimation(weaponseq_spas12::pump2, 31.0f/35.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_spas12::pump2, 31.0f/35.0f);
 			}
 			
 			arg_thisWeapon.bNeedsPump = FALSE;
@@ -191,12 +191,12 @@ w_spas12_primary(player pl)
 	SoundPitched_Send(pl, SNDP_SPAS12_FIRE);
 
 	if(arg_thisWeapon.iFireMode == BITS_FIREMODE_PUMP){
-		TS_Weapons_ViewAnimation(weaponseq_spas12::shootpump, (31.0f/35.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_spas12::shootpump, (31.0f/35.0f) );
 		// no shell!  Pumping does that.
 		arg_thisWeapon.bNeedsPump = TRUE;
 		weapon_ShowMuzzleFlash(MUZZLEFLASH_ID::WEIRD);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_spas12::shootsemi, (31.0f/35.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_spas12::shootsemi, (31.0f/35.0f) );
 		weapon_ClientEffects(MUZZLEFLASH_ID::WEIRD, SHELLEJECT_ID::SHOTGUN);
 	}
 	

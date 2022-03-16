@@ -131,9 +131,9 @@ w_m60_primary(player pl)
 	
 	int r = (float)input_sequence % 2;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_m60::shoot, 31.0f/33.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_m60::shoot, 31.0f/33.0f);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_m60::shoot2, 31.0f/33.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_m60::shoot2, 31.0f/33.0f);
 	}
 
 	weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);

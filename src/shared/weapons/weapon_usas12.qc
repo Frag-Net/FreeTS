@@ -131,7 +131,7 @@ w_usas12_primary(player pl)
 	
 	SoundPitched_Send(pl, SNDP_USAS12_FIRE);
 
-	TS_Weapons_ViewAnimation(weaponseq_usas12::shootsemi, 31.0f/35.0f);
+	TS_Weapons_ViewAnimation(pl, weaponseq_usas12::shootsemi, 31.0f/35.0f);
 
 	weapon_ClientEffects(MUZZLEFLASH_ID::WEIRD, SHELLEJECT_ID::SHOTGUN);
 

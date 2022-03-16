@@ -141,11 +141,11 @@ w_sealknife_primary(player pl)
 	// actually do this animation the same regardless as far as we know.
 	int r = (float)input_sequence % 3;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_sealknife::slash1, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_sealknife::slash1, (31.0f/30.0f) );
 	}else if(r == 1){
-		TS_Weapons_ViewAnimation(weaponseq_sealknife::slash2, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_sealknife::slash2, (31.0f/30.0f) );
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_sealknife::slash3, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_sealknife::slash3, (31.0f/30.0f) );
 	}
 	
 }
@@ -178,7 +178,7 @@ w_sealknife_secondary(player pl)
 	
 	if(arg_thisWeapon.iCount > 0){
 		// another knife left?  Bring it up with a draw animation.
-		TS_Weapons_ViewAnimation(weaponseq_sealknife::draw, (31.0f / 30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_sealknife::draw, (31.0f / 30.0f) );
 	}else{
 #ifdef SERVER
 		// No knives left?  Unequip, pick something else.

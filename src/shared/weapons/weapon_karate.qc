@@ -155,13 +155,13 @@ w_karate_primary(player pl)
 	
 	int r = (float)input_sequence % 4;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_karate::punch_left, (31.0f/40.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_karate::punch_left, (31.0f/40.0f) );
 	}else if(r == 1){
-		TS_Weapons_ViewAnimation(weaponseq_karate::punch_right, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_karate::punch_right, (31.0f/30.0f) );
 	}else if(r == 2){
-		TS_Weapons_ViewAnimation(weaponseq_karate::uppercut, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_karate::uppercut, (31.0f/30.0f) );
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_karate::punch_right2, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_karate::punch_right2, (31.0f/30.0f) );
 	}
 	
 	
@@ -298,16 +298,16 @@ w_karate_secondary(player pl)
 		//ordinary
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_karate::kick, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_karate::kick, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_karate::sidekick, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_karate::sidekick, (31.0f/30.0f) );
 		}
 	}else if(meleeAnimToPlay == 1){
 		//spin kick
-		TS_Weapons_ViewAnimation(weaponseq_karate::spinkick, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_karate::spinkick, (31.0f/30.0f) );
 	}else if(meleeAnimToPlay == 2){
 		//back kick
-		TS_Weapons_ViewAnimation(weaponseq_karate::backkick, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_karate::backkick, (31.0f/30.0f) );
 	}
 	
 	// TODO - player model anims for melee?
@@ -336,7 +336,7 @@ w_karate_reload(player pl)
 		// allow it.  Whatever 'it' is
 		TS_Weapons_PlaySoundDirect(pl, "player/block.wav");
 		
-		TS_Weapons_ViewAnimation(weaponseq_karate::block_low, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_karate::block_low, (31.0f/30.0f) );
 	}
 	
 	pl.flKarateBlockCooldown = time + 1.3f;

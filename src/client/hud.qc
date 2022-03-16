@@ -165,14 +165,6 @@ HUD_Draw(void)
 
 }
 
-
-
-string g_specmodes[] = {
-	"Free Camera",
-	"Third Person",
-	"First Person"
-};
-
 // specatator main entry (method cloned from FreeHL)
 // -NOTE!  This is for the real, Nuclide-provided spectator. The fake spectator is a
 // normal player entity with iState set to PLAYER_STATE::NOCLIP.
@@ -180,22 +172,5 @@ string g_specmodes[] = {
 void
 HUD_DrawSpectator(void)
 {
-	Textmenu_Draw();
-
-	spectator spec = (spectator)pSeat->m_ePlayer;
-
-	drawfont = Font_GetID(FONT_20);
-	vector vecPos;
-	string strText;
-
-	strText = sprintf("Tracking: %s", getplayerkeyvalue(spec.spec_ent - 1, "name"));
-	vecPos[0] = g_hudmins[0] + (g_hudres[0] / 2) - (stringwidth(strText, TRUE, [20,20]) / 2);
-	vecPos[1] = g_hudmins[1] + g_hudres[1] - 60;
-	drawstring(vecPos, strText, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
-
-	strText = sprintf("Mode: %s", g_specmodes[spec.spec_mode]);
-	vecPos[0] = g_hudmins[0] + (g_hudres[0] / 2) - (stringwidth(strText, TRUE, [20,20]) / 2);
-	vecPos[1] = g_hudmins[1] + g_hudres[1] - 40;
-	drawstring(vecPos, strText, [20,20], [1,1,1], 1.0f, DRAWFLAG_ADDITIVE);
-	
+	HUD_Draw();
 }

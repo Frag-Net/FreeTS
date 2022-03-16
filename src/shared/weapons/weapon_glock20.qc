@@ -144,13 +144,13 @@ w_glock20_primary(player pl)
 	if(arg_thisWeapon.iClipLeft > 0){
 		int r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_glock20::shoot1, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_glock20::shoot1, 31.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_glock20::shoot2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_glock20::shoot2, 31.0f/30.0f);
 		}
 	}else{
 		// that was our last bullet?
-		TS_Weapons_ViewAnimation(weaponseq_glock20::shootempty, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_glock20::shootempty, 31.0f/30.0f);
 	}
 
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){

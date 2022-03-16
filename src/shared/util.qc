@@ -332,14 +332,12 @@ void entityRemoveRespawnFlag(CBaseEntity arg_this){
 
 // Typically call me from weapons in shared script!
 void
-TS_Weapons_ViewAnimation(int i, float fDuration)
+TS_Weapons_ViewAnimation(player pl, int i, float fDuration)
 {
 	//printfline("TS_Weapons_ViewAnimation: %i %.2f", i, fDuration);
-	player pl = (player)self;
-	
 	pl.w_idle_next = fDuration;
 #ifdef CLIENT
-	TS_View_PlayAnimation(i, fDuration);
+	TS_View_PlayAnimation(pl, i, fDuration);
 #else
 	pl.flViewModelFrame = i;
 #endif
@@ -347,14 +345,12 @@ TS_Weapons_ViewAnimation(int i, float fDuration)
 }
 
 void
-TS_Weapons_ViewAnimation_noLaserLock(int i, float fDuration)
+TS_Weapons_ViewAnimation_noLaserLock(player pl, int i, float fDuration)
 {
 	//printfline("TS_Weapons_ViewAnimation_noLaserLock: %i %.2f", i, fDuration);
-	player pl = (player)self;
-	
 	pl.w_idle_next = fDuration;
 #ifdef CLIENT
-	TS_View_PlayAnimation_noLaserLock(i, fDuration);
+	TS_View_PlayAnimation_noLaserLock(pl, i, fDuration);
 #else
 	pl.flViewModelFrame = i;
 #endif
@@ -363,14 +359,12 @@ TS_Weapons_ViewAnimation_noLaserLock(int i, float fDuration)
 
 
 void
-TS_Weapons_ViewAnimation_EndIdle(int i, float fDuration)
+TS_Weapons_ViewAnimation_EndIdle(player pl, int i, float fDuration)
 {
 	//printfline("TS_Weapons_ViewAnimation_EndIdle: %i %.2f", i, fDuration);
-	player pl = (player)self;
-	
 	pl.w_idle_next = fDuration;
 #ifdef CLIENT
-	TS_View_PlayAnimation_EndIdle(i, fDuration);
+	TS_View_PlayAnimation_EndIdle(pl, i, fDuration);
 #else
 	pl.flViewModelFrame = i;
 #endif
@@ -378,14 +372,12 @@ TS_Weapons_ViewAnimation_EndIdle(int i, float fDuration)
 }
 
 void
-TS_Weapons_ViewAnimation_EndIdle_custom(int i, float fDuration, float fIdleEndOffset)
+TS_Weapons_ViewAnimation_EndIdle_custom(player pl, int i, float fDuration, float fIdleEndOffset)
 {
 	//printfline("TS_Weapons_ViewAnimation_EndIdle_custom: %i %.2f %.2f", i, fDuration, fIdleEndOffset);
-	player pl = (player)self;
-	
 	pl.w_idle_next = fDuration;
 #ifdef CLIENT
-	TS_View_PlayAnimation_EndIdle_custom(i, fDuration, fIdleEndOffset);
+	TS_View_PlayAnimation_EndIdle_custom(pl, i, fDuration, fIdleEndOffset);
 #else
 	pl.flViewModelFrame = i;
 #endif
@@ -397,7 +389,7 @@ TS_Weapons_ViewAnimation_EndIdle_custom(int i, float fDuration, float fIdleEndOf
 #ifdef CLIENT
 
 void
-TS_View_PlayAnimation(int iSequence, float fDuration){
+TS_View_PlayAnimation(player pl, int iSequence, float fDuration){
 	
 	/*
 	// TEST!!!
@@ -412,8 +404,8 @@ TS_View_PlayAnimation(int iSequence, float fDuration){
 	*/
 	
 	pSeat->m_eViewModel.frame = (float)iSequence;
-	player pl = (player)pSeat->m_ePlayer;
 	pl.weapontime = 0.0f;
+	pl.weaponframe = iSequence;
 	SAVE_STATE(pl.weapontime);
 	
 	//pSeat->m_eViewModel.frame2time = 0;
@@ -426,10 +418,10 @@ TS_View_PlayAnimation(int iSequence, float fDuration){
 }
 
 void
-TS_View_PlayAnimation_noLaserLock(int iSequence, float fDuration){
+TS_View_PlayAnimation_noLaserLock(player pl, int iSequence, float fDuration){
 	pSeat->m_eViewModel.frame = (float)iSequence;
-	player pl = (player)pSeat->m_ePlayer;
 	pl.weapontime = 0.0f;
+	pl.weaponframe = iSequence;
 	SAVE_STATE(pl.weapontime);
 	
 	pl.w_freeze_idle_next = -1;  //assume this?
@@ -438,10 +430,10 @@ TS_View_PlayAnimation_noLaserLock(int iSequence, float fDuration){
 
 
 void
-TS_View_PlayAnimation_EndIdle(int iSequence, float fDuration){
+TS_View_PlayAnimation_EndIdle(player pl, int iSequence, float fDuration){
 	pSeat->m_eViewModel.frame = (float)iSequence;
-	player pl = (player)pSeat->m_ePlayer;
 	pl.weapontime = 0.0f;
+	pl.weaponframe = iSequence;
 	SAVE_STATE(pl.weapontime);
 	
 	// ?? Do we want to do this or not then
@@ -452,10 +444,10 @@ TS_View_PlayAnimation_EndIdle(int iSequence, float fDuration){
 
 
 void
-TS_View_PlayAnimation_EndIdle_custom(int iSequence, float fDuration, float fIdleEndOffset){
+TS_View_PlayAnimation_EndIdle_custom(player pl, int iSequence, float fDuration, float fIdleEndOffset){
 	pSeat->m_eViewModel.frame = (float)iSequence;
-	player pl = (player)pSeat->m_ePlayer;
 	pl.weapontime = 0.0f;
+	pl.weaponframe = iSequence;
 	SAVE_STATE(pl.weapontime);
 
 	pl.lasersightUnlockTime = FALSE;  //reset

@@ -165,16 +165,16 @@ w_steyrtmp_primary(player pl)
 	if(!arg_thisWeapon.iIronSight){
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shoot, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_steyrtmp::shoot, 31.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shoot2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_steyrtmp::shoot2, 31.0f/30.0f);
 		}
 	}else{
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shootb, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_steyrtmp::shootb, 31.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_steyrtmp::shootb2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_steyrtmp::shootb2, 31.0f/30.0f);
 		}
 	}
 	

@@ -171,32 +171,32 @@ w_mac10_primary(player pl)
 	int r = (float)input_sequence % 6;
 	if(!arg_thisWeapon.iIronSight){
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::shoot, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::shoot, 31.0f/30.0f);
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::shoot2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::shoot2, 31.0f/30.0f);
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::shoot3, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::shoot3, 31.0f/30.0f);
 		}else if(r == 3){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::sshoot, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::sshoot, 31.0f/30.0f);
 		}else if(r == 4){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::sshoot2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::sshoot2, 31.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_mac10::sshoot3, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::sshoot3, 31.0f/30.0f);
 		}
 	}else{
 		r = (float)input_sequence % 6;
 		if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::shootb, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::shootb, 31.0f/30.0f);
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::shootb2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::shootb2, 31.0f/30.0f);
 		}else if(r == 3){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::shootb3, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::shootb3, 31.0f/30.0f);
 		}else if(r == 4){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::sshootb, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::sshootb, 31.0f/30.0f);
 		}else if(r == 5){
-			TS_Weapons_ViewAnimation(weaponseq_mac10::sshootb2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::sshootb2, 31.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_mac10::sshootb3, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mac10::sshootb3, 31.0f/30.0f);
 		}
 	}
 

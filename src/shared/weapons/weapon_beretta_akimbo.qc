@@ -230,18 +230,18 @@ void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 				if(arg_thisWeapon.iClipLeft > 0 ){
 					r = (float)input_sequence % 3;
 					if(r == 0){
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshoot_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::leftshoot_1, 31.0f/31.0f);
 					}else if(r == 1){
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshoot2_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::leftshoot2_1, 31.0f/31.0f);
 					}else{
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshoots_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::leftshoots_1, 31.0f/31.0f);
 					}
 				}else{
 					r = (float)input_sequence % 2;
 					if(r == 0){
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshootlast_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::leftshootlast_1, 31.0f/31.0f);
 					}else{
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::leftshootlasts_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::leftshootlasts_1, 31.0f/31.0f);
 					}
 				}
 			}else{
@@ -262,18 +262,18 @@ void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 				if(arg_thisWeapon.iClipAkimboLeft > 0 ){
 					r = (float)input_sequence % 3;
 					if(r == 0){
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshoot_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::rightshoot_1, 31.0f/31.0f);
 					}else if(r == 1){
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshoot2_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::rightshoot2_1, 31.0f/31.0f);
 					}else{
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshoots_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::rightshoots_1, 31.0f/31.0f);
 					}
 				}else{
 					r = (float)input_sequence % 2;
 					if(r == 0){
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshootlast_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::rightshootlast_1, 31.0f/31.0f);
 					}else{
-						TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::rightshootlasts_1, 31.0f/31.0f);
+						TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::rightshootlasts_1, 31.0f/31.0f);
 					}
 				}
 			}else{
@@ -297,9 +297,9 @@ void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 		// both fire types?
 		if(!arg_thisWeapon.iIronSight){
 			if(arg_thisWeapon.iClipLeft > 0 || arg_thisWeapon.iClipAkimboLeft > 0){
-				TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::linkedshoot, 31.0f/31.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::linkedshoot, 31.0f/31.0f);
 			}else{
-				TS_Weapons_ViewAnimation(weaponseq_beretta_akimbo::linkedshootlast, 31.0f/31.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_beretta_akimbo::linkedshootlast, 31.0f/31.0f);
 			}
 		}else{
 			// ...

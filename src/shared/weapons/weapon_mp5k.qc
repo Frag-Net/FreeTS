@@ -178,16 +178,16 @@ w_mp5k_primary(player pl)
 	if(!arg_thisWeapon.iIronSight){
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot1, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mp5k::shoot1, 31.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot2, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mp5k::shoot2, 31.0f/30.0f);
 		}
 	}else{
 		r = (float)input_sequence % 2;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot1b, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mp5k::shoot1b, 31.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_mp5k::shoot2b, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_mp5k::shoot2b, 31.0f/30.0f);
 		}
 	}
 	

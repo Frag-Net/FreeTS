@@ -195,9 +195,9 @@ void weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon,
 			//printfline("VM: LEFT");
 			if(!arg_thisWeapon.iIronSight){
 				if(arg_thisWeapon.iClipLeft > 0 ){
-					TS_Weapons_ViewAnimation(weaponseq_akimbocolts::leftshoot, 31.0f/30.0f);
+					TS_Weapons_ViewAnimation(pl, weaponseq_akimbocolts::leftshoot, 31.0f/30.0f);
 				}else{
-					TS_Weapons_ViewAnimation(weaponseq_akimbocolts::leftshootlast, 31.0f/30.0f);
+					TS_Weapons_ViewAnimation(pl, weaponseq_akimbocolts::leftshootlast, 31.0f/30.0f);
 				}
 			}else{
 				// ...
@@ -215,9 +215,9 @@ void weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon,
 			//printfline("VM: RIGHT");
 			if(!arg_thisWeapon.iIronSight){
 				if(arg_thisWeapon.iClipAkimboLeft > 0 ){
-					TS_Weapons_ViewAnimation(weaponseq_akimbocolts::rightshoot, 31.0f/30.0f);
+					TS_Weapons_ViewAnimation(pl, weaponseq_akimbocolts::rightshoot, 31.0f/30.0f);
 				}else{
-					TS_Weapons_ViewAnimation(weaponseq_akimbocolts::rightshootlast, 31.0f/30.0f);
+					TS_Weapons_ViewAnimation(pl, weaponseq_akimbocolts::rightshootlast, 31.0f/30.0f);
 				}
 			}else{
 				// ...
@@ -240,9 +240,9 @@ void weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon,
 		// both fire types?
 		if(!arg_thisWeapon.iIronSight){
 			if(arg_thisWeapon.iClipLeft > 0 || arg_thisWeapon.iClipAkimboLeft > 0 ){
-				TS_Weapons_ViewAnimation(weaponseq_akimbocolts::linkedshoot, 31.0f/30.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_akimbocolts::linkedshoot, 31.0f/30.0f);
 			}else{
-				TS_Weapons_ViewAnimation(weaponseq_akimbocolts::linkedshootlast, 31.0f/30.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_akimbocolts::linkedshootlast, 31.0f/30.0f);
 			}
 		}else{
 			// ...

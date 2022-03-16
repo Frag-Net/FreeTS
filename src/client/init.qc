@@ -52,7 +52,7 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	// understanding of pSeat isn't quite there.
 	
 	//if(numclientseats > g_seats.length){numclientseats = g_seats.length;}
-	for(s = 0; s < g_seats.length; s++){  // < numclientseats
+	for (s = 0; s < g_seats.length; s++){  // < numclientseats
 		pSeat = &g_seats[s];
 		pSeatLocal = &g_seatslocal[s];
 		

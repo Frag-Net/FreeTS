@@ -145,9 +145,9 @@ w_ragingbull_primary(player pl)
 	
 	int r = (float)input_sequence % 2;
 	if (r == 0) {
-		TS_Weapons_ViewAnimation(weaponseq_ragingbull::shoot, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_ragingbull::shoot, 31.0f/30.0f);
 	} else {
-		TS_Weapons_ViewAnimation(weaponseq_ragingbull::shoot2, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_ragingbull::shoot2, 31.0f/30.0f);
 	}
 	
 	// no shell eject

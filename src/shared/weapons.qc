@@ -546,7 +546,7 @@ weapon_shotgun_reload(
 		
 	weapondata_shotgun_extra_t* shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
 
-	TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload1_seq, (*shotgunExtraRef).shotgunReload1_Duration );
+	TS_Weapons_ViewAnimation(pl, (*shotgunExtraRef).shotgunReload1_seq, (*shotgunExtraRef).shotgunReload1_Duration );
 	weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload1_Duration);
 	
 	pl.shotgunReloadIndex = 1;
@@ -622,14 +622,14 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 			
 			shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
 
-			TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
+			TS_Weapons_ViewAnimation(pl, (*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
 			weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload3_Duration);
 			pl.shotgunReloadIndex = 0;
 			pl.isReloading = FALSE;
 		}else{
 			shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
 
-			TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload2_seq, (*shotgunExtraRef).shotgunReload2_Duration);
+			TS_Weapons_ViewAnimation(pl, (*shotgunExtraRef).shotgunReload2_seq, (*shotgunExtraRef).shotgunReload2_Duration);
 			weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload2_Duration);
 			pl.shotgunReloadIndex = 2;
 
@@ -652,7 +652,7 @@ weapon_shotgun_onThink_reloadLogic(player pl, weapondata_gun_t* basePRef, weapon
 		
 		shotgunExtraRef = ary_shotgunExtra[pl.iShotgunExtraDataID];
 		
-		TS_Weapons_ViewAnimation((*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
+		TS_Weapons_ViewAnimation(pl, (*shotgunExtraRef).shotgunReload3_seq, (*shotgunExtraRef).shotgunReload3_Duration);
 		weapon_base_setWholeAttackDelay(pl, (*shotgunExtraRef).shotgunReload3_Duration);
 		pl.shotgunReloadIndex = 0;
 		// this will be true when the fire delay expires, but doesn't hurt happening earlier.
@@ -1346,13 +1346,13 @@ weapon_ironsight_ToggleIronsight(
 		if(arg_thisWeapon.iIronSight == 0){
 			weapon_base_setWholeAttackDelay(pl, baseRef.ironsightdata.fAnim_Change_Duration * 0.9 );
 			
-			TS_Weapons_ViewAnimation_EndIdle( baseRef.ironsightdata.iAnim_Change_Index, baseRef.ironsightdata.fAnim_Change_Duration );
+			TS_Weapons_ViewAnimation_noLaserLock( pl,baseRef.ironsightdata.iAnim_Change_Index, baseRef.ironsightdata.fAnim_Change_Duration );
 			
-			//TS_Weapons_ViewAnimation( baseRef.ironsightdata.iAnim_Change_Index, baseRef.ironsightdata.fAnim_Change_Duration );
+			//TS_Weapons_ViewAnimation(pl,  baseRef.ironsightdata.iAnim_Change_Index, baseRef.ironsightdata.fAnim_Change_Duration );
 			
 		}else{
 			weapon_base_setWholeAttackDelay(pl, baseRef.ironsightdata.fAnim_ReChange_Duration * 0.9);
-			TS_Weapons_ViewAnimation( baseRef.ironsightdata.iAnim_ReChange_Index, baseRef.ironsightdata.fAnim_ReChange_Duration );
+			TS_Weapons_ViewAnimation(pl,  baseRef.ironsightdata.iAnim_ReChange_Index, baseRef.ironsightdata.fAnim_ReChange_Duration );
 		}
 		
 		//pl.recentAttackHadAmmo = arg_thisWeapon.iIronSight;  //haaaaaaacky sax
@@ -1402,7 +1402,7 @@ weapon_gun_Reload(
 	pl.isReloading = TRUE;
 
 	weapon_base_setWholeAttackDelay(pl, baseRef.fAnim_Reload_Duration);
-	TS_Weapons_ViewAnimation(baseRef.iAnim_Reload_Index, baseRef.fAnim_Reload_Duration);
+	TS_Weapons_ViewAnimation(pl, baseRef.iAnim_Reload_Index, baseRef.fAnim_Reload_Duration);
 	
 	//TAGGG TODO - third person model anim
 	//Animation_ReloadWeapon( self );
@@ -1445,7 +1445,7 @@ weapon_gun_Reload_CustomSequence(
 	pl.isReloading = TRUE;
 
 	weapon_base_setWholeAttackDelay(pl, arg_flReloadSeqTime);
-	TS_Weapons_ViewAnimation(arg_iReloadSeq, arg_flReloadSeqTime);
+	TS_Weapons_ViewAnimation(pl, arg_iReloadSeq, arg_flReloadSeqTime);
 	
 	//TAGGG TODO - third person model anim
 	//Animation_ReloadWeapon( self );
@@ -1499,9 +1499,9 @@ weapon_ironsight_Reload(
 	
 	//printfline("not ironsite rite %i", arg_thisWeapon.iIronSight);
 	if(!arg_thisWeapon.iIronSight){
-		TS_Weapons_ViewAnimation(baseRef.iAnim_Reload_Index, baseRef.fAnim_Reload_Duration );
+		TS_Weapons_ViewAnimation(pl, baseRef.iAnim_Reload_Index, baseRef.fAnim_Reload_Duration );
 	}else{
-		TS_Weapons_ViewAnimation(baseRef.ironsightdata.iAnim_Reload_Index, baseRef.ironsightdata.fAnim_Reload_Duration );
+		TS_Weapons_ViewAnimation(pl, baseRef.ironsightdata.iAnim_Reload_Index, baseRef.ironsightdata.fAnim_Reload_Duration );
 	}
 	
 	//TAGGG TODO - third person model anim.
@@ -1594,7 +1594,7 @@ weapon_base_onEquip(
 	//printfline("weapon_base_onEquip: playing deploy anim");
 #endif
 	
-	TS_Weapons_ViewAnimation(baseRef.iAnim_Deploy_Index, baseRef.fAnim_Deploy_Duration);
+	TS_Weapons_ViewAnimation(pl, baseRef.iAnim_Deploy_Index, baseRef.fAnim_Deploy_Duration);
 	
 	pl.nextAkimboAttackPreference = BITS_AKIMBOCHOICE_LEFT;
 	

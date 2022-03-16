@@ -180,20 +180,20 @@ w_deserteagle_primary(player pl)
 		if(arg_thisWeapon.iClipLeft > 0){
 			r = (float)input_sequence % 2;
 			if (r == 0) {
-				TS_Weapons_ViewAnimation(weaponseq_deserteagle::shoot1, 31.0f/30.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_deserteagle::shoot1, 31.0f/30.0f);
 			} else {
-				TS_Weapons_ViewAnimation(weaponseq_deserteagle::shoot2, 31.0f/30.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_deserteagle::shoot2, 31.0f/30.0f);
 			}
 		}else{
 			// DONT "EndIdle" THIS ONE!
-			TS_Weapons_ViewAnimation(weaponseq_deserteagle::shootlast, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_deserteagle::shootlast, 31.0f/30.0f);
 		}
 	}else{
 		if(arg_thisWeapon.iClipLeft > 0){
-			TS_Weapons_ViewAnimation(weaponseq_deserteagle::shootb, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_deserteagle::shootb, 31.0f/30.0f);
 		} else {
 			// DONT "EndIdle" THIS ONE!
-			TS_Weapons_ViewAnimation(weaponseq_deserteagle::shootblast, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_deserteagle::shootblast, 31.0f/30.0f);
 		}
 	}
 

@@ -90,9 +90,9 @@ void weapon_m61grenade_onThink(player pl, weapondynamic_t arg_thisWeapon){
 	if(pl.grenadeFireIndex == 2){
 		// Release detected, do the throw anim + spawn the grenade soon
 		if(!pl.bGrenadeToss){
-			TS_Weapons_ViewAnimation(weaponseq_m61grenade::throw, 11.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_m61grenade::throw, 11.0f/30.0f);
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_m61grenade::throw_slide, 11.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_m61grenade::throw_slide, 11.0f/30.0f);
 		}
 		pl.grenadeFireIndex = 3;
 		// re-use shotgunAddAmmoTime instead, make the var more genericly named maybe???
@@ -105,7 +105,7 @@ void weapon_m61grenade_onThink(player pl, weapondynamic_t arg_thisWeapon){
 		
 		//printfline("Remove grenade? Count:%i", arg_thisWeapon.iCount);
 		if(arg_thisWeapon.iCount > 0){
-			TS_Weapons_ViewAnimation(weaponseq_m61grenade::draw, 31.0f / 40.0f );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m61grenade::draw, 31.0f / 40.0f );
 			printfline("I set grenadeFireIndex to 0, B!");
 			pl.grenadeFireIndex = 0;
 			weapon_base_setWholeAttackDelay(pl, (31.0f/40.0f));
@@ -187,7 +187,7 @@ void weapon_grenade_onInputPress(player pl, weapondynamic_t arg_thisWeapon, int 
 			printfline("WHAT THE heckin heck IS THIS %.2f", time);
 			pl.grenadeSpawnTime = -1;  // not yet!
 			pl.grenadeHeldDuration = 0;
-			TS_Weapons_ViewAnimation(weaponseq_m61grenade::start, (31.0f/35.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m61grenade::start, (31.0f/35.0f) );
 			weapon_base_setWholeAttackDelay(pl, 0.6);	
 		}
 	}

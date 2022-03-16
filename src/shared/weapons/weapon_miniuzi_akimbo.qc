@@ -216,7 +216,7 @@ void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 		
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_LEFT){
 			//printfline("VM: UZI: LEFT");
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_left_shoot, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_left_shoot, (31.0f/30.0f) );
 			
 			weapon_base_setLeftAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay);
 			if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FULL_AUTO){
@@ -227,7 +227,7 @@ void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 			
 		}else if(finalAkimboChoice == BITS_AKIMBOCHOICE_RIGHT){
 			//printfline("VM: UZI: RIGHT");
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_right_shoot, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_right_shoot, (31.0f/30.0f) );
 			
 			weapon_base_setRightAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay);
 			if(arg_thisWeapon.iFireModeAkimbo == BITS_FIREMODE_AKIMBO_FULL_AUTO){
@@ -244,17 +244,17 @@ void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 		//printfline("VM: UZI: BOTH");
 		r = (float)input_sequence % 6;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_shoot1, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_shoot1, (31.0f/30.0f) );
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_shoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_shoot2, (31.0f/30.0f) );
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_shoot3, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_shoot3, (31.0f/30.0f) );
 		}else if(r == 3){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_sshoot1, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_sshoot1, (31.0f/30.0f) );
 		}else if(r == 4){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_sshoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_sshoot2, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi_akimbo::akimbo_sshoot3, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi_akimbo::akimbo_sshoot3, (31.0f/30.0f) );
 		}
 		
 		pl.akimboDualFireToleranceTime = 0;

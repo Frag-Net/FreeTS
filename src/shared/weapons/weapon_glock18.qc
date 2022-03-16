@@ -104,7 +104,6 @@ string
 w_glock18_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::GLOCK18]).sPlayerModelPath;
@@ -164,13 +163,13 @@ w_glock18_primary(player pl)
 		// more than 1 bullet left? Typical
 		int r = (float)input_sequence % 2;
 		if (r == 0) {
-			TS_Weapons_ViewAnimation(weaponseq_glock18::shoot1, (31.0f/30.0f));
+			TS_Weapons_ViewAnimation(pl, weaponseq_glock18::shoot1, (31.0f/30.0f));
 		} else {
-			TS_Weapons_ViewAnimation(weaponseq_glock18::shoot2, (31.0f/30.0f));
+			TS_Weapons_ViewAnimation(pl, weaponseq_glock18::shoot2, (31.0f/30.0f));
 		}
 	}else{
 		// Only 1 left?  Assume it's about to be gone
-		TS_Weapons_ViewAnimation(weaponseq_glock18::shootempty, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_glock18::shootempty, (31.0f/30.0f) );
 	}
 	
 	// TODO.

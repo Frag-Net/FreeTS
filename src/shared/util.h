@@ -287,16 +287,16 @@ void entityRemoveRespawnFlag(CBaseEntity arg_this);
 #endif
 
 
-void TS_Weapons_ViewAnimation(int i, float fDuration);
-void TS_Weapons_ViewAnimation_noLaserLock(int i, float fDuration);
-void TS_Weapons_ViewAnimation_EndIdle(int i, float fDuration);
-void TS_Weapons_ViewAnimation_EndIdle_custom(int i, float fDuration, float fIdleEndOffset);
+void TS_Weapons_ViewAnimation(player pl, int i, float fDuration);
+void TS_Weapons_ViewAnimation_noLaserLock(player pl, int i, float fDuration);
+void TS_Weapons_ViewAnimation_EndIdle(player pl, int i, float fDuration);
+void TS_Weapons_ViewAnimation_EndIdle_custom(player pl, int i, float fDuration, float fIdleEndOffset);
 
 #ifdef CLIENT
-void TS_View_PlayAnimation(int iSequence, float fDuration);
-void TS_View_PlayAnimation_noLaserLock(int iSequence, float fDuration);
-void TS_View_PlayAnimation_EndIdle(int iSequence, float fDuration);
-void TS_View_PlayAnimation_EndIdle_custom(int iSequence, float fDuration, float fIdleEndOffset);
+void TS_View_PlayAnimation(player pl, int iSequence, float fDuration);
+void TS_View_PlayAnimation_noLaserLock(player pl, int iSequence, float fDuration);
+void TS_View_PlayAnimation_EndIdle(player pl, int iSequence, float fDuration);
+void TS_View_PlayAnimation_EndIdle_custom(player pl, int iSequence, float fDuration, float fIdleEndOffset);
 #endif
 
 

@@ -247,16 +247,16 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 			if(!arg_thisWeapon.iIronSight){
 				r = (float)input_sequence % 2;
 				if(r == 0){
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_left1, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_left1, (31.0f/40.0f), 2 );
 				} else {
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_left2, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_left2, (31.0f/40.0f), 2 );
 				}
 			}else{
 				r = (float)input_sequence % 2;
 				if(r == 0){
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_leftb1, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_leftb1, (31.0f/40.0f), 2 );
 				} else {
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_leftb2, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_leftb2, (31.0f/40.0f), 2 );
 				}
 			}
 			
@@ -273,16 +273,16 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 			if(!arg_thisWeapon.iIronSight){
 				r = (float)input_sequence % 2;
 				if(r == 0){
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_right1, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_right1, (31.0f/40.0f), 2 );
 				} else {
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_right2, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_right2, (31.0f/40.0f), 2 );
 				}
 			}else{
 				r = (float)input_sequence % 2;
 				if(r == 0){
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_rightb1, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_rightb1, (31.0f/40.0f), 2 );
 				} else {
-					TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_rightb2, (31.0f/40.0f), 2 );
+					TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_rightb2, (31.0f/40.0f), 2 );
 				}
 			}
 			
@@ -303,16 +303,16 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		// both fire types?
 		if(!arg_thisWeapon.iIronSight){
 			if(arg_thisWeapon.iClipLeft > 0){
-				TS_Weapons_ViewAnimation_EndIdle_custom( weaponseq_socommk23_akimbo::shoot_linked, (31.0f/40.0f), 2);
+				TS_Weapons_ViewAnimation_EndIdle_custom( pl,weaponseq_socommk23_akimbo::shoot_linked, (31.0f/40.0f), 2);
 			}else{
 				//that is... insanely situational.
-				TS_Weapons_ViewAnimation( weaponseq_socommk23_akimbo::shoot_linked_last, 31.0f/40.0f);
+				TS_Weapons_ViewAnimation(pl,  weaponseq_socommk23_akimbo::shoot_linked_last, 31.0f/40.0f);
 			}
 		}else{
 			// not ironsight eh?  WE DONT HAVE A LINKED ANIM FOR THAT.
 			// but hey, original TS had this issue too at least, it just did no anim here.
 			// Or force idle, whatever.
-			TS_Weapons_ViewAnimation( weaponseq_socommk23_akimbo::idleb, 1.5f );
+			TS_Weapons_ViewAnimation(pl,  weaponseq_socommk23_akimbo::idleb, 1.5f );
 		}
 		
 		weapon_base_setWholeAttackDelay(pl, (*ary_weaponData[pl.activeweapon]).fAttackDelay * 1);

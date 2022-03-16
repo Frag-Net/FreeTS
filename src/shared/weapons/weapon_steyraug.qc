@@ -150,7 +150,7 @@ w_steyraug_primary(player pl)
 		SoundPitched_Send(pl, SNDP_STEYRAUG_FIRE_SIL);
 	}
 	
-	TS_Weapons_ViewAnimation(weaponseq_steyraug::shoot, 31.0f/30.0f);
+	TS_Weapons_ViewAnimation(pl, weaponseq_steyraug::shoot, 31.0f/30.0f);
 
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);

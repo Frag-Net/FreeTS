@@ -148,9 +148,9 @@ w_barrettm82_primary(player pl)
 	
 	int r = (float)input_sequence % 2;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_barrettm82::shoot, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_barrettm82::shoot, 31.0f/30.0f);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_barrettm82::shoot2, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_barrettm82::shoot2, 31.0f/30.0f);
 	}
 
 	weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);

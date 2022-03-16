@@ -157,9 +157,9 @@ w_ak47_primary(player pl)
 	SoundPitched_Send(pl, SNDP_AK47_FIRE); /* get around protocol limits */
 	
 	if(!arg_thisWeapon.iIronSight){
-		TS_Weapons_ViewAnimation(weaponseq_ak47::shoot, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_ak47::shoot, 31.0f/30.0f);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_ak47::shoot2, 31.0f/30.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_ak47::shoot2, 31.0f/30.0f);
 	}
 	
 	weapon_ClientEffects(MUZZLEFLASH_ID::RIFLE, SHELLEJECT_ID::_56);

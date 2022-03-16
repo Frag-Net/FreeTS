@@ -37,7 +37,7 @@ void weapon_m4a1_onColdCock(player pl, weapondynamic_t arg_thisWeapon){
 	
 	MELEE_HIT_RESPONSE hitRep = weapon_base_coldcock(pl, ary_weaponData[WEAPON_ID::M4A1], arg_thisWeapon, 40, 66);
 	weapon_base_setWholeAttackDelay(pl, 0.73f);
-	TS_Weapons_ViewAnimation_noLaserLock(weaponseq_m4a1::coldcock, 30.0f/40.0f);
+	TS_Weapons_ViewAnimation_noLaserLock(pl,weaponseq_m4a1::coldcock, 30.0f/40.0f);
 	arg_thisWeapon.iIronSight = 0;  //disable, coldcock returns to non-ironsight look
 	
 	if (hitRep == MELEE_HIT_RESPONSE::NONE ) {
@@ -197,24 +197,24 @@ w_m4a1_primary(player pl)
 	if(!arg_thisWeapon.iIronSight){
 		r = (float)input_sequence % 4;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::shoot1, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::shoot1, (31.0f/30.0f) );
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::shoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::shoot2, (31.0f/30.0f) );
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::sshoot1, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::sshoot1, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::sshoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::sshoot2, (31.0f/30.0f) );
 		}
 	}else{
 		r = (float)input_sequence % 4;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::shoot3, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::shoot3, (31.0f/30.0f) );
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::shoot4, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::shoot4, (31.0f/30.0f) );
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::sshoot3, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::sshoot3, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_m4a1::sshoot4, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m4a1::sshoot4, (31.0f/30.0f) );
 		}
 	}
 	

@@ -142,9 +142,9 @@ w_rugermk1_primary(player pl)
 
 	int r = (float)input_sequence % 2;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_rugermk1::shoot1, 31.0f/35.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_rugermk1::shoot1, 31.0f/35.0f);
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_rugermk1::shoot2, 31.0f/35.0f);
+		TS_Weapons_ViewAnimation(pl, weaponseq_rugermk1::shoot2, 31.0f/35.0f);
 	}
 	
 	weapon_EjectShell(SHELLEJECT_ID::GENERIC);

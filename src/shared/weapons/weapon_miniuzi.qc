@@ -171,24 +171,24 @@ w_miniuzi_primary(player pl)
 	if(!arg_thisWeapon.iIronSight){
 		r = (float)input_sequence % 4;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shoot, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::shoot, (31.0f/30.0f) );
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::shoot2, (31.0f/30.0f) );
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshoot, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::sshoot, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::sshoot2, (31.0f/30.0f) );
 		}
 	}else{
 		r = (float)input_sequence % 4;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shootb, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::shootb, (31.0f/30.0f) );
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::shootb2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::shootb2, (31.0f/30.0f) );
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshootb, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::sshootb, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_miniuzi::sshootb2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_miniuzi::sshootb2, (31.0f/30.0f) );
 		}
 	}
 	

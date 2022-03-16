@@ -206,7 +206,7 @@ void weapon_fiveseven_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		if(finalAkimboChoice == BITS_AKIMBOCHOICE_LEFT){
 			//printfline("VM: LEFT");
 			if(!arg_thisWeapon.iIronSight){
-				TS_Weapons_ViewAnimation(weaponseq_fiveseven_akimbo::shoot_left, 31.0f/30.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_fiveseven_akimbo::shoot_left, 31.0f/30.0f);
 			}else{
 				// ...
 			}
@@ -222,7 +222,7 @@ void weapon_fiveseven_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		}else if(finalAkimboChoice == BITS_AKIMBOCHOICE_RIGHT){
 			//printfline("VM: RIGHT");
 			if(!arg_thisWeapon.iIronSight){
-				TS_Weapons_ViewAnimation(weaponseq_fiveseven_akimbo::shoot_right, 31.0f/30.0f);
+				TS_Weapons_ViewAnimation(pl, weaponseq_fiveseven_akimbo::shoot_right, 31.0f/30.0f);
 			}else{
 				// ...
 			}
@@ -243,7 +243,7 @@ void weapon_fiveseven_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 		
 		// both fire types?
 		if(!arg_thisWeapon.iIronSight){
-			TS_Weapons_ViewAnimation(weaponseq_fiveseven_akimbo::shoot_linked, 31.0f/30.0f);
+			TS_Weapons_ViewAnimation(pl, weaponseq_fiveseven_akimbo::shoot_linked, 31.0f/30.0f);
 		}else{
 			// ...
 		}

@@ -198,11 +198,11 @@ w_katana_primary(player pl)
 	
 	if(meleeAnimToPlay == 0){
 		//do that one.
-		TS_Weapons_ViewAnimation(weaponseq_katana::slash1, (51.0f/33.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_katana::slash1, (51.0f/33.0f) );
 	}else if(meleeAnimToPlay == 1){ // == 1?
-		TS_Weapons_ViewAnimation(weaponseq_katana::slash2, (51.0f/33.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_katana::slash2, (51.0f/33.0f) );
 	}else if(meleeAnimToPlay == 2){
-		TS_Weapons_ViewAnimation(weaponseq_katana::slash3, (51.0f/33.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_katana::slash3, (51.0f/33.0f) );
 	}
 	
 }

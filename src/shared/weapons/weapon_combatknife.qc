@@ -150,11 +150,11 @@ w_combatknife_primary(player pl)
 	// Do these go through some kind of cycle, I forget
 	int r = (float)input_sequence % 3;
 	if(r == 0){
-		TS_Weapons_ViewAnimation(weaponseq_combatknife::slash1, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_combatknife::slash1, (31.0f/30.0f) );
 	}else if(r == 1){
-		TS_Weapons_ViewAnimation(weaponseq_combatknife::left, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_combatknife::left, (31.0f/30.0f) );
 	}else{
-		TS_Weapons_ViewAnimation(weaponseq_combatknife::right, (31.0f/30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_combatknife::right, (31.0f/30.0f) );
 	}
 	
 }
@@ -192,7 +192,7 @@ w_combatknife_secondary(player pl)
 	printfline("IM A KNIFE I GOT THROWN YES current count: %i", arg_thisWeapon.iCount);
 	if(arg_thisWeapon.iCount > 0){
 		// another knife left?  Bring it up with a draw animation.
-		TS_Weapons_ViewAnimation(weaponseq_combatknife::draw, (31.0f / 30.0f) );
+		TS_Weapons_ViewAnimation(pl, weaponseq_combatknife::draw, (31.0f / 30.0f) );
 	}else{
 		
 #ifdef SERVER

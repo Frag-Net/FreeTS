@@ -174,24 +174,24 @@ w_m16a4_primary(player pl)
 	if(!arg_thisWeapon.iIronSight){
 		r = (float)input_sequence % 4;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot1, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::shoot1, (31.0f/30.0f) );
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::shoot2, (31.0f/30.0f) );
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot1, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::sshoot1, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot2, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::sshoot2, (31.0f/30.0f) );
 		}
 	}else{
 		r = (float)input_sequence % 4;
 		if(r == 0){
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot3, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::shoot3, (31.0f/30.0f) );
 		}else if(r == 1){
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::shoot4, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::shoot4, (31.0f/30.0f) );
 		}else if(r == 2){
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot3, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::sshoot3, (31.0f/30.0f) );
 		}else{
-			TS_Weapons_ViewAnimation(weaponseq_m16a4::sshoot4, (31.0f/30.0f) );
+			TS_Weapons_ViewAnimation(pl, weaponseq_m16a4::sshoot4, (31.0f/30.0f) );
 		}
 	}
 	
