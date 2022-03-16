@@ -90,7 +90,7 @@ w_combatknife_wmodel(void)
 }
 
 string
-w_combatknife_pmodel(void)
+w_combatknife_pmodel(player pl)
 {
 	return (*ary_weaponData[WEAPON_ID::COMBATKNIFE]).sPlayerModelPath;
 }
@@ -102,23 +102,21 @@ w_combatknife_deathmsg(void)
 }
 
 void
-w_combatknife_draw(void)
+w_combatknife_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::COMBATKNIFE], arg_thisWeapon);
 }
 
 void
-w_combatknife_holster(void)
+w_combatknife_holster(player pl)
 {
 }
 
 void
-w_combatknife_primary(void)
+w_combatknife_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -164,9 +162,8 @@ w_combatknife_primary(void)
 
 
 void
-w_combatknife_secondary(void)
+w_combatknife_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	if (pl.w_attack_next > 0.0) {
@@ -212,28 +209,27 @@ w_combatknife_secondary(void)
 }
 
 void
-w_combatknife_reload(void)
+w_combatknife_reload(player pl)
 {
 	// how do you reload a sword
 }
 
 float
-w_combatknife_aimanim(void)
+w_combatknife_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_combatknife_hud(void)
+w_combatknife_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_throwable_onDrawHUD(pl, (weapondata_throwable_t*)ary_weaponData[WEAPON_ID::COMBATKNIFE], arg_thisWeapon);
 }
 
 void
-w_combatknife_hudpic(int selected, vector pos, float a)
+w_combatknife_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -252,7 +248,7 @@ weapon_t w_combatknife =
 	.secondary	= w_combatknife_secondary,
 	.reload		= w_combatknife_reload,
 	.release	= NULL,
-	.crosshair	= w_combatknife_hud,
+	.postdraw	= w_combatknife_hud,
 	.precache	= w_combatknife_precache,
 	.pickup		= NULL,
 	.updateammo	= w_combatknife_updateammo,

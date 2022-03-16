@@ -89,7 +89,7 @@ w_karate_wmodel(void)
 }
 
 string
-w_karate_pmodel(void)
+w_karate_pmodel(player pl)
 {
 	return (*ary_weaponData[WEAPON_ID::KARATE]).sPlayerModelPath;
 }
@@ -101,9 +101,8 @@ w_karate_deathmsg(void)
 }
 
 void
-w_karate_draw(void)
+w_karate_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::KARATE];
@@ -111,15 +110,14 @@ w_karate_draw(void)
 }
 
 void
-w_karate_holster(void)
+w_karate_holster(player pl)
 {
 }
 
 
 void
-w_karate_primary(void)
+w_karate_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -181,8 +179,7 @@ w_karate_primary(void)
 
 
 // moved to a method so that early termination does not stop too much.
-void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAnimToPlay){
-	player pl = (player)self;
+void w_karate_determineSecondaryAttack(player pl, MELEE_HIT_RESPONSE& hitRep, int& meleeAnimToPlay){
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	float curSpeed;
 	
@@ -260,9 +257,8 @@ void w_karate_determineSecondaryAttack(MELEE_HIT_RESPONSE& hitRep, int& meleeAni
 
 
 void
-w_karate_secondary(void)
+w_karate_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	// a warning if this isn't defaulted, really?
 	// The whole point of being sent as a reference in determineSecondaryAttack is
@@ -280,7 +276,7 @@ w_karate_secondary(void)
 	
 	// TODO - base karate melee damage?  I forget.
 	
-	w_karate_determineSecondaryAttack(hitRep, meleeAnimToPlay);
+	w_karate_determineSecondaryAttack(pl, hitRep, meleeAnimToPlay);
 	
 	pl.fUncrouchBlockDelay = 1.0f;
 	
@@ -326,9 +322,8 @@ w_karate_secondary(void)
 }
 
 void
-w_karate_reload(void)
+w_karate_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	// make a "HUAH" sound with a little cooldown?
@@ -348,17 +343,16 @@ w_karate_reload(void)
 }
 
 float
-w_karate_aimanim(void)
+w_karate_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_karate_hud(void)
+w_karate_hud(player pl)
 {
 #ifdef CLIENT
 	vector clrDraw;
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 		
 	weapondata_basic_t baseRef = *ary_weaponData[WEAPON_ID::KARATE];
@@ -385,7 +379,7 @@ w_karate_hud(void)
 }
 
 void
-w_karate_hudpic(int selected, vector pos, float a)
+w_karate_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -404,7 +398,7 @@ weapon_t w_karate =
 	.secondary	= w_karate_secondary,
 	.reload		= w_karate_reload,
 	.release	= NULL,
-	.crosshair	= w_karate_hud,
+	.postdraw	= w_karate_hud,
 	.precache	= w_karate_precache,
 	.pickup		= NULL,
 	.updateammo	= w_karate_updateammo,

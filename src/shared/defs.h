@@ -90,8 +90,8 @@ var float autocvar_movemodmulti = 1;
 
 // Prototype for weapons_common.qc method(s)!
 // For things here to be aware of these earlier
-void Weapons_Draw(void);
-void Weapons_Holster(void);
+void Weapons_Draw(player);
+void Weapons_Holster(player);
 
 
 

@@ -133,9 +133,8 @@ w_mossberg500_wmodel(void)
 }
 
 string
-w_mossberg500_pmodel(void)
+w_mossberg500_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::MOSSBERG500]).sPlayerModelPath;
 }
@@ -147,9 +146,8 @@ w_mossberg500_deathmsg(void)
 }
 
 void
-w_mossberg500_draw(void)
+w_mossberg500_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	// not setting shotgun extra data here, done right before reload anims are called
@@ -161,15 +159,14 @@ w_mossberg500_draw(void)
 
 
 void
-w_mossberg500_holster(void)
+w_mossberg500_holster(player pl)
 {
 }
 
 
 void
-w_mossberg500_primary(void)
+w_mossberg500_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if(!weapon_shotgun_onInterrupt(pl, ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon)){
@@ -253,9 +250,8 @@ w_mossberg500_primary(void)
 
 
 void
-w_mossberg500_secondary(void)
+w_mossberg500_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	if(pl.w_attack_next > 0){
@@ -276,9 +272,8 @@ w_mossberg500_secondary(void)
 
 
 void
-w_mossberg500_reload(void)
+w_mossberg500_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	if(!arg_thisWeapon.iIronSight){
@@ -291,22 +286,21 @@ w_mossberg500_reload(void)
 }
 
 float
-w_mossberg500_aimanim(void)
+w_mossberg500_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_mossberg500_hud(void)
+w_mossberg500_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MOSSBERG500], arg_thisWeapon);
 
 }
 
 void
-w_mossberg500_hudpic(int selected, vector pos, float a)
+w_mossberg500_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -326,7 +320,7 @@ weapon_t w_mossberg500 =
 	.secondary	= w_mossberg500_secondary,
 	.reload		= w_mossberg500_reload,
 	.release	= NULL,
-	.crosshair	= w_mossberg500_hud,
+	.postdraw	= w_mossberg500_hud,
 	.precache	= w_mossberg500_precache,
 	.pickup		= NULL,
 	.updateammo	= w_mossberg500_updateammo,

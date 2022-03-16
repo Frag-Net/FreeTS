@@ -81,7 +81,7 @@ w_sealknife_wmodel(void)
 }
 
 string
-w_sealknife_pmodel(void)
+w_sealknife_pmodel(player pl)
 {
 	return (*ary_weaponData[WEAPON_ID::SEALKNIFE]).sPlayerModelPath;
 }
@@ -93,24 +93,22 @@ w_sealknife_deathmsg(void)
 }
 
 void
-w_sealknife_draw(void)
+w_sealknife_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SEALKNIFE], arg_thisWeapon);
 }
 
 void
-w_sealknife_holster(void)
+w_sealknife_holster(player pl)
 {
 }
 
 
 void
-w_sealknife_primary(void)
+w_sealknife_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -154,9 +152,8 @@ w_sealknife_primary(void)
 
 
 void
-w_sealknife_secondary(void)
+w_sealknife_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	if (pl.w_attack_next > 0.0) {
@@ -196,28 +193,27 @@ w_sealknife_secondary(void)
 
 
 void
-w_sealknife_reload(void)
+w_sealknife_reload(player pl)
 {
 	// how do you reload a sword
 }
 
 float
-w_sealknife_aimanim(void)
+w_sealknife_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_sealknife_hud(void)
+w_sealknife_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_throwable_onDrawHUD(pl, (weapondata_throwable_t*)ary_weaponData[WEAPON_ID::SEALKNIFE], arg_thisWeapon);
 }
 
 void
-w_sealknife_hudpic(int selected, vector pos, float a)
+w_sealknife_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -237,7 +233,7 @@ weapon_t w_sealknife =
 	.secondary	= w_sealknife_secondary,
 	.reload		= w_sealknife_reload,
 	.release	= NULL,
-	.crosshair	= w_sealknife_hud,
+	.postdraw	= w_sealknife_hud,
 	.precache	= w_sealknife_precache,
 	.pickup		= NULL,
 	.updateammo	= w_sealknife_updateammo,

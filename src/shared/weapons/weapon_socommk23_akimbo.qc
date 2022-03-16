@@ -115,10 +115,9 @@ w_socommk23_akimbo_wmodel(void)
 }
 
 string
-w_socommk23_akimbo_pmodel(void)
+w_socommk23_akimbo_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO]).sPlayerModelPath;
@@ -134,15 +133,14 @@ w_socommk23_akimbo_deathmsg(void)
 }
 
 void
-w_socommk23_akimbo_draw(void)
+w_socommk23_akimbo_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO], arg_thisWeapon);
 }
 
 void
-w_socommk23_akimbo_holster(void)
+w_socommk23_akimbo_holster(player pl)
 {
 }
 
@@ -330,23 +328,22 @@ void weapon_socommk23_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, i
 
 
 void
-w_socommk23_akimbo_primary(void)
+w_socommk23_akimbo_primary(player pl)
 {
 	weapon_gun_akimbo_semi_primaryAttack(weapon_socommk23_akimbo_attack);
 }
 
 
 void
-w_socommk23_akimbo_secondary(void)
+w_socommk23_akimbo_secondary(player pl)
 {
 	weapon_ironsight_akimbo_semi_secondaryAttack(weapon_socommk23_akimbo_attack, WEAPON_ID::SOCOMMK23_AKIMBO);
 }
 
 
 void
-w_socommk23_akimbo_reload(void)
+w_socommk23_akimbo_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO], arg_thisWeapon);
 	
@@ -355,21 +352,20 @@ w_socommk23_akimbo_reload(void)
 }
 
 float
-w_socommk23_akimbo_aimanim(void)
+w_socommk23_akimbo_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_socommk23_akimbo_hud(void)
+w_socommk23_akimbo_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SOCOMMK23_AKIMBO], arg_thisWeapon);
 }
 
 void
-w_socommk23_akimbo_hudpic(int selected, vector pos, float a)
+w_socommk23_akimbo_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -389,7 +385,7 @@ weapon_t w_socommk23_akimbo =
 	.secondary	= w_socommk23_akimbo_secondary,
 	.reload		= w_socommk23_akimbo_reload,
 	.release	= NULL,
-	.crosshair	= w_socommk23_akimbo_hud,
+	.postdraw	= w_socommk23_akimbo_hud,
 	.precache	= w_socommk23_akimbo_precache,
 	.pickup		= NULL,
 	.updateammo	= w_socommk23_akimbo_updateammo,

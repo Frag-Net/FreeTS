@@ -116,10 +116,9 @@ w_beretta_akimbo_wmodel(void)
 }
 
 string
-w_beretta_akimbo_pmodel(void)
+w_beretta_akimbo_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::BERETTA_AKIMBO]).sPlayerModelPath;
@@ -135,15 +134,14 @@ w_beretta_akimbo_deathmsg(void)
 }
 
 void
-w_beretta_akimbo_draw(void)
+w_beretta_akimbo_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::BERETTA_AKIMBO], arg_thisWeapon);
 }
 
 void
-w_beretta_akimbo_holster(void)
+w_beretta_akimbo_holster(player pl)
 {
 }
 
@@ -320,43 +318,41 @@ void weapon_beretta_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 
 
 void
-w_beretta_akimbo_primary(void)
+w_beretta_akimbo_primary(player pl)
 {
 	weapon_gun_akimbo_semi_primaryAttack(weapon_beretta_akimbo_attack);
 }
 
 
 void
-w_beretta_akimbo_secondary(void)
+w_beretta_akimbo_secondary(player pl)
 {
 	weapon_gun_akimbo_semi_secondaryAttack(weapon_beretta_akimbo_attack);
 }
 
 void
-w_beretta_akimbo_reload(void)
+w_beretta_akimbo_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BERETTA_AKIMBO], arg_thisWeapon);
 	
 }
 
 float
-w_beretta_akimbo_aimanim(void)
+w_beretta_akimbo_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_beretta_akimbo_hud(void)
+w_beretta_akimbo_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BERETTA_AKIMBO], arg_thisWeapon);
 }
 
 void
-w_beretta_akimbo_hudpic(int selected, vector pos, float a)
+w_beretta_akimbo_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -375,7 +371,7 @@ weapon_t w_beretta_akimbo =
 	.secondary	= w_beretta_akimbo_secondary,
 	.reload		= w_beretta_akimbo_reload,
 	.release	= NULL,
-	.crosshair	= w_beretta_akimbo_hud,
+	.postdraw	= w_beretta_akimbo_hud,
 	.precache	= w_beretta_akimbo_precache,
 	.pickup		= NULL,
 	.updateammo	= w_beretta_akimbo_updateammo,

@@ -110,9 +110,8 @@ w_benellim3_wmodel(void)
 }
 
 string
-w_benellim3_pmodel(void)
+w_benellim3_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::BENELLIM3]).sPlayerModelPath;
 }
@@ -124,9 +123,8 @@ w_benellim3_deathmsg(void)
 }
 
 void
-w_benellim3_draw(void)
+w_benellim3_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	pl.iShotgunExtraDataID = SHOTGUN_EXTRA_ID::BENELLIM3;
@@ -137,15 +135,14 @@ w_benellim3_draw(void)
 
 
 void
-w_benellim3_holster(void)
+w_benellim3_holster(player pl)
 {
 }
 
 
 void
-w_benellim3_primary(void)
+w_benellim3_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if(!weapon_shotgun_onInterrupt(pl, ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon)){
@@ -233,9 +230,8 @@ w_benellim3_primary(void)
 
 
 void
-w_benellim3_secondary(void)
+w_benellim3_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	INPUT_SECONDARY_TAP_GATE
@@ -255,30 +251,28 @@ w_benellim3_secondary(void)
 }
 
 void
-w_benellim3_reload(void)
+w_benellim3_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_shotgun_reload(pl, ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon);
 }
 
 float
-w_benellim3_aimanim(void)
+w_benellim3_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_benellim3_hud(void)
+w_benellim3_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BENELLIM3], arg_thisWeapon);
 
 }
 
 void
-w_benellim3_hudpic(int selected, vector pos, float a)
+w_benellim3_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -298,7 +292,7 @@ weapon_t w_benellim3 =
 	.secondary	= w_benellim3_secondary,
 	.reload		= w_benellim3_reload,
 	.release	= NULL,
-	.crosshair	= w_benellim3_hud,
+	.postdraw	= w_benellim3_hud,
 	.precache	= w_benellim3_precache,
 	.pickup		= NULL,
 	.updateammo	= w_benellim3_updateammo,

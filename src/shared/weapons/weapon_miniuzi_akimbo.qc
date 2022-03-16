@@ -107,10 +107,9 @@ w_miniuzi_akimbo_wmodel(void)
 }
 
 string
-w_miniuzi_akimbo_pmodel(void)
+w_miniuzi_akimbo_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO]).sPlayerModelPath;
@@ -126,15 +125,14 @@ w_miniuzi_akimbo_deathmsg(void)
 }
 
 void
-w_miniuzi_akimbo_draw(void)
+w_miniuzi_akimbo_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon);
 }
 
 void
-w_miniuzi_akimbo_holster(void)
+w_miniuzi_akimbo_holster(player pl)
 {
 }
 
@@ -273,7 +271,7 @@ void weapon_miniuzi_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon, int
 
 
 void
-w_miniuzi_akimbo_primary(void)
+w_miniuzi_akimbo_primary(player pl)
 {
 	weapon_gun_akimbo_full_primaryAttack(weapon_miniuzi_akimbo_attack);
 }
@@ -281,16 +279,15 @@ w_miniuzi_akimbo_primary(void)
 
 
 void
-w_miniuzi_akimbo_secondary(void)
+w_miniuzi_akimbo_secondary(player pl)
 {
 	weapon_gun_akimbo_full_secondaryAttack(weapon_miniuzi_akimbo_attack);
 }
 
 
 void
-w_miniuzi_akimbo_reload(void)
+w_miniuzi_akimbo_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon);
@@ -299,23 +296,22 @@ w_miniuzi_akimbo_reload(void)
 
 
 float
-w_miniuzi_akimbo_aimanim(void)
+w_miniuzi_akimbo_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 
 void
-w_miniuzi_akimbo_hud(void)
+w_miniuzi_akimbo_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MINIUZI_AKIMBO], arg_thisWeapon);
 
 }
 
 void
-w_miniuzi_akimbo_hudpic(int selected, vector pos, float a)
+w_miniuzi_akimbo_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -335,7 +331,7 @@ weapon_t w_miniuzi_akimbo =
 	.secondary	= w_miniuzi_akimbo_secondary,
 	.reload		= w_miniuzi_akimbo_reload,
 	.release	= NULL,
-	.crosshair	= w_miniuzi_akimbo_hud,
+	.postdraw	= w_miniuzi_akimbo_hud,
 	.precache	= w_miniuzi_akimbo_precache,
 	.pickup		= NULL,
 	.updateammo	= w_miniuzi_akimbo_updateammo,

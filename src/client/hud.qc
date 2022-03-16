@@ -52,7 +52,7 @@ HUD_DrawNotify(void)
 	}
 
 	pos = g_hudmins + [g_hudres[0] - 192, g_hudres[1] - 128];
-	Weapons_HUDPic(pSeatLocal->m_iPickupWeapon, 1, pos, pSeatLocal->m_flPickupAlpha);
+	Weapons_HUDPic(pl, pSeatLocal->m_iPickupWeapon, 1, pos, pSeatLocal->m_flPickupAlpha);
 	pSeatLocal->m_flPickupAlpha -= clframetime;
 	*/
 }
@@ -111,7 +111,7 @@ HUD_Draw(void)
 		// Assuming that drawing these on top of the scope is a good idea.
 		// "Weapons_DrawCrosshair" is for tapping into the weapon's drawHUD methods,
 		// Nuclide methods in its weapons struct
-		Weapons_DrawCrosshair();
+		Weapons_DrawCrosshair(pl);
 		TS_HUD_DrawWeaponSelect();
 		
 		

@@ -99,9 +99,8 @@ w_akimbocolts_wmodel(void)
 }
 
 string
-w_akimbocolts_pmodel(void)
+w_akimbocolts_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::AKIMBOCOLTS]).sPlayerModelPath;
 }
@@ -113,15 +112,14 @@ w_akimbocolts_deathmsg(void)
 }
 
 void
-w_akimbocolts_draw(void)
+w_akimbocolts_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
 }
 
 void
-w_akimbocolts_holster(void)
+w_akimbocolts_holster(player pl)
 {
 }
 
@@ -263,14 +261,14 @@ void weapon_akimbocolts_akimbo_attack(player pl, weapondynamic_t arg_thisWeapon,
 
 
 void
-w_akimbocolts_primary(void)
+w_akimbocolts_primary(player pl)
 {
 	weapon_gun_akimbo_semi_primaryAttack(weapon_akimbocolts_akimbo_attack);
 }
 
 
 void
-w_akimbocolts_secondary(void)
+w_akimbocolts_secondary(player pl)
 {
 	weapon_gun_akimbo_semi_secondaryAttack(weapon_akimbocolts_akimbo_attack);
 	
@@ -278,30 +276,28 @@ w_akimbocolts_secondary(void)
 
 
 void
-w_akimbocolts_reload(void)
+w_akimbocolts_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
 	
 }
 
 float
-w_akimbocolts_aimanim(void)
+w_akimbocolts_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_akimbocolts_hud(void)
+w_akimbocolts_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::AKIMBOCOLTS], arg_thisWeapon);
 }
 
 void
-w_akimbocolts_hudpic(int selected, vector pos, float a)
+w_akimbocolts_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -320,7 +316,7 @@ weapon_t w_akimbocolts =
 	.secondary	= w_akimbocolts_secondary,
 	.reload		= w_akimbocolts_reload,
 	.release	= NULL,
-	.crosshair	= w_akimbocolts_hud,
+	.postdraw	= w_akimbocolts_hud,
 	.precache	= w_akimbocolts_precache,
 	.pickup		= NULL,
 	.updateammo	= w_akimbocolts_updateammo,

@@ -97,10 +97,9 @@ w_hkpdw_wmodel(void)
 }
 
 string
-w_hkpdw_pmodel(void)
+w_hkpdw_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::HKPDW]).sPlayerModelPath;
@@ -116,23 +115,21 @@ w_hkpdw_deathmsg(void)
 }
 
 void
-w_hkpdw_draw(void)
+w_hkpdw_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::HKPDW], arg_thisWeapon);
 }
 
 void
-w_hkpdw_holster(void)
+w_hkpdw_holster(player pl)
 {
 }
 
 void
-w_hkpdw_primary(void)
+w_hkpdw_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -182,9 +179,8 @@ w_hkpdw_primary(void)
 }
 
 void
-w_hkpdw_secondary(void)
+w_hkpdw_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	INPUT_SECONDARY_TAP_GATE
@@ -198,24 +194,22 @@ w_hkpdw_secondary(void)
 }
 
 void
-w_hkpdw_reload(void)
+w_hkpdw_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::HKPDW], arg_thisWeapon);
 }
 
 float
-w_hkpdw_aimanim(void)
+w_hkpdw_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_hkpdw_hud(void)
+w_hkpdw_hud(player pl)
 {
-	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::HKPDW], arg_thisWeapon);
@@ -223,7 +217,7 @@ w_hkpdw_hud(void)
 }
 
 void
-w_hkpdw_hudpic(int selected, vector pos, float a)
+w_hkpdw_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -242,7 +236,7 @@ weapon_t w_hkpdw =
 	.secondary	= w_hkpdw_secondary,
 	.reload		= w_hkpdw_reload,
 	.release	= NULL,
-	.crosshair	= w_hkpdw_hud,
+	.postdraw	= w_hkpdw_hud,
 	.precache	= w_hkpdw_precache,
 	.pickup		= NULL,
 	.updateammo	= w_hkpdw_updateammo,

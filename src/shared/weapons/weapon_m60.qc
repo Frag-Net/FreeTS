@@ -88,9 +88,8 @@ w_m60_wmodel(void)
 }
 
 string
-w_m60_pmodel(void)
+w_m60_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::M60]).sPlayerModelPath;
 }
@@ -102,23 +101,21 @@ w_m60_deathmsg(void)
 }
 
 void
-w_m60_draw(void)
+w_m60_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
 }
 
 void
-w_m60_holster(void)
+w_m60_holster(player pl)
 {
 }
 
 void
-w_m60_primary(void)
+w_m60_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -154,15 +151,14 @@ w_m60_primary(void)
 }
 
 void
-w_m60_secondary(void)
+w_m60_secondary(player pl)
 {
 }
 
 
 void
-w_m60_reload(void)
+w_m60_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
@@ -170,15 +166,14 @@ w_m60_reload(void)
 
 
 float
-w_m60_aimanim(void)
+w_m60_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_m60_hud(void)
+w_m60_hud(player pl)
 {
-	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::M60], arg_thisWeapon);
@@ -186,7 +181,7 @@ w_m60_hud(void)
 }
 
 void
-w_m60_hudpic(int selected, vector pos, float a)
+w_m60_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -205,7 +200,7 @@ weapon_t w_m60 =
 	.secondary	= w_m60_secondary,
 	.reload		= w_m60_reload,
 	.release	= NULL,
-	.crosshair	= w_m60_hud,
+	.postdraw	= w_m60_hud,
 	.precache	= w_m60_precache,
 	.pickup		= NULL,
 	.updateammo	= w_m60_updateammo,

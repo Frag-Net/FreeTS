@@ -98,9 +98,8 @@ w_barrettm82_wmodel(void)
 }
 
 string
-w_barrettm82_pmodel(void)
+w_barrettm82_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::BARRETTM82]).sPlayerModelPath;
 }
@@ -112,9 +111,8 @@ w_barrettm82_deathmsg(void)
 }
 
 void
-w_barrettm82_draw(void)
+w_barrettm82_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::BARRETTM82];
 	
@@ -123,15 +121,14 @@ w_barrettm82_draw(void)
 
 
 void
-w_barrettm82_holster(void)
+w_barrettm82_holster(player pl)
 {
 }
 
 
 void
-w_barrettm82_primary(void)
+w_barrettm82_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -173,9 +170,8 @@ w_barrettm82_primary(void)
 
 
 void
-w_barrettm82_secondary(void)
+w_barrettm82_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	INPUT_SECONDARY_TAP_GATE
@@ -189,30 +185,28 @@ w_barrettm82_secondary(void)
 }
 
 void
-w_barrettm82_reload(void)
+w_barrettm82_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BARRETTM82], arg_thisWeapon);
 }
 
 float
-w_barrettm82_aimanim(void)
+w_barrettm82_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_barrettm82_hud(void)
+w_barrettm82_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BARRETTM82], arg_thisWeapon);
 }
 
 void
-w_barrettm82_hudpic(int selected, vector pos, float a)
+w_barrettm82_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -231,7 +225,7 @@ weapon_t w_barrettm82 =
 	.secondary	= w_barrettm82_secondary,
 	.reload		= w_barrettm82_reload,
 	.release	= NULL,
-	.crosshair	= w_barrettm82_hud,
+	.postdraw	= w_barrettm82_hud,
 	.precache	= w_barrettm82_precache,
 	.pickup		= NULL,
 	.updateammo	= w_barrettm82_updateammo,

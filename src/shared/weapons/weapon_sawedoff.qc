@@ -136,9 +136,8 @@ w_sawedoff_wmodel(void)
 }
 
 string
-w_sawedoff_pmodel(void)
+w_sawedoff_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::SAWEDOFF]).sPlayerModelPath;
 }
@@ -151,23 +150,21 @@ w_sawedoff_deathmsg(void)
 
 
 void
-w_sawedoff_draw(void)
+w_sawedoff_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 }
 
 void
-w_sawedoff_holster(void)
+w_sawedoff_holster(player pl)
 {
 }
 
 
 void
-w_sawedoff_primary(void)
+w_sawedoff_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -219,20 +216,18 @@ w_sawedoff_primary(void)
 
 
 void
-w_sawedoff_secondary(void)
+w_sawedoff_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_ironsight_ToggleIronsight(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 }
 
 // need custom reload logic, works more like a typical weapon
 void
-w_sawedoff_reload(void)
+w_sawedoff_reload(player pl)
 {
 	int reloadSeq;
 	float reloadDur;
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	//weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
@@ -261,22 +256,21 @@ w_sawedoff_reload(void)
 }
 
 float
-w_sawedoff_aimanim(void)
+w_sawedoff_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_sawedoff_hud(void)
+w_sawedoff_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SAWEDOFF], arg_thisWeapon);
 
 }
 
 void
-w_sawedoff_hudpic(int selected, vector pos, float a)
+w_sawedoff_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -296,7 +290,7 @@ weapon_t w_sawedoff =
 	.secondary	= w_sawedoff_secondary,
 	.reload		= w_sawedoff_reload,
 	.release	= NULL,
-	.crosshair	= w_sawedoff_hud,
+	.postdraw	= w_sawedoff_hud,
 	.precache	= w_sawedoff_precache,
 	.pickup		= NULL,
 	.updateammo	= w_sawedoff_updateammo,

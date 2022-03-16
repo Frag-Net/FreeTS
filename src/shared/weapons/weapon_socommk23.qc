@@ -108,10 +108,9 @@ w_socommk23_wmodel(void)
 }
 
 string
-w_socommk23_pmodel(void)
+w_socommk23_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::SOCOMMK23]).sPlayerModelPath;
@@ -127,9 +126,8 @@ w_socommk23_deathmsg(void)
 }
 
 void
-w_socommk23_draw(void)
+w_socommk23_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::SOCOMMK23];
 	
@@ -138,15 +136,14 @@ w_socommk23_draw(void)
 
 
 void
-w_socommk23_holster(void)
+w_socommk23_holster(player pl)
 {
 }
 
 
 void
-w_socommk23_primary(void)
+w_socommk23_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -207,9 +204,8 @@ w_socommk23_primary(void)
 
 
 void
-w_socommk23_secondary(void)
+w_socommk23_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	if(pl.w_attack_next > 0){
@@ -224,30 +220,28 @@ w_socommk23_secondary(void)
 
 
 void
-w_socommk23_reload(void)
+w_socommk23_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::SOCOMMK23], arg_thisWeapon);
 }
 
 float
-w_socommk23_aimanim(void)
+w_socommk23_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_socommk23_hud(void)
+w_socommk23_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SOCOMMK23], arg_thisWeapon);
 }
 
 void
-w_socommk23_hudpic(int selected, vector pos, float a)
+w_socommk23_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -266,7 +260,7 @@ weapon_t w_socommk23 =
 	.secondary	= w_socommk23_secondary,
 	.reload		= w_socommk23_reload,
 	.release	= NULL,
-	.crosshair	= w_socommk23_hud,
+	.postdraw	= w_socommk23_hud,
 	.precache	= w_socommk23_precache,
 	.pickup		= NULL,
 	.updateammo	= w_socommk23_updateammo,

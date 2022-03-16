@@ -103,9 +103,8 @@ w_contenderg2_wmodel(void)
 }
 
 string
-w_contenderg2_pmodel(void)
+w_contenderg2_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::CONTENDERG2]).sPlayerModelPath;
 }
@@ -117,22 +116,20 @@ w_contenderg2_deathmsg(void)
 }
 
 void
-w_contenderg2_draw(void)
+w_contenderg2_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon);
 }
 
 void
-w_contenderg2_holster(void)
+w_contenderg2_holster(player pl)
 {
 }
 
 void
-w_contenderg2_primary(void)
+w_contenderg2_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	if (pl.w_attack_next > 0.0) {
@@ -174,9 +171,8 @@ w_contenderg2_primary(void)
 }
 
 void
-w_contenderg2_secondary(void)
+w_contenderg2_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	INPUT_SECONDARY_TAP_GATE
@@ -190,31 +186,29 @@ w_contenderg2_secondary(void)
 }
 
 void
-w_contenderg2_reload(void)
+w_contenderg2_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon);
 }
 
 float
-w_contenderg2_aimanim(void)
+w_contenderg2_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_contenderg2_hud(void)
+w_contenderg2_hud(player pl)
 {
-	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::CONTENDERG2], arg_thisWeapon);
 }
 
 void
-w_contenderg2_hudpic(int selected, vector pos, float a)
+w_contenderg2_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -233,7 +227,7 @@ weapon_t w_contenderg2 =
 	.secondary	= w_contenderg2_secondary,
 	.reload		= w_contenderg2_reload,
 	.release	= NULL,
-	.crosshair	= w_contenderg2_hud,
+	.postdraw	= w_contenderg2_hud,
 	.precache	= w_contenderg2_precache,
 	.pickup		= NULL,
 	.updateammo	= w_contenderg2_updateammo,

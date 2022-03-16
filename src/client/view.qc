@@ -23,10 +23,8 @@
 
 // vm is pSeat->m_eViewModel passed along from Nuclide's View_DrawViewModel
 void
-View_UpdateWeapon(entity vm, entity mflash)
+View_UpdateWeapon(player pl, entity vm, entity mflash)
 {
-	player pl = (player)pSeat->m_ePlayer;
-	
 	if(autocvar_cl_printoutspam == 1){
 		printfline("STATUS: %i==%d - %i", pSeat->m_iLastWeapon, pl.activeweapon, pl.inventoryEquippedIndex);
 	}
@@ -67,7 +65,7 @@ View_UpdateWeapon(entity vm, entity mflash)
 	// hack, we changed the wep, move this into Game_Input/PMove
 	// ... And yes, it seems this bound check is indeed needed, zany sync issues.
 	if(pl.inventoryEquippedIndex != -1){
-		Weapons_Draw();
+		Weapons_Draw(pl);
 	}
 	
 	TS_View_ChangeViewModelPost();

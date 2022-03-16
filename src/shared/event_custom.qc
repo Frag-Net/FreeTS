@@ -56,7 +56,7 @@ TS_Weapon_Draw(player pl, int weaponEquipped, BOOL useAkimbo ) {
 	// Anything equipped already?
 	if(pl.inventoryEquippedIndex != -1){
 		// How about Nuclide's 'Holster' instead?
-		Weapons_Holster();
+		Weapons_Holster(pl);
 		pl.equippedWeaponDeleteCheck();
 	}
 	
@@ -85,7 +85,7 @@ TS_Weapon_Draw(player pl, int weaponEquipped, BOOL useAkimbo ) {
 	// TEST!  Force the call now anyway clientside too.
 //#ifdef SERVER
 	TS_Weapon_Draw_extra();
-	Weapons_Draw();
+	Weapons_Draw(pl);
 //#else
 //	// so that any choice of weapon, same as before or even nothing, will still
 //	// let client/view.qc do the whole viewmodel routine again

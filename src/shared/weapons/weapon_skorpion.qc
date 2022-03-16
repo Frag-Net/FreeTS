@@ -89,9 +89,8 @@ w_skorpion_wmodel(void)
 }
 
 string
-w_skorpion_pmodel(void)
+w_skorpion_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::SKORPION]).sPlayerModelPath;
 }
@@ -103,23 +102,21 @@ w_skorpion_deathmsg(void)
 }
 
 void
-w_skorpion_draw(void)
+w_skorpion_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::SKORPION], arg_thisWeapon);
 }
 
 void
-w_skorpion_holster(void)
+w_skorpion_holster(player pl)
 {
 }
 
 
 void
-w_skorpion_primary(void)
+w_skorpion_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -162,36 +159,34 @@ w_skorpion_primary(void)
 
 
 void
-w_skorpion_secondary(void)
+w_skorpion_secondary(player pl)
 {
 }
 
 
 void
-w_skorpion_reload(void)
+w_skorpion_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SKORPION], arg_thisWeapon);
 }
 
 float
-w_skorpion_aimanim(void)
+w_skorpion_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_skorpion_hud(void)
+w_skorpion_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SKORPION], arg_thisWeapon);
 
 }
 
 void
-w_skorpion_hudpic(int selected, vector pos, float a)
+w_skorpion_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -211,7 +206,7 @@ weapon_t w_skorpion =
 	.secondary	= w_skorpion_secondary,
 	.reload		= w_skorpion_reload,
 	.release	= NULL,
-	.crosshair	= w_skorpion_hud,
+	.postdraw	= w_skorpion_hud,
 	.precache	= w_skorpion_precache,
 	.pickup		= NULL,
 	.updateammo	= w_skorpion_updateammo,

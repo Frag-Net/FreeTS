@@ -87,10 +87,9 @@ w_glock20_wmodel(void)
 }
 
 string
-w_glock20_pmodel(void)
+w_glock20_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::GLOCK20]).sPlayerModelPath;
@@ -106,23 +105,21 @@ w_glock20_deathmsg(void)
 }
 
 void
-w_glock20_draw(void)
+w_glock20_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon);
 }
 
 void
-w_glock20_holster(void)
+w_glock20_holster(player pl)
 {
 }
 
 void
-w_glock20_primary(void)
+w_glock20_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -175,29 +172,27 @@ w_glock20_primary(void)
 }
 
 void
-w_glock20_secondary(void)
+w_glock20_secondary(player pl)
 {
 }
 
 void
-w_glock20_reload(void)
+w_glock20_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon);
 }
 
 float
-w_glock20_aimanim(void)
+w_glock20_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_glock20_hud(void)
+w_glock20_hud(player pl)
 {
-	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK20], arg_thisWeapon);
@@ -205,7 +200,7 @@ w_glock20_hud(void)
 }
 
 void
-w_glock20_hudpic(int selected, vector pos, float a)
+w_glock20_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -224,7 +219,7 @@ weapon_t w_glock20 =
 	.secondary	= w_glock20_secondary,
 	.reload		= w_glock20_reload,
 	.release	= NULL,
-	.crosshair	= w_glock20_hud,
+	.postdraw	= w_glock20_hud,
 	.precache	= w_glock20_precache,
 	.pickup		= NULL,
 	.updateammo	= w_glock20_updateammo,

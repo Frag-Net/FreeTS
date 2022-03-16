@@ -169,7 +169,7 @@ void CSEv_PlayerSwitchWeapon_i(int w)
 	
 	//pl.activeweapon = w;
 	pl.setInventoryEquippedIndex(w);
-	Weapons_Draw();
+	Weapons_Draw(pl);
 }
 */
 

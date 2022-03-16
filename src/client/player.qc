@@ -107,7 +107,7 @@ Player_HandleWeaponModel(base_player pp, float thirdperson)
 		return;
 
 	/* what's the current weapon model supposed to be anyway? */
-	string wmodel = Weapons_GetPlayermodel(pl.activeweapon);
+	string wmodel = Weapons_GetPlayermodel(pl, pl.activeweapon);
 
 	/* we changed weapons, update skeletonindex */
 	if (pl.p_model.model != wmodel) {

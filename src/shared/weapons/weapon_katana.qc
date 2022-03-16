@@ -82,7 +82,7 @@ w_katana_wmodel(void)
 }
 
 string
-w_katana_pmodel(void)
+w_katana_pmodel(player pl)
 {
 	return (*ary_weaponData[WEAPON_ID::KATANA]).sPlayerModelPath;
 }
@@ -95,23 +95,21 @@ w_katana_deathmsg(void)
 
 
 void
-w_katana_draw(void)
+w_katana_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon);
 }
 
 void
-w_katana_holster(void)
+w_katana_holster(player pl)
 {
 }
 
 void
-w_katana_primary(void)
+w_katana_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	MELEE_HIT_RESPONSE hitRep;
 	int meleeAnimToPlay = 0;
@@ -210,27 +208,26 @@ w_katana_primary(void)
 }
 
 void
-w_katana_secondary(void)
+w_katana_secondary(player pl)
 {
 	// nope.
 }
 
 void
-w_katana_reload(void)
+w_katana_reload(player pl)
 {
 	// how do you reload a sword
 }
 
 float
-w_katana_aimanim(void)
+w_katana_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_katana_hud(void)
+w_katana_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_melee_onDrawHUD(pl, (weapondata_melee_t*)ary_weaponData[WEAPON_ID::KATANA], arg_thisWeapon);
@@ -238,7 +235,7 @@ w_katana_hud(void)
 }
 
 void
-w_katana_hudpic(int selected, vector pos, float a)
+w_katana_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -257,7 +254,7 @@ weapon_t w_katana =
 	.secondary	= w_katana_secondary,
 	.reload		= w_katana_reload,
 	.release	= NULL,
-	.crosshair	= w_katana_hud,
+	.postdraw	= w_katana_hud,
 	.precache	= w_katana_precache,
 	.pickup		= NULL,
 	.updateammo	= w_katana_updateammo,

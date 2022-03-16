@@ -116,10 +116,9 @@ w_deserteagle_wmodel(void)
 }
 
 string
-w_deserteagle_pmodel(void)
+w_deserteagle_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::DESERTEAGLE]).sPlayerModelPath;
@@ -135,9 +134,8 @@ w_deserteagle_deathmsg(void)
 }
 
 void
-w_deserteagle_draw(void)
+w_deserteagle_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::DESERTEAGLE];
 	
@@ -146,15 +144,14 @@ w_deserteagle_draw(void)
 
 
 void
-w_deserteagle_holster(void)
+w_deserteagle_holster(player pl)
 {
 }
 
 
 void
-w_deserteagle_primary(void)
+w_deserteagle_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -221,9 +218,8 @@ w_deserteagle_primary(void)
 
 
 void
-w_deserteagle_secondary(void)
+w_deserteagle_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	INPUT_SECONDARY_TAP_GATE
@@ -242,30 +238,28 @@ w_deserteagle_secondary(void)
 }
 
 void
-w_deserteagle_reload(void)
+w_deserteagle_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);
 }
 
 float
-w_deserteagle_aimanim(void)
+w_deserteagle_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_deserteagle_hud(void)
+w_deserteagle_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::DESERTEAGLE], arg_thisWeapon);
 }
 
 void
-w_deserteagle_hudpic(int selected, vector pos, float a)
+w_deserteagle_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -284,7 +278,7 @@ weapon_t w_deserteagle =
 	.secondary	= w_deserteagle_secondary,
 	.reload		= w_deserteagle_reload,
 	.release	= NULL,
-	.crosshair	= w_deserteagle_hud,
+	.postdraw	= w_deserteagle_hud,
 	.precache	= w_deserteagle_precache,
 	.pickup		= NULL,
 	.updateammo	= w_deserteagle_updateammo,

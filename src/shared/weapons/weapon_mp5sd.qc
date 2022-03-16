@@ -94,11 +94,10 @@ w_mp5sd_wmodel(void)
 }
 
 string
-w_mp5sd_pmodel(void)
+w_mp5sd_pmodel(player pl)
 {
 	// Do we have the silencer?
 	// Oh.  Guaranteed for the mp5.  Oh well.
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	//if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 	//	return (*ary_weaponData[WEAPON_ID::MP5SD]).sPlayerModelPath;
@@ -114,23 +113,21 @@ w_mp5sd_deathmsg(void)
 }
 
 void
-w_mp5sd_draw(void)
+w_mp5sd_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
 }
 
 void
-w_mp5sd_holster(void)
+w_mp5sd_holster(player pl)
 {
 }
 
 void
-w_mp5sd_primary(void)
+w_mp5sd_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -195,9 +192,8 @@ w_mp5sd_primary(void)
 }
 
 void
-w_mp5sd_secondary(void)
+w_mp5sd_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	INPUT_SECONDARY_TAP_GATE
@@ -212,24 +208,22 @@ w_mp5sd_secondary(void)
 
 
 void
-w_mp5sd_reload(void)
+w_mp5sd_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
 }
 
 float
-w_mp5sd_aimanim(void)
+w_mp5sd_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_mp5sd_hud(void)
+w_mp5sd_hud(player pl)
 {
-	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::MP5SD], arg_thisWeapon);
@@ -237,7 +231,7 @@ w_mp5sd_hud(void)
 }
 
 void
-w_mp5sd_hudpic(int selected, vector pos, float a)
+w_mp5sd_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -256,7 +250,7 @@ weapon_t w_mp5sd =
 	.secondary	= w_mp5sd_secondary,
 	.reload		= w_mp5sd_reload,
 	.release	= NULL,
-	.crosshair	= w_mp5sd_hud,
+	.postdraw	= w_mp5sd_hud,
 	.precache	= w_mp5sd_precache,
 	.pickup		= NULL,
 	.updateammo	= w_mp5sd_updateammo,

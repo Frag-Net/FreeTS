@@ -2031,7 +2031,7 @@ player::dropWeapon(int arg_weaponID, BOOL completeDrop){
 	
 	if(arg_weaponID == inventoryEquippedIndex){
 		// only if this is the currently equipped weapon.
-		Weapons_Holster();
+		Weapons_Holster(this);
 		if(!completeDrop){
 			deletedCurrentWeapon = equippedWeaponDeleteCheck();
 		}else{

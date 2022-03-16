@@ -106,10 +106,9 @@ w_steyrtmp_wmodel(void)
 }
 
 string
-w_steyrtmp_pmodel(void)
+w_steyrtmp_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::STEYRTMP]).sPlayerModelPath;
@@ -125,23 +124,21 @@ w_steyrtmp_deathmsg(void)
 }
 
 void
-w_steyrtmp_draw(void)
+w_steyrtmp_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::STEYRTMP], arg_thisWeapon);
 }
 
 void
-w_steyrtmp_holster(void)
+w_steyrtmp_holster(player pl)
 {
 }
 
 void
-w_steyrtmp_primary(void)
+w_steyrtmp_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -200,9 +197,8 @@ w_steyrtmp_primary(void)
 }
 
 void
-w_steyrtmp_secondary(void)
+w_steyrtmp_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	if(pl.w_attack_next > 0){
@@ -217,24 +213,22 @@ w_steyrtmp_secondary(void)
 
 
 void
-w_steyrtmp_reload(void)
+w_steyrtmp_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_ironsight_Reload(pl, (weapondata_ironsight_t*)ary_weaponData[WEAPON_ID::STEYRTMP], arg_thisWeapon);
 }
 
 float
-w_steyrtmp_aimanim(void)
+w_steyrtmp_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_steyrtmp_hud(void)
+w_steyrtmp_hud(player pl)
 {
-	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::STEYRTMP], arg_thisWeapon);
@@ -242,7 +236,7 @@ w_steyrtmp_hud(void)
 }
 
 void
-w_steyrtmp_hudpic(int selected, vector pos, float a)
+w_steyrtmp_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -261,7 +255,7 @@ weapon_t w_steyrtmp =
 	.secondary	= w_steyrtmp_secondary,
 	.reload		= w_steyrtmp_reload,
 	.release	= NULL,
-	.crosshair	= w_steyrtmp_hud,
+	.postdraw	= w_steyrtmp_hud,
 	.precache	= w_steyrtmp_precache,
 	.pickup		= NULL,
 	.updateammo	= w_steyrtmp_updateammo,

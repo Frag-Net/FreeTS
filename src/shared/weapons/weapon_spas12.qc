@@ -107,9 +107,8 @@ w_spas12_wmodel(void)
 }
 
 string
-w_spas12_pmodel(void)
+w_spas12_pmodel(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	return (*ary_weaponData[WEAPON_ID::SPAS12]).sPlayerModelPath;
 }
@@ -121,9 +120,8 @@ w_spas12_deathmsg(void)
 }
 
 void
-w_spas12_draw(void)
+w_spas12_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	pl.iShotgunExtraDataID = SHOTGUN_EXTRA_ID::SPAS12;
@@ -132,15 +130,14 @@ w_spas12_draw(void)
 }
 
 void
-w_spas12_holster(void)
+w_spas12_holster(player pl)
 {
 }
 
 
 void
-w_spas12_primary(void)
+w_spas12_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if(!weapon_shotgun_onInterrupt(pl, ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon)){
@@ -223,37 +220,35 @@ w_spas12_primary(void)
 
 
 void
-w_spas12_secondary(void)
+w_spas12_secondary(player pl)
 {
 	
 }
 
 
 void
-w_spas12_reload(void)
+w_spas12_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_shotgun_reload(pl, ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon);
 }
 
 float
-w_spas12_aimanim(void)
+w_spas12_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_spas12_hud(void)
+w_spas12_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::SPAS12], arg_thisWeapon);
 
 }
 
 void
-w_spas12_hudpic(int selected, vector pos, float a)
+w_spas12_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -273,7 +268,7 @@ weapon_t w_spas12 =
 	.secondary	= w_spas12_secondary,
 	.reload		= w_spas12_reload,
 	.release	= NULL,
-	.crosshair	= w_spas12_hud,
+	.postdraw	= w_spas12_hud,
 	.precache	= w_spas12_precache,
 	.pickup		= NULL,
 	.updateammo	= w_spas12_updateammo,

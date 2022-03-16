@@ -1645,7 +1645,7 @@ weapon_gun_fireBurstBullet(
 	// for it to be effective, it's not magic
 	arg_thisWeapon.iFireMode = BITS_FIREMODE_NONE;
 	
-	Weapons_Primary();
+	Weapons_Primary(pl);
 	
 	arg_thisWeapon.iFireMode = BITS_FIREMODE_BURST;
 	

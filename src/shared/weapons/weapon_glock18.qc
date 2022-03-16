@@ -101,7 +101,7 @@ w_glock18_wmodel(void)
 }
 
 string
-w_glock18_pmodel(void)
+w_glock18_pmodel(player pl)
 {
 	// Do we have the silencer?
 	player pl = (player)self;
@@ -121,25 +121,23 @@ w_glock18_deathmsg(void)
 
 
 void
-w_glock18_draw(void)
+w_glock18_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon);
 }
 
 void
-w_glock18_holster(void)
+w_glock18_holster(player pl)
 {
 
 }
 
 
 void
-w_glock18_primary(void)
+w_glock18_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -212,9 +210,8 @@ w_glock18_primary(void)
 
 
 void
-w_glock18_reload(void)
+w_glock18_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon);
@@ -225,16 +222,15 @@ w_glock18_reload(void)
 
 // ???
 float
-w_glock18_aimanim(void)
+w_glock18_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 
 void
-w_glock18_hud(void)
+w_glock18_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::GLOCK18], arg_thisWeapon);
 
@@ -243,7 +239,7 @@ w_glock18_hud(void)
 // NOPE! Handled by the BuyMenu, could make this give the instructions for drawing the
 // button with the icon if really wanted
 void
-w_glock18_hudpic(int selected, vector pos, float a)
+w_glock18_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -263,7 +259,7 @@ weapon_t w_glock18 =
 	.secondary	= NULL,
 	.reload		= w_glock18_reload,
 	.release	= NULL,
-	.crosshair	= w_glock18_hud,
+	.postdraw	= w_glock18_hud,
 	.precache	= w_glock18_precache,
 	.pickup		= NULL,
 	.updateammo	= w_glock18_updateammo,

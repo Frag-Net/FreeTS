@@ -259,7 +259,7 @@ w_m61grenade_wmodel(void)
 }
 
 string
-w_m61grenade_pmodel(void)
+w_m61grenade_pmodel(player pl)
 {
 	return (*ary_weaponData[WEAPON_ID::M61GRENADE]).sPlayerModelPath;
 }
@@ -271,9 +271,8 @@ w_m61grenade_deathmsg(void)
 }
 
 void
-w_m61grenade_draw(void)
+w_m61grenade_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	printfline("I set grenadeFireIndex to 0, A!");
@@ -285,49 +284,46 @@ w_m61grenade_draw(void)
 }
 
 void
-w_m61grenade_holster(void)
+w_m61grenade_holster(player pl)
 {
 }
 
 void
-w_m61grenade_primary(void)
+w_m61grenade_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_grenade_onInputPress(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_LEFT);
 }
 
 void
-w_m61grenade_secondary(void)
+w_m61grenade_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_grenade_onInputPress(pl, arg_thisWeapon, BITS_AKIMBOCHOICE_RIGHT);
 }
 
 void
-w_m61grenade_reload(void)
+w_m61grenade_reload(player pl)
 {
 
 }
 
 float
-w_m61grenade_aimanim(void)
+w_m61grenade_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_m61grenade_hud(void)
+w_m61grenade_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_throwable_onDrawHUD(pl, (weapondata_throwable_t*)ary_weaponData[WEAPON_ID::M61GRENADE], arg_thisWeapon);
 }
 
 void
-w_m61grenade_hudpic(int selected, vector pos, float a)
+w_m61grenade_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -347,7 +343,7 @@ weapon_t w_m61grenade =
 	.secondary	= w_m61grenade_secondary,
 	.reload		= w_m61grenade_reload,
 	.release	= NULL,
-	.crosshair	= w_m61grenade_hud,
+	.postdraw	= w_m61grenade_hud,
 	.precache	= w_m61grenade_precache,
 	.pickup		= NULL,
 	.updateammo	= w_m61grenade_updateammo,

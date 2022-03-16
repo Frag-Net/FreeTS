@@ -100,10 +100,9 @@ w_ump_wmodel(void)
 }
 
 string
-w_ump_pmodel(void)
+w_ump_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::UMP]).sPlayerModelPath;
@@ -119,23 +118,21 @@ w_ump_deathmsg(void)
 }
 
 void
-w_ump_draw(void)
+w_ump_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	weapon_base_onEquip(pl, ary_weaponData[WEAPON_ID::UMP], arg_thisWeapon);
 }
 
 void
-w_ump_holster(void)
+w_ump_holster(player pl)
 {
 }
 
 void
-w_ump_primary(void)
+w_ump_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -185,9 +182,8 @@ w_ump_primary(void)
 }
 
 void
-w_ump_secondary(void)
+w_ump_secondary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	
 	INPUT_SECONDARY_TAP_GATE
@@ -202,24 +198,22 @@ w_ump_secondary(void)
 
 
 void
-w_ump_reload(void)
+w_ump_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::UMP], arg_thisWeapon);
 }
 
 float
-w_ump_aimanim(void)
+w_ump_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_ump_hud(void)
+w_ump_hud(player pl)
 {
-	player pl = (player)self;
 	
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::UMP], arg_thisWeapon);
@@ -227,7 +221,7 @@ w_ump_hud(void)
 }
 
 void
-w_ump_hudpic(int selected, vector pos, float a)
+w_ump_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -246,7 +240,7 @@ weapon_t w_ump =
 	.secondary	= w_ump_secondary,
 	.reload		= w_ump_reload,
 	.release	= NULL,
-	.crosshair	= w_ump_hud,
+	.postdraw	= w_ump_hud,
 	.precache	= w_ump_precache,
 	.pickup		= NULL,
 	.updateammo	= w_ump_updateammo,

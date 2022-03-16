@@ -91,10 +91,9 @@ w_fiveseven_wmodel(void)
 }
 
 string
-w_fiveseven_pmodel(void)
+w_fiveseven_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::FIVESEVEN]).sPlayerModelPath;
@@ -110,9 +109,8 @@ w_fiveseven_deathmsg(void)
 }
 
 void
-w_fiveseven_draw(void)
+w_fiveseven_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::FIVESEVEN];
 	
@@ -121,15 +119,14 @@ w_fiveseven_draw(void)
 
 
 void
-w_fiveseven_holster(void)
+w_fiveseven_holster(player pl)
 {
 }
 
 
 void
-w_fiveseven_primary(void)
+w_fiveseven_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -177,35 +174,33 @@ w_fiveseven_primary(void)
 }
 
 void
-w_fiveseven_secondary(void)
+w_fiveseven_secondary(player pl)
 {
 }
 
 void
-w_fiveseven_reload(void)
+w_fiveseven_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FIVESEVEN], arg_thisWeapon);
 }
 
 float
-w_fiveseven_aimanim(void)
+w_fiveseven_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_fiveseven_hud(void)
+w_fiveseven_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::FIVESEVEN], arg_thisWeapon);
 }
 
 void
-w_fiveseven_hudpic(int selected, vector pos, float a)
+w_fiveseven_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -224,7 +219,7 @@ weapon_t w_fiveseven =
 	.secondary	= w_fiveseven_secondary,
 	.reload		= w_fiveseven_reload,
 	.release	= NULL,
-	.crosshair	= w_fiveseven_hud,
+	.postdraw	= w_fiveseven_hud,
 	.precache	= w_fiveseven_precache,
 	.pickup		= NULL,
 	.updateammo	= w_fiveseven_updateammo,

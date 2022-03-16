@@ -1,5 +1,5 @@
 
-void View_UpdateWeapon(entity vm, entity mflash);
+void View_UpdateWeapon(player pl, entity vm, entity mflash);
 
 
 void TS_View_SetViewModelFromStats(void);

@@ -92,10 +92,9 @@ w_beretta_wmodel(void)
 }
 
 string
-w_beretta_pmodel(void)
+w_beretta_pmodel(player pl)
 {
 	// Do we have the silencer?
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	if(!(arg_thisWeapon.iBitsUpgrade & BITS_WEAPONOPT_SILENCER) ){
 		return (*ary_weaponData[WEAPON_ID::BERETTA]).sPlayerModelPath;
@@ -111,9 +110,8 @@ w_beretta_deathmsg(void)
 }
 
 void
-w_beretta_draw(void)
+w_beretta_draw(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapondata_basic_t* basicP = ary_weaponData[WEAPON_ID::BERETTA];
 	
@@ -122,15 +120,14 @@ w_beretta_draw(void)
 
 
 void
-w_beretta_holster(void)
+w_beretta_holster(player pl)
 {
 }
 
 
 void
-w_beretta_primary(void)
+w_beretta_primary(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	if (pl.w_attack_next > 0.0) {
@@ -188,35 +185,33 @@ w_beretta_primary(void)
 
 
 void
-w_beretta_secondary(void)
+w_beretta_secondary(player pl)
 {
 }
 
 void
-w_beretta_reload(void)
+w_beretta_reload(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 
 	weapon_gun_Reload(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BERETTA], arg_thisWeapon);
 }
 
 float
-w_beretta_aimanim(void)
+w_beretta_aimanim(player pl)
 {
 	return self.flags & FL_CROUCHING ? ANIM_CR_AIM1HAND : ANIM_AIM1HAND;
 }
 
 void
-w_beretta_hud(void)
+w_beretta_hud(player pl)
 {
-	player pl = (player)self;
 	weapondynamic_t arg_thisWeapon = pl.ary_myWeapons[pl.inventoryEquippedIndex];
 	weapon_gun_onDrawHUD(pl, (weapondata_gun_t*)ary_weaponData[WEAPON_ID::BERETTA], arg_thisWeapon);
 }
 
 void
-w_beretta_hudpic(int selected, vector pos, float a)
+w_beretta_hudpic(player pl, int selected, vector pos, float a)
 {
 	//
 }
@@ -237,7 +232,7 @@ weapon_t w_beretta =
 	.secondary	= w_beretta_secondary,
 	.reload		= w_beretta_reload,
 	.release	= NULL,
-	.crosshair	= w_beretta_hud,
+	.postdraw	= w_beretta_hud,
 	.precache	= w_beretta_precache,
 	.pickup		= NULL,
 	.updateammo	= w_beretta_updateammo,

@@ -36,7 +36,7 @@ float custom_input_buttons;
 float ary_custom_input_buttons[512];
 BOOL ary_custom_input_sentYet[512];
 
-void Custom_Game_Input(void);
+void Custom_Game_Input(player pl);
 #endif
 
 
@@ -46,15 +46,14 @@ void Custom_Game_Input(void);
 // so if script to check for clicking while in spectator with no menu 
 // to spawn is here, prepare to be disappointed.
 
-// Also, this is called by pmove.qc (Nuclide), and it trusts "self" regardless
+// Also, this is called by pmove.qc (Nuclide), and it trusts "pl" regardless
 // of being client or serverside, so going to here too. 
 
 // ALSO, no need for "is spectator" checks here.  Only being a player allows
 // pmove to be called to begin with.
 void
-Game_Input(void)
+Game_Input(player pl)
 {
-	player pl = (player)self;
 	
 	//
 	// TODO: in the CSQC_Input_Frame event might be better when supported
@@ -123,7 +122,7 @@ Game_Input(void)
 	else
 		Player_UseUp();
 
-	self.impulse = 0;
+	pl.impulse = 0;
 #endif
 
 
@@ -132,13 +131,13 @@ Game_Input(void)
 // FreeHL's way
 
 	if (input_buttons & INPUT_BUTTON0)
-		Weapons_Primary();
+		Weapons_Primary(pl);
 	else if (input_buttons & INPUT_BUTTON4)
-		Weapons_Reload();
+		Weapons_Reload(pl);
 	else if (input_buttons & INPUT_BUTTON3)
-		Weapons_Secondary();
+		Weapons_Secondary(pl);
 	//else
-		pl.callWeaponThink();  //Weapons_Release();
+		pl.callWeaponThink();  //Weapons_Release(pl);
 
 // Added portion to that.
 	if(input_buttons & INPUT_BUTTON0){
@@ -348,10 +347,9 @@ Game_Input(void)
 
 void processInputs(void){
 	player pl = (player)self;
-	
 	if (input_buttons & INPUT_BUTTON0){
 		//printfline("!!! PRIMA !!! (%d %d)", ((input_buttons & INPUT_BUTTON0)!=0), ((input_buttons & INPUT_BUTTON3)!=0));
-		Weapons_Primary();
+		Weapons_Primary(pl);
 		
 		pl.gflags |= GF_SEMI_TOGGLED;
 		return;
@@ -360,7 +358,7 @@ void processInputs(void){
 	
 	if (input_buttons & INPUT_BUTTON3){
 		//printfline("!!! SECO !!! (%d %d)", ((input_buttons & INPUT_BUTTON0)!=0), ((input_buttons & INPUT_BUTTON3)!=0));
-		Weapons_Secondary();
+		Weapons_Secondary(pl);
 		
 		// TEST!
 		//if(!(pl.gflags & GF_SEMI_SECONDARY_TOGGLED)){
@@ -375,7 +373,7 @@ void processInputs(void){
 	
 	// why did the reload check come before Secondary-fire checks before??
 	if (input_buttons & INPUT_BUTTON4){
-		Weapons_Reload();
+		Weapons_Reload(pl);
 		
 		// Picked reload?  Turn the flags for both fire types off
 		//pl.gflags &= ~(GF_SEMI_TOGGLED | GF_SEMI_SECONDARY_TOGGLED);
@@ -387,7 +385,7 @@ void processInputs(void){
 	// might be a little redundant at this point, but that is ok.
 	
 	// reached here?
-	Weapons_Release();
+	Weapons_Release(pl);
 	
 	
 	// No need for this now
@@ -571,10 +569,10 @@ void ClientGame_Input_Frame(void){
 	
 	if (pSeatLocal->m_iInputSpeed == TRUE) {
 		input_buttons |= INPUT_BUTTON7;
-		//self.flags |= FL_SNEAK;
+		//pl.flags |= FL_SNEAK;
 		
 	}else{
-		//self.flags &= ~FL_SNEAK;
+		//pl.flags &= ~FL_SNEAK;
 	}
 	//printfline("input_buttons: %d", (INPUT_BUTTON7 & input_buttons) );
 	
@@ -624,8 +622,7 @@ void ClientGame_Input_Frame(void){
 #if OTHER_PREDICTION_TEST == 1
 
 // Shared
-void Custom_Game_Input(void){
-	player pl = (player)self;
+void Custom_Game_Input(player pl){
 	
 	if(custom_input_buttons == TRUE){
 		if( !(pl.gflags & GF_UNUSED3)){
@@ -760,7 +757,6 @@ CSEv_GSVRCC_ff(float arg_scf, float arg_ibc){
 	Custom_Game_Input();
 	
 	// send a message back!
-	player pl = (player)self;
 	WriteByte( MSG_MULTICAST, SVC_CGAMEPACKET );
 	WriteByte( MSG_MULTICAST, EVENT_TS::CUSTOM_PREDICTION_CALLBACK );
 	WriteFloat( MSG_MULTICAST, custom_servercommandframe );
