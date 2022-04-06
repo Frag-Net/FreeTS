@@ -38,13 +38,18 @@ ClientGame_EventParse(float fHeader)
 		vSparkAngle[2] = readcoord();
 		FX_Spark(vSparkPos, vSparkAngle);
 	}break;
-	case EV_GIBHUMAN:{
+	case EV_GIBHUMAN:
 		vector vGibPos;
 		vGibPos[0] = readcoord();
 		vGibPos[1] = readcoord();
 		vGibPos[2] = readcoord();
-		FX_GibHuman(vGibPos);
-	}break;
+		vector vDir;
+		vDir[0] = readcoord();
+		vDir[1] = readcoord();
+		vDir[2] = readcoord();
+		float flForce = readfloat();
+		FX_GibHuman(vGibPos, vDir, flForce);
+		break;
 	case EV_BLOOD:{
 		vector vBloodPos;
 		vector vBloodColor;

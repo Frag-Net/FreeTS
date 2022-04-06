@@ -45,7 +45,7 @@ TSSingleplayerRules::PlayerDeath(base_player pp)
 	}
 
 	if (pp.health < -50) {
-		FX_GibHuman(pp.origin);
+		FX_GibHuman(pl.origin, vectoangles(pl.origin - g_dmg_eAttacker.origin), g_dmg_iDamage * 2.0f);
 	}
 
 	/* Let's handle corpses on the clientside */
