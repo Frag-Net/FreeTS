@@ -77,7 +77,7 @@ Damage_Apply(entity t, entity c, float dmg, int w, damageType_t type)
 		t.health = t.max_health;
 	}
 
-	CBaseEntity s = (CBaseEntity)t;
+	NSSurfacePropEntity s = (NSSurfacePropEntity)t;
 
 	if (s.health <= 0) {
 		if (s.flags & FL_CLIENT) {

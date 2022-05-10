@@ -48,7 +48,7 @@ TSMultiplayerRules::RespawnMain(void){
 	// If anything can potentially be out of alignment since round-start that should be returned that way,
 	// go ahead and call respawn for that classname too
 	for (entity a = world; (a = findfloat(a, ::identity, 1));) {
-		CBaseEntity ent = (CBaseEntity)a;
+		NSEntity ent = (NSEntity)a;
 		// Not a player, spectator, or viewmodel (if it's even possible to run into those this way)?  Go ahead
 		if(
 			!(ent.classname == "player" || ent.classname == "spectator" || ent.classname == "vm")
@@ -95,7 +95,7 @@ TSMultiplayerRules::RespawnRoutine(void){
 	
 	//for (entity a = world; (a = findfloat(a, ::gflags, GF_CANRESPAWN));) {
 	for (entity a = world; (a = findfloat(a, ::identity, IDENTITY_CANRESPAWN));) {
-		CBaseEntity caw = (CBaseEntity)a;
+		NSEntity caw = (NSEntity)a;
 		if(caw.classname == "func_breakable"){
 			caw.Respawn();
 		}
@@ -642,7 +642,7 @@ TSMultiplayerRules::RestartRound(int iWipe)
 	/*
 	// actually not necessary,  all map powerups get the same GF_CANRESPAWN flag anyway.
 			for (entity eFind = world; (eFind = find(eFind, classname, "ts_powerup"));) {
-				CBaseEntity caw = (CBaseEntity)eFind;
+				NSEntity caw = (NSEntity)eFind;
 				caw.Respawn();
 			}
 	*/	

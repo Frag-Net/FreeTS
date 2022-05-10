@@ -21,7 +21,7 @@ enum pwuptype_choice{
 
 #ifdef SERVER
 
-class CTSPowerUp:CBaseEntity{
+class CTSPowerUp:NSRenderableEntity{
 	
 	//key values?
 	pwuptype_choice m_ePwuptype;
@@ -61,9 +61,9 @@ CTSPowerUp::CTSPowerUp(void)
 	
 	// And why don't we just receive these as name/value pairs like clientside does?
 	// I HAVE NO CLUE.
-	// And is it a problem we never call CBaseEntity's constructor?
+	// And is it a problem we never call NSRenderableEntity's constructor?
 	// If we did it would read every single field that way, in addition to us
-	// reading every single field here, just to get info that the CBaseEntity expects
+	// reading every single field here, just to get info that the NSRenderableEntity expects
 	// (origin) and what CTSPowerUp expects. Not efficient!
 	
 	
@@ -148,7 +148,7 @@ CTSPowerUp::CustomInit(void)
 	
 	//takedamage = DAMAGE_NO;
 	
-	// start at where I spawned, already recorded by CBaseEntity for us.
+	// start at where I spawned, already recorded by NSRenderableEntity for us.
 	origin = GetSpawnOrigin();
 	
 	// Tone the gravity down to see them fall better / prove their positions are reset on spawn.
@@ -287,7 +287,7 @@ CTSPowerUp::touch(void)
 	
 	if(this.expireTime == -1){
 		//pre-placed by the map?  Create the illusion we disappeared.
-		CBaseEntity::Hide();
+		NSRenderableEntity::Hide();
 		this.alreadyPickedUp = TRUE;
 		
 		//respawn 'm_iPwupduration seconds from now, often 60 (at least it is in ts_bikini)
@@ -459,7 +459,7 @@ CTSPowerUp::declareDisposable(void)
 
 #ifdef CLIENT
 
-class CTSPowerUp:CBaseEntity{
+class CTSPowerUp:NSRenderableEntity{
 	
 	//key values?
 	pwuptype_choice m_ePwuptype;
@@ -498,7 +498,7 @@ void
 CTSPowerUp::Initialized(void)
 {
 	//base method is empty, this is pointless
-	//CBaseEntity::Initialized();
+	//NSRenderableEntity::Initialized();
 	
 	// until the server tells us!
 	dataID = POWERUP_ID::NONE;
@@ -741,7 +741,7 @@ CTSPowerUp::SpawnKey(string strField, string strKey)
 			break;
 		*/
 		default:
-			CBaseEntity::SpawnKey(strField, strKey);
+			NSRenderableEntity::SpawnKey(strField, strKey);
 	}
 }
 

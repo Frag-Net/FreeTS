@@ -21,7 +21,7 @@
 // Although that could fill in Nuclide's expected item_pickup and let anything in-map
 // redirect to this if that were preferred.
 
-class item_pickup:CBaseTrigger
+class item_pickup:NSRenderableEntity
 {
 	int m_iClip;
 	int m_iWasDropped;
