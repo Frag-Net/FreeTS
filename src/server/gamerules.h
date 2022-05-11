@@ -58,24 +58,24 @@ class player;
 
 class TSGameRules:CGameRules
 {
-	virtual void(base_player) PlayerConnect;
-	virtual void(base_player) PlayerDisconnect;
-	virtual void(base_player) PlayerKill;
-	virtual void(base_player) PlayerPreFrame;
-	virtual void(base_player) PlayerPostFrame;
-	virtual void(base_player) PlayerDeath;
-	virtual void(base_player) PlayerPain;
+	virtual void(NSClientPlayer) PlayerConnect;
+	virtual void(NSClientPlayer) PlayerDisconnect;
+	virtual void(NSClientPlayer) PlayerKill;
+	virtual void(NSClientPlayer) PlayerPreFrame;
+	virtual void(NSClientPlayer) PlayerPostFrame;
+	virtual void(NSClientPlayer) PlayerDeath;
+	virtual void(NSClientPlayer) PlayerPain;
 
-	virtual void(base_player) LevelDecodeParms;
-	virtual void(base_player) LevelChangeParms;
+	virtual void(NSClientPlayer) LevelDecodeParms;
+	virtual void(NSClientPlayer) LevelChangeParms;
 	virtual void(void) LevelNewParms;
 };
 
 class TSSingleplayerRules:TSGameRules
 {
 	/* client */
-	virtual void(base_player) PlayerSpawn;
-	virtual void(base_player) PlayerDeath;
+	virtual void(NSClientPlayer) PlayerSpawn;
+	virtual void(NSClientPlayer) PlayerDeath;
 };
 
 class TSMultiplayerRules:TSGameRules
@@ -92,12 +92,12 @@ class TSMultiplayerRules:TSGameRules
 	virtual void(void) FrameStart;
 
 	/* client */
-	virtual void(base_player) PlayerDisconnect;
-	virtual void(base_player) PlayerSpawn;
-	virtual void(base_player) PlayerPreFrame;
-	virtual void(base_player) PlayerPostFrame;
-	virtual void(base_player) PlayerDeath;
-	virtual float(base_player, string) ConsoleCommand;
+	virtual void(NSClientPlayer) PlayerDisconnect;
+	virtual void(NSClientPlayer) PlayerSpawn;
+	virtual void(NSClientPlayer) PlayerPreFrame;
+	virtual void(NSClientPlayer) PlayerPostFrame;
+	virtual void(NSClientPlayer) PlayerDeath;
+	virtual float(NSClientPlayer, string) ConsoleCommand;
 	
 	virtual void(float, int) TimerBegin;
 	virtual void(void) TimerUpdate;
@@ -105,19 +105,19 @@ class TSMultiplayerRules:TSGameRules
 
 	virtual void(int, int, int) RoundOver;
 	virtual void(int) RestartRound;
-	virtual void(base_player) DeathCheck;
+	virtual void(NSClientPlayer) DeathCheck;
 	virtual void(void) CountPlayers;
 	//virtual void(void) SwitchTeams;
 	virtual void(void) TimeOut;
 
 
 	virtual void(player pl) MakePlayerInvisible;
-	virtual void(base_player) PlayerMakePlayable;
-	virtual void(base_player pp) PlayerMakePlayableWithDefaultMoney;
-	virtual void(base_player) PlayerMakeSpectator;
-	virtual void(base_player) PlayerMakeSpectatorAndNotify;
-	virtual void(base_player pp) PlayerMakeSpectatorDelayed;
-	virtual void(base_player, int) PlayerRespawn;
+	virtual void(NSClientPlayer) PlayerMakePlayable;
+	virtual void(NSClientPlayer pp) PlayerMakePlayableWithDefaultMoney;
+	virtual void(NSClientPlayer) PlayerMakeSpectator;
+	virtual void(NSClientPlayer) PlayerMakeSpectatorAndNotify;
+	virtual void(NSClientPlayer pp) PlayerMakeSpectatorDelayed;
+	virtual void(NSClientPlayer, int) PlayerRespawn;
 	virtual entity(float) PlayerFindSpawn;
 	
 	virtual void(player pl) setPlayerMoneyDefault;

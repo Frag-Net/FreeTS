@@ -20,7 +20,7 @@
 // instead, 99% of the stuff does not care about being multiplayer.
 
 void
-TSSingleplayerRules::PlayerDeath(base_player pp)
+TSSingleplayerRules::PlayerDeath(NSClientPlayer pp)
 {
 	TSGameRules::PlayerDeath(pp);
 	
@@ -62,7 +62,7 @@ TSSingleplayerRules::PlayerDeath(base_player pp)
 }
 
 void
-TSSingleplayerRules::PlayerSpawn(base_player pp)
+TSSingleplayerRules::PlayerSpawn(NSClientPlayer pp)
 {
 	pp.classname = "player";
 	pp.health = pp.max_health = 100;

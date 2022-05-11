@@ -90,7 +90,7 @@ string g_pbones[] =
 };
 
 void
-Player_HandleWeaponModel(base_player pp, float thirdperson)
+Player_HandleWeaponModel(NSClientPlayer pp, float thirdperson)
 {
 	player pl = (player)pp;
 
@@ -164,11 +164,11 @@ Player_DestroyWeaponModel(entity pp)
 }
 
 
-//TAGGG - NOTE!  In case it ever matters, parameter "base_player pl" renamed to "base_player pp".
+//TAGGG - NOTE!  In case it ever matters, parameter "NSClientPlayer pl" renamed to "NSClientPlayer pp".
 // Doubt it ever should, no idea if FTE would complain about a discrepency between prototype and
 // implementation parameter names if that ever happened.
 void
-Player_PreDraw(base_player pp, int thirdperson)
+Player_PreDraw(NSClientPlayer pp, int thirdperson)
 {
 	player pl = (player)pp;
 	

@@ -24,7 +24,7 @@
 void
 Damage_Apply(entity t, entity c, float dmg, int w, damageType_t type)
 {
-	base_player tp = (base_player)t;
+	NSClientPlayer tp = (NSClientPlayer)t;
 
 	CGameRules rules = (CGameRules)g_grMode;
 

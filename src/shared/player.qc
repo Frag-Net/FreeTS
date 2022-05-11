@@ -87,7 +87,7 @@ void
 player::ReceiveEntity(float new, float fl)
 {
 	/* the generic client attributes */
-	base_player::ReceiveEntity(new, fl);
+	NSClientPlayer::ReceiveEntity(new, fl);
 	
 	
 
@@ -395,7 +395,7 @@ player::PredictPreFrame(void)
 	
 		
 	/* the generic client attributes */
-	base_player::PredictPreFrame();
+	NSClientPlayer::PredictPreFrame();
 	
 	
 	// client's way of calling prethink
@@ -508,7 +508,7 @@ player::PredictPostFrame(void)
 	
 	
 	/* the generic client attributes */
-	base_player::PredictPostFrame();
+	NSClientPlayer::PredictPostFrame();
 	
 	// client's way of calling postthink
 	postThink();
@@ -608,7 +608,7 @@ player::EvaluateEntity(void)
 {
 	
 	/* the generic client attributes */
-	base_player::EvaluateEntity();
+	NSClientPlayer::EvaluateEntity();
 	
 	int i;
 	int myAmmoType;
@@ -789,7 +789,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, fChanged);
 
 	/* the generic client attributes */
-	base_player::SendEntity(ePEnt, fChanged);
+	NSClientPlayer::SendEntity(ePEnt, fChanged);
 	
 	
 	int i;

@@ -44,7 +44,7 @@ enum PLAYER_STATE{
 #define SAVE_STATE_ARRAY_MEMBER(ary, i, sub) x ##_net = x    // did not do
 */
 
-class player:base_player
+class player:NSClientPlayer
 {
 	
 #ifdef CLIENT

@@ -485,7 +485,7 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	
 	
 	//int thirdperson = (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum);
-	//base_player pp = (base_player)this;
+	//NSClientPlayer pp = (NSClientPlayer)this;
 
 	BOOL canRenderFlashlight = FALSE;
 	BOOL canRenderLaserSight = FALSE;

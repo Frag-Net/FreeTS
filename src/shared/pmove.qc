@@ -25,7 +25,7 @@
 
 
 // This file was the source of the "GamePMove_..." format physics methods.
-// Now, the new base_player-overridable forms are used.
+// Now, the new NSClientPlayer-overridable forms are used.
 
 // Also, some physics constants can be overridden like so:
 //     #define PMOVE_STEPHEIGHT 18
@@ -35,7 +35,7 @@
 
 
 // First something config-oriented.  If uncommented, a modified clone of Nuclide's
-// base_player::Physics_Crouch (overridden by player) is used to insert the checks for
+// NSClientPlayer::Physics_Crouch (overridden by player) is used to insert the checks for
 // stopping uncrouching too soon after certain melee attacks.  Example: katana melee attack.
 // Otherwise, a simpler way is done: in player::Physics_InputPreMove, force INPUT_BUTTON8
 // if the uncrouch block has not expired.
@@ -61,8 +61,8 @@ const vector VEC_CHULL_MAX = [16,16,18];
 
 // Simplified view of major physics method changes:
 /*
-	PMove_Run -> base_player::Physics_Run
-	PMove_AccelJump -> base_player::Physics_CheckJump
+	PMove_Run -> NSClientPlayer::Physics_Run
+	PMove_AccelJump -> NSClientPlayer::Physics_CheckJump
 	PMove_Acceleration -> PMoveCustom_Acceleration
 */
 
@@ -97,7 +97,7 @@ void TS_Physics_LedgeCheck(player pl);
 void
 player::Physics_Fall(float flDownforce)
 {
-	//base_player::Physics_Fall(flDownforce);
+	//NSClientPlayer::Physics_Fall(flDownforce);
 	
 	if (flDownforce > 580) {
 #ifdef SERVER
@@ -127,7 +127,7 @@ player::Physics_Crouch(void)
 {
 #ifndef UNCROUCHBLOCK_FORKED
 	// simple simple
-	base_player::Physics_Crouch();
+	NSClientPlayer::Physics_Crouch();
 #else
 	// would this be better somewhere, in CSQC_InputFrame or Physics_InputPreMove?
 	// probably the latter to make hacking less rewarding
@@ -191,7 +191,7 @@ player::Physics_Crouch(void)
 void
 player::Physics_Jump(void)
 {
-	//base_player::Physics_Jump();
+	//NSClientPlayer::Physics_Jump();
 	
 	
 	if (this.waterlevel >= 2) {
@@ -230,7 +230,7 @@ player::Physics_Jump(void)
 void
 player::Physics_CheckJump(float premove)
 {
-	base_player::Physics_CheckJump(premove);
+	NSClientPlayer::Physics_CheckJump(premove);
 	
 	if(this.movetype == MOVETYPE_NOCLIP){
 		// no ledge checks
@@ -247,14 +247,14 @@ player::Physics_CheckJump(float premove)
 void
 player::Physics_SetViewParms(void)
 {
-	base_player::Physics_SetViewParms();
+	NSClientPlayer::Physics_SetViewParms();
 	
 }
 
 void
 player::Physics_WaterJump(void)
 {
-	base_player::Physics_WaterJump();
+	NSClientPlayer::Physics_WaterJump();
 	
 }
 
@@ -270,7 +270,7 @@ player::Physics_MaxSpeed(void)
 	
 	
 	/*
-	float parentResult = base_player::Physics_MaxSpeed();
+	float parentResult = NSClientPlayer::Physics_MaxSpeed();
 	return parentResult;
 	*/
 	
@@ -320,7 +320,7 @@ player::Physics_MaxSpeed(void)
 void
 player::Physics_InputPreMove(void)
 {
-	base_player::Physics_InputPreMove();
+	NSClientPlayer::Physics_InputPreMove();
 	
 	// IDEA: is changing the speed by inputmove value adjusting better than changing
 	// the max speed for prediction wonkiness (the camera looks to jump around on slowing down
@@ -357,7 +357,7 @@ player::Physics_InputPreMove(void)
 void
 player::Physics_InputPostMove(void)
 {
-	base_player::Physics_InputPostMove();
+	NSClientPlayer::Physics_InputPostMove();
 	
 }
 
@@ -376,7 +376,7 @@ player::Physics_Run(void)
 	this.friction = Game_GetFriction(this);
 	
 	// This call is pretty damn important
-	base_player::Physics_Run();
+	NSClientPlayer::Physics_Run();
 	
 	
 	if(this.movetype == MOVETYPE_NOCLIP){

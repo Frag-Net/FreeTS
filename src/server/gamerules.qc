@@ -52,12 +52,12 @@ var float global_nextBreakableRespawn = 0;
 
 
 void
-TSGameRules::PlayerDeath(base_player pp)
+TSGameRules::PlayerDeath(NSClientPlayer pp)
 {
 }
 
 void
-TSGameRules::PlayerPain(base_player pp)
+TSGameRules::PlayerPain(NSClientPlayer pp)
 {
 	// Why was this using "self" instead of the "pp"?  haha.. the pp.
 	// Also this is completely new to FreeCS and probably FreeHL.  ?
@@ -69,7 +69,7 @@ TSGameRules::PlayerPain(base_player pp)
 // CRITICAL. Do any new player vars need to be copied too,
 // same for LevelChangeParams further down?
 void
-TSGameRules::LevelDecodeParms(base_player pp)
+TSGameRules::LevelDecodeParms(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	g_landmarkpos[0] = parm1;
@@ -120,7 +120,7 @@ TSGameRules::LevelDecodeParms(base_player pp)
 }
 
 void
-TSGameRules::LevelChangeParms(base_player pp)
+TSGameRules::LevelChangeParms(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	parm1 = g_landmarkpos[0];
@@ -183,7 +183,7 @@ TSGameRules::LevelNewParms(void)
 
 // NEW.  Need PlayerPreFrame as well.
 void
-TSGameRules::PlayerPreFrame(base_player pp)
+TSGameRules::PlayerPreFrame(NSClientPlayer pp)
 {
 	// Is this null check redundant?
 	if(pp != NULL){
@@ -194,7 +194,7 @@ TSGameRules::PlayerPreFrame(base_player pp)
 }
 
 void
-TSGameRules::PlayerPostFrame(base_player pp)
+TSGameRules::PlayerPostFrame(NSClientPlayer pp)
 {
 	//TAGGG - NEW
 	// Is this null check redundant?
@@ -206,14 +206,14 @@ TSGameRules::PlayerPostFrame(base_player pp)
 }
 
 void
-TSGameRules::PlayerConnect(base_player pl)
+TSGameRules::PlayerConnect(NSClientPlayer pl)
 {
 	if (Plugin_PlayerConnect(pl) == FALSE)
 		bprint(PRINT_HIGH, sprintf("%s connected\n", pl.netname));
 }
 
 void
-TSGameRules::PlayerDisconnect(base_player pl)
+TSGameRules::PlayerDisconnect(NSClientPlayer pl)
 {
 	if (Plugin_PlayerDisconnect(pl) == FALSE)
 		bprint(PRINT_HIGH, sprintf("%s disconnected\n", pl.netname));
@@ -235,7 +235,7 @@ TSGameRules::PlayerDisconnect(base_player pl)
 }
 
 void
-TSGameRules::PlayerKill(base_player pl)
+TSGameRules::PlayerKill(NSClientPlayer pl)
 {
 	//because we are TS.
 	//Damage_Apply(pl, pl, pl.health, WEAPON_NONE, DMG_SKIP_ARMOR);

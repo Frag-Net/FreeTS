@@ -15,7 +15,7 @@
  */
 
 //TAGGG - Clone of FreeHL's way, which is a clone of Nuclide's way
-// (base_player::Physics_WaterMove).  I'll keep this as a copy too then?
+// (NSClientPlayer::Physics_WaterMove).  I'll keep this as a copy too then?
 
 
 void

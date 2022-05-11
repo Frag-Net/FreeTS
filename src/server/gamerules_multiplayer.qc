@@ -149,7 +149,7 @@ TSMultiplayerRules::FrameStart(void)
 
 
 void
-TSMultiplayerRules::PlayerPreFrame(base_player pp)
+TSMultiplayerRules::PlayerPreFrame(NSClientPlayer pp)
 {
 	TSGameRules::PlayerPreFrame(pp);
 	
@@ -171,7 +171,7 @@ TSMultiplayerRules::PlayerPreFrame(base_player pp)
 }
 
 void
-TSMultiplayerRules::PlayerPostFrame(base_player pp)
+TSMultiplayerRules::PlayerPostFrame(NSClientPlayer pp)
 {
 	// Anything else?
 	TSGameRules::PlayerPostFrame(pp);
@@ -179,7 +179,7 @@ TSMultiplayerRules::PlayerPostFrame(base_player pp)
 
 
 void
-TSMultiplayerRules::PlayerDisconnect(base_player pp)
+TSMultiplayerRules::PlayerDisconnect(NSClientPlayer pp)
 {
 	//TAGGG - no parent method call?  Really?
 	TSGameRules::PlayerDisconnect(pp);
@@ -191,7 +191,7 @@ TSMultiplayerRules::PlayerDisconnect(base_player pp)
 
 
 void
-TSMultiplayerRules::PlayerDeath(base_player pp)
+TSMultiplayerRules::PlayerDeath(NSClientPlayer pp)
 {
 	TSGameRules::PlayerDeath(pp);
 	
@@ -376,7 +376,7 @@ TSMultiplayerRules::PlayerDeath(base_player pp)
 
 
 float
-TSMultiplayerRules::ConsoleCommand(base_player pp, string cmd)
+TSMultiplayerRules::ConsoleCommand(NSClientPlayer pp, string cmd)
 {
 	tokenize(cmd);
 
@@ -662,7 +662,7 @@ TSMultiplayerRules::RestartRound(int iWipe)
 // From FreeCS, to check if all players on a team are dead for doing something
 // gamerules-wise like ending in the other side's favor.
 void
-TSMultiplayerRules::DeathCheck(base_player pl)
+TSMultiplayerRules::DeathCheck(NSClientPlayer pl)
 {
 	
 	
@@ -777,7 +777,7 @@ Called whenever a player survived a round and needs a basic respawn.
 =================
 */
 void
-TSMultiplayerRules::PlayerRespawn(base_player pp, int fTeam)
+TSMultiplayerRules::PlayerRespawn(NSClientPlayer pp, int fTeam)
 {
 	entity eSpawn;
 	vector myOrigin;
@@ -975,16 +975,9 @@ MakePlayable(entity targ)
 
 	self = oself;
 }
-static void
-MakeSpectator(entity targ)
-{
-	entity oself = self;
-	self = targ;
-	spawnfunc_spectator();
-	self = oself;
-}
+
 void
-TSMultiplayerRules::PlayerMakePlayable(base_player pp)
+TSMultiplayerRules::PlayerMakePlayable(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	
@@ -998,7 +991,7 @@ TSMultiplayerRules::PlayerMakePlayable(base_player pp)
 
 
 void
-TSMultiplayerRules::PlayerMakePlayableWithDefaultMoney(base_player pp){
+TSMultiplayerRules::PlayerMakePlayableWithDefaultMoney(NSClientPlayer pp){
 	player pl = (player)pp;
 	PlayerMakePlayable(pp);
 	setPlayerMoneyDefault(pl);
@@ -1007,7 +1000,7 @@ TSMultiplayerRules::PlayerMakePlayableWithDefaultMoney(base_player pp){
 
 
 void
-TSMultiplayerRules::PlayerMakeSpectatorAndNotify(base_player pp){
+TSMultiplayerRules::PlayerMakeSpectatorAndNotify(NSClientPlayer pp){
 	
 	PlayerMakeSpectator(pp);
 	
@@ -1021,7 +1014,7 @@ TSMultiplayerRules::PlayerMakeSpectatorAndNotify(base_player pp){
 // Turns the player into a fake spectator (open buymenu and fire to spawn
 // when its closed)
 void
-TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
+TSMultiplayerRules::PlayerMakeSpectator(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	
@@ -1052,7 +1045,7 @@ TSMultiplayerRules::PlayerMakeSpectator(base_player pp)
 // Similar to above, but mimicks the FreeCS way of setting the 
 // "think" to a tiny method that calls spawnfunc_spectator.
 void
-TSMultiplayerRules::PlayerMakeSpectatorDelayed(base_player pp)
+TSMultiplayerRules::PlayerMakeSpectatorDelayed(NSClientPlayer pp)
 {
 	// Nevermind, this has no significance anymore with the client entity change no longer
 	// happening.  Redirect to the normal version
@@ -1071,7 +1064,7 @@ Called on the client first joining the server.
 // NOTE - this is as said above, fist time connecting to a server.
 // NOT spawning ingame with collision, weapon viewmodel, seen by other players, etc.
 void
-TSMultiplayerRules::PlayerSpawn(base_player pp)
+TSMultiplayerRules::PlayerSpawn(NSClientPlayer pp)
 {
 	player pl = (player)pp;
 	
@@ -1079,7 +1072,7 @@ TSMultiplayerRules::PlayerSpawn(base_player pp)
 	
 	// Apparently the player already arrives as a "player", a Nuclide-implemented event called
 	// ClientConnect makes the client entity a "player" by using spawnfunc.
-	// Having the "player" class available that early makes me wonder why "base_player" is used so
+	// Having the "player" class available that early makes me wonder why "NSClientPlayer" is used so
 	// often in implemented methods, but not an issue.
 	// ClientConnect is called before PutClientInServer (the one that leads to the gamerules
 	// PlayerSpawn, right here), just for info.

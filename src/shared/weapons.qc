@@ -1989,7 +1989,7 @@ weapon_precache(weapondata_basic_t* basePRef)
 
 // Not sure how to handle the "Weapons_UpdateAmmo" calls for FreeTS.
 // Guessing to leave them dummied as HUD drawing already knows where to grab clip and ammo-pool
-// values from, the Nuclide base_player's ammo1, 2, 3 vars are never used.
+// values from, the Nuclide NSClientPlayer's ammo1, 2, 3 vars are never used.
 //----------------------
 // More typical way.
 /*
