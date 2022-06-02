@@ -1106,6 +1106,7 @@ TSMultiplayerRules::PlayerSpawn(NSClientPlayer pp)
 	
 	// ALSO - start the minimum spawn delay.
 	pl.minimumRespawnTime = autocvar_respawntime;
+	pl.health = 100;
 	
 }
 

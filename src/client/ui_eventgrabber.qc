@@ -18,7 +18,7 @@ class CUIEventGrabber:CUIWidget
 {
 	//void(void) CUIEventGrabber;
 	virtual void(void) Draw;
-	virtual void(float, float, float, float) Input;
+	virtual bool(float, float, float, float) Input;
 };
 
 
@@ -36,7 +36,7 @@ CUIEventGrabber::Draw(void)
 }
 
 
-void
+bool
 CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 {
 	// no need to do this.
@@ -68,7 +68,7 @@ CUIEventGrabber::Input(float flEVType, float flKey, float flChar, float flDevID)
 		break;
 	}
 	
-	
+	return false;
 }
 
 

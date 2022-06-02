@@ -27,6 +27,7 @@
 #define QWSSQC
 #define SERVER
 #define TS
+#define NO_LEGACY
 
 // TS definitely has penetration, and so should this then.
 #define BULLETPENETRATION
