@@ -97,7 +97,7 @@ class TSMultiplayerRules:TSGameRules
 	virtual void(NSClientPlayer) PlayerPreFrame;
 	virtual void(NSClientPlayer) PlayerPostFrame;
 	virtual void(NSClientPlayer) PlayerDeath;
-	virtual float(NSClientPlayer, string) ConsoleCommand;
+	virtual bool(NSClientPlayer, string) ConsoleCommand;
 	
 	virtual void(float, int) TimerBegin;
 	virtual void(void) TimerUpdate;

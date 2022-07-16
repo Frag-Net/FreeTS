@@ -137,7 +137,6 @@ init.qc
 //../../../base/src/server/damage.qc
 damage.qc
 
-rules.qc
 ../../../base/src/server/modelevent.qc
 
 spawn.qc
