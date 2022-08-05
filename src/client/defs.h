@@ -25,7 +25,10 @@ vector g_hud_color;
 vector g_hudmins;
 vector g_hudres;
 
-
+/* muzzleflash indices */
+var int MUZZLE_SMALL;
+var int MUZZLE_RIFLE;
+var int MUZZLE_WEIRD;
 
 /*
 // Do we need these?  Note the similarly named "g_hud_color" already above!
