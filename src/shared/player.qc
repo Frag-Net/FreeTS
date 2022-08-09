@@ -29,9 +29,9 @@ enumflags
 	PLAYER_AMMO1,
 	PLAYER_AMMO2,
 	PLAYER_AMMO3,
-	PLAYER_UNUSED5,
-	PLAYER_UNUSED6,
-	PLAYER_UNUSED7
+	PLAYER_UNUSED1,
+	PLAYER_UNUSED2,
+	PLAYER_UNUSED3
 };
 
 #ifdef SERVER
@@ -759,53 +759,31 @@ player::SendEntity
 =================
 */
 float
-player::SendEntity(entity ePEnt, float fChanged)
+player::SendEntity(entity ePEnt, float flChanged)
 {
-	bool is_spec = false;
-	bool spectarget = false;
-
 	/* don't broadcast invisible players */
 	if (IsFakeSpectator() && ePEnt != this)
 		return (0);
 	if (!GetModelindex() && ePEnt != this)
 		return (0);
 
-	/* figure out if we should optimise this player */
-	if (ePEnt.flags & FL_CLIENT && ePEnt != this) {
-		NSClientSpectator sp = (NSClientSpectator)ePEnt;
-		is_spec = (sp.IsFakeSpectator() || sp.IsRealSpectator());
-		spectarget = (is_spec == true && edict_num(sp.spec_ent) == this);
-	}
-
-	/* if we're a spectator of any type and spectate this player */
-	if (ePEnt != this && spectarget == false) {
-		fChanged &= ~PLAYER_ITEMS;
-		fChanged &= ~PLAYER_HEALTH;
-		fChanged &= ~PLAYER_TIMINGS;
-		fChanged &= ~PLAYER_AMMO1;
-		fChanged &= ~PLAYER_AMMO2;
-		fChanged &= ~PLAYER_AMMO3;
-		fChanged &= ~PLAYER_FLAGS;
-		fChanged &= ~PLAYER_PUNCHANGLE;
-		fChanged &= ~PLAYER_VIEWZOOM;
-		fChanged &= ~PLAYER_SPECTATE;
-	}
+	flChanged = OptimiseChangedFlags(ePEnt, flChanged);
 
 	WriteByte(MSG_ENTITY, ENT_PLAYER);
-	WriteFloat(MSG_ENTITY, fChanged);
+	WriteFloat(MSG_ENTITY, flChanged);
 
 	/* the generic client attributes */
-	NSClientPlayer::SendEntity(ePEnt, fChanged);
+	NSClientPlayer::SendEntity(ePEnt, flChanged);
 	
 	
 	int i;
 
-	if (fChanged & PLAYER_TOPFRAME) {
+	if (flChanged & PLAYER_TOPFRAME) {
 		WriteByte(MSG_ENTITY, anim_top);
 		WriteFloat(MSG_ENTITY, anim_top_time);
 		WriteFloat(MSG_ENTITY, anim_top_delay);
 	}
-	if (fChanged & PLAYER_BOTTOMFRAME) {
+	if (flChanged & PLAYER_BOTTOMFRAME) {
 		WriteByte(MSG_ENTITY, anim_bottom);
 		WriteFloat(MSG_ENTITY, anim_bottom_time);
 	}
@@ -824,7 +802,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 	WriteFloat(MSG_ENTITY, w_attack_akimbo_next );
 	WriteByte(MSG_ENTITY, isReloading );
 	WriteByte(MSG_ENTITY, isChangingIronsight );
-	if(fChanged & PLAYER_UNUSED2){
+	if(flChanged & PLAYER_UNUSED2){
 		//WriteFloat(MSG_ENTITY, flZoomTarget);
 		WriteByte(MSG_ENTITY, iZoomLevel);
 	}
@@ -888,7 +866,7 @@ player::SendEntity(entity ePEnt, float fChanged)
 		for(i = 0; i < AMMO_ID::LAST_ID; i++){
 			WriteLong(MSG_ENTITY, ary_ammoTotal[i] );
 		}
-	}else if(fChanged & PLAYER_UNUSED1){
+	}else if(flChanged & PLAYER_UNUSED1){
 		
 		i = (int)inventoryEquippedIndex;
 		WriteByte(MSG_ENTITY, i + 1);

@@ -360,6 +360,9 @@ class player:NSClientPlayer
 	// Why do we need to do this?  Ask FTE.
 	// NEVERMIND.  Canned
 	//float shotgunAddAmmoTime_cooldownSetTime;
+#else
+	float underwater_time;
+	float pain_time;
 #endif
 	
 	// What ary_shotgunExtra element to use for extra reload-reloated information in
