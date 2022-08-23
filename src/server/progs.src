@@ -21,7 +21,8 @@
 #pragma warning disable Q302 /*uninitialised locals*/
 ///////////////////////////////////////////////////////////////////////////////
 
-#pragma target fte
+#pragma target fte_5768
+//#pragma flag enable assumeint
 #pragma progs_dat  "../../progs.dat"
 
 #define QWSSQC

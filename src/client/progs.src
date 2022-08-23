@@ -15,7 +15,8 @@
 #pragma warning disable F314 /*implicit cast*/
 ///////////////////////////////////////////////////////////////////////////////
 
-#pragma target fte
+#pragma target fte_5768
+//#pragma flag enable assumeint
 #pragma progs_dat  "../../csprogs.dat"
 
 #define CSQC
