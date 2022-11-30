@@ -32,13 +32,13 @@ enum PLAYER_STATE{
 
 #define ATTR_CHANGED_ARY(ary, i) (ary ##_net[i] != ary[i])
 
-#define PREDICTED_ARY_INT(ary, size) int ary[size]; int ary ##_net[size]
-#define PREDICTED_ARY_FLOAT(ary, size) float ary[size]; float ary ##_net[size]
+#define PREDICTED_ARY_INT(ary, size) int ary[size]; int ary ##_net[size];
+#define PREDICTED_ARY_FLOAT(ary, size) float ary[size]; float ary ##_net[size];
 
 #define ROLL_BACK_ARY(ary, i) ary[i] = ary ##_net[i]
 #define SAVE_STATE_ARY(ary, i) ary ##_net[i] = ary[i]
 
-#define PREDICTED_CUSTOM(arg_t, x) arg_t x; arg_t x ##_net
+#define PREDICTED_CUSTOM(arg_t, x) arg_t x; arg_t x ##_net;
 /*
 #define ROLL_BACK_ARRAY_MEMBER(ary, i, sub) ary[i].sub = ary ##_net[i].sub
 #define SAVE_STATE_ARRAY_MEMBER(ary, i, sub) x ##_net = x    // did not do
@@ -79,11 +79,11 @@ class player:NSClientPlayer
 	
 	
 	/* animation */
-	PREDICTED_INT(anim_top);
-	PREDICTED_FLOAT(anim_top_time);
-	PREDICTED_FLOAT(anim_top_delay);
-	PREDICTED_INT(anim_bottom);
-	PREDICTED_FLOAT(anim_bottom_time);
+	PREDICTED_INT(anim_top)
+	PREDICTED_FLOAT(anim_top_time)
+	PREDICTED_FLOAT(anim_top_delay)
+	PREDICTED_INT(anim_bottom)
+	PREDICTED_FLOAT(anim_bottom_time)
 
 	
 	////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ class player:NSClientPlayer
 	
 	//TAGGG - TODO! Put the PREDICTED_INT/FLOAT/whatever stuff on what needs it.
 	
-	PREDICTED_CUSTOM(PLAYER_STATE, iState);
+	PREDICTED_CUSTOM(PLAYER_STATE, iState)
 	
 	
 #ifdef SERVER
@@ -130,7 +130,7 @@ class player:NSClientPlayer
 	// 0 is the default (no zoom).  There is no standard for what zoom value there is for each
 	// zoom level in general, that is up to the equipped weapon's secondaryfire method to fill
 	// on right-clicking to change the zoom level.
-	PREDICTED_INT(iZoomLevel);
+	PREDICTED_INT(iZoomLevel)
 	// Set this (or the setZoom method) to tap into the lerp system properly.
 	// When noticed (client/view.qc), the current zoom value goes to flZoomStart and 
 	// flZoomTarget goes to flZoomEnd.  The lerp goes from Start to End for a smooth transition.
@@ -232,29 +232,29 @@ class player:NSClientPlayer
 	// (reload with karate out, I assume?) is supposed to do.
 	float flKarateBlockCooldown;
 	
-	PREDICTED_INT(iMeleeCycler);
+	PREDICTED_INT(iMeleeCycler)
 
-	PREDICTED_FLOAT(flViewAngleOffsetTarget);
-	PREDICTED_VECTOR(vViewAngleOffsetTargetDir);
+	PREDICTED_FLOAT(flViewAngleOffsetTarget)
+	PREDICTED_VECTOR(vViewAngleOffsetTargetDir)
 	
-	PREDICTED_VECTOR(vViewAngleOffsetTotalChange);
+	PREDICTED_VECTOR(vViewAngleOffsetTotalChange)
 #ifdef SERVER
 	vector vViewAngleOffsetTotalChangeAlt;
 #endif
 	
 	
-	PREDICTED_FLOAT(fAccuracyKickback);
-	PREDICTED_FLOAT(fAccuracyKickbackStartCooldown);
+	PREDICTED_FLOAT(fAccuracyKickback)
+	PREDICTED_FLOAT(fAccuracyKickbackStartCooldown)
 	
 	// The client can keep its own in mind as prediction between frames if needed.  Server
 	// time and client time aren't really compatible to send like this.
 	
-	PREDICTED_FLOAT(fMoveBlockDelay);
-	PREDICTED_FLOAT(fUncrouchBlockDelay);
+	PREDICTED_FLOAT(fMoveBlockDelay)
+	PREDICTED_FLOAT(fUncrouchBlockDelay)
 	// not networked, set by the player individually client and serverside on picking
 	// the weapon.  Might not even be necessary to do this.
 	float fMoveBlockCapSpeed;
-	PREDICTED_FLOAT(fKarateStamina);
+	PREDICTED_FLOAT(fKarateStamina)
 
 
 	// These will be shared and help with slowdown logic.
@@ -330,11 +330,11 @@ class player:NSClientPlayer
 	// would complicate that, maybe still do the SAVE/ROLL_BACK stuff?
 	// aryNextBurstShotTime_listenIndex depends on the time and updates a lot,
 	// that one most likely has to stay networked and predicted.
-	PREDICTED_INT(aryNextBurstShotTime_softLength);
-	PREDICTED_ARY_FLOAT(aryNextBurstShotTime, 5);
-	PREDICTED_INT(aryNextBurstShotTime_listenIndex);
+	PREDICTED_INT(aryNextBurstShotTime_softLength)
+	PREDICTED_ARY_FLOAT(aryNextBurstShotTime, 5)
+	PREDICTED_INT(aryNextBurstShotTime_listenIndex)
 	
-	PREDICTED_ARY_INT(ary_ammoTotal, AMMO_ID::LAST_ID);
+	PREDICTED_ARY_INT(ary_ammoTotal, AMMO_ID::LAST_ID)
 
 //shotgun stuff
 //////////////////////////////////////////////////////////////////////////////
@@ -348,12 +348,12 @@ class player:NSClientPlayer
 	// 1 = doing reload2 (intermediate; ammo loading)
 	// 2 = doing reload3 (end)
 	// ALSO!  Call Byte vars 'floats' because FTE makes 'readbyte' give a float.
-	PREDICTED_FLOAT(shotgunReloadIndex);
+	PREDICTED_FLOAT(shotgunReloadIndex)
 	
 	// do these even need to be networked in the end?  Works now as it is,
 	// anything involving networking in even the most remote sense do be a finicky beast at times
-	PREDICTED_FLOAT(shotgunAddAmmoTime);
-	PREDICTED_FLOAT(shotgunAddAmmoSoundTime);
+	PREDICTED_FLOAT(shotgunAddAmmoTime)
+	PREDICTED_FLOAT(shotgunAddAmmoSoundTime)
 
 #ifdef CLIENT
 	// This time must pass before re-setting the shotgunAddAmmoTime/shotgunAddAmmoSoundTime counters is allowed.
@@ -389,13 +389,13 @@ class player:NSClientPlayer
 	//      finishes, decide whether to bring another grenade up (has ammo), other-
 	//      wise, discard the weapon and pick another.
 	
-	PREDICTED_INT(grenadeFireIndex);
+	PREDICTED_INT(grenadeFireIndex)
 	// at what time do I throw the grenade after starting the throw/toss anim?
 	//TAGGG - should these be predicted too?  Unsure.  Possibly not.
-	PREDICTED_FLOAT(grenadeSpawnTime);
-	PREDICTED_FLOAT(grenadeHeldDuration);
+	PREDICTED_FLOAT(grenadeSpawnTime)
+	PREDICTED_FLOAT(grenadeHeldDuration)
 	// Same for this, but it has been for a while
-	PREDICTED_FLOAT(bGrenadeToss);   //set to FALSE if it's a typical throw instead.
+	PREDICTED_FLOAT(bGrenadeToss)   //set to FALSE if it's a typical throw instead.
 	
 	
 	// shared
@@ -410,21 +410,21 @@ class player:NSClientPlayer
 	// sure what flags are guaranteed open / nonconflicting with anything else.
 	
 	// was BOOL
-	PREDICTED_FLOAT(isReloading);
+	PREDICTED_FLOAT(isReloading)
 	// was BOOL
-	PREDICTED_FLOAT(isChangingIronsight);
+	PREDICTED_FLOAT(isChangingIronsight)
 
 
-	PREDICTED_FLOAT(w_attack_akimbo_next);
+	PREDICTED_FLOAT(w_attack_akimbo_next)
 	
 	int akimboTest;
 	int akimboFirePrev;
-	PREDICTED_FLOAT(akimboDualFireToleranceTime);
+	PREDICTED_FLOAT(akimboDualFireToleranceTime)
 	
 	
 	// What is the next way I want to try firing if only primary is supposed to be used?
 	// Only used for certain firemode(s).
-	PREDICTED_FLOAT(nextAkimboAttackPreference);
+	PREDICTED_FLOAT(nextAkimboAttackPreference)
 	
 	// Only used by akimbo to tell something about a recently chosen attack.
 	// Pending a rename to make that more clear
@@ -440,7 +440,7 @@ class player:NSClientPlayer
 	// currently equipped weapon, set 'activeweapon' to the type of weapon in that inventory
 	// space to let Nuclide tap into weapon info as needed, best of both worlds.
 	//int activeweapon;
-	PREDICTED_INT(inventoryEquippedIndex);
+	PREDICTED_INT(inventoryEquippedIndex)
 	// for akimbo weapons, the ID of the singular version for easy reference.
 	float activeweapon_singular;
 	
@@ -456,10 +456,10 @@ class player:NSClientPlayer
 	// weapon select, are still tied to the exact same element in ary_myWeapons.
 	
 	// was BOOL.
-	PREDICTED_FLOAT(weaponEquippedAkimbo);
+	PREDICTED_FLOAT(weaponEquippedAkimbo)
 
 	weapondynamic_t ary_myWeapons[ary_myWeapons_length];
-	PREDICTED_INT(ary_myWeapons_softMax);
+	PREDICTED_INT(ary_myWeapons_softMax)
 	
 	// Have one space for each type of ammo available.
 	// If there were a large number of ammunitions and a low likelihood that all/most were
@@ -467,8 +467,8 @@ class player:NSClientPlayer
 	// of ammunitions expected and keep track of which one an index (0, 1, 2, 3, etc.) refers
 	// to. Sounds like a lot of extra work for a single ammo counter per type of ammo which
 	// is all this is.
-	//int ary_ammoTotal[AMMO_ID::LAST_ID];
-	PREDICTED_ARY_INT(ary_ammoTotal, AMMO_ID::LAST_ID);
+	//int ary_ammoTotal[AMMO_ID::LAST_ID]
+	PREDICTED_ARY_INT(ary_ammoTotal, AMMO_ID::LAST_ID)
 	
 	// Provided for quick reference.  How many slots does the current loadout take?
 	// There is a record of how much money has been spent, similar to config, but that isn't
@@ -563,9 +563,6 @@ class player:NSClientPlayer
 	
 	// FeeHL clones
 #ifdef CLIENT
-	virtual void(void) draw;
-	virtual float() predraw;
-	virtual void(void) postdraw;
 	virtual void(float,float) ReceiveEntity;
 	// NEW
 	virtual void(int i) ReceiveEntity_ary_myWeapons;

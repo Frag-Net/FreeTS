@@ -123,8 +123,10 @@ weapon_base_meleeHitEffect(void)
 	// FLESH, BLOODYFLESH, SLOSH, FOLIAGE, ALIEN, and CONCRETE are all guesses.
 	// Several others might be anyway, just extra unsure of these, if any TS map
 	// even uses them.
+	/* Obsolete, use the new surfaceproperty based system instead */
+
+/*
 	switch ((float)hash_get(hashMaterials, texFilter)) {
-		
 	case MATID_FLESH:
 	case MATID_BLOODYFLESH:
 	case MATID_SLOSH:
@@ -168,11 +170,13 @@ weapon_base_meleeHitEffect(void)
 		FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 		resultHit = MELEE_HIT_RESPONSE::METAL;
 		break;
-	default:
+
+	default:*/
 		FX_Impact_Melee(IMPACT_DEFAULT, trace_endpos, trace_plane_normal);
 		resultHit = MELEE_HIT_RESPONSE::METAL;
+	/*
 		break;
-	}
+	} */
 	return resultHit;
 }
 #endif

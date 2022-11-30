@@ -315,12 +315,12 @@ typedef struct{
 // TODO. make this a struct instead? should be feasible.
 // yes this is a class... hm. fix later.
 class weapondynamic_t{
-	PREDICTED_INT(weaponID); //what weapon is this referring to in the array of weapon data (glock, SOCOM, SMG, M4A1, etc.)
-	PREDICTED_INT(weaponTypeID);	//what type of struct does the weapon use for convenient casting in lookups (gun, ironsight, melee, throwable)?
+	PREDICTED_INT(weaponID) //what weapon is this referring to in the array of weapon data (glock, SOCOM, SMG, M4A1, etc.)
+	PREDICTED_INT(weaponTypeID)	//what type of struct does the weapon use for convenient casting in lookups (gun, ironsight, melee, throwable)?
 	
 	// what did the player actually buy?
 	// Also set this even for forced buyopts, such as the ruger's silencer.
-	PREDICTED_INT(iBitsUpgrade);
+	PREDICTED_INT(iBitsUpgrade)
 
 	// How many of this weapon are equipped?  The Akimbo BuyOpt makes this potentially 2.
 	// Weapons that come akimbo (golden colts) will still treat this as "1".
@@ -328,39 +328,39 @@ class weapondynamic_t{
 	// This is for whether the current weapon should be treated as one (golden colts drop together in one
 	// model) or whether dropping just removes the akimbo version.
 	// Throwing knives can also use this iCount to stack instead.
-	PREDICTED_INT(iCount);
+	PREDICTED_INT(iCount)
 	
 	//Does keeping track of these things on an actual inventory'd weapon even makes sense?
 	//Ah well, lazy client-server logic compatability for now.
-	PREDICTED_INT(iPrice);
-	PREDICTED_INT(iSlots);
+	PREDICTED_INT(iPrice)
+	PREDICTED_INT(iSlots)
 	
 	
-	PREDICTED_INT(iClipLeft);
-	PREDICTED_INT(iClipAkimboLeft);  //ammo left of the 2nd weapon if the akimbo option is present.
+	PREDICTED_INT(iClipLeft)
+	PREDICTED_INT(iClipAkimboLeft)  //ammo left of the 2nd weapon if the akimbo option is present.
 	
 	// Buyopts flashlight and lasersight can be toggled on/off. The rest don't need
 	// to be part of this bitmask to be on at all times.
-	PREDICTED_INT(iBitsUpgrade_on);
+	PREDICTED_INT(iBitsUpgrade_on)
 	
 	
 	
 	// What firemode is the player using for this weapon now?
-	PREDICTED_INT(iFireMode);
-	PREDICTED_INT(iFireModeAkimbo);
+	PREDICTED_INT(iFireMode)
+	PREDICTED_INT(iFireModeAkimbo)
 	
 	// Is the player using ironsight (right-click)?  Also include checks for scoping / drawing overlays
 	// in logic later if needed.
 	// This is usually a boolean (0 or 1... off or on), but weapons with multiple magnifications can use
 	// this to count too, such as for 2times or 10times. 0(off), 1(2x), 2(10x).
-	PREDICTED_INT(iIronSight);
+	PREDICTED_INT(iIronSight)
 	
 	// Do I force the first bodygroup's submodel to a certain choice?
 	// NOTE - do not set to 0 during intended use!  That is only a lazy default to say, don't do anything
 	// to the submodel on drawing this weapon.  Submodels actually start at 1, even if the only one.
 	// If set to 0, the change will only be noticed on undrawing/drawing the weapon as the submodel will
 	// not be applied then.  Set to 1 to change in real time (likely the intention).
-	PREDICTED_INT(iForceBodygroup1Submodel);
+	PREDICTED_INT(iForceBodygroup1Submodel)
 	
 	// In pump-action mode, set to TRUE after firing the shotgun. The next click pumps
 	// instead.
@@ -369,7 +369,7 @@ class weapondynamic_t{
 	// leaves this flag unaffected).
 	// Reloading also disables this flag, as it always ends in a visual pump.
 	// (was BOOL)
-	PREDICTED_FLOAT(bNeedsPump);
+	PREDICTED_FLOAT(bNeedsPump)
 	
 	
 	void(void) weapondynamic_t;

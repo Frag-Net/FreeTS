@@ -18,7 +18,6 @@
 void
 Game_RunClientCommand(void)
 {
-	Footsteps_Update();
 	//TAGGG
 	// FreeHL does it this way instead now (further down)?
 	// I don't think this is even significant.
