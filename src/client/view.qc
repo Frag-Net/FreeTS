@@ -283,7 +283,7 @@ TS_View_DrawCustom(player pl){
 	if (pl.health <= 0) {
 		return;
 	}
-	if (cvar("r_drawviewmodel") == 0 || autocvar_cl_thirdperson == TRUE) {
+	if (cvar("r_drawviewmodel") == 0 || autocvar_pm_thirdPerson == TRUE) {
 		return;
 	}
 	
@@ -484,7 +484,7 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	
 	
 	
-	//int thirdperson = (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum);
+	//int thirdperson = (autocvar_pm_thirdPerson == TRUE || this.entnum != player_localentnum);
 	//NSClientPlayer pp = (NSClientPlayer)this;
 
 	BOOL canRenderFlashlight = FALSE;
@@ -543,7 +543,7 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	
 	
 	// TAGGG - QUESTION:  Is it better to use the bool "thirdperson"
-	// (see check below involving cl_thirdperson)
+	// (see check below involving pm_thirdPerson)
 	// OR a raw "pl.entnum != player_localentnum" check?
 	// The former is a more concrete check for, "Am I the local player
 	// looking in 1st person, yes or no?".
@@ -554,8 +554,8 @@ TS_View_DrawExtraEffects(player pl, int thirdperson)
 	// valve/src/client/flashlight.qc uses the latter way.  Why?
 	
 	// thirdperson
-	// True IF (autocvar_cl_thirdperson == TRUE || this.entnum != player_localentnum)
-	// False IF (autocvar_cl_thirdperson == FALSE && this.entnum == player_localentnum)
+	// True IF (autocvar_pm_thirdPerson == TRUE || this.entnum != player_localentnum)
+	// False IF (autocvar_pm_thirdPerson == FALSE && this.entnum == player_localentnum)
 	if(!thirdperson){
 		
 		//TAGGG - Old way!

@@ -134,8 +134,8 @@ Viewmodel_CalcBob(void)
 	// bounds from Valve, does it make sense here?
 	//pViewBob->m_flBob = bound(-7, flBob, 4);
 
-	// And the r_viewmodelscale from Valve.  I think this is safe.
-	pViewBob->m_flBob *= autocvar_r_viewmodelscale;
+	// And the cg_viewmodelScale from Valve.  I think this is safe.
+	pViewBob->m_flBob *= autocvar_cg_viewmodelScale;
 	
 	setVCam();
 }
@@ -150,9 +150,9 @@ Viewmodel_ApplyBob(entity gun)
 	player pl = (player)pSeat->m_ePlayer;
 	gun.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
 	gun.origin += [0,0,-1];
-	gun.origin += v_forward * (0.75 + autocvar_v_gunofs[0] + pViewBob->m_flBob * (-0.68 + -0.112 * fabs(sin(pViewBob->m_flBobCycle)) ) + 0.98 * pViewBob->m_vCam[0] );
-	gun.origin += v_right * (autocvar_v_gunofs[1] + (pViewBob->m_flBob * (-0.2 + 0.308 * sin(pViewBob->m_flBobCycle)) ) + 0.98 * pViewBob->m_vCam[1] );
-	gun.origin += v_up * (0.5 + autocvar_v_gunofs[2] + (pViewBob->m_flBob * (-0.48 + 0.196 * fabs(sin(pViewBob->m_flBobCycle)) )) + 0.98 * pViewBob->m_vCam[2] );
+	gun.origin += v_forward * (0.75 + autocvar_cg_viewmodelOffset[0] + pViewBob->m_flBob * (-0.68 + -0.112 * fabs(sin(pViewBob->m_flBobCycle)) ) + 0.98 * pViewBob->m_vCam[0] );
+	gun.origin += v_right * (autocvar_cg_viewmodelOffset[1] + (pViewBob->m_flBob * (-0.2 + 0.308 * sin(pViewBob->m_flBobCycle)) ) + 0.98 * pViewBob->m_vCam[1] );
+	gun.origin += v_up * (0.5 + autocvar_cg_viewmodelOffset[2] + (pViewBob->m_flBob * (-0.48 + 0.196 * fabs(sin(pViewBob->m_flBobCycle)) )) + 0.98 * pViewBob->m_vCam[2] );
 
 	//TAGGG - mock-event
 	// WARNING!  This place is called by Nuclide only if in first-person, not reliable.

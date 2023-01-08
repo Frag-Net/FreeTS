@@ -46,8 +46,8 @@ ClientGame_PreDraw(void)
 	////////////////////////////////////////////////////////////////////
 	setproperty(VF_AFOV, cvar("fov") * pl.viewzoom);
 	
-	if (autocvar_zoom_sensitivity && pl.viewzoom < 1.0f) {
-		setsensitivityscaler(pl.viewzoom * autocvar_zoom_sensitivity);
+	if (autocvar_in_zoomSensitivity && pl.viewzoom < 1.0f) {
+		setsensitivityscaler(pl.viewzoom * autocvar_in_zoomSensitivity);
 	} else {
 		setsensitivityscaler(pl.viewzoom);
 	}
@@ -77,7 +77,7 @@ Custom_LatePreDraw(void)
 	
 	TS_View_DrawCustom(pl);
 	
-	int thirdperson = (autocvar_cl_thirdperson == TRUE || pl.entnum != player_localentnum);
+	int thirdperson = (autocvar_pm_thirdPerson == TRUE || pl.entnum != player_localentnum);
 	TS_View_DrawExtraEffects(pl, thirdperson);
 	
 	// restore.

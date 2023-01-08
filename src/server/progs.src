@@ -134,10 +134,6 @@ gamerules_multiplayer.qc
 client.qc
 init.qc
 
-// NOPE! Using our own copy now
-//../../../base/src/server/damage.qc
-damage.qc
-
 ../../../base/src/server/modelevent.qc
 
 spawn.qc
