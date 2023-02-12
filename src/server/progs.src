@@ -134,7 +134,7 @@ gamerules_multiplayer.qc
 client.qc
 init.qc
 
-../../../base/src/server/modelevent.qc
+../../../valve/src/server/modelevent.qc
 
 spawn.qc
 
