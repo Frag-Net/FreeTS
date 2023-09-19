@@ -119,6 +119,7 @@ class TSMultiplayerRules:TSGameRules
 	virtual void(NSClientPlayer pp) PlayerMakeSpectatorDelayed;
 	virtual void(NSClientPlayer, int) PlayerRespawn;
 	virtual entity(float) PlayerFindSpawn;
+	virtual bool PlayerRequestRespawn(NSClientPlayer);
 	
 	virtual void(player pl) setPlayerMoneyDefault;
 

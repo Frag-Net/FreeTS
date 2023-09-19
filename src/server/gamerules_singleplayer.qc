@@ -45,7 +45,9 @@ TSSingleplayerRules::PlayerDeath(NSClientPlayer pp)
 	}
 
 	if (pp.health < -50) {
-		FX_GibHuman(pl.origin, vectoangles(pl.origin - g_dmg_eAttacker.origin), g_dmg_iDamage * 2.0f);
+		vector gibDir = vectoangles(pl.origin - g_dmg_eAttacker.origin);
+		float gibStrength = g_dmg_iDamage * 2.0f;
+		BreakModel_Entity(pl, gibDir, gibStrength);
 	}
 
 	/* Let's handle corpses on the clientside */

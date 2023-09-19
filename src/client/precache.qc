@@ -14,10 +14,6 @@ void ClientGame_Precache(void){
 
 	// All forked effects!
 	FX_Blood_Init();
-	FX_BreakModel_Init();
-	FX_Explosion_Init();
-	FX_GibHuman_Init();
-	FX_Spark_Init();
 	FX_Impact_Init();
 	////////////////////////////////////////////////////////////////////////////////////
 	

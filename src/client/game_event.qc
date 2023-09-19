@@ -28,28 +28,6 @@ ClientGame_EventParse(float fHeader)
 	case EV_OBITUARY:{
 		Obituary_Parse();
 	}break;
-	case EV_SPARK:{
-		vector vSparkPos, vSparkAngle;
-		vSparkPos[0] = readcoord();
-		vSparkPos[1] = readcoord();
-		vSparkPos[2] = readcoord();
-		vSparkAngle[0] = readcoord();
-		vSparkAngle[1] = readcoord();
-		vSparkAngle[2] = readcoord();
-		FX_Spark(vSparkPos, vSparkAngle);
-	}break;
-	case EV_GIBHUMAN:
-		vector vGibPos;
-		vGibPos[0] = readcoord();
-		vGibPos[1] = readcoord();
-		vGibPos[2] = readcoord();
-		vector vDir;
-		vDir[0] = readcoord();
-		vDir[1] = readcoord();
-		vDir[2] = readcoord();
-		float flForce = readfloat();
-		FX_GibHuman(vGibPos, vDir, flForce);
-		break;
 	case EV_BLOOD:{
 		vector vBloodPos;
 		vector vBloodColor;
@@ -64,15 +42,6 @@ ClientGame_EventParse(float fHeader)
 
 		FX_Blood(vBloodPos, vBloodColor);
 	}break;
-	case EV_EXPLOSION:{
-		vector vExploPos;
-
-		vExploPos[0] = readcoord();
-		vExploPos[1] = readcoord();
-		vExploPos[2] = readcoord();
-
-		FX_Explosion(vExploPos);
-	}break;
 	case EVENT_TS::FX_TS_EXPLOSION_GRENADE:{
 		vector vExploPos2;
 
@@ -81,21 +50,6 @@ ClientGame_EventParse(float fHeader)
 		vExploPos2[2] = readcoord();
 
 		FX_TS_Explosion_Grenade(vExploPos2);
-	}break;
-	case EV_MODELGIB:{
-		vector vecPos;
-		vecPos[0] = readcoord();
-		vecPos[1] = readcoord();
-		vecPos[2] = readcoord();
-
-		vector vSize;
-		vSize[0] = readcoord();
-		vSize[1] = readcoord();
-		vSize[2] = readcoord();
-
-		float fStyle = readbyte();
-		int count = readbyte();
-		FX_BreakModel(count, vecPos, vSize, [0,0,0], fStyle);
 	}break;
 	case EV_IMPACT:{
 		int iType;

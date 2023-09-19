@@ -29,6 +29,21 @@ TSMultiplayerRules::TSMultiplayerRules(void)
 	*/
 }
 
+
+
+bool
+TSMultiplayerRules::PlayerRequestRespawn(NSClientPlayer bp)
+{
+	if (bp.TimeSinceDeath() > 0.5f) {
+		TSMultiplayerRules rules;
+		rules = (TSMultiplayerRules)g_grMode;
+		rules.PlayerMakePlayableWithDefaultMoney(bp);
+		return true;
+	}
+
+	return false;
+}
+
  
 // respawn absolutely everything
 // (check out init_respawn in case the var checked or any other part of the process changes)
@@ -260,7 +275,9 @@ TSMultiplayerRules::PlayerDeath(NSClientPlayer pp)
 
 	/* either gib, or make a corpse */
 	if (pl.health < -50) {
-		FX_GibHuman(pl.origin, vectoangles(pl.origin - g_dmg_eAttacker.origin), g_dmg_iDamage * 2.0f);
+		vector gibDir = vectoangles(pl.origin - g_dmg_eAttacker.origin);
+		float gibStrength = g_dmg_iDamage * 2.0f;
+		BreakModel_Entity(pl, gibDir, gibStrength);
 	} else {
 		/* Let's handle corpses on the clientside */
 		entity corpse = spawn();
