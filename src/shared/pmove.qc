@@ -79,7 +79,7 @@ const vector VEC_CHULL_MAX = [16,16,18];
 
 
 // Prototype for Nuclide methods involved
-int PMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs);
+bool PMove_IsStuck(entity eTarget, vector vOffset, vector vecMins, vector vecMaxs);
 int PMoveCustom_Contents(vector org);
 
 // Prototypes for new helper methods

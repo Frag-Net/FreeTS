@@ -111,7 +111,6 @@ hud.qc
 hud_weaponselect.qc
 inventory_logic_draw.qc
 scoreboard.qc
-../../../valve/src/client/modelevent.qc
 
 
 ../shared/util.qc
