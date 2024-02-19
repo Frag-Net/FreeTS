@@ -2206,10 +2206,19 @@ player::dropAmmo(void){
 void
 player::ProcessInput(void)
 {
-	/* HACK: ugly workaround for some thing I cba to fix right now */
-	if(iState == 2){
-		if (input_buttons & 1) {
+	/* have we not spawned yet? */
+	if(iState != PLAYER_STATE::SPAWNED) {
+		/* fire = respawn */
+		if (input_buttons & INPUT_BUTTON0) {
 			CGameRules rules = (CGameRules)g_grMode;
+
+			/* want to spawn the first time, make us 'dead' so we can respawn */
+			if (m_flDeathTime == 0.0) {
+				health = 0.0f;
+				m_flDeathTime = time;
+			}
+
+			/* same as normal */
 			rules.PlayerRequestRespawn(this);	
 			return;
 		}

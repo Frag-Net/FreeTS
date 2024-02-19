@@ -27,7 +27,8 @@ void UI_MOTD_btnOK_Clicked( void ){
 	if(!g_UI_MOTD_everClosed){
 		UI_ChangeScreen(UI_SCREEN::BUYMENU);
 	}else{
-		UI_ChangeScreen(UI_SCREEN::NONE);
+		//UI_ChangeScreen(UI_SCREEN::NONE);
+		UI_MOTD_win.Hide();
 	}
 }
 

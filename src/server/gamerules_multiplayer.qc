@@ -37,7 +37,7 @@ TSMultiplayerRules::PlayerRequestRespawn(NSClientPlayer bp)
 	player pl = (player)bp;
 	entity oldSelf = self;
 
-	if (pl.iState == 2 || bp.TimeSinceDeath() > 0.5f) {
+	if (bp.TimeSinceDeath() > 0.5f) {
 		if(pl.iState == PLAYER_STATE::SPAWNED) {
 			PlayerRespawn(pl, pl.team);
 		} else {
