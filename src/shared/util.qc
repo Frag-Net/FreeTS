@@ -406,7 +406,7 @@ TS_View_PlayAnimation(player pl, int iSequence, float fDuration){
 	pSeat->m_eViewModel.frame = (float)iSequence;
 	pl.weapontime = 0.0f;
 	pl.weaponframe = iSequence;
-	SAVE_STATE(pl.weapontime);
+	SAVE_STATE(pl.weapontime)
 	
 	//pSeat->m_eViewModel.frame2time = 0;
 	//pSeat->m_eViewModel.frame1time = 0;
@@ -422,7 +422,7 @@ TS_View_PlayAnimation_noLaserLock(player pl, int iSequence, float fDuration){
 	pSeat->m_eViewModel.frame = (float)iSequence;
 	pl.weapontime = 0.0f;
 	pl.weaponframe = iSequence;
-	SAVE_STATE(pl.weapontime);
+	SAVE_STATE(pl.weapontime)
 	
 	pl.w_freeze_idle_next = -1;  //assume this?
 	pl.lasersightUnlockTime = TRUE;
@@ -434,7 +434,7 @@ TS_View_PlayAnimation_EndIdle(player pl, int iSequence, float fDuration){
 	pSeat->m_eViewModel.frame = (float)iSequence;
 	pl.weapontime = 0.0f;
 	pl.weaponframe = iSequence;
-	SAVE_STATE(pl.weapontime);
+	SAVE_STATE(pl.weapontime)
 	
 	// ?? Do we want to do this or not then
 	pl.lasersightUnlockTime = FALSE;  //reset
@@ -448,7 +448,7 @@ TS_View_PlayAnimation_EndIdle_custom(player pl, int iSequence, float fDuration, 
 	pSeat->m_eViewModel.frame = (float)iSequence;
 	pl.weapontime = 0.0f;
 	pl.weaponframe = iSequence;
-	SAVE_STATE(pl.weapontime);
+	SAVE_STATE(pl.weapontime)
 
 	pl.lasersightUnlockTime = FALSE;  //reset
 	pl.w_freeze_idle_next = fDuration + fIdleEndOffset + getViewModelAnimExtraDuration();

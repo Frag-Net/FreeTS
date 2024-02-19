@@ -91,9 +91,11 @@ void gFun_UI_EventGrabber_Initialize(void){
 
 void gFun_UI_EventGrabber_Show(void){
 	g_UI_EventGrabber.FlagAdd(1);
+	g_UI_EventGrabber.m_bVisible = true;
 }
 void gFun_UI_EventGrabber_Hide(void){
 	g_UI_EventGrabber.FlagRemove(1);
+	g_UI_EventGrabber.m_bVisible = false;
 }
 
 

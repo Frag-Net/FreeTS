@@ -121,6 +121,10 @@ ClientGame_ConsoleCommand(void)
 		//sendevent("WeaponDrop", "");
 		TS_playerDropWeapon();  //I do it fine.
 		break;
+
+	case "forcespawn":
+		sendevent("GamePlayerSpawn", "");
+		break;
 	
 	default:
 		return (0);

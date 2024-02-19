@@ -202,13 +202,13 @@ TS_View_ChangeViewModelPost(void)
 	 * thus we need to update all the net variables to
 	 * make sure these updates are recognized. this is
 	 * vile but it'll have to do for now */
-	SAVE_STATE(pl.w_attack_next);
-	SAVE_STATE(pl.w_idle_next);
-	SAVE_STATE(pl.viewzoom);
-	SAVE_STATE(pl.weapontime);
+	SAVE_STATE(pl.w_attack_next)
+	SAVE_STATE(pl.w_idle_next)
+	SAVE_STATE(pl.viewzoom)
+	SAVE_STATE(pl.weapontime)
 	//TAGGG - NEW VAR
-	SAVE_STATE(pl.w_attack_akimbo_next);
-	SAVE_STATE(pl.iZoomLevel);
+	SAVE_STATE(pl.w_attack_akimbo_next)
+	SAVE_STATE(pl.iZoomLevel)
 	//SAVE_STATE(pl.flZoomTarget);
 
 	//TAGGG - also new line.  It is a good idea to reset the event

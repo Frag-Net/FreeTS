@@ -54,7 +54,7 @@ drawSpriteNumber(
 	int digitCount = 0;
 	int totalDrawWidth = 0;
 	
-	vector vDrawPosYet;
+	vector vDrawPosYet = g_vec_null;
 	for(int i = arg_digits; i >= 1; i--){
 		vDrawPosYet.x = arg_draw_x + (arg_digits - i) * spriteWidth + leftChange;
 		vDrawPosYet.y = arg_draw_y + 0;
@@ -155,8 +155,8 @@ void
 Gfx_ScalePicPreserveBounds(string sImage, vector arg_vDrawPos, vector vSize, vector vScale, vector vInset, vector vRGB, float flOpac)
 {
 	vector srcpos = [vInset[0], vInset[1]];
-	vector srcsz;
-	vector sz;
+	vector srcsz = g_vec_null;
+	vector sz = g_vec_null;
 	
 	//srcsz = vSize;
 	srcsz[0] = 1.0 - (vInset[0]*2) ;
@@ -165,7 +165,7 @@ Gfx_ScalePicPreserveBounds(string sImage, vector arg_vDrawPos, vector vSize, vec
 	sz[0] = vSize[0] * vScale[0];
 	sz[1] = vSize[1] * vScale[1];
 	
-	vector vecOff;// = [0,0];
+	vector vecOff = g_vec_null;// = [0,0];
 	vecOff[0] = -sz[0]/2;
 	vecOff[1] = -sz[1]/2;
 	

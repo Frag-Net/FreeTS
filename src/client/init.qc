@@ -95,6 +95,7 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 	
 	registercommand("buy");
 	registercommand("motd");
+	registercommand("forcespawn");
 	//registercommand("chooseteam");
 
 	// NO NEED!  See CSEv_DropWeapon in nuclide's src/server/weapons.qc, that gets called.
@@ -152,6 +153,8 @@ ClientGame_Init(float apilevel, string enginename, float engineversion)
 void
 ClientGame_InitDone(void)
 {
+	//if (serverkeyfloat("sv_playerslots") > 1)
+		//VGUI_ShowMOTD();
 }
 
 

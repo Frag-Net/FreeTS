@@ -927,7 +927,7 @@ drawBuyButton(
 		arg_opac = 0.71;
 	}
 	
-	vector vLabelPos;
+	vector vLabelPos = g_vec_null;
 	BOOL mouseHovered = FALSE;
 	
 	// Draw the button label
@@ -1179,6 +1179,7 @@ buymenu_btn_UseNewConfig_clicked(CBuyMenu_BasicButton* arg_this)
 	
 	// TODO - check to see whether the config we just used was empty or not, to affect this message...
 	CSQC_Parse_CenterPrint("Using new config.\n");
+	pSeat->m_bInterfaceFocused = false;
 	
 	UI_ChangeScreen(UI_SCREEN::NONE);
 }//buymenu_btn_UseNewConfig_clicked

@@ -383,75 +383,75 @@ player::PredictPreFrame(void)
 	// client's way of calling prethink
 	preThink();
 
-	SAVE_STATE(anim_top);
-	SAVE_STATE(anim_top_delay);
-	SAVE_STATE(anim_top_time);
-	SAVE_STATE(anim_bottom);
-	SAVE_STATE(anim_bottom_time);
+	SAVE_STATE(anim_top)
+	SAVE_STATE(anim_top_delay)
+	SAVE_STATE(anim_top_time)
+	SAVE_STATE(anim_bottom)
+	SAVE_STATE(anim_bottom_time)
 	
-	SAVE_STATE(iState);
-	SAVE_STATE(inventoryEquippedIndex);
-	SAVE_STATE(weaponEquippedAkimbo);
-	SAVE_STATE(w_attack_akimbo_next);
-	SAVE_STATE(isReloading);
-	SAVE_STATE(isChangingIronsight);
+	SAVE_STATE(iState)
+	SAVE_STATE(inventoryEquippedIndex)
+	SAVE_STATE(weaponEquippedAkimbo)
+	SAVE_STATE(w_attack_akimbo_next)
+	SAVE_STATE(isReloading)
+	SAVE_STATE(isChangingIronsight)
 	//SAVE_STATE(flZoomTarget);
-	SAVE_STATE(iZoomLevel);
-	SAVE_STATE(nextAkimboAttackPreference);
-	SAVE_STATE(akimboDualFireToleranceTime);
+	SAVE_STATE(iZoomLevel)
+	SAVE_STATE(nextAkimboAttackPreference)
+	SAVE_STATE(akimboDualFireToleranceTime)
 	
-	SAVE_STATE(grenadeFireIndex);
-	SAVE_STATE(grenadeHeldDuration);
-	SAVE_STATE(grenadeSpawnTime);
-	SAVE_STATE(bGrenadeToss);
+	SAVE_STATE(grenadeFireIndex)
+	SAVE_STATE(grenadeHeldDuration)
+	SAVE_STATE(grenadeSpawnTime)
+	SAVE_STATE(bGrenadeToss)
 	
 	
 	//flKarateBlockCooldown
-	SAVE_STATE(iMeleeCycler);
+	SAVE_STATE(iMeleeCycler)
 	
 	
-	SAVE_STATE(vViewAngleOffsetTargetDir);
-	SAVE_STATE(vViewAngleOffsetTotalChange);
-	SAVE_STATE(flViewAngleOffsetTarget);
+	SAVE_STATE(vViewAngleOffsetTargetDir)
+	SAVE_STATE(vViewAngleOffsetTotalChange)
+	SAVE_STATE(flViewAngleOffsetTarget)
 	
 	
-	SAVE_STATE(fAccuracyKickback);
-	SAVE_STATE(fAccuracyKickbackStartCooldown);
+	SAVE_STATE(fAccuracyKickback)
+	SAVE_STATE(fAccuracyKickbackStartCooldown)
+
+	SAVE_STATE(fMoveBlockDelay)
+	SAVE_STATE(fUncrouchBlockDelay)
+	SAVE_STATE(fKarateStamina)
 	
-	SAVE_STATE(fMoveBlockDelay);
-	SAVE_STATE(fUncrouchBlockDelay);
-	SAVE_STATE(fKarateStamina);
 	
-	
-	SAVE_STATE(aryNextBurstShotTime_softLength);
+	SAVE_STATE(aryNextBurstShotTime_softLength)
 	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
 		SAVE_STATE_ARY(ary_ammoTotal, i);
 	}
-	SAVE_STATE(aryNextBurstShotTime_listenIndex);
+	SAVE_STATE(aryNextBurstShotTime_listenIndex)
 
 	
-	SAVE_STATE(shotgunReloadIndex);
+	SAVE_STATE(shotgunReloadIndex)
 	
-	SAVE_STATE(shotgunAddAmmoTime);
-	SAVE_STATE(shotgunAddAmmoSoundTime);
+	SAVE_STATE(shotgunAddAmmoTime)
+	SAVE_STATE(shotgunAddAmmoSoundTime)
 		
 	
-	SAVE_STATE(ary_myWeapons_softMax);
+	SAVE_STATE(ary_myWeapons_softMax)
 	for(i = 0; i < ary_myWeapons_softMax; i++){
-		SAVE_STATE(ary_myWeapons[i].weaponID);
-		SAVE_STATE(ary_myWeapons[i].weaponTypeID);
-		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade);
-		SAVE_STATE(ary_myWeapons[i].iCount);
+		SAVE_STATE(ary_myWeapons[i].weaponID)
+		SAVE_STATE(ary_myWeapons[i].weaponTypeID)
+		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade)
+		SAVE_STATE(ary_myWeapons[i].iCount)
 		//SAVE_STATE(ary_myWeapons[i].iPrice);
 		//SAVE_STATE(ary_myWeapons[i].iSlots);
-		SAVE_STATE(ary_myWeapons[i].iClipLeft);
-		SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft);
-		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on);
-		SAVE_STATE(ary_myWeapons[i].iFireMode);
-		SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
-		SAVE_STATE(ary_myWeapons[i].iIronSight);
-		SAVE_STATE(ary_myWeapons[i].iForceBodygroup1Submodel);
-		SAVE_STATE(ary_myWeapons[i].bNeedsPump);
+		SAVE_STATE(ary_myWeapons[i].iClipLeft)
+		SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft)
+		SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on)
+		SAVE_STATE(ary_myWeapons[i].iFireMode)
+		SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo)
+		SAVE_STATE(ary_myWeapons[i].iIronSight)
+		SAVE_STATE(ary_myWeapons[i].iForceBodygroup1Submodel)
+		SAVE_STATE(ary_myWeapons[i].bNeedsPump)
 	}
 
 	//UNNECESSARY. This array is of fixed length, so known at all times.
@@ -495,77 +495,77 @@ player::PredictPostFrame(void)
 	// client's way of calling postthink
 	postThink();
 	
-	ROLL_BACK(anim_top);
-	ROLL_BACK(anim_top_delay);
-	ROLL_BACK(anim_top_time);
-	ROLL_BACK(anim_bottom);
-	ROLL_BACK(anim_bottom_time);
+	ROLL_BACK(anim_top)
+	ROLL_BACK(anim_top_delay)
+	ROLL_BACK(anim_top_time)
+	ROLL_BACK(anim_bottom)
+	ROLL_BACK(anim_bottom_time)
 	
-	ROLL_BACK(iState);
-	ROLL_BACK(inventoryEquippedIndex);
-	ROLL_BACK(weaponEquippedAkimbo);
-	ROLL_BACK(w_attack_akimbo_next);
-	ROLL_BACK(isReloading);
-	ROLL_BACK(isChangingIronsight);
+	ROLL_BACK(iState)
+	ROLL_BACK(inventoryEquippedIndex)
+	ROLL_BACK(weaponEquippedAkimbo)
+	ROLL_BACK(w_attack_akimbo_next)
+	ROLL_BACK(isReloading)
+	ROLL_BACK(isChangingIronsight)
 	//ROLL_BACK(flZoomTarget);
 	
-	ROLL_BACK(iZoomLevel);
+	ROLL_BACK(iZoomLevel)
 	
 	
 	
-	ROLL_BACK(nextAkimboAttackPreference);
-	ROLL_BACK(akimboDualFireToleranceTime);
+	ROLL_BACK(nextAkimboAttackPreference)
+	ROLL_BACK(akimboDualFireToleranceTime)
 	
-	ROLL_BACK(grenadeFireIndex);
-	ROLL_BACK(grenadeHeldDuration);
-	ROLL_BACK(grenadeSpawnTime);
-	ROLL_BACK(bGrenadeToss);
+	ROLL_BACK(grenadeFireIndex)
+	ROLL_BACK(grenadeHeldDuration)
+	ROLL_BACK(grenadeSpawnTime)
+	ROLL_BACK(bGrenadeToss)
 	
 	//flKarateBlockCooldown
-	ROLL_BACK(iMeleeCycler);
+	ROLL_BACK(iMeleeCycler)
 	
 	
-	ROLL_BACK(vViewAngleOffsetTargetDir);
-	ROLL_BACK(vViewAngleOffsetTotalChange);
-	ROLL_BACK(flViewAngleOffsetTarget);
+	ROLL_BACK(vViewAngleOffsetTargetDir)
+	ROLL_BACK(vViewAngleOffsetTotalChange)
+	ROLL_BACK(flViewAngleOffsetTarget)
 	
 	
-	ROLL_BACK(fAccuracyKickback);
-	ROLL_BACK(fAccuracyKickbackStartCooldown);
+	ROLL_BACK(fAccuracyKickback)
+	ROLL_BACK(fAccuracyKickbackStartCooldown)
 	
-	ROLL_BACK(fMoveBlockDelay);
-	ROLL_BACK(fUncrouchBlockDelay);
-	ROLL_BACK(fKarateStamina);
+	ROLL_BACK(fMoveBlockDelay)
+	ROLL_BACK(fUncrouchBlockDelay)
+	ROLL_BACK(fKarateStamina)
 	
-	ROLL_BACK(aryNextBurstShotTime_softLength);
+	ROLL_BACK(aryNextBurstShotTime_softLength)
 	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
 		ROLL_BACK_ARY(ary_ammoTotal, i);
 	}
-	ROLL_BACK(aryNextBurstShotTime_listenIndex);
+	ROLL_BACK(aryNextBurstShotTime_listenIndex)
 
 	
 	
-	ROLL_BACK(shotgunReloadIndex);
-	ROLL_BACK(shotgunAddAmmoTime);
-	ROLL_BACK(shotgunAddAmmoSoundTime);
+	ROLL_BACK(shotgunReloadIndex)
+	ROLL_BACK(shotgunAddAmmoTime)
+	ROLL_BACK(shotgunAddAmmoSoundTime)
 	
 	
-	ROLL_BACK(ary_myWeapons_softMax);
+	ROLL_BACK(ary_myWeapons_softMax)
 	for(i = 0; i < ary_myWeapons_softMax; i++){
-		ROLL_BACK(ary_myWeapons[i].weaponID);
-		ROLL_BACK(ary_myWeapons[i].weaponTypeID);
-		ROLL_BACK(ary_myWeapons[i].iBitsUpgrade);
-		ROLL_BACK(ary_myWeapons[i].iCount);
-		//ROLL_BACK(ary_myWeapons[i].iPrice);
-		//ROLL_BACK(ary_myWeapons[i].iSlots);
-		ROLL_BACK(ary_myWeapons[i].iClipLeft);
-		ROLL_BACK(ary_myWeapons[i].iClipAkimboLeft);
-		ROLL_BACK(ary_myWeapons[i].iBitsUpgrade_on);
-		ROLL_BACK(ary_myWeapons[i].iFireMode);
-		ROLL_BACK(ary_myWeapons[i].iFireModeAkimbo);
-		ROLL_BACK(ary_myWeapons[i].iIronSight);
-		ROLL_BACK(ary_myWeapons[i].iForceBodygroup1Submodel);
-		ROLL_BACK(ary_myWeapons[i].bNeedsPump);
+		ROLL_BACK(ary_myWeapons[i].weaponID)
+		ROLL_BACK(ary_myWeapons[i].weaponTypeID)
+		ROLL_BACK(ary_myWeapons[i].iBitsUpgrade)
+		ROLL_BACK(ary_myWeapons[i].iCount)
+		//ROLL_BACK(ary_myWeapons[i].iPrice)
+		//ROLL_BACK(ary_myWeapons[i].iSlots)
+		ROLL_BACK(ary_myWeapons[i].iClipLeft)
+		ROLL_BACK(ary_myWeapons[i].iClipAkimboLeft)
+		ROLL_BACK(ary_myWeapons[i].iBitsUpgrade_on)
+		ROLL_BACK(ary_myWeapons[i].iFireMode)
+		ROLL_BACK(ary_myWeapons[i].iFireModeAkimbo)
+		ROLL_BACK(ary_myWeapons[i].iIronSight)
+		ROLL_BACK(ary_myWeapons[i].iForceBodygroup1Submodel)
+		ROLL_BACK(ary_myWeapons[i].bNeedsPump)
 	}
 
 	// UNNECESSARY. This array is of fixed length, so known at all times.
@@ -606,7 +606,7 @@ player::EvaluateEntity(void)
 	// set some flag to convey that?
 
 
-	SAVE_STATE(ary_myWeapons_softMax);
+	SAVE_STATE(ary_myWeapons_softMax)
 	
 	
 	i = inventoryEquippedIndex;
@@ -654,78 +654,78 @@ player::EvaluateEntity(void)
 	}
 	
 
-	SAVE_STATE(anim_top);
-	SAVE_STATE(anim_top_delay);
-	SAVE_STATE(anim_top_time);
-	SAVE_STATE(anim_bottom);
-	SAVE_STATE(anim_bottom_time);
+	SAVE_STATE(anim_top)
+	SAVE_STATE(anim_top_delay)
+	SAVE_STATE(anim_top_time)
+	SAVE_STATE(anim_bottom)
+	SAVE_STATE(anim_bottom_time)
 	
-	SAVE_STATE(iState);
-	SAVE_STATE(inventoryEquippedIndex);
-	SAVE_STATE(weaponEquippedAkimbo);
-	SAVE_STATE(w_attack_akimbo_next);
-	SAVE_STATE(isReloading);
-	SAVE_STATE(isChangingIronsight);
-	//SAVE_STATE(flZoomTarget);
-	SAVE_STATE(iZoomLevel);
-	SAVE_STATE(nextAkimboAttackPreference);
-	SAVE_STATE(akimboDualFireToleranceTime);
+	SAVE_STATE(iState)
+	SAVE_STATE(inventoryEquippedIndex)
+	SAVE_STATE(weaponEquippedAkimbo)
+	SAVE_STATE(w_attack_akimbo_next)
+	SAVE_STATE(isReloading)
+	SAVE_STATE(isChangingIronsight)
+	//SAVE_STATE(flZoomTarget)
+	SAVE_STATE(iZoomLevel)
+	SAVE_STATE(nextAkimboAttackPreference)
+	SAVE_STATE(akimboDualFireToleranceTime)
 	
-	SAVE_STATE(grenadeFireIndex);
-	SAVE_STATE(grenadeHeldDuration);
-	SAVE_STATE(grenadeSpawnTime);
-	SAVE_STATE(bGrenadeToss);
+	SAVE_STATE(grenadeFireIndex)
+	SAVE_STATE(grenadeHeldDuration)
+	SAVE_STATE(grenadeSpawnTime)
+	SAVE_STATE(bGrenadeToss)
 	
 	//flKarateBlockCooldown
-	SAVE_STATE(iMeleeCycler);
+	SAVE_STATE(iMeleeCycler)
 	
 	
-	SAVE_STATE(vViewAngleOffsetTargetDir);
-	SAVE_STATE(vViewAngleOffsetTotalChange);
-	SAVE_STATE(flViewAngleOffsetTarget);
+	SAVE_STATE(vViewAngleOffsetTargetDir)
+	SAVE_STATE(vViewAngleOffsetTotalChange)
+	SAVE_STATE(flViewAngleOffsetTarget)
 	
 	
-	SAVE_STATE(fAccuracyKickback);
-	SAVE_STATE(fAccuracyKickbackStartCooldown);
+	SAVE_STATE(fAccuracyKickback)
+	SAVE_STATE(fAccuracyKickbackStartCooldown)
 	
-	SAVE_STATE(fMoveBlockDelay);
-	SAVE_STATE(fUncrouchBlockDelay);
-	SAVE_STATE(fKarateStamina);
+	SAVE_STATE(fMoveBlockDelay)
+	SAVE_STATE(fUncrouchBlockDelay)
+	SAVE_STATE(fKarateStamina)
 	
 	
-	SAVE_STATE(aryNextBurstShotTime_softLength);
+	SAVE_STATE(aryNextBurstShotTime_softLength)
 	for(i = 0; i < aryNextBurstShotTime_softLength; i++){
 		SAVE_STATE_ARY(ary_ammoTotal, i);
 	}
-	SAVE_STATE(aryNextBurstShotTime_listenIndex);
+	SAVE_STATE(aryNextBurstShotTime_listenIndex)
 
 	
-	SAVE_STATE(shotgunReloadIndex);
+	SAVE_STATE(shotgunReloadIndex)
 	
-	SAVE_STATE(shotgunAddAmmoTime);
-	SAVE_STATE(shotgunAddAmmoSoundTime);
+	SAVE_STATE(shotgunAddAmmoTime)
+	SAVE_STATE(shotgunAddAmmoSoundTime)
 		
 	
-	SAVE_STATE(ary_myWeapons_softMax);
+	SAVE_STATE(ary_myWeapons_softMax)
 	
 	
 	i = inventoryEquippedIndex;
 	if(i != -1){
 		//for(i = 0; i < ary_myWeapons_softMax; i++){
-			SAVE_STATE(ary_myWeapons[i].weaponID);
-			SAVE_STATE(ary_myWeapons[i].weaponTypeID);
-			SAVE_STATE(ary_myWeapons[i].iBitsUpgrade);
-			SAVE_STATE(ary_myWeapons[i].iCount);
-			//SAVE_STATE(ary_myWeapons[i].iPrice);
-			//SAVE_STATE(ary_myWeapons[i].iSlots);
-			SAVE_STATE(ary_myWeapons[i].iClipLeft);
-			SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft);
-			SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on);
-			SAVE_STATE(ary_myWeapons[i].iFireMode);
-			SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo);
-			SAVE_STATE(ary_myWeapons[i].iIronSight);
-			SAVE_STATE(ary_myWeapons[i].iForceBodygroup1Submodel);
-			SAVE_STATE(ary_myWeapons[i].bNeedsPump);
+			SAVE_STATE(ary_myWeapons[i].weaponID)
+			SAVE_STATE(ary_myWeapons[i].weaponTypeID)
+			SAVE_STATE(ary_myWeapons[i].iBitsUpgrade)
+			SAVE_STATE(ary_myWeapons[i].iCount)
+			//SAVE_STATE(ary_myWeapons[i].iPrice)
+			//SAVE_STATE(ary_myWeapons[i].iSlots)
+			SAVE_STATE(ary_myWeapons[i].iClipLeft)
+			SAVE_STATE(ary_myWeapons[i].iClipAkimboLeft)
+			SAVE_STATE(ary_myWeapons[i].iBitsUpgrade_on)
+			SAVE_STATE(ary_myWeapons[i].iFireMode)
+			SAVE_STATE(ary_myWeapons[i].iFireModeAkimbo)
+			SAVE_STATE(ary_myWeapons[i].iIronSight)
+			SAVE_STATE(ary_myWeapons[i].iForceBodygroup1Submodel)
+			SAVE_STATE(ary_myWeapons[i].bNeedsPump)
 		//}
 
 
@@ -1550,9 +1550,9 @@ player::setInventoryEquippedIndex_Akimbo(int arg_newIndex, BOOL useAkimbo)
 	// Force a sendoff!
 	SendFlags |= PLAYER_WEAPON;
 #else
-	SAVE_STATE(activeweapon);
+	SAVE_STATE(activeweapon)
 	// unsure if this one's needed
-	SAVE_STATE(inventoryEquippedIndex);
+	SAVE_STATE(inventoryEquippedIndex)
 #endif
 
 	
@@ -2201,6 +2201,22 @@ player::dropAmmo(void){
 	CTSAmmoPack::generate(this);
 
 }// dropAmmo
+
+
+void
+player::ProcessInput(void)
+{
+	/* HACK: ugly workaround for some thing I cba to fix right now */
+	if(iState == 2){
+		if (input_buttons & 1) {
+			CGameRules rules = (CGameRules)g_grMode;
+			rules.PlayerRequestRespawn(this);	
+			return;
+		}
+	}
+
+	super::ProcessInput();
+}
 
 
 #endif

@@ -23,8 +23,8 @@ drawWeaponOptionBar(
 void
 drawPlayerInventory_TopBar(int arg_iSlotSelected, BOOL arg_fBuyMode)
 {
-	vector vWeaponsBar_drawLoc;
-	vector vWeaponsBar_drawBase;
+	vector vWeaponsBar_drawLoc = g_vec_null;
+	vector vWeaponsBar_drawBase = g_vec_null;
 	
 	if(arg_fBuyMode){
 		// draw the pre-bar

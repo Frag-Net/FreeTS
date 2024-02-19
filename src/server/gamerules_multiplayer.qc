@@ -30,14 +30,19 @@ TSMultiplayerRules::TSMultiplayerRules(void)
 }
 
 
-
+void CSEv_GamePlayerSpawn(void);
 bool
 TSMultiplayerRules::PlayerRequestRespawn(NSClientPlayer bp)
 {
-	if (bp.TimeSinceDeath() > 0.5f) {
-		TSMultiplayerRules rules;
-		rules = (TSMultiplayerRules)g_grMode;
-		rules.PlayerMakePlayableWithDefaultMoney(bp);
+	player pl = (player)bp;
+	entity oldSelf = self;
+
+	if (pl.iState == 2 || bp.TimeSinceDeath() > 0.5f) {
+		if(pl.iState == PLAYER_STATE::SPAWNED) {
+			PlayerRespawn(pl, pl.team);
+		} else {
+			PlayerMakePlayableWithDefaultMoney(pl);
+		}
 		return true;
 	}
 

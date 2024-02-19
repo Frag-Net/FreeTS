@@ -512,6 +512,7 @@ class player:NSClientPlayer
 	virtual weapondata_basic_t*(void) getEquippedWeaponData;
 	virtual weapondata_basic_t*(void) getEquippedWeaponData_Singular;
 	virtual weapondata_basic_t*(int arg_invID, BOOL arg_preferAkimbo) getInventoryWeaponData;
+	virtual weapondata_basic_t*(int arg_invID) getInventoryWeaponData_Singular;
 	
 	virtual void(void) updateSlotCountsForEquippedWeapon;
 	virtual BOOL(void) equippedWeaponDeleteCheck;
@@ -546,6 +547,7 @@ class player:NSClientPlayer
 	// forget what these are for
 	virtual void(void) frameThink_fromServer;
 
+	virtual void(void) ProcessInput;
 	virtual BOOL(CTSWorldGun arg_pickup) attemptAddWeaponFromPickup;
 	virtual void(int arg_weaponID, BOOL completeDrop) dropWeapon;
 	virtual BOOL(void) anyAmmoPoolNonEmpty;
