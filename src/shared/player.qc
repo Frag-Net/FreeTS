@@ -1146,10 +1146,6 @@ player::reset(BOOL resetInventory){
 	
 }//reset
 
-
-
-
-
 // little test
 //var float input_timelengthSum = 0;
 
@@ -2224,7 +2220,7 @@ player::ProcessInput(void)
 		}
 	}
 
-	super::ProcessInput();
+	Game_Input(this);
 }
 
 

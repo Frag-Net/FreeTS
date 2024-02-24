@@ -148,7 +148,7 @@ void
 Viewmodel_ApplyBob(entity gun)
 {
 	player pl = (player)pSeat->m_ePlayer;
-	gun.origin = pSeat->m_vecPredictedOrigin + pl.view_ofs;
+	gun.origin = g_view.GetCameraOrigin();
 	gun.origin += [0,0,-1];
 	gun.origin += v_forward * (0.75 + autocvar_cg_viewmodelOffset[0] + pViewBob->m_flBob * (-0.68 + -0.112 * fabs(sin(pViewBob->m_flBobCycle)) ) + 0.98 * pViewBob->m_vCam[0] );
 	gun.origin += v_right * (autocvar_cg_viewmodelOffset[1] + (pViewBob->m_flBob * (-0.2 + 0.308 * sin(pViewBob->m_flBobCycle)) ) + 0.98 * pViewBob->m_vCam[1] );
