@@ -1,0 +1,9 @@
+entityDef weapon_base
+{
+	"spawnclass"		"NSWeapon"
+	"mins"				"-16 -16 -16"
+	"maxs"				"16 16 16"
+	"spin"				"0"
+	"snd_acquire"		"weapon.pickup"
+	"snd_respawn"		"item.respawn"
+}
