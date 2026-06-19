@@ -17,7 +17,8 @@ entityDef weapon_ak47
 	//"snd_precache" ("weapons/ak47/slideback.wav");
 
 "inv_name"			"ak47"
-"ammoType"			"ammo_shells"
+"clipSize"			"30"
+"ammoType"			"ammo_7p62x39mm"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
 "act_fire"			"1"

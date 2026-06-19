@@ -12,7 +12,7 @@
 // these have to be defined by the game.
 entityDef ammo_types {
 	"ammo_none"				"0"
-	"ammo_9mm"				"1"
+	"ammo_7p62x39mm"		"1"
 	"ammo_357"				"2"
 	"ammo_buckshot"			"3"
 	"ammo_bolt"				"4"
@@ -28,7 +28,7 @@ entityDef ammo_types {
 
 entityDef ammo_names {
 	"ammo_none"				"None"
-	"ammo_9mm"				"9mm Bullets"
+	"ammo_7p62x39mm"		"9mm Bullets"
 	"ammo_357"				".357 Bullets"
 	"ammo_buckshot"			"Buckshot Shells"
 	"ammo_bolt"				"Bolts"
@@ -44,7 +44,7 @@ entityDef ammo_names {
 
 entityDef ammo_max {
 	"ammo_none"				"0"
-	"ammo_9mm"				"250"
+	"ammo_7p62x39mm"		"250"
 	"ammo_357"				"36"
 	"ammo_buckshot"			"125"
 	"ammo_bolt"				"50"
