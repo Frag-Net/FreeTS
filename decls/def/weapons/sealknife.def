@@ -1,0 +1,48 @@
+entityDef weapon_sealknife
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"sealknife"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_sealknife.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_sealknife.mdl"
+"model" 	"models/w_sealknife.mdl"
+"model_player" 	"models/p_sealknife.mdl"
+	"snd_precache" ("weapons/knife/knife_miss.wav");
+	"snd_precache" ("weapons/knife/knife_hit.wav");
+	"snd_precache" ("weapons/knife/knife_hitbody.wav");
+
+"inv_name"			"sealknife"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_sealknife.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_sealknife.ammo"
+"icon"				"weapon_sealknife.weapon"
+"iconSelected"		"weapon_sealknife.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_sealknife"
+"fireRate"			"0.24"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_sealknife
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"15.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

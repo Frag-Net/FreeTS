@@ -1,0 +1,51 @@
+entityDef weapon_m4a1
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"m4a1"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_m4.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_m4.mdl"
+"model" 	"models/w_m4.mdl"
+"model_player" 	"models/p_m4.mdl"
+	"models/p_m4_sil.mdl"
+	//"snd_precache" ("weapons/m4/boltpull.wav");
+	//"snd_precache" ("weapons/m4/clipin.wav");
+	//"snd_precache" ("weapons/m4/clipout.wav");
+	"snd_precache" ("weapons/m4/m4-fire-sil.wav");
+	"snd_precache" ("weapons/m4/m4-fire.wav");
+
+"inv_name"			"m4a1"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_m4a1.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_m4a1.ammo"
+"icon"				"weapon_m4a1.weapon"
+"iconSelected"		"weapon_m4a1.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_m4a1"
+"fireRate"			"0.0625f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_m4a1
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

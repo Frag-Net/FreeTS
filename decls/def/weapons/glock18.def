@@ -1,0 +1,51 @@
+entityDef weapon_glock18
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"glock18"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_glock18.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_glock18.mdl"
+"model" 	"models/w_glock18.mdl"
+"model_player" 	"models/p_glock18.mdl"
+	"models/p_glock18_sil.mdl"
+	//"snd_precache" ("weapons/glock/clipin.wav");
+	//"snd_precache" ("weapons/glock/clipout.wav");
+	"snd_precache" ("weapons/glock/glock-fire-sil.wav");
+	"snd_precache" ("weapons/glock/glock-fire.wav");
+	//"snd_precache" ("weapons/glock/slideback.wav");
+
+"inv_name"			"glock18"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_glock18.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_glock18.ammo"
+"icon"				"weapon_glock18.weapon"
+"iconSelected"		"weapon_glock18.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_glock18"
+"fireRate"			"0.06"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_glock18
+{
+"inherit"			"projectile_bullet_base"
+"damage"			""
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

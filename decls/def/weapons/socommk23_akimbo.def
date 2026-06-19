@@ -1,0 +1,47 @@
+entityDef weapon_socommk23_akimbo
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"socommk23_akimbo"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_mk23.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_mk23_Akimbo.mdl"
+"model" 	"models/w_mk23.mdl"
+"model_player" 	"models/p_mk23_Akimbo.mdl"
+	"models/p_mk23_Akimbo_sil.mdl"
+
+"inv_name"			"socommk23_akimbo"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_socommk23_akimbo.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_socommk23_akimbo.ammo"
+"icon"				"weapon_socommk23_akimbo.weapon"
+"iconSelected"		"weapon_socommk23_akimbo.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_socommk23_akimbo"
+"fireRate"			"0.19f
+//"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_socommk23_akimbo
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"15.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

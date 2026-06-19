@@ -1,0 +1,51 @@
+entityDef weapon_deserteagle
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"deserteagle"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_desert.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_desert.mdl"
+"model" 	"models/w_desert.mdl"
+"model_player" 	"models/p_desert.mdl"
+	"models/p_desert.mdl"
+	//"snd_precache" ("weapons/deagle/clipin.wav");
+	//"snd_precache" ("weapons/deagle/clipout.wav");
+	"snd_precache" ("weapons/deagle/fire-sil.wav");
+	"snd_precache" ("weapons/deagle/fire.wav");
+	//"snd_precache" ("weapons/deagle/slideback.wav");
+
+"inv_name"			"deserteagle"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_deserteagle.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_deserteagle.ammo"
+"icon"				"weapon_deserteagle.weapon"
+"iconSelected"		"weapon_deserteagle.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_deserteagle"
+"fireRate"			"0.35f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_deserteagle
+{
+"inherit"			"projectile_bullet_base"
+"damage"			""
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

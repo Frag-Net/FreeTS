@@ -1,0 +1,51 @@
+entityDef weapon_contenderg2
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"contenderg2"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_contender.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_contender.mdl"
+"model" 	"models/w_contender.mdl"
+"model_player" 	"models/p_contender.mdl"
+	//"snd_precache" ("weapons/contender/close.wav");
+	"snd_precache" ("weapons/contender/fire.wav");
+	//"snd_precache" ("weapons/contender/hammerback.wav");
+	//"snd_precache" ("weapons/contender/insert-shell.wav");
+	//"snd_precache" ("weapons/contender/open.wav");
+	//"snd_precache" ("weapons/contender/shellout.wav");
+
+"inv_name"			"contenderg2"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_contenderg2.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_contenderg2.ammo"
+"icon"				"weapon_contenderg2.weapon"
+"iconSelected"		"weapon_contenderg2.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_contenderg2"
+"fireRate"			"0.35f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_contenderg2
+{
+"inherit"			"projectile_bullet_base"
+"damage"			""
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

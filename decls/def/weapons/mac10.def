@@ -1,0 +1,51 @@
+entityDef weapon_mac10
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"mac10"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_mac10.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_mac10.mdl"
+"model" 	"models/w_mac10.mdl"
+"model_player" 	"models/p_mac10.mdl"
+	"models/p_mac10_sil.mdl"
+	//"snd_precache" ("weapons/mac10/clipin.wav");
+	//"snd_precache" ("weapons/mac10/clipout.wav");
+	"snd_precache" ("weapons/mac10/mac10-fire-sil.wav");
+	"snd_precache" ("weapons/mac10/mac10-fire.wav");
+	//"snd_precache" ("weapons/mac10/slideback.wav");
+
+"inv_name"			"mac10"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_mac10.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_mac10.ammo"
+"icon"				"weapon_mac10.weapon"
+"iconSelected"		"weapon_mac10.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_mac10"
+"fireRate"			"0.0625f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_mac10
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

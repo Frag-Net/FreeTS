@@ -1,0 +1,48 @@
+entityDef weapon_combatknife
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"combatknife"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_knife.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_knife.mdl"
+"model" 	"models/w_knife.mdl"
+"model_player" 	"models/p_knife.mdl"
+	"snd_precache" ("weapons/knife/knife_hit.wav");
+	"snd_precache" ("weapons/knife/knife_hitbody.wav");
+	"snd_precache" ("weapons/knife/knife_miss.wav");
+
+"inv_name"			"combatknife"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_combatknife.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_combatknife.ammo"
+"icon"				"weapon_combatknife.weapon"
+"iconSelected"		"weapon_combatknife.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_combatknife"
+"fireRate"			"0.30"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_combatknife
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"35.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

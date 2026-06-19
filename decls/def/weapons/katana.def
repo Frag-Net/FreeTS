@@ -1,0 +1,50 @@
+entityDef weapon_katana
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"katana"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_katana.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_katana.mdl"
+"model" 	"models/w_katana.mdl"
+"model_player" 	"models/p_katana.mdl"
+	"snd_precache" ("weapons/katana/hit-body.wav");
+	"snd_precache" ("weapons/katana/hit.wav");
+	"snd_precache" ("weapons/katana/hit1.wav");
+	"snd_precache" ("weapons/katana/miss.wav");
+	"snd_precache" ("weapons/katana/miss1.wav");
+
+"inv_name"			"katana"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_katana.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_katana.ammo"
+"icon"				"weapon_katana.weapon"
+"iconSelected"		"weapon_katana.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_katana"
+"fireRate"			"0.33"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_katana
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"80"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

@@ -1,0 +1,51 @@
+entityDef weapon_ragingbull
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"ragingbull"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_bull.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_bull.mdl"
+"model" 	"models/w_bull.mdl"
+"model_player" 	"models/p_bull.mdl"
+	//"snd_precache" ("weapons/bull/cylinderin.wav");
+	//"snd_precache" ("weapons/bull/cylinderout.wav");
+	"snd_precache" ("weapons/bull/fire01.wav");
+	//"snd_precache" ("weapons/bull/hammerback.wav");
+	//"snd_precache" ("weapons/bull/insert-shell.wav");
+	//"snd_precache" ("weapons/bull/shellsout.wav");
+
+"inv_name"			"ragingbull"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_ragingbull.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_ragingbull.ammo"
+"icon"				"weapon_ragingbull.weapon"
+"iconSelected"		"weapon_ragingbull.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_ragingbull"
+"fireRate"			"0.35f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_ragingbull
+{
+"inherit"			"projectile_bullet_base"
+"damage"			""
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

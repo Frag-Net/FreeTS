@@ -1,0 +1,49 @@
+entityDef weapon_usas12
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"usas12"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_usas.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_usas.mdl"
+"model" 	"models/w_usas.mdl"
+"model_player" 	"models/p_usas.mdl"
+	//"snd_precache" ("weapons/usas/clipin.wav");
+	//"snd_precache" ("weapons/usas/clipout.wav");
+	//"snd_precache" ("weapons/usas/slideback.wav");
+	"snd_precache" ("weapons/usas/usas-fire.wav");
+
+"inv_name"			"usas12"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_usas12.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_usas12.ammo"
+"icon"				"weapon_usas12.weapon"
+"iconSelected"		"weapon_usas12.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_usas12"
+"fireRate"			"1/6"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_usas12
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

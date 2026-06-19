@@ -1,0 +1,46 @@
+entityDef weapon_skorpion
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"skorpion"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_skorpion.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_skorpion.mdl"
+"model" 	"models/w_skorpion.mdl"
+"model_player" 	"models/p_skorpion.mdl"
+	"snd_precache" ("weapons/skorpion/fire.wav");
+
+"inv_name"			"skorpion"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_skorpion.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_skorpion.ammo"
+"icon"				"weapon_skorpion.weapon"
+"iconSelected"		"weapon_skorpion.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_skorpion"
+"fireRate"			"0.0625f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_skorpion
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

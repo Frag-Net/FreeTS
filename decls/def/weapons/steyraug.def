@@ -1,0 +1,52 @@
+entityDef weapon_steyraug
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"steyraug"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_aug.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_aug.mdl"
+"model" 	"models/w_aug.mdl"
+"model_player" 	"models/p_aug.mdl"
+	"models/p_aug_sil.mdl"
+	"snd_precache" ("weapons/aug/aug-fire-sil.wav");
+	"snd_precache" ("weapons/aug/aug-fire.wav");
+	//"snd_precache" ("weapons/aug/boltpull.wav");
+	//"snd_precache" ("weapons/aug/boltslap.wav");
+	//"snd_precache" ("weapons/aug/clipin.wav");
+	//"snd_precache" ("weapons/aug/clipout.wav");
+
+"inv_name"			"steyraug"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_steyraug.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_steyraug.ammo"
+"icon"				"weapon_steyraug.weapon"
+"iconSelected"		"weapon_steyraug.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_steyraug"
+"fireRate"			"0.0625f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_steyraug
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

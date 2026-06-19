@@ -1,0 +1,48 @@
+entityDef weapon_karate
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"karate"
+"editor_rotatable"	"1"
+"editor_model" 
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_melee.mdl"
+"model" 
+"model_player" 
+	"snd_precache" ("player/closecombat.wav");
+	"snd_precache" ("player/kungfuhit.wav");
+	"snd_precache" ("player/block.wav");
+
+"inv_name"			"karate"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_karate.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_karate.ammo"
+"icon"				"weapon_karate.weapon"
+"iconSelected"		"weapon_karate.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_karate"
+"fireRate"			"0.17f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_karate
+{
+"inherit"			"projectile_bullet_base"
+"damage"			""
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

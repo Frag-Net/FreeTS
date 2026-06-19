@@ -1,0 +1,48 @@
+entityDef weapon_glock20
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"glock20"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_glock22.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_glock22.mdl"
+"model" 	"models/w_glock22.mdl"
+"model_player" 	"models/p_glock22.mdl"
+	"models/p_glock22_sil.mdl"
+	"snd_precache" ("weapons/glock22/glock22-fire-sil.wav");
+	"snd_precache" ("weapons/glock22/glock22-fire.wav");
+
+"inv_name"			"glock20"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_glock20.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_glock20.ammo"
+"icon"				"weapon_glock20.weapon"
+"iconSelected"		"weapon_glock20.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_glock20"
+"fireRate"			"0.19f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_glock20
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"15.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

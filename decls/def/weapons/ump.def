@@ -1,0 +1,54 @@
+entityDef weapon_ump
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"ump"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_ump.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_ump.mdl"
+"model" 	"models/w_ump.mdl"
+"model_player" 	"models/p_ump.mdl"
+	"models/p_ump_sil.mdl"
+	//"snd_precache" ("weapons/ump/boltpull.wav");
+	//"snd_precache" ("weapons/ump/boltslap.wav");
+	//"snd_precache" ("weapons/ump/clipin.wav");
+	//"snd_precache" ("weapons/ump/clipout.wav");
+	//"snd_precache" ("weapons/ump/clipslap.wav");
+	//"snd_precache" ("weapons/ump/slideback.wav");
+	"snd_precache" ("weapons/ump/ump-fire-sil.wav");
+	"snd_precache" ("weapons/ump/ump-fire.wav");
+
+"inv_name"			"ump"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_ump.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_ump.ammo"
+"icon"				"weapon_ump.weapon"
+"iconSelected"		"weapon_ump.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_ump"
+"fireRate"			"0.0625f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_ump
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

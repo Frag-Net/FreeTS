@@ -1,0 +1,50 @@
+entityDef weapon_m60
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"m60"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_m60.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_m60.mdl"
+"model" 	"models/w_m60.mdl"
+"model_player" 	"models/p_m60.mdl"
+	//"snd_precache" ("weapons/m60/ammo_belt.wav");
+	//"snd_precache" ("weapons/m60/boltpull.wav");
+	//"snd_precache" ("weapons/m60/close.wav");
+	"snd_precache" ("weapons/m60/m60-fire.wav");
+	//"snd_precache" ("weapons/m60/open.wav");
+
+"inv_name"			"m60"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_m60.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_m60.ammo"
+"icon"				"weapon_m60.weapon"
+"iconSelected"		"weapon_m60.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_m60"
+"fireRate"			"0.0625f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_m60
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}

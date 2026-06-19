@@ -1,0 +1,48 @@
+entityDef weapon_mp5k
+{
+"editor_color"		".3 .3 1"
+"editor_mins"		"-16 -16 -16"
+"editor_maxs"		"16 16 16"
+"editor_usage"		"mp5k"
+"editor_rotatable"	"1"
+"editor_model" 	"models/w_mp5k.mdl"
+
+"inherit" "weapon_base"
+"model_view" 	"models/v_mp5k.mdl"
+"model" 	"models/w_mp5k.mdl"
+"model_player" 	"models/p_mp5k.mdl"
+	"models/p_mp5k_sil.mdl"
+	"snd_precache" ("weapons/mp5k/mp5k-fire-sil.wav");
+	"snd_precache" ("weapons/mp5k/mp5k-fire.wav");
+
+"inv_name"			"mp5k"
+"ammoType"			"ammo_shells"
+"ammoRequired"		"1"
+"ammoPerShot"		"1"
+"act_fire"			"1"
+"act_idle"			"0"
+"snd_fire"			"weapon_mp5k.shoot"
+"snd_empty"			"weapon.empty"
+"hudSlot"			"1"
+"hudSlotPos"		"0"
+"weight"			"10"
+"crosshair"			"none"
+"ammoIcon"			"weapon_mp5k.ammo"
+"icon"				"weapon_mp5k.weapon"
+"iconSelected"		"weapon_mp5k.weapon_s"
+"smoke_muzzle"		"muzzle.smoke"
+
+
+"def_onFire"		"proj_mp5k"
+"fireRate"			"0.0625f"
+"punchSpring"		"-1.5 0 0"
+}
+
+entityDef proj_mp5k
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.025 0.025"
+"fx_path"			"weapon_shotgun.tracer"
+}
