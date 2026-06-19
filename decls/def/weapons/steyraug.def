@@ -39,7 +39,8 @@ entityDef weapon_steyraug
 
 "def_onFire"		"proj_steyraug"
 "fireRate"			"0.0625f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-1 0 0"
+"punchSpring_accuracy"	"0.015 0 0"
 }
 
 entityDef proj_steyraug
@@ -47,6 +48,6 @@ entityDef proj_steyraug
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.005 0.005"
 "fx_path"			"weapon_shotgun.tracer"
 }

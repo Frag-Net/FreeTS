@@ -38,7 +38,8 @@ entityDef weapon_miniuzi
 
 "def_onFire"		"proj_miniuzi"
 "fireRate"			"0.0625f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-2 0 0"
+"punchSpring_accuracy"	"0.005 0 0"
 }
 
 entityDef proj_miniuzi
@@ -46,6 +47,6 @@ entityDef proj_miniuzi
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.03 0.03"
 "fx_path"			"weapon_shotgun.tracer"
 }

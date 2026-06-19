@@ -33,7 +33,8 @@ entityDef weapon_m16a4
 
 "def_onFire"		"proj_m16a4"
 "fireRate"			"0.0625f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-2.5 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_m16a4
@@ -41,6 +42,6 @@ entityDef proj_m16a4
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.001 0.001"
 "fx_path"			"weapon_shotgun.tracer"
 }

@@ -37,7 +37,8 @@ entityDef weapon_katana
 
 "def_onFire"		"proj_katana"
 "fireRate"			"0.33"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-1 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_katana
@@ -45,6 +46,6 @@ entityDef proj_katana
 "inherit"			"projectile_bullet_base"
 "damage"			"80"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"1.0 1.0"
 "fx_path"			"weapon_shotgun.tracer"
 }

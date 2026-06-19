@@ -34,9 +34,10 @@ entityDef weapon_ak47
 "smoke_muzzle"		"muzzle.smoke"
 
 
-"def_onFire"		"proj_ak47"
-"fireRate"			"0.0625f"
-"punchSpring"		"-1.5 0 0"
+"def_onFire"			"proj_ak47"
+"fireRate"				"0.0625f"
+"punchSpring"			"-3 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_ak47
@@ -44,6 +45,6 @@ entityDef proj_ak47
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.003 0.003"
 "fx_path"			"weapon_shotgun.tracer"
 }

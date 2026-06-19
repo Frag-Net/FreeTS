@@ -39,6 +39,7 @@ entityDef weapon_hkpdw
 "def_onFire"		"proj_hkpdw"
 "fireRate"			"0.0625f"
 "punchSpring"		"-1.5 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_hkpdw

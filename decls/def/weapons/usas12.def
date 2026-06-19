@@ -36,7 +36,8 @@ entityDef weapon_usas12
 
 "def_onFire"		"proj_usas12"
 "fireRate"			"1/6"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-7 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_usas12
@@ -44,6 +45,6 @@ entityDef proj_usas12
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.07 0.07"
 "fx_path"			"weapon_shotgun.tracer"
 }

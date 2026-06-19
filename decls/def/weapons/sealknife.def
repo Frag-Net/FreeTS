@@ -35,7 +35,7 @@ entityDef weapon_sealknife
 
 "def_onFire"		"proj_sealknife"
 "fireRate"			"0.24"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-1 0 0"
 }
 
 entityDef proj_sealknife
@@ -43,6 +43,6 @@ entityDef proj_sealknife
 "inherit"			"projectile_bullet_base"
 "damage"			"15.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.1 0.1"
 "fx_path"			"weapon_shotgun.tracer"
 }

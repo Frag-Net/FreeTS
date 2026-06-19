@@ -35,6 +35,7 @@ entityDef weapon_fiveseven_akimbo
 "fireRate"			"0.19f
 //"
 "punchSpring"		"-1.5 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_fiveseven_akimbo
@@ -42,6 +43,6 @@ entityDef proj_fiveseven_akimbo
 "inherit"			"projectile_bullet_base"
 "damage"			"15.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.02 0.02"
 "fx_path"			"weapon_shotgun.tracer"
 }

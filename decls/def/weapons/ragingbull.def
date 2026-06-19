@@ -38,7 +38,8 @@ entityDef weapon_ragingbull
 
 "def_onFire"		"proj_ragingbull"
 "fireRate"			"0.35f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-8 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_ragingbull
@@ -46,6 +47,6 @@ entityDef proj_ragingbull
 "inherit"			"projectile_bullet_base"
 "damage"			""
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.01 0.01"
 "fx_path"			"weapon_shotgun.tracer"
 }

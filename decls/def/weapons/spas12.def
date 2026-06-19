@@ -34,7 +34,8 @@ entityDef weapon_spas12
 
 "def_onFire"		"proj_spas12"
 "fireRate"			"//0.0625f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-7 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_spas12
@@ -42,6 +43,6 @@ entityDef proj_spas12
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.04 0.04"
 "fx_path"			"weapon_shotgun.tracer"
 }

@@ -37,7 +37,8 @@ entityDef weapon_m60
 
 "def_onFire"		"proj_m60"
 "fireRate"			"0.0625f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-1.3 0 0"
+"punchSpring_accuracy"	"0.01 0 0"
 }
 
 entityDef proj_m60
@@ -45,6 +46,6 @@ entityDef proj_m60
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.007 0.007"
 "fx_path"			"weapon_shotgun.tracer"
 }

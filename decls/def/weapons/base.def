@@ -1,6 +1,6 @@
 entityDef weapon_base
 {
-	"spawnclass"		"NSWeapon"
+	"spawnclass"		"ncWeapon"
 	"mins"				"-16 -16 -16"
 	"maxs"				"16 16 16"
 	"spin"				"0"

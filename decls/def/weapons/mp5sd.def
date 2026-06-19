@@ -33,7 +33,8 @@ entityDef weapon_mp5sd
 
 "def_onFire"		"proj_mp5sd"
 "fireRate"			"0.0625f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-1.3 0 0"
+"punchSpring_accuracy"	"0.013 0 0"
 }
 
 entityDef proj_mp5sd
@@ -41,6 +42,6 @@ entityDef proj_mp5sd
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.005 0.005"
 "fx_path"			"weapon_shotgun.tracer"
 }

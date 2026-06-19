@@ -34,7 +34,8 @@ entityDef weapon_benellim3
 
 "def_onFire"		"proj_benellim3"
 "fireRate"			"//0.0625f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-8 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_benellim3
@@ -42,6 +43,6 @@ entityDef proj_benellim3
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.038 0.038"
 "fx_path"			"weapon_shotgun.tracer"
 }

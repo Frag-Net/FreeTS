@@ -37,7 +37,8 @@ entityDef weapon_rugermk1
 
 "def_onFire"		"proj_rugermk1"
 "fireRate"			"0.19f"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-0.7 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_rugermk1
@@ -45,6 +46,6 @@ entityDef proj_rugermk1
 "inherit"			"projectile_bullet_base"
 "damage"			"15.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.001 0.001"
 "fx_path"			"weapon_shotgun.tracer"
 }

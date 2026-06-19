@@ -1,6 +1,6 @@
 entityDef player
 {
-	"spawnclass"		"HLPlayer"
+	"spawnclass"		"hlPlayer"
 	"health"			"100"
 	"maxarmor"			"100"
 	"bleeds"			"1"

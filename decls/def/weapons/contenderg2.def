@@ -39,6 +39,7 @@ entityDef weapon_contenderg2
 "def_onFire"		"proj_contenderg2"
 "fireRate"			"0.35f"
 "punchSpring"		"-1.5 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_contenderg2

@@ -37,7 +37,8 @@ entityDef weapon_akimbocolts
 "def_onFire"		"proj_akimbocolts"
 "fireRate"			"0.19f
 //"
-"punchSpring"		"-1.5 0 0"
+"punchSpring"		"-2 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_akimbocolts
@@ -45,6 +46,6 @@ entityDef proj_akimbocolts
 "inherit"			"projectile_bullet_base"
 "damage"			"15.0f"
 "hitscans"			"1"
-"spread"			"0.025 0.025"
+"spread"			"0.015 0.015"
 "fx_path"			"weapon_shotgun.tracer"
 }

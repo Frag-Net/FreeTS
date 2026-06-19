@@ -34,6 +34,7 @@ entityDef weapon_skorpion
 "def_onFire"		"proj_skorpion"
 "fireRate"			"0.0625f"
 "punchSpring"		"-1.5 0 0"
+"punchSpring_accuracy"	"0 0 0"
 }
 
 entityDef proj_skorpion

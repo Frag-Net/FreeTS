@@ -16,8 +16,8 @@ entityDef weapon_beretta
 	"inherit"			"weapon_base"
 	"model"				"models/w_beretta.mdl"
 	"model_view"		"models/v_beretta.mdl"
-	"model_carry"		"models/p_beretta.mdl",
-	"model_carry2"		"models/p_beretta_sil.mdl",
+	"model_player"		"models/p_beretta.mdl"
+//	"model_player"		"models/p_beretta_sil.mdl"
 
 	// weapon specific
 	"def_fireInfo"		"fireInfo_beretta"
@@ -28,6 +28,7 @@ entityDef weapon_beretta
 	"ammoRequired" 		"1"
 	"ammoPerShot"		"1"
 	"punchAngle"		"-2 0 0"
+	"punchSpring_accuracy"	"0 0 0"
 	"semiAuto"			"1"
 
 	"act_fire"			"14,16"
@@ -55,7 +56,7 @@ entityDef projectile_beretta
 {
 	"inherit"		"projectile_bullet_base"
 	"damage"		"skill:plr_9mm_bullet"
-	"spread"		"0.01 0.01"
+	"spread"		"0.028 0.028"
 }
 
 entityDef fireInfo_beretta
