@@ -1,7 +1,18 @@
-#include "items/suit.def"
-#include "items/airtank.def"
-#include "items/antidote.def"
-#include "items/battery.def"
-#include "items/healthkit.def"
-#include "items/longjump.def"
-#include "items/security.def"
+entityDef ts_powerup
+{
+	"editor_usage"			"Player Power-Up"
+	"editor_usage1"			"Gives players special abilities."
+	"editor_var pwuptype"	"Random = 0, Slow_Motion = 1, Infinite_Clip = 2, Kung_Fu = 4, Slow_Pause = 8, Double_Firerate = 16, Grenade = 32, Health = 64, Armor = 128, Low_Gravity = 256"
+	"editor_var pwupduration"	"The time that passes before respawning.."
+	"editor_var message"	"Print text on pickup"
+
+	"editor_model"	"models/powerup.mdl"
+	"editor_mins"	"-16 -16 0"
+	"editor_maxs"	"16 16 16"
+	"editor_color"	"0.8 0.7 0"
+
+	"spawnclass"		"ncItem"
+	"model"				"models/powerup.mdl"
+	"pickupFlash"		"1"
+    "spin"             "1"
+}
