@@ -1,3 +1,10 @@
+#define V_GLOCK22_IDLE 0
+#define V_GLOCK22_RELOAD 1
+#define V_GLOCK22_DRAW 2
+#define V_GLOCK22_SHOOT1 3
+#define V_GLOCK22_SHOOT2 4
+#define V_GLOCK22_SHOOTEMPTY 5
+
 entityDef weapon_glock20
 {
 "editor_color"		".3 .3 1"
@@ -11,16 +18,22 @@ entityDef weapon_glock20
 "model_view" 	"models/v_glock22.mdl"
 "model" 	"models/w_glock22.mdl"
 "model_player" 	"models/p_glock22.mdl"
-	"models/p_glock22_sil.mdl"
-	"snd_precache" ("weapons/glock22/glock22-fire-sil.wav");
-	"snd_precache" ("weapons/glock22/glock22-fire.wav");
+	//"models/p_glock22_sil.mdl"
+	//"snd_precache" ("weapons/glock22/glock22-fire-sil.wav");
+	//"snd_precache" ("weapons/glock22/glock22-fire.wav");
 
 "inv_name"			"glock20"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_GLOCK22_SHOOT1,$V_GLOCK22_SHOOT2"
+"act_empty"         "$V_GLOCK22_SHOOTEMPTY"
+"act_idle"			"$V_GLOCK22_IDLE"
+"act_draw"			"$V_GLOCK22_DRAW"
+"act_reload"		"$V_GLOCK22_RELOAD"
+"semiAuto"          "1"
+"clipSize"          "15"
+
 "snd_fire"			"weapon_glock20.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -42,8 +55,9 @@ entityDef weapon_glock20
 entityDef proj_glock20
 {
 "inherit"			"projectile_bullet_base"
-"damage"			"15.0f"
+"damage"			"15"
 "hitscans"			"1"
 "spread"			"0.023 0.023"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

@@ -1,3 +1,19 @@
+#define V_UZI_IDLE 0
+#define V_UZI_RELOAD 1
+#define V_UZI_DRAW 2
+#define V_UZI_SHOOT 3
+#define V_UZI_SHOOT2 4
+#define V_UZI_SSHOOT 5
+#define V_UZI_SSHOOT2 6
+#define V_UZI_IDLE2 7
+#define V_UZI_CHANGE 8
+#define V_UZI_RECHANGE 9
+#define V_UZI_BSHOOT 10
+#define V_UZI_BSHOOT2 11
+#define V_UZI_BSSHOOT 12
+#define V_UZI_BSSHOOT2 13
+#define V_UZI_RELOADB 14
+
 entityDef weapon_miniuzi
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +27,29 @@ entityDef weapon_miniuzi
 "model_view" 	"models/v_uzi.mdl"
 "model" 	"models/w_uzi.mdl"
 "model_player" 	"models/p_uzi.mdl"
-	"models/p_uzi_sil.mdl"
+	//"models/p_uzi_sil.mdl"
 	//"snd_precache" ("weapons/uzi/clipin.wav");
 	//"snd_precache" ("weapons/uzi/clipout.wav");
 	//"snd_precache" ("weapons/uzi/slideback.wav");
-	"snd_precache" ("weapons/uzi/uzi-fire-sil.wav");
-	"snd_precache" ("weapons/uzi/uzi-fire.wav");
+	//"snd_precache" ("weapons/uzi/uzi-fire-sil.wav");
+	//"snd_precache" ("weapons/uzi/uzi-fire.wav");
 
 "inv_name"			"miniuzi"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_UZI_SHOOT,$V_UZI_SHOOT2"
+"act_idle"			"$V_UZI_IDLE"
+"act_draw"			"$V_UZI_DRAW"
+"act_reload"		"$V_UZI_RELOAD"
+"clipSize"          "32"
+
+"def_fireInfo"        "fi_miniuzi"
+"def_altFireInfo"    "fi_miniuzi_ads"
+"altMode"           "1"
+"act_modeOn"        "$V_UZI_CHANGE"
+"act_modeOff"        "$V_UZI_RECHANGE"
+
 "snd_fire"			"weapon_miniuzi.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -38,15 +64,40 @@ entityDef weapon_miniuzi
 
 "def_onFire"		"proj_miniuzi"
 "fireRate"			"0.0625f"
-"punchSpring"		"-2 0 0"
 "punchSpring_accuracy"	"0.005 0 0"
 }
 
-entityDef proj_miniuzi
+entityDef fi_miniuzi
+{
+    "def_onFire"        "proj_miniuzi_right"
+    "punchSpring"		"-1 0 0"
+}
+
+entityDef fi_miniuzi_ads
+{
+    "act_idle"          "$V_UZI_IDLE2"
+    "act_fire"          "$V_UZI_BSHOOT,$V_UZI_BSHOOT2"
+    "act_reload"        "$V_UZI_RELOADB"
+    "def_onFire"        "proj_miniuzi_left"
+    "punchSpring"		"-.75 -.5 .5"
+}
+
+entityDef proj_miniuzi_right
 {
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
 "spread"			"0.03 0.03"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
+}
+
+entityDef proj_miniuzi_left
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.03 0.03"
+"fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 -3 0"
 }

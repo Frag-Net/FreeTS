@@ -1,3 +1,20 @@
+#define V_M16_IDLE 0
+#define V_M16_RELOAD 1
+#define V_M16_DRAW 2
+#define V_M16_SHOOT1 3
+#define V_M16_SHOOT2 4
+#define V_M16_SSHOOT1 5
+#define V_M16_SSHOOT2 6
+#define V_M16_IDLE2 7
+#define V_M16_CHANGE 8
+#define V_M16_RECHANGE 9
+#define V_M16_SHOOT3 10
+#define V_M16_SHOOT4 11
+#define V_M16_SSHOOT3 12
+#define V_M16_SSHOOT4 13
+#define V_M16_RELOAD2 14
+#define V_M16_STOCK 15
+
 entityDef weapon_m16a4
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +28,25 @@ entityDef weapon_m16a4
 "model_view" 	"models/v_m16.mdl"
 "model" 	"models/w_m16.mdl"
 "model_player" 	"models/p_m16.mdl"
-	"snd_precache" ("weapons/m16/fire.wav");
+	//"snd_precache" ("weapons/m16/fire.wav");
 
 "inv_name"			"m16a4"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_M16_SHOOT1,$V_M16_SHOOT2"
+"act_idle"			"$V_M16_IDLE"
+"act_draw"			"$V_M16_DRAW"
+"act_reload"		"$V_M16_RELOAD"
+"act_modeOn"        "$V_M16_CHANGE"
+"act_modeOff"        "$V_M16_RECHANGE"
+
+"clipSize"          "18"
+
+"def_fireInfo"        "fi_m16a4"
+"def_altFireInfo"    "fi_m16a4_ads"
+"altMode"           "1"
+
 "snd_fire"			"weapon_m16a4.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -37,6 +65,20 @@ entityDef weapon_m16a4
 "punchSpring_accuracy"	"0 0 0"
 }
 
+
+entityDef fi_m16a4
+{
+    "def_onFire"        "proj_m16a4"
+}
+
+entityDef fi_m16a4_ads
+{
+    "act_idle"          "$V_M16_IDLE2"
+    "act_fire"          "$V_M16_SHOOT3,$V_M16_SHOOT4"
+    "act_reload"        "$V_M16_RELOAD2"
+    "def_onFire"        "proj_m16a4"
+}
+
 entityDef proj_m16a4
 {
 "inherit"			"projectile_bullet_base"
@@ -44,4 +86,5 @@ entityDef proj_m16a4
 "hitscans"			"1"
 "spread"			"0.001 0.001"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

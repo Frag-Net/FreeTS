@@ -1,3 +1,11 @@
+#define V_UMP_IDLE 0
+#define V_UMP_DRAW 1
+#define V_UMP_RELOAD 2
+#define V_UMP_SHOOT1 3
+#define V_UMP_SHOOT2 4
+#define V_UMP_SHOOT3 5
+#define V_UMP_STOCK 6
+
 entityDef weapon_ump
 {
 "editor_color"		".3 .3 1"
@@ -11,22 +19,25 @@ entityDef weapon_ump
 "model_view" 	"models/v_ump.mdl"
 "model" 	"models/w_ump.mdl"
 "model_player" 	"models/p_ump.mdl"
-	"models/p_ump_sil.mdl"
+	//"models/p_ump_sil.mdl"
 	//"snd_precache" ("weapons/ump/boltpull.wav");
 	//"snd_precache" ("weapons/ump/boltslap.wav");
 	//"snd_precache" ("weapons/ump/clipin.wav");
 	//"snd_precache" ("weapons/ump/clipout.wav");
 	//"snd_precache" ("weapons/ump/clipslap.wav");
 	//"snd_precache" ("weapons/ump/slideback.wav");
-	"snd_precache" ("weapons/ump/ump-fire-sil.wav");
-	"snd_precache" ("weapons/ump/ump-fire.wav");
+	//"snd_precache" ("weapons/ump/ump-fire-sil.wav");
+	//"snd_precache" ("weapons/ump/ump-fire.wav");
 
 "inv_name"			"ump"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_UMP_SHOOT1,$V_UMP_SHOOT2,$V_UMP_SHOOT3"
+"act_idle"			"$V_UMP_IDLE"
+"act_draw"			"$V_UMP_DRAW"
+"act_reload"		"$V_UMP_RELOAD"
+
 "snd_fire"			"weapon_ump.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -37,6 +48,7 @@ entityDef weapon_ump
 "icon"				"weapon_ump.weapon"
 "iconSelected"		"weapon_ump.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
+"clipSize"          "25"
 
 
 "def_onFire"		"proj_ump"
@@ -52,4 +64,5 @@ entityDef proj_ump
 "hitscans"			"1"
 "spread"			"0.025 0.025"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

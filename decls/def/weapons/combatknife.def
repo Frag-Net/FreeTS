@@ -1,3 +1,12 @@
+#define V_KNIFE_IDLE 0
+#define V_KNIFE_IDLE2 1
+#define V_KNIFE_DRAW 2
+#define V_KNIFE_SLASH1 3
+#define V_KNIFE_LEFT 4
+#define V_KNIFE_RIGHT 5
+#define V_KNIFE_HOLD 6
+#define V_KNIFE_THROW 7
+
 entityDef weapon_combatknife
 {
 "editor_color"		".3 .3 1"
@@ -11,16 +20,16 @@ entityDef weapon_combatknife
 "model_view" 	"models/v_knife.mdl"
 "model" 	"models/w_knife.mdl"
 "model_player" 	"models/p_knife.mdl"
-	"snd_precache" ("weapons/knife/knife_hit.wav");
-	"snd_precache" ("weapons/knife/knife_hitbody.wav");
-	"snd_precache" ("weapons/knife/knife_miss.wav");
+	//"snd_precache" ("weapons/knife/knife_hit.wav");
+	//"snd_precache" ("weapons/knife/knife_hitbody.wav");
+	//"snd_precache" ("weapons/knife/knife_miss.wav");
 
 "inv_name"			"combatknife"
 "ammoType"			"ammo_shells"
-"ammoRequired"		"1"
-"ammoPerShot"		"1"
+"ammoRequired"		"0"
 "act_fire"			"1"
-"act_idle"			"0"
+"act_idle"			"$V_KNIFE_IDLE"
+"act_draw"			"$V_KNIFE_DRAW"
 "snd_fire"			"weapon_combatknife.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"

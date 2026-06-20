@@ -1,3 +1,9 @@
+#define V_BULL_IDLE 0
+#define V_BULL_SHOOT 1
+#define V_BULL_SHOOT2 2
+#define V_BULL_DRAW 3
+#define V_BULL_RELOAD 4
+
 entityDef weapon_ragingbull
 {
 "editor_color"		".3 .3 1"
@@ -13,7 +19,7 @@ entityDef weapon_ragingbull
 "model_player" 	"models/p_bull.mdl"
 	//"snd_precache" ("weapons/bull/cylinderin.wav");
 	//"snd_precache" ("weapons/bull/cylinderout.wav");
-	"snd_precache" ("weapons/bull/fire01.wav");
+	//"snd_precache" ("weapons/bull/fire01.wav");
 	//"snd_precache" ("weapons/bull/hammerback.wav");
 	//"snd_precache" ("weapons/bull/insert-shell.wav");
 	//"snd_precache" ("weapons/bull/shellsout.wav");
@@ -22,8 +28,13 @@ entityDef weapon_ragingbull
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_BULL_SHOOT,$V_BULL_SHOOT2"
+"act_idle"			"$V_BULL_IDLE"
+"act_draw"			"$V_BULL_DRAW"
+"act_reload"		"$V_BULL_RELOAD"
+"clipSize"          "5"
+"semiAuto"          "1"
+
 "snd_fire"			"weapon_ragingbull.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -45,8 +56,9 @@ entityDef weapon_ragingbull
 entityDef proj_ragingbull
 {
 "inherit"			"projectile_bullet_base"
-"damage"			""
+"damage"			"60"
 "hitscans"			"1"
 "spread"			"0.01 0.01"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

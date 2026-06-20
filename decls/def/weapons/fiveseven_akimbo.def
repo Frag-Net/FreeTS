@@ -1,3 +1,10 @@
+#define V_FNH_AKIMBO_IDLE 0
+#define V_FNH_AKIMBO_DRAW 1
+#define V_FNH_AKIMBO_SHOOT_LEFT 2
+#define V_FNH_AKIMBO_SHOOT_RIGHT 3
+#define V_FNH_AKIMBO_SHOOT_LINKED 4
+#define V_FNH_AKIMBO_RELOAD 5
+
 entityDef weapon_fiveseven_akimbo
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +18,16 @@ entityDef weapon_fiveseven_akimbo
 "model_view" 	"models/v_fnh_akimbo.mdl"
 "model" 	"models/w_fnh.mdl"
 "model_player" 	"models/p_fnh_akimbo.mdl"
-	"models/p_fnh_akimbo_sil.mdl"
+	//"models/p_fnh_akimbo_sil.mdl"
 
 "inv_name"			"fiveseven_akimbo"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_FNH_AKIMBO_SHOOT_LINKED"
+"act_idle"			"$V_FNH_AKIMBO_IDLE"
+"act_draw"			"$V_FNH_AKIMBO_DRAW"
+"act_reload"		"$V_FNH_AKIMBO_RELOAD"
 "snd_fire"			"weapon_fiveseven_akimbo.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -29,20 +38,49 @@ entityDef weapon_fiveseven_akimbo
 "icon"				"weapon_fiveseven_akimbo.weapon"
 "iconSelected"		"weapon_fiveseven_akimbo.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
+"clipSize"          "40"
+"semiAuto"          "1"
 
+"def_fireInfo"        "fi_fiveseven_akimbo_left"
+"def_altFireInfo"    "fi_fiveseven_akimbo_right"
+"altAlternates"     "1"
 
-"def_onFire"		"proj_fiveseven_akimbo"
 "fireRate"			"0.19f
 //"
-"punchSpring"		"-1.5 0 0"
 "punchSpring_accuracy"	"0 0 0"
 }
 
-entityDef proj_fiveseven_akimbo
+entityDef fi_fiveseven_akimbo_left
+{
+    "act_fire"			"$V_FNH_AKIMBO_SHOOT_LEFT"
+    "def_onFire"        "proj_fiveseven_akimbo_left"
+    "punchSpring"		"-1.5 -.5 0"
+}
+
+entityDef fi_fiveseven_akimbo_right
+{
+    "act_fire"			"$V_FNH_AKIMBO_SHOOT_RIGHT"
+    "def_onFire"        "proj_fiveseven_akimbo_right"
+    "punchSpring"		"-1.5 .5 0"
+}
+
+entityDef proj_fiveseven_akimbo_left
 {
 "inherit"			"projectile_bullet_base"
 "damage"			"15.0f"
 "hitscans"			"1"
 "spread"			"0.02 0.02"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 -4 0"
+}
+
+
+entityDef proj_fiveseven_akimbo_right
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"15.0f"
+"hitscans"			"1"
+"spread"			"0.02 0.02"
+"fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 4 0"
 }

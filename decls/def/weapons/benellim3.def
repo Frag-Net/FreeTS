@@ -1,3 +1,15 @@
+#define V_M3_IDLE 0
+#define V_M3_IDLE2 1
+#define V_M3_RELOAD1 2
+#define V_M3_RELOAD2 3
+#define V_M3_RELOAD3 4
+#define V_M3_DRAW 5
+#define V_M3_SHOOTSEMI 6
+#define V_M3_SHOOTPUMP 7
+#define V_M3_PUMP 8
+#define V_M3_PUMP2 9
+#define V_M3_STOCK 10
+
 entityDef weapon_benellim3
 {
 "editor_color"		".3 .3 1"
@@ -11,15 +23,22 @@ entityDef weapon_benellim3
 "model_view" 	"models/v_m3.mdl"
 "model" 	"models/w_m3.mdl"
 "model_player" 	"models/p_m3.mdl"
-	"snd_precache" ("weapons/m3/m3-pump.wav");
-	"snd_precache" ("weapons/m3/m3-fire.wav");
+	//"snd_precache" ("weapons/m3/m3-pump.wav");
+	//"snd_precache" ("weapons/m3/m3-fire.wav");
 
 "inv_name"			"benellim3"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_M3_SHOOTSEMI"
+"act_idle"			"$V_M3_IDLE"
+"act_draw"			"$V_M3_DRAW"
+
+	"act_reloadStart"	"$V_M3_RELOAD1"
+	"act_reload"		"$V_M3_RELOAD2"
+	"act_reloadEnd"		"$V_M3_RELOAD3"
+    "act_fireStop"       "$V_M3_SHOOTPUMP"
+
 "snd_fire"			"weapon_benellim3.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -30,6 +49,7 @@ entityDef weapon_benellim3
 "icon"				"weapon_benellim3.weapon"
 "iconSelected"		"weapon_benellim3.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
+"clipSize"          "7"
 
 
 "def_onFire"		"proj_benellim3"
@@ -42,7 +62,8 @@ entityDef proj_benellim3
 {
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
-"hitscans"			"1"
+"hitscans"			"8"
 "spread"			"0.038 0.038"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

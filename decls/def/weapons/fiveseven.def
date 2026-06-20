@@ -1,3 +1,9 @@
+#define V_FNH_IDLE 0
+#define V_FNH_RELOAD 1
+#define V_FNH_DRAW 2
+#define V_FNH_SHOOT 3
+#define V_FNH_SHOOTLAST 4
+
 entityDef weapon_fiveseven
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +17,25 @@ entityDef weapon_fiveseven
 "model_view" 	"models/v_fnh.mdl"
 "model" 	"models/w_fnh.mdl"
 "model_player" 	"models/p_fnh.mdl"
-	"models/p_fnh_sil.mdl"
+	//"models/p_fnh_sil.mdl"
 	//"snd_precache" ("weapons/fnh/clipin.wav");
 	//"snd_precache" ("weapons/fnh/clipout.wav");
-	"snd_precache" ("weapons/fnh/fnh-fire-sil.wav");
-	"snd_precache" ("weapons/fnh/fnh-fire.wav");
+	//"snd_precache" ("weapons/fnh/fnh-fire-sil.wav");
+	//"snd_precache" ("weapons/fnh/fnh-fire.wav");
 	//"snd_precache" ("weapons/fnh/sliderelease.wav");
 
 "inv_name"			"fiveseven"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fireLast"		"$V_FNH_SHOOTLAST"
+"act_fire"			"$V_FNH_SHOOT"
+"act_idle"			"$V_FNH_IDLE"
+"act_draw"			"$V_FNH_DRAW"
+"act_reload"		"$V_FNH_RELOAD"
+"clipSize"          "20"
+"semiAuto"          "1"
+
 "snd_fire"			"weapon_fiveseven.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -49,4 +61,5 @@ entityDef proj_fiveseven
 "hitscans"			"1"
 "spread"			"0.01 0.01"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

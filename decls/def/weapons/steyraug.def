@@ -1,3 +1,9 @@
+#define V_AUG_IDLE 0
+#define V_AUG_DRAW 1
+#define V_AUG_SHOOT 2
+#define V_AUG_RELOAD 3
+#define V_AUG_STOCK 4
+
 entityDef weapon_steyraug
 {
 "editor_color"		".3 .3 1"
@@ -11,9 +17,9 @@ entityDef weapon_steyraug
 "model_view" 	"models/v_aug.mdl"
 "model" 	"models/w_aug.mdl"
 "model_player" 	"models/p_aug.mdl"
-	"models/p_aug_sil.mdl"
-	"snd_precache" ("weapons/aug/aug-fire-sil.wav");
-	"snd_precache" ("weapons/aug/aug-fire.wav");
+	// "models/p_aug_sil.mdl"
+	//"snd_precache" ("weapons/aug/aug-fire-sil.wav");
+	//"snd_precache" ("weapons/aug/aug-fire.wav");
 	//"snd_precache" ("weapons/aug/boltpull.wav");
 	//"snd_precache" ("weapons/aug/boltslap.wav");
 	//"snd_precache" ("weapons/aug/clipin.wav");
@@ -23,8 +29,12 @@ entityDef weapon_steyraug
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_AUG_SHOOT"
+"act_idle"			"$V_AUG_IDLE"
+"act_draw"			"$V_AUG_DRAW"
+"act_reload"		"$V_AUG_RELOAD"
+"clipSize"          "30"
+
 "snd_fire"			"weapon_steyraug.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -50,4 +60,5 @@ entityDef proj_steyraug
 "hitscans"			"1"
 "spread"			"0.005 0.005"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

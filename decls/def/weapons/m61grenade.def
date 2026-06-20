@@ -1,3 +1,9 @@
+#define V_M61_IDLE 0
+#define V_M61_DRAW 1
+#define V_M61_START 2
+#define V_M61_THROW 3
+#define V_M61_THROW_SLIDE 4
+
 entityDef weapon_m61grenade
 {
 "editor_color"		".3 .3 1"

@@ -1,3 +1,15 @@
+#define V_MP5K_IDLE 0
+#define V_MP5K_RELOAD 1
+#define V_MP5K_DRAW 2
+#define V_MP5K_SHOOT1 3
+#define V_MP5K_SHOOT2 4
+#define V_MP5K_CHANGE 5
+#define V_MP5K_RECHANGE 6
+#define V_MP5K_IDLEB 7
+#define V_MP5K_SHOOT1B 8
+#define V_MP5K_SHOOT2B 9
+#define V_MP5K_RELOAD2 10
+
 entityDef weapon_mp5k
 {
 "editor_color"		".3 .3 1"
@@ -11,16 +23,26 @@ entityDef weapon_mp5k
 "model_view" 	"models/v_mp5k.mdl"
 "model" 	"models/w_mp5k.mdl"
 "model_player" 	"models/p_mp5k.mdl"
-	"models/p_mp5k_sil.mdl"
-	"snd_precache" ("weapons/mp5k/mp5k-fire-sil.wav");
-	"snd_precache" ("weapons/mp5k/mp5k-fire.wav");
+	//"models/p_mp5k_sil.mdl"
+	//"snd_precache" ("weapons/mp5k/mp5k-fire-sil.wav");
+	//"snd_precache" ("weapons/mp5k/mp5k-fire.wav");
 
 "inv_name"			"mp5k"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_MP5K_SHOOT1,$V_MP5K_SHOOT2"
+"act_idle"			"$V_MP5K_IDLE"
+"act_draw"			"$V_MP5K_DRAW"
+"act_reload"		"$V_MP5K_RELOAD"
+"clipSize"          "30"
+
+"def_fireInfo"        "fi_mp5k"
+"def_altFireInfo"    "fi_mp5k_ads"
+"altMode"           "1"
+"act_modeOn"        "$V_MP5K_CHANGE"
+"act_modeOff"        "$V_MP5K_RECHANGE"
+
 "snd_fire"			"weapon_mp5k.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -35,8 +57,23 @@ entityDef weapon_mp5k
 
 "def_onFire"		"proj_mp5k"
 "fireRate"			"0.0625f"
-"punchSpring"		"-2.3 0 0"
 "punchSpring_accuracy"	"0.005 0 0"
+}
+
+
+entityDef fi_mp5k
+{
+    "def_onFire"        "proj_m4a1"
+    "punchSpring"		"-1 0 0"
+}
+
+entityDef fi_mp5k_ads
+{
+    "act_idle"          "$V_MP5K_IDLEB"
+    "act_fire"          "$V_MP5K_SHOOT1B,$V_MP5K_SHOOT2B"
+    "act_reload"        "$V_MP5K_RELOAD2"
+    "def_onFire"        "proj_mp5k"
+    "punchSpring"		"-2 0 -0.3"
 }
 
 entityDef proj_mp5k
@@ -46,4 +83,5 @@ entityDef proj_mp5k
 "hitscans"			"1"
 "spread"			"0.01 0.01"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

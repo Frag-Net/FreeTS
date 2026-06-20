@@ -1,3 +1,17 @@
+#define V_MK23_IDLEB 0
+#define V_MK23_SHOOTB1 1
+#define V_MK23_SHOOTB2 2
+#define V_MK23_SHOOTBLAST 3
+#define V_MK23_DRAWB 4
+#define V_MK23_IDLEC 5
+#define V_MK23_SHOOTC1 6
+#define V_MK23_SHOOTC2 7
+#define V_MK23_SHOOTCLAST 8
+#define V_MK23_CHANGE 9
+#define V_MK23_RECHANGE 10
+#define V_MK23_RELOAD 11
+#define V_MK23_RELOADB 12
+
 entityDef weapon_socommk23
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +25,30 @@ entityDef weapon_socommk23
 "model_view" 	"models/v_mk23.mdl"
 "model" 	"models/w_mk23.mdl"
 "model_player" 	"models/p_mk23.mdl"
-	"models/p_mk23_sil.mdl"
+	//"models/p_mk23_sil.mdl"
 	//"snd_precache" ("weapons/mk23/clipin.wav");
 	//"snd_precache" ("weapons/mk23/clipout.wav");
-	"snd_precache" ("weapons/mk23/mk23-fire-sil.wav");
-	"snd_precache" ("weapons/mk23/mk23-fire.wav");
+	//"snd_precache" ("weapons/mk23/mk23-fire-sil.wav");
+	//"snd_precache" ("weapons/mk23/mk23-fire.wav");
 	//"snd_precache" ("weapons/mk23/sliderelease.wav");
 
 "inv_name"			"socommk23"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_MK23_SHOOTB1,$V_MK23_SHOOTB2"
+"act_fireLast"		"$V_MK23_SHOOTBLAST"
+"act_idle"			"$V_MK23_IDLEB"
+"act_draw"			"$V_MK23_DRAWB"
+"act_reload"		"$V_MK23_RELOAD"
+"clipSize"          "12"
+
+"def_fireInfo"        "fi_socommk23"
+"def_altFireInfo"    "fi_socommk23_ads"
+"altMode"           "1"
+"act_modeOn"        "$V_MK23_CHANGE"
+"act_modeOff"        "$V_MK23_RECHANGE"
+
 "snd_fire"			"weapon_socommk23.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -36,10 +61,25 @@ entityDef weapon_socommk23
 "smoke_muzzle"		"muzzle.smoke"
 
 
-"def_onFire"		"proj_socommk23"
 "fireRate"			"0.19f"
-"punchSpring"		"-2 0 0"
 "punchSpring_accuracy"	"0 0 0"
+"semiAuto"          "1"
+}
+
+entityDef fi_socommk23
+{
+    "def_onFire"        "proj_socommk23"
+    "punchSpring"		"-2 0 0"
+}
+
+entityDef fi_socommk23_ads
+{
+    "act_idle"          "$V_MK23_IDLEC"
+    "act_fire"          "$V_MK23_SHOOTC1,$V_MK23_SHOOTC2"
+    "act_fireLast"		"$V_MK23_SHOOTCLAST"
+    "act_reload"        "$V_MK23_RELOADB"
+    "def_onFire"        "proj_socommk23"
+    "punchSpring"		"-1 1 -.5"
 }
 
 entityDef proj_socommk23
@@ -49,4 +89,5 @@ entityDef proj_socommk23
 "hitscans"			"1"
 "spread"			"0.02 0.02"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

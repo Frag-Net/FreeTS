@@ -1,3 +1,10 @@
+#define V_M82_IDLE 0
+#define V_M82_RELOAD 1
+#define V_M82_DRAW 2
+#define V_M82_SHOOT 3
+#define V_M82_SHOOT2 4
+#define V_M82_STOCK 5
+
 entityDef weapon_barrettm82
 {
 "editor_color"		".3 .3 1"
@@ -13,15 +20,18 @@ entityDef weapon_barrettm82
 "model_player" 	"models/p_m82.mdl"
 	//"snd_precache" ("weapons/barrett/clipin.wav");
 	//"snd_precache" ("weapons/barrett/clipout.wav");
-	"snd_precache" ("weapons/barrett/fire.wav");
+	//"snd_precache" ("weapons/barrett/fire.wav");
 	//"snd_precache" ("weapons/barrett/slideback.wav");
 
 "inv_name"			"barrettm82"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_M82_SHOOT,$V_M82_SHOOT2"
+"act_idle"			"$V_M82_IDLE"
+"act_draw"			"$V_M82_DRAW"
+"act_reload"		"$V_M82_RELOAD"
+
 "snd_fire"			"weapon_barrettm82.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -32,6 +42,8 @@ entityDef weapon_barrettm82
 "icon"				"weapon_barrettm82.weapon"
 "iconSelected"		"weapon_barrettm82.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
+"clipSize"          "5"
+"semiAuto"          "1"
 
 
 "def_onFire"		"proj_barrettm82"
@@ -42,9 +54,10 @@ entityDef weapon_barrettm82
 
 entityDef proj_barrettm82
 {
-"inherit"			"projectile_bullet_base"
-"damage"			"7.0f"
-"hitscans"			"1"
-"spread"			"0.001 0.001"
-"fx_path"			"weapon_shotgun.tracer"
+    "inherit"			"projectile_bullet_base"
+    "damage"			"70"
+    "hitscans"			"1"
+    "spread"			"0.001 0.001"
+    "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

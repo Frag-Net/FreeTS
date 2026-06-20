@@ -1,3 +1,10 @@
+#define V_GLOCK18_IDLE 0
+#define V_GLOCK18_RELOAD 1
+#define V_GLOCK18_DRAW 2
+#define V_GLOCK18_SHOOT1 3
+#define V_GLOCK18_SHOOT2 4
+#define V_GLOCK18_SHOOTEMPTY 5
+
 entityDef weapon_glock18
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +18,24 @@ entityDef weapon_glock18
 "model_view" 	"models/v_glock18.mdl"
 "model" 	"models/w_glock18.mdl"
 "model_player" 	"models/p_glock18.mdl"
-	"models/p_glock18_sil.mdl"
+	//"models/p_glock18_sil.mdl"
 	//"snd_precache" ("weapons/glock/clipin.wav");
 	//"snd_precache" ("weapons/glock/clipout.wav");
-	"snd_precache" ("weapons/glock/glock-fire-sil.wav");
-	"snd_precache" ("weapons/glock/glock-fire.wav");
+	//"snd_precache" ("weapons/glock/glock-fire-sil.wav");
+	//"snd_precache" ("weapons/glock/glock-fire.wav");
 	//"snd_precache" ("weapons/glock/slideback.wav");
 
 "inv_name"			"glock18"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_GLOCK18_SHOOT1,$V_GLOCK18_SHOOT2"
+"act_empty"         "$V_GLOCK18_SHOOTEMPTY"
+"act_idle"			"$V_GLOCK18_IDLE"
+"act_draw"			"$V_GLOCK18_DRAW"
+"act_reload"		"$V_GLOCK18_RELOAD"
+"clipSize"          "17"
+
 "snd_fire"			"weapon_glock18.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -45,8 +57,9 @@ entityDef weapon_glock18
 entityDef proj_glock18
 {
 "inherit"			"projectile_bullet_base"
-"damage"			""
+"damage"			"10"
 "hitscans"			"1"
 "spread"			"0.022 0.022"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

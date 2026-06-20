@@ -1,3 +1,11 @@
+#define V_MP5SD_IDLE 0
+#define V_MP5SD_SHOOT1 1
+#define V_MP5SD_SHOOT2 2
+#define V_MP5SD_SHOOT3 3
+#define V_MP5SD_DRAW 4
+#define V_MP5SD_RELOAD 5
+#define V_MP5SD_COLDCOCK 6
+
 entityDef weapon_mp5sd
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +19,19 @@ entityDef weapon_mp5sd
 "model_view" 	"models/v_mp5sd.mdl"
 "model" 	"models/w_mp5sd.mdl"
 "model_player" 	"models/p_mp5sd.mdl"
-	"snd_precache" ("weapons/mp5sd/mp5sd-fire.wav");
+	//"snd_precache" ("weapons/mp5sd/mp5sd-fire.wav");
 
 "inv_name"			"mp5sd"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_MP5SD_SHOOT1,$V_MP5SD_SHOOT2,$V_MP5SD_SHOOT3"
+"act_idle"			"$V_MP5SD_IDLE"
+"act_draw"			"$V_MP5SD_DRAW"
+"act_reload"		"$V_MP5SD_RELOAD"
+
+"clipSize"          "30"
+
 "snd_fire"			"weapon_mp5sd.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -44,4 +57,5 @@ entityDef proj_mp5sd
 "hitscans"			"1"
 "spread"			"0.005 0.005"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

@@ -1,3 +1,11 @@
+#define V_SKORPION_IDLE 0
+#define V_SKORPION_DRAW 1
+#define V_SKORPION_RELOAD 2
+#define V_SKORPION_FIRE1 3
+#define V_SKORPION_FIRE2 4
+#define V_SKORPION_FIRE3 5
+#define V_SKORPION_IDLEALT 6
+
 entityDef weapon_skorpion
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +19,18 @@ entityDef weapon_skorpion
 "model_view" 	"models/v_skorpion.mdl"
 "model" 	"models/w_skorpion.mdl"
 "model_player" 	"models/p_skorpion.mdl"
-	"snd_precache" ("weapons/skorpion/fire.wav");
+	//"snd_precache" ("weapons/skorpion/fire.wav");
 
 "inv_name"			"skorpion"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_SKORPION_FIRE1,$V_SKORPION_FIRE2,$V_SKORPION_FIRE3"
+"act_idle"			"$V_SKORPION_IDLE"
+"act_draw"			"$V_SKORPION_DRAW"
+"act_reload"		"$V_SKORPION_RELOAD"
+"clipSize"          "20"
+
 "snd_fire"			"weapon_skorpion.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -44,4 +56,5 @@ entityDef proj_skorpion
 "hitscans"			"1"
 "spread"			"0.025 0.025"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

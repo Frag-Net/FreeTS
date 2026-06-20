@@ -1,3 +1,9 @@
+#define V_RUGER_IDLE 0
+#define V_RUGER_SHOOT1 1
+#define V_RUGER_SHOOT2 2
+#define V_RUGER_DRAW 3
+#define V_RUGER_RELOAD 4
+
 entityDef weapon_rugermk1
 {
 "editor_color"		".3 .3 1"
@@ -11,18 +17,24 @@ entityDef weapon_rugermk1
 "model_view" 	"models/v_ruger.mdl"
 "model" 	"models/w_ruger.mdl"
 "model_player" 	"models/p_ruger.mdl"
-	"models/p_ruger.mdl"   //NOTICE - only ever has a silencer so this never got a separate model (has it here)
+	//"models/p_ruger.mdl"   //NOTICE - only ever has a silencer so this never got a separate model (has it here)
 	//"snd_precache" ("weapons/ruger/clipin.wav");
 	//"snd_precache" ("weapons/ruger/clipout.wav");
-	"snd_precache" ("weapons/ruger/fire.wav");
+	//"snd_precache" ("weapons/ruger/fire.wav");
 	//"snd_precache" ("weapons/ruger/slide.wav");
 
 "inv_name"			"rugermk1"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_RUGER_SHOOT1,$V_RUGER_SHOOT2"
+"act_idle"			"$V_RUGER_IDLE"
+"act_draw"			"$V_RUGER_DRAW"
+"act_reload"		"$V_RUGER_RELOAD"
+
+"clipSize"          "17"
+"semiAuto"          "1"
+
 "snd_fire"			"weapon_rugermk1.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -48,4 +60,5 @@ entityDef proj_rugermk1
 "hitscans"			"1"
 "spread"			"0.001 0.001"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

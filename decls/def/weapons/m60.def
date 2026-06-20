@@ -1,3 +1,10 @@
+#define V_M60_IDLE 0
+#define V_M60_DRAW 1
+#define V_M60_SHOOT 2
+#define V_M60_SHOOT2 3
+#define V_M60_RELOAD 4
+#define V_M60_STOCK 5
+
 entityDef weapon_m60
 {
 "editor_color"		".3 .3 1"
@@ -14,15 +21,19 @@ entityDef weapon_m60
 	//"snd_precache" ("weapons/m60/ammo_belt.wav");
 	//"snd_precache" ("weapons/m60/boltpull.wav");
 	//"snd_precache" ("weapons/m60/close.wav");
-	"snd_precache" ("weapons/m60/m60-fire.wav");
+	//"snd_precache" ("weapons/m60/m60-fire.wav");
 	//"snd_precache" ("weapons/m60/open.wav");
 
 "inv_name"			"m60"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_M60_SHOOT,$V_M60_SHOOT2"
+"act_idle"			"$V_M60_IDLE"
+"act_draw"			"$V_M60_DRAW"
+"act_reload"		"$V_M60_RELOAD"
+"clipSize"          "100"
+
 "snd_fire"			"weapon_m60.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -48,4 +59,5 @@ entityDef proj_m60
 "hitscans"			"1"
 "spread"			"0.007 0.007"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

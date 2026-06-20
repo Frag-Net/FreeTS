@@ -20,27 +20,21 @@ entityDef weapon_beretta
 //	"model_player"		"models/p_beretta_sil.mdl"
 
 	// weapon specific
-	"def_fireInfo"		"fireInfo_beretta"
-	"def_altFireInfo"	"fireInfo_altBeretta"
+	"def_fireInfo"		"fi_beretta"
 	"inv_name"			"Beretta"
 	"clipSize"			"15"
-	"ammoType" 			"ammo_9x19mm"
+	"ammoType" 			"ammo_shells" //"ammo_9x19mm"
 	"ammoRequired" 		"1"
 	"ammoPerShot"		"1"
-	"punchAngle"		"-2 0 0"
+	"punchSpring"		"-2 0 0"
 	"punchSpring_accuracy"	"0 0 0"
 	"semiAuto"			"1"
 
-	"act_fire"			"14,16"
-	"act_fireLast"		"15,17"
-	"act_holster"		"6"
-	"act_holsterEmpty"	"7"
-	"act_reload"		"8,10,12"
-	"act_reloadEmpty"	"9,11,13"
-	"act_draw"			"2,4"
-	"act_drawEmpty"		"3,5"
-	"act_idle"			"0"
-	"act_idleEmpty"		"1"
+	"act_fire"			"$BERETTA_SHOOT,$BERETTA_SHOOT2"
+	"act_fireEmpty"		"$BERETTA_SHOOT_EMPTY"
+	"act_reload"		"$BERETTA_RELOAD"
+	"act_draw"			"$BERETTA_DRAW"
+	"act_idle"			"$BERETTA_IDLE"
 
 	"snd_fire"		"weapon_beretta.fire"
 	"snd_altfire"	"weapon_beretta.fire"
@@ -52,16 +46,17 @@ entityDef weapon_beretta
 	"weight"		"10"
 }
 
-entityDef projectile_beretta
+entityDef proj_beretta
 {
 	"inherit"		"projectile_bullet_base"
-	"damage"		"skill:plr_9mm_bullet"
+	"damage"		"15"
 	"spread"		"0.028 0.028"
+    "offset"            "0 3 0"
 }
 
-entityDef fireInfo_beretta
+entityDef fi_beretta
 {
-	"def_onFire"		"projectile_beretta"
+	"def_onFire"		"proj_beretta"
 	"fireRate" 			"0.1"
 	"model_flash"		"sprites/muzzleflash2.spr"
 }

@@ -1,3 +1,15 @@
+#define V_MELEE_IDLE 0
+#define V_MELEE_DRAW 1
+#define V_MELEE_PUNCH_LEFT 2
+#define V_MELEE_PUNCH_RIGHT 3
+#define V_MELEE_BLOCK_LOW 4
+#define V_MELEE_KICK 5
+#define V_MELEE_SIDEKICK 6
+#define V_MELEE_UPPERCUT 7
+#define V_MELEE_SPINKICK 8
+#define V_MELEE_BACKKICK 9
+#define V_MELEE_PUNCH_RIGHT2 10
+
 entityDef weapon_karate
 {
 "editor_color"		".3 .3 1"
@@ -5,22 +17,16 @@ entityDef weapon_karate
 "editor_maxs"		"16 16 16"
 "editor_usage"		"karate"
 "editor_rotatable"	"1"
-"editor_model" 
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_melee.mdl"
-"model" 
-"model_player" 
-	"snd_precache" ("player/closecombat.wav");
-	"snd_precache" ("player/kungfuhit.wav");
-	"snd_precache" ("player/block.wav");
 
+"def_fireInfo"        "fi_karate_punch"
+"def_altFireInfo"    "fi_karate_kick"
 "inv_name"			"karate"
-"ammoType"			"ammo_shells"
-"ammoRequired"		"1"
-"ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"ammoRequired"		"0"
+"act_idle"			"$V_MELEE_IDLE"
+"act_draw"          "$V_MELEE_DRAW"
 "snd_fire"			"weapon_karate.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -33,16 +39,31 @@ entityDef weapon_karate
 "smoke_muzzle"		"muzzle.smoke"
 
 
-"def_onFire"		"proj_karate"
 "fireRate"			"0.17f"
-"punchSpring"		"-1.5 0 0"
+"semiAuto"          "1"
+}
+
+entityDef fi_karate_punch
+{
+"act_fire"			"$V_MELEE_PUNCH_LEFT,$V_MELEE_PUNCH_RIGHT,$V_MELEE_UPPERCUT"
+"def_onFire"		"proj_karate"
+"punchSpring"		"1.5 0 0"
+}
+
+
+entityDef fi_karate_kick
+{
+"act_fire"			"$V_MELEE_SIDEKICK,$V_MELEE_KICK,$V_MELEE_SPINKICK,$V_MELEE_BACKKICK"
+"def_onFire"		"proj_karate"
+"punchSpring"		"-1.5 1 1.5"
 }
 
 entityDef proj_karate
 {
-"inherit"			"projectile_bullet_base"
-"damage"			""
-"hitscans"			"1"
-"spread"			"0.025 0.025"
-"fx_path"			"weapon_shotgun.tracer"
+    "inherit"			"projectile_bullet_base"
+    "damage"			"25"
+    "hitscans"			"1"
+    "spread"			"0.025 0.025"
+	"detonate_on_world" 	"0"
+    "range"         "128"
 }

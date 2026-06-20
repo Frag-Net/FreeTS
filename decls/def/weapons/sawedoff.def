@@ -1,3 +1,18 @@
+#define V_SAWEDOFF_IDLE 0
+#define V_SAWEDOFF_DRAW 1
+#define V_SAWEDOFF_RELOAD 2
+#define V_SAWEDOFF_SHOOT1 3
+#define V_SAWEDOFF_SHOOT2 4
+#define V_SAWEDOFF_IDLEB 5
+#define V_SAWEDOFF_RELOADB 6
+#define V_SAWEDOFF_SHOOT1B 7
+#define V_SAWEDOFF_SHOOT2B 8
+#define V_SAWEDOFF_RELOAD_SIGLE 9
+#define V_SAWEDOFF_RELOADB_SIGLE 10
+#define V_SAWEDOFF_CHANGE 11
+#define V_SAWEDOFF_RECHANGE 12
+#define V_SAWEDOFF_STOCK 13
+
 entityDef weapon_sawedoff
 {
 "editor_color"		".3 .3 1"
@@ -12,7 +27,7 @@ entityDef weapon_sawedoff
 "model" 	"models/w_sawedoff.mdl"
 "model_player" 	"models/p_sawedoff.mdl"
 	//"snd_precache" ("weapons/sawedoff/close.wav");
-	"snd_precache" ("weapons/sawedoff/fire.wav");
+	//"snd_precache" ("weapons/sawedoff/fire.wav");
 	//"snd_precache" ("weapons/sawedoff/fire1.wav");
 	//"snd_precache" ("weapons/sawedoff/insert-shell.wav");
 	//"snd_precache" ("weapons/sawedoff/open.wav");
@@ -24,8 +39,20 @@ entityDef weapon_sawedoff
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_SAWEDOFF_SHOOT1,$V_SAWEDOFF_SHOOT2"
+"act_idle"			"$V_SAWEDOFF_IDLE"
+"act_draw"			"$V_SAWEDOFF_DRAW"
+"act_reload"		"$V_SAWEDOFF_RELOAD"
+
+"semiAuto"          "1"
+"clipSize"          "2"
+
+"def_fireInfo"        "fi_sawedoff"
+"def_altFireInfo"    "fi_sawedoff_ads"
+"altMode"           "1"
+"act_modeOn"        "$V_SAWEDOFF_CHANGE"
+"act_modeOff"        "$V_SAWEDOFF_RECHANGE"
+
 "snd_fire"			"weapon_sawedoff.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -44,11 +71,26 @@ entityDef weapon_sawedoff
 "punchSpring_accuracy"	"0 0 0"
 }
 
+entityDef fi_sawedoff
+{
+    "def_onFire"        "proj_sawedoff"
+}
+
+entityDef fi_sawedoff_ads
+{
+    "act_idle"          "$V_SAWEDOFF_IDLEB"
+    "act_fire"          "$V_SAWEDOFF_SHOOT1B,$V_SAWEDOFF_SHOOT2B"
+    "act_reload"        "$V_SAWEDOFF_RELOADB_SIGLE"
+    "def_onFire"        "proj_sawedoff"
+}
+
+
 entityDef proj_sawedoff
 {
 "inherit"			"projectile_bullet_base"
-"damage"			"7.0f"
-"hitscans"			"1"
+"damage"			"7"
+"hitscans"			"6"
 "spread"			"0.07 0.07"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

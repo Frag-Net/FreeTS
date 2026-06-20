@@ -1,3 +1,24 @@
+#define V_MAC10_IDLE 0
+#define V_MAC10_RELOAD 1
+#define V_MAC10_DRAW 2
+#define V_MAC10_SHOOT 3
+#define V_MAC10_SHOOT2 4
+#define V_MAC10_SHOOT3 5
+#define V_MAC10_SSHOOT 6
+#define V_MAC10_SSHOOT2 7
+#define V_MAC10_SSHOOT3 8
+#define V_MAC10_IDLE2 9
+#define V_MAC10_CHANGE 10
+#define V_MAC10_RECHANGE 11
+#define V_MAC10_SHOOTB 12
+#define V_MAC10_SHOOTB2 13
+#define V_MAC10_SHOOTB3 14
+#define V_MAC10_SSHOOTB 15
+#define V_MAC10_SSHOOTB2 16
+#define V_MAC10_SSHOOTB3 17
+#define V_MAC10_RELOADB 18
+
+
 entityDef weapon_mac10
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +32,17 @@ entityDef weapon_mac10
 "model_view" 	"models/v_mac10.mdl"
 "model" 	"models/w_mac10.mdl"
 "model_player" 	"models/p_mac10.mdl"
-	"models/p_mac10_sil.mdl"
+	//"models/p_mac10_sil.mdl"
 	//"snd_precache" ("weapons/mac10/clipin.wav");
 	//"snd_precache" ("weapons/mac10/clipout.wav");
-	"snd_precache" ("weapons/mac10/mac10-fire-sil.wav");
-	"snd_precache" ("weapons/mac10/mac10-fire.wav");
+	//"snd_precache" ("weapons/mac10/mac10-fire-sil.wav");
+	//"snd_precache" ("weapons/mac10/mac10-fire.wav");
 	//"snd_precache" ("weapons/mac10/slideback.wav");
 
 "inv_name"			"mac10"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
 "snd_fire"			"weapon_mac10.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -35,11 +54,36 @@ entityDef weapon_mac10
 "iconSelected"		"weapon_mac10.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
 
+"act_fire"			"$V_MAC10_SHOOT,$V_MAC10_SHOOT2,$V_MAC10_SHOOT3"
+"act_idle"			"$V_MAC10_IDLE"
+"act_draw"			"$V_MAC10_DRAW"
+"act_reload"		"$V_MAC10_RELOAD"
+"clipSize"          "32"
 
-"def_onFire"		"proj_mac10"
+"def_fireInfo"        "fi_mac10"
+"def_altFireInfo"    "fi_mac10_ads"
+"altMode"           "1"
+"act_modeOn"        "$V_MAC10_CHANGE"
+"act_modeOff"        "$V_MAC10_RECHANGE"
+
+
 "fireRate"			"0.0625f"
-"punchSpring"		"-2.55 0 0"
+"punchSpring"		"-1.55 0 0"
 "punchSpring_accuracy"	"0.005 0 0"
+}
+
+entityDef fi_mac10
+{
+    "def_onFire"        "proj_mac10"
+}
+
+entityDef fi_mac10_ads
+{
+    "act_idle"          "$V_MAC10_IDLE2"
+    "act_fire"          "$V_MAC10_SHOOTB,$V_MAC10_SHOOTB2,$V_MAC10_SHOOTB3"
+    "act_reload"        "$V_MAC10_RELOADB"
+    "def_onFire"        "proj_mac10"
+    "punchSpring"		"-.5 .5 -2"
 }
 
 entityDef proj_mac10
@@ -49,4 +93,5 @@ entityDef proj_mac10
 "hitscans"			"1"
 "spread"			"0.015 0.015"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

@@ -1,3 +1,20 @@
+#define V_M4_IDLE 0
+#define V_M4_RELOAD 1
+#define V_M4_DRAW 2
+#define V_M4_SHOOT1 3
+#define V_M4_SHOOT2 4
+#define V_M4_SSHOOT1 5
+#define V_M4_SSHOOT2 6
+#define V_M4_IDLE2 7
+#define V_M4_CHANGE 8
+#define V_M4_RECHANGE 9
+#define V_M4_SHOOT3 10
+#define V_M4_SHOOT4 11
+#define V_M4_SSHOOT3 12
+#define V_M4_SSHOOT4 13
+#define V_M4_RELOAD2 14
+#define V_M4_STOCK 15
+
 entityDef weapon_m4a1
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +28,29 @@ entityDef weapon_m4a1
 "model_view" 	"models/v_m4.mdl"
 "model" 	"models/w_m4.mdl"
 "model_player" 	"models/p_m4.mdl"
-	"models/p_m4_sil.mdl"
+	//"models/p_m4_sil.mdl"
 	//"snd_precache" ("weapons/m4/boltpull.wav");
 	//"snd_precache" ("weapons/m4/clipin.wav");
 	//"snd_precache" ("weapons/m4/clipout.wav");
-	"snd_precache" ("weapons/m4/m4-fire-sil.wav");
-	"snd_precache" ("weapons/m4/m4-fire.wav");
+	//"snd_precache" ("weapons/m4/m4-fire-sil.wav");
+	//"snd_precache" ("weapons/m4/m4-fire.wav");
 
 "inv_name"			"m4a1"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_M4_SHOOT1,$V_M4_SHOOT2"
+"act_idle"			"$V_M4_IDLE"
+"act_draw"			"$V_M4_DRAW"
+"act_reload"		"$V_M4_RELOAD"
+"clipSize"          "30"
+
+"def_fireInfo"        "fi_m4a1"
+"def_altFireInfo"    "fi_m4a1_ads"
+"altMode"           "1"
+"act_modeOn"        "$V_M4_CHANGE"
+"act_modeOff"        "$V_M4_RECHANGE"
+
 "snd_fire"			"weapon_m4a1.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -42,6 +69,20 @@ entityDef weapon_m4a1
 "punchSpring_accuracy"	"0 0 0"
 }
 
+entityDef fi_m4a1
+{
+    "def_onFire"        "proj_m4a1"
+}
+
+entityDef fi_m4a1_ads
+{
+    "act_idle"          "$V_M4_IDLE2"
+    "act_fire"          "$V_M4_SHOOT3,$V_M16_SHOOT4"
+    "act_reload"        "$V_M4_RELOAD2"
+    "def_onFire"        "proj_m4a1"
+	"model_flash"		"sprites/muzzleflash3.spr"
+}
+
 entityDef proj_m4a1
 {
 "inherit"			"projectile_bullet_base"
@@ -49,4 +90,5 @@ entityDef proj_m4a1
 "hitscans"			"1"
 "spread"			"0.0075 0.0075"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

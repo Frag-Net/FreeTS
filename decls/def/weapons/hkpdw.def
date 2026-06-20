@@ -1,3 +1,10 @@
+#define V_PDW_IDLE 0
+#define V_PDW_RELOAD 1
+#define V_PDW_DRAW 2
+#define V_PDW_SHOOT 3
+#define V_PDW_SHOOT2 4
+#define V_PDW_SHOOT3 5
+
 entityDef weapon_hkpdw
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +18,23 @@ entityDef weapon_hkpdw
 "model_view" 	"models/v_pdw.mdl"
 "model" 	"models/w_pdw.mdl"
 "model_player" 	"models/p_pdw.mdl"
-	"models/p_pdw_Sil.mdl"
+	//"models/p_pdw_Sil.mdl"
 	//"snd_precache" ("weapons/pdw/clipin.wav");
 	//"snd_precache" ("weapons/pdw/clipout.wav");
-	"snd_precache" ("weapons/pdw/fire-sil.wav");
-	"snd_precache" ("weapons/pdw/fire.wav");
+	/"snd_precache" ("weapons/pdw/fire-sil.wav");
+	//"snd_precache" ("weapons/pdw/fire.wav");
 	//"snd_precache" ("weapons/pdw/slideback.wav");
 
 "inv_name"			"hkpdw"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_PDW_SHOOT,$V_PDW_SHOOT2,$V_PDW_SHOOT3"
+"act_idle"			"$V_PDW_IDLE"
+"act_draw"			"$V_PDW_DRAW"
+"act_reload"		"$V_PDW_RELOAD"
+"clipSize"          "40"
+
 "snd_fire"			"weapon_hkpdw.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -49,4 +60,5 @@ entityDef proj_hkpdw
 "hitscans"			"1"
 "spread"			"0.025 0.025"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

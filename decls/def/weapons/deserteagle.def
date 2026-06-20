@@ -1,3 +1,17 @@
+#define V_DESERT_IDLE 0
+#define V_DESERT_RELOAD 1
+#define V_DESERT_DRAW 2
+#define V_DESERT_SHOOT1 3
+#define V_DESERT_SHOOT2 4
+#define V_DESERT_SHOOTLAST 5
+#define V_DESERT_IDLEB 6
+#define V_DESERT_SHOOTB 7
+#define V_DESERT_SHOOTBLAST 8
+#define V_DESERT_CHANGE 9
+#define V_DESERT_RECHANGE 10
+#define V_DESERT_STOCK 11
+#define V_DESERT_RELOADB 12
+
 entityDef weapon_deserteagle
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +25,31 @@ entityDef weapon_deserteagle
 "model_view" 	"models/v_desert.mdl"
 "model" 	"models/w_desert.mdl"
 "model_player" 	"models/p_desert.mdl"
-	"models/p_desert.mdl"
+	//"models/p_desert.mdl"
 	//"snd_precache" ("weapons/deagle/clipin.wav");
 	//"snd_precache" ("weapons/deagle/clipout.wav");
-	"snd_precache" ("weapons/deagle/fire-sil.wav");
-	"snd_precache" ("weapons/deagle/fire.wav");
+	//"snd_precache" ("weapons/deagle/fire-sil.wav");
+	//"snd_precache" ("weapons/deagle/fire.wav");
 	//"snd_precache" ("weapons/deagle/slideback.wav");
 
 "inv_name"			"deserteagle"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_DESERT_SHOOT1,$V_DESERT_SHOOT2"
+"act_fireLast"      "$V_DESERT_SHOOTLAST"
+"act_idle"			"$V_DESERT_IDLE"
+"act_draw"			"$V_DESERT_DRAW"
+"act_reload"		"$V_DESERT_RELOAD"
+"act_modeOn"        "$V_DESERT_CHANGE"
+"act_modeOff"       "$V_DESERT_RECHANGE"
+"clipSize"          "7"
+"semiAuto"          "1"
+
+"def_fireInfo"        "fi_deserteagle"
+"def_altFireInfo"    "fi_deserteagle_ads"
+"altMode"           "1"
+
 "snd_fire"			"weapon_deserteagle.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -42,11 +68,26 @@ entityDef weapon_deserteagle
 "punchSpring_accuracy"	"0 0 0"
 }
 
+entityDef fi_deserteagle
+{
+    "def_onFire"        "proj_deserteagle"
+}
+
+entityDef fi_deserteagle_ads
+{
+    "act_idle"          "$V_DESERT_IDLEB"
+    "act_fire"          "$V_DESERT_SHOOTB"
+    "act_fireLast"      "$V_DESERT_SHOOTBLAST"
+    "act_reload"        "$V_DESERT_RELOADB"
+    "def_onFire"        "proj_deserteagle"
+}
+
 entityDef proj_deserteagle
 {
 "inherit"			"projectile_bullet_base"
-"damage"			""
+"damage"			"15"
 "hitscans"			"1"
 "spread"			"0.01 0.01"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

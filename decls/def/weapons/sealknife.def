@@ -1,3 +1,11 @@
+#define V_SEALKNIFE_IDLE 0
+#define V_SEALKNIFE_DRAW 1
+#define V_SEALKNIFE_SLASH1 2
+#define V_SEALKNIFE_SLASH2 3
+#define V_SEALKNIFE_SLASH3 4
+#define V_SEALKNIFE_THROW 5
+#define V_SEALKNIFE_BLOCK 6
+
 entityDef weapon_sealknife
 {
 "editor_color"		".3 .3 1"
@@ -11,16 +19,16 @@ entityDef weapon_sealknife
 "model_view" 	"models/v_sealknife.mdl"
 "model" 	"models/w_sealknife.mdl"
 "model_player" 	"models/p_sealknife.mdl"
-	"snd_precache" ("weapons/knife/knife_miss.wav");
-	"snd_precache" ("weapons/knife/knife_hit.wav");
-	"snd_precache" ("weapons/knife/knife_hitbody.wav");
+	//"snd_precache" ("weapons/knife/knife_miss.wav");
+	//"snd_precache" ("weapons/knife/knife_hit.wav");
+	//"snd_precache" ("weapons/knife/knife_hitbody.wav");
 
 "inv_name"			"sealknife"
-"ammoType"			"ammo_shells"
-"ammoRequired"		"1"
-"ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"ammoRequired"		"0"
+"act_fire"			"$V_SEALKNIFE_SLASH1,$V_SEALKNIFE_SLASH2,$V_SEALKNIFE_SLASH3"
+"act_idle"			"$V_SEALKNIFE_IDLE"
+"act_draw"			"$V_SEALKNIFE_DRAW"
+
 "snd_fire"			"weapon_sealknife.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"

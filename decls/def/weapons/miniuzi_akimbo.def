@@ -1,3 +1,30 @@
+#define V_UZI_AKIMBO_AKIMBO_IDLE 0
+#define V_UZI_AKIMBO_SIDE_IDLE 1
+#define V_UZI_AKIMBO_LEFT_IDLE 2
+#define V_UZI_AKIMBO_RIGHT_IDLE 3
+#define V_UZI_AKIMBO_AKIMBO_DRAW 4
+#define V_UZI_AKIMBO_GO_LEFT 5
+#define V_UZI_AKIMBO_GO_RIGHT 6
+#define V_UZI_AKIMBO_GO_SIDE 7
+#define V_UZI_AKIMBO_RET_FROM_LEFT 8
+#define V_UZI_AKIMBO_RET_FROM_RIGHT 9
+#define V_UZI_AKIMBO_RET_FROM_SIDE 10
+#define V_UZI_AKIMBO_AKIMBO_RELOAD 11
+#define V_UZI_AKIMBO_AKIMBO_SHOOT1 12
+#define V_UZI_AKIMBO_AKIMBO_SHOOT2 13
+#define V_UZI_AKIMBO_AKIMBO_SHOOT3 14
+#define V_UZI_AKIMBO_AKIMBO_SSHOOT1 15
+#define V_UZI_AKIMBO_AKIMBO_SSHOOT2 16
+#define V_UZI_AKIMBO_AKIMBO_SSHOOT3 17
+#define V_UZI_AKIMBO_RIGHT_SHOOT 18
+#define V_UZI_AKIMBO_LEFT_SHOOT 19
+#define V_UZI_AKIMBO_RIGHT_SSHOOT 20
+#define V_UZI_AKIMBO_LEFT_SSHOOT 21
+#define V_UZI_AKIMBO_SIDE_SHOOT 22
+#define V_UZI_AKIMBO_SIDE_SSHOOT 23
+#define V_UZI_AKIMBO_AKIMBO_RIGHT_SHOOT 24
+#define V_UZI_AKIMBO_AKIMBO_LEFT_SHOOT 25
+
 entityDef weapon_miniuzi_akimbo
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +38,20 @@ entityDef weapon_miniuzi_akimbo
 "model_view" 	"models/v_uzi_akimbo.mdl"
 "model" 	"models/w_uzi.mdl"
 "model_player" 	"models/p_uzi_akimbo.mdl"
-	"models/p_uzi_akimbo_sil.mdl"
+	//"models/p_uzi_akimbo_sil.mdl"
 
 "inv_name"			"miniuzi_akimbo"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_idle"			"$V_UZI_AKIMBO_AKIMBO_IDLE"
+"act_reload"		"$V_UZI_AKIMBO_AKIMBO_RELOAD"
+"act_draw"			"$V_UZI_AKIMBO_AKIMBO_DRAW"
+"clipSize"          "64"
+    "def_fireInfo"        "fi_miniuzi_akimbo_left"
+    "def_altFireInfo"    "fi_miniuzi_akimbo_right"
+"altAlternates"     "1"
+
 "snd_fire"			"weapon_miniuzi_akimbo.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -34,15 +67,39 @@ entityDef weapon_miniuzi_akimbo
 "def_onFire"		"proj_miniuzi_akimbo"
 "fireRate"			"0.0625f
 //"
-"punchSpring"		"-2 0 0"
 "punchSpring_accuracy"	"0.005 0 0"
 }
 
-entityDef proj_miniuzi_akimbo
+entityDef fi_miniuzi_akimbo_left
+{
+    "act_fire"            "$V_UZI_AKIMBO_AKIMBO_LEFT_SHOOT"
+    "def_onFire"        "proj_miniuzi_akimbo_left"
+    "punchSpring"		"-1 -1 0"
+}
+
+entityDef fi_miniuzi_akimbo_right
+{
+    "act_fire"            "$V_UZI_AKIMBO_AKIMBO_RIGHT_SHOOT"
+    "def_onFire"        "proj_miniuzi_akimbo_right"
+    "punchSpring"		"-1 1 0"
+}
+
+entityDef proj_miniuzi_akimbo_right
 {
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
 "hitscans"			"1"
 "spread"			"0.03 0.03"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 4 0"
+}
+
+entityDef proj_miniuzi_akimbo_left
+{
+"inherit"			"projectile_bullet_base"
+"damage"			"7.0f"
+"hitscans"			"1"
+"spread"			"0.03 0.03"
+"fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 -4 0"
 }

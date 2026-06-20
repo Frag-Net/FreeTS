@@ -1,3 +1,33 @@
+#define V_BERETTAS_IDLE 0
+#define V_BERETTAS_RELOAD 1
+#define V_BERETTAS_DRAW 2
+#define V_BERETTAS_RIGHTSHOOT 3
+#define V_BERETTAS_LEFTSHOOT 4
+#define V_BERETTAS_RIGHTSHOOT2 5
+#define V_BERETTAS_LEFTSHOOT2 6
+#define V_BERETTAS_RIGHTSHOOTLAST 7
+#define V_BERETTAS_LEFTSHOOTLAST 8
+#define V_BERETTAS_RIGHTSHOOTS 9
+#define V_BERETTAS_LEFTSHOOTS 10
+#define V_BERETTAS_RIGHTSHOOTLASTS 11
+#define V_BERETTAS_LEFTSHOOTLASTS 12
+#define V_BERETTAS_IDLE2 13
+#define V_BERETTAS_CHANGE 14
+#define V_BERETTAS_RECHANGE 15
+#define V_BERETTAS_RIGHTSHOOT2 16
+#define V_BERETTAS_LEFTSHOOT2 17
+#define V_BERETTAS_RIGHTSHOOT2 18
+#define V_BERETTAS_LEFTSHOOT2 19
+#define V_BERETTAS_RIGHTSHOOTLAST2 20
+#define V_BERETTAS_LEFTSHOOTLAST2 21
+#define V_BERETTAS_RIGHTSHOOTS2 22
+#define V_BERETTAS_LEFTSHOOTS2 23
+#define V_BERETTAS_RIGHTSHOOTLASTS2 24
+#define V_BERETTAS_LEFTSHOOTLASTS2 25
+#define V_BERETTAS_LINKEDSHOOT 26
+#define V_BERETTAS_LINKEDSHOOTLAST 27
+#define V_BERETTAS_RELOAD2 28
+
 entityDef weapon_beretta_akimbo
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +41,19 @@ entityDef weapon_beretta_akimbo
 "model_view" 	"models/v_berettas.mdl"
 "model" 	"models/w_berettas.mdl"
 "model_player" 	"models/p_berettas.mdl"
-	"models/p_berettas_sil.mdl"
+	//"models/p_berettas_sil.mdl"
+"def_fireInfo"        "fi_beretta_akimbo_left"
+"def_altFireInfo"    "fi_beretta_akimbo_right"
+"altAlternates"     "1"
 
 "inv_name"			"beretta_akimbo"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"clipSize"          "30"
+"act_idle"			"$V_BERETTAS_IDLE"
+"act_draw"			"$V_BERETTAS_DRAW"
+"act_reload"		"$V_BERETTAS_RELOAD"
 "snd_fire"			"weapon_beretta_akimbo.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -30,19 +65,45 @@ entityDef weapon_beretta_akimbo
 "iconSelected"		"weapon_beretta_akimbo.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
 
-
-"def_onFire"		"proj_beretta_akimbo"
-"fireRate"			"0.19f
-//"
-"punchSpring"		"-1.5 0 0"
+"fireRate"			"0.19"
+"semiAuto"          "1"
 "punchSpring_accuracy"	"0 0 0"
 }
 
-entityDef proj_beretta_akimbo
+
+
+entityDef fi_beretta_akimbo_left
 {
-"inherit"			"projectile_bullet_base"
-"damage"			"15.0f"
-"hitscans"			"1"
-"spread"			"0.028 0.028"
-"fx_path"			"weapon_shotgun.tracer"
+    "act_fire"            "$V_BERETTAS_LEFTSHOOT"
+    "act_fireLast"            "$V_BERETTAS_LEFTSHOOTLAST"
+    "def_onFire"        "proj_beretta_akimbo_left"
+    "punchSpring"		"-1.5 -.5 0"
+}
+
+entityDef fi_beretta_akimbo_right
+{
+    "act_fire"            "$V_BERETTAS_RIGHTSHOOT"
+    "act_fireLast"            "$V_BERETTAS_RIGHTSHOOTLAST"
+    "def_onFire"        "proj_beretta_akimbo_right"
+    "punchSpring"		"-1.5 .5 0"
+}
+
+entityDef proj_beretta_akimbo_left
+{
+    "inherit"			"projectile_bullet_base"
+    "damage"			"15.0f"
+    "hitscans"			"1"
+    "spread"			"0.028 0.028"
+    "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 -4 0"
+}
+
+entityDef proj_beretta_akimbo_right
+{
+    "inherit"			"projectile_bullet_base"
+    "damage"			"15.0f"
+    "hitscans"			"1"
+    "spread"			"0.028 0.028"
+    "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 4 0"
 }

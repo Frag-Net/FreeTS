@@ -1,3 +1,21 @@
+#define V_MK23_AKIMBO_IDLE 0
+#define V_MK23_AKIMBO_SHOOT_RIGHT1 1
+#define V_MK23_AKIMBO_SHOOT_RIGHT2 2
+#define V_MK23_AKIMBO_SHOOT_LEFT1 3
+#define V_MK23_AKIMBO_SHOOT_LEFT2 4
+#define V_MK23_AKIMBO_DRAW 5
+#define V_MK23_AKIMBO_IDLEB 6
+#define V_MK23_AKIMBO_SHOOT_RIGHTB1 7
+#define V_MK23_AKIMBO_SHOOT_RIGHTB2 8
+#define V_MK23_AKIMBO_SHOOT_LEFTB1 9
+#define V_MK23_AKIMBO_SHOOT_LEFTB2 10
+#define V_MK23_AKIMBO_CHANGE 11
+#define V_MK23_AKIMBO_RECHANGE 12
+#define V_MK23_AKIMBO_RELOAD 13
+#define V_MK23_AKIMBO_SHOOT_LINKED 14
+#define V_MK23_AKIMBO_SHOOT_LINKED_LAST 15
+#define V_MK23_AKIMBO_RELOADB 16
+
 entityDef weapon_socommk23_akimbo
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +29,16 @@ entityDef weapon_socommk23_akimbo
 "model_view" 	"models/v_mk23_Akimbo.mdl"
 "model" 	"models/w_mk23.mdl"
 "model_player" 	"models/p_mk23_Akimbo.mdl"
-	"models/p_mk23_Akimbo_sil.mdl"
+	//"models/p_mk23_Akimbo_sil.mdl"
 
 "inv_name"			"socommk23_akimbo"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_idle"			"$V_MK23_AKIMBO_IDLE"
+"act_draw"          "$V_MK23_AKIMBO_DRAW"
+"act_reload"        "$V_MK23_AKIMBO_RELOAD"
+
 "snd_fire"			"weapon_socommk23_akimbo.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -30,19 +50,50 @@ entityDef weapon_socommk23_akimbo
 "iconSelected"		"weapon_socommk23_akimbo.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
 
+"def_fireInfo"        "fi_socommk23_akimbo_left"
+"def_altFireInfo"    "fi_socommk23_akimbo_right"
+"altAlternates"     "1"
+
+"clipSize"          "24"
+
 
 "def_onFire"		"proj_socommk23_akimbo"
-"fireRate"			"0.19f
-//"
+"fireRate"			"0.19"
 "punchSpring"		"-2.0 0 0"
 "punchSpring_accuracy"	"0 0 0"
+"semiAuto"          "1"
 }
 
-entityDef proj_socommk23_akimbo
+entityDef fi_socommk23_akimbo_left
 {
-"inherit"			"projectile_bullet_base"
-"damage"			"15.0f"
-"hitscans"			"1"
-"spread"			"0.02 0.02"
-"fx_path"			"weapon_shotgun.tracer"
+    "act_fire"			"$V_MK23_AKIMBO_SHOOT_LEFT1,$V_MK23_AKIMBO_SHOOT_LEFT2"
+    "def_onFire"        "proj_socommk23_akimbo_left"
+"punchSpring"		"-1.5 -.5 0"
+}
+
+entityDef fi_socommk23_akimbo_right
+{
+    "act_fire"			"$V_MK23_AKIMBO_SHOOT_RIGHT1,$V_MK23_AKIMBO_SHOOT_RIGHT2"
+    "def_onFire"        "proj_socommk23_akimbo_right"
+"punchSpring"		"-1.5 .5 0"
+}
+
+entityDef proj_socommk23_akimbo_right
+{
+    "inherit"			"projectile_bullet_base"
+    "damage"			"15.0f"
+    "hitscans"			"1"
+    "spread"			"0.02 0.02"
+    "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 4 0"
+}
+
+entityDef proj_socommk23_akimbo_left
+{
+    "inherit"			"projectile_bullet_base"
+    "damage"			"15.0f"
+    "hitscans"			"1"
+    "spread"			"0.02 0.02"
+    "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 -4 0"
 }

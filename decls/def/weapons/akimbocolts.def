@@ -1,3 +1,13 @@
+#define V_GOLD_IDLE 0
+#define V_GOLD_RELOAD 1
+#define V_GOLD_DRAW 2
+#define V_GOLD_RIGHTSHOOT 3
+#define V_GOLD_LEFTSHOOT 4
+#define V_GOLD_RIGHTSHOOTLAST 5
+#define V_GOLD_LEFTSHOOTLAST 6
+#define V_GOLD_LINKEDSHOOT 7
+#define V_GOLD_LINKEDSHOOTLAST 8
+
 entityDef weapon_akimbocolts
 {
 "editor_color"		".3 .3 1"
@@ -13,15 +23,22 @@ entityDef weapon_akimbocolts
 "model_player" 	"models/p_gold.mdl"
 	//"snd_precache" ("weapons/gold/clipin.wav");
 	//"snd_precache" ("weapons/gold/clipout.wav");
-	"snd_precache" ("weapons/gold/gold-fire.wav");
+	//"snd_precache" ("weapons/gold/gold-fire.wav");
 	//"snd_precache" ("weapons/gold/sliderelease.wav");
 
 "inv_name"			"akimbocolts"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_idle"			"$V_GOLD_IDLE"
+"act_draw"			"$V_GOLD_DRAW"
+"act_reload"		"$V_GOLD_RELOAD"
+    "def_fireInfo"        "fi_akimbocolts_left"
+    "def_altFireInfo"    "fi_akimbocolts_right"
+"altAlternates"     "1"
+"semiAuto"          "1"
+"clipSize"          "16"
+
 "snd_fire"			"weapon_akimbocolts.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -37,15 +54,43 @@ entityDef weapon_akimbocolts
 "def_onFire"		"proj_akimbocolts"
 "fireRate"			"0.19f
 //"
-"punchSpring"		"-2 0 0"
 "punchSpring_accuracy"	"0 0 0"
 }
 
-entityDef proj_akimbocolts
+
+entityDef fi_akimbocolts_left
 {
-"inherit"			"projectile_bullet_base"
-"damage"			"15.0f"
-"hitscans"			"1"
-"spread"			"0.015 0.015"
-"fx_path"			"weapon_shotgun.tracer"
+    "act_fire"          "$V_GOLD_LEFTSHOOT"
+    "act_fireLast"      "$V_GOLD_LEFTSHOOTLAST"
+    "def_onFire"        "proj_akimbocolts_left"
+    "punchSpring"		"-2 -.5 0"
+}
+
+entityDef fi_akimbocolts_right
+{
+    "act_fire"          "$V_GOLD_RIGHTSHOOT"
+    "act_fireLast"      "$V_GOLD_RIGHTSHOOTLAST"
+    "def_onFire"        "proj_akimbocolts_right"
+    "punchSpring"		"-2 .5 0"
+}
+
+
+entityDef proj_akimbocolts_right
+{
+    "inherit"			"projectile_bullet_base"
+    "damage"			"15.0f"
+    "hitscans"			"1"
+    "spread"			"0.015 0.015"
+    "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 5 0"
+}
+
+entityDef proj_akimbocolts_left
+{
+    "inherit"			"projectile_bullet_base"
+    "damage"			"15.0f"
+    "hitscans"			"1"
+    "spread"			"0.015 0.015"
+    "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 -5 0"
 }

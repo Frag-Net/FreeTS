@@ -1,3 +1,10 @@
+#define V_KATANA_IDLE 0
+#define V_KATANA_DRAW 1
+#define V_KATANA_SLASH1 2
+#define V_KATANA_SLASH2 3
+#define V_KATANA_SLASH3 4
+#define V_KATANA_BLOCK 5
+
 entityDef weapon_katana
 {
 "editor_color"		".3 .3 1"
@@ -11,18 +18,18 @@ entityDef weapon_katana
 "model_view" 	"models/v_katana.mdl"
 "model" 	"models/w_katana.mdl"
 "model_player" 	"models/p_katana.mdl"
-	"snd_precache" ("weapons/katana/hit-body.wav");
-	"snd_precache" ("weapons/katana/hit.wav");
-	"snd_precache" ("weapons/katana/hit1.wav");
-	"snd_precache" ("weapons/katana/miss.wav");
-	"snd_precache" ("weapons/katana/miss1.wav");
+	//"snd_precache" ("weapons/katana/hit-body.wav");
+	//"snd_precache" ("weapons/katana/hit.wav");
+	//"snd_precache" ("weapons/katana/hit1.wav");
+	//"snd_precache" ("weapons/katana/miss.wav");
+	//"snd_precache" ("weapons/katana/miss1.wav");
 
 "inv_name"			"katana"
-"ammoType"			"ammo_shells"
-"ammoRequired"		"1"
-"ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"inv_name"			"karate"
+"ammoRequired"		"0"
+"act_fire"			"$V_KATANA_SLASH1,$V_KATANA_SLASH2,$V_KATANA_SLASH3"
+"act_idle"			"$V_KATANA_IDLE"
+"act_draw"          "$V_KATANA_DRAW"
 "snd_fire"			"weapon_katana.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"

@@ -1,3 +1,9 @@
+#define V_USAS_IDLE 0
+#define V_USAS_RELOAD 1
+#define V_USAS_DRAW 2
+#define V_USAS_SHOOTSEMI 3
+#define V_USAS_STOCK 4
+
 entityDef weapon_usas12
 {
 "editor_color"		".3 .3 1"
@@ -14,14 +20,19 @@ entityDef weapon_usas12
 	//"snd_precache" ("weapons/usas/clipin.wav");
 	//"snd_precache" ("weapons/usas/clipout.wav");
 	//"snd_precache" ("weapons/usas/slideback.wav");
-	"snd_precache" ("weapons/usas/usas-fire.wav");
+	//"snd_precache" ("weapons/usas/usas-fire.wav");
 
 "inv_name"			"usas12"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_USAS_SHOOTSEMI"
+"act_idle"			"$V_USAS_IDLE"
+"act_draw"			"$V_USAS_DRAW"
+"act_reload"		"$V_USAS_RELOAD"
+"clipSize"          "20"
+"semiAuto"          "1"
+
 "snd_fire"			"weapon_usas12.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -35,7 +46,7 @@ entityDef weapon_usas12
 
 
 "def_onFire"		"proj_usas12"
-"fireRate"			"1/6"
+"fireRate"			"0.19"
 "punchSpring"		"-7 0 0"
 "punchSpring_accuracy"	"0 0 0"
 }
@@ -43,8 +54,9 @@ entityDef weapon_usas12
 entityDef proj_usas12
 {
 "inherit"			"projectile_bullet_base"
-"damage"			"7.0f"
-"hitscans"			"1"
+"damage"			"7"
+"hitscans"			"8"
 "spread"			"0.07 0.07"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

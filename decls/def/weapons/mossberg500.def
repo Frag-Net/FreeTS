@@ -1,3 +1,20 @@
+#define V_MOSSBERG_IDLE 0
+#define V_MOSSBERG_SHOOT 1
+#define V_MOSSBERG_PUMP 2
+#define V_MOSSBERG_IDLEB 3
+#define V_MOSSBERG_SHOOTB 4
+#define V_MOSSBERG_PUMPB 5
+#define V_MOSSBERG_PUMPB2 6
+#define V_MOSSBERG_DRAW 7
+#define V_MOSSBERG_RELOAD1 8
+#define V_MOSSBERG_RELOAD2 9
+#define V_MOSSBERG_RELOAD3 10
+#define V_MOSSBERG_CHANGE 11
+#define V_MOSSBERG_RECHANGE 12
+#define V_MOSSBERG_RELOAD1B 13
+#define V_MOSSBERG_RELOAD2B 14
+#define V_MOSSBERG_RELOAD3B 15
+
 entityDef weapon_mossberg500
 {
 "editor_color"		".3 .3 1"
@@ -11,14 +28,20 @@ entityDef weapon_mossberg500
 "model_view" 	"models/v_mossberg.mdl"
 "model" 	"models/w_mossberg.mdl"
 "model_player" 	"models/p_mossberg.mdl"
-	"snd_precache" ("weapons/mossberg/fire.wav");
+	//"snd_precache" ("weapons/mossberg/fire.wav");
 
 "inv_name"			"mossberg500"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_MOSSBERG_SHOOT"
+"act_idle"			"$V_MOSSBERG_IDLE"
+"act_draw"			"$V_MOSSBERG_DRAW"
+
+	"act_reloadStart"	"$V_MOSSBERG_RELOAD1"
+	"act_reload"		"$V_MOSSBERG_RELOAD2"
+	"act_reloadEnd"		"$V_MOSSBERG_RELOAD3"
+
 "snd_fire"			"weapon_mossberg500.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -29,6 +52,7 @@ entityDef weapon_mossberg500
 "icon"				"weapon_mossberg500.weapon"
 "iconSelected"		"weapon_mossberg500.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
+"clipSize"          "8"
 
 
 "def_onFire"		"proj_mossberg500"
@@ -41,7 +65,8 @@ entityDef proj_mossberg500
 {
 "inherit"			"projectile_bullet_base"
 "damage"			"7.0f"
-"hitscans"			"1"
+"hitscans"			"8"
 "spread"			"0.042 0.042"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }

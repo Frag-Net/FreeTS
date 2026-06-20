@@ -1,3 +1,15 @@
+#define V_TMP_IDLE 0
+#define V_TMP_RELOAD 1
+#define V_TMP_DRAW 2
+#define V_TMP_SHOOT 3
+#define V_TMP_SHOOT2 4
+#define V_TMP_CHANGE 5
+#define V_TMP_RECHANGE 6
+#define V_TMP_IDLE2 7
+#define V_TMP_SHOOTB 8
+#define V_TMP_SHOOTB2 9
+#define V_TMP_RELOADB 10
+
 entityDef weapon_steyrtmp
 {
 "editor_color"		".3 .3 1"
@@ -11,19 +23,29 @@ entityDef weapon_steyrtmp
 "model_view" 	"models/v_tmp.mdl"
 "model" 	"models/w_tmp.mdl"
 "model_player" 	"models/p_tmp.mdl"
-	"models/p_tmp_sil.mdl"
+	//"models/p_tmp_sil.mdl"
 	//"snd_precache" ("weapons/tmp/clipin.wav");
 	//"snd_precache" ("weapons/tmp/clipout.wav");
-	"snd_precache" ("weapons/tmp/fire-sil.wav");
-	"snd_precache" ("weapons/tmp/fire.wav");
+	//"snd_precache" ("weapons/tmp/fire-sil.wav");
+	//"snd_precache" ("weapons/tmp/fire.wav");
 	//"snd_precache" ("weapons/tmp/slideback.wav");
 
 "inv_name"			"steyrtmp"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
-"act_fire"			"1"
-"act_idle"			"0"
+"act_fire"			"$V_TMP_SHOOT,$V_TMP_SHOOT2"
+"act_idle"			"$V_TMP_IDLE"
+"act_draw"			"$V_TMP_DRAW"
+"act_reload"		"$V_TMP_RELOAD"
+"clipSize"          "30"
+
+"def_fireInfo"        "fi_steyrtmp"
+"def_altFireInfo"    "fi_steyrtmp_ads"
+"altMode"           "1"
+"act_modeOn"        "$V_TMP_CHANGE"
+"act_modeOff"        "$V_TMP_RECHANGE"
+
 "snd_fire"			"weapon_steyrtmp.shoot"
 "snd_empty"			"weapon.empty"
 "hudSlot"			"1"
@@ -35,11 +57,23 @@ entityDef weapon_steyrtmp
 "iconSelected"		"weapon_steyrtmp.weapon_s"
 "smoke_muzzle"		"muzzle.smoke"
 
-
-"def_onFire"		"proj_steyrtmp"
 "fireRate"			"0.0625f"
-"punchSpring"		"-1.2 0 0"
 "punchSpring_accuracy"	"0.01 0 0"
+}
+
+entityDef fi_steyrtmp
+{
+    "def_onFire"        "proj_steyrtmp"
+    "punchSpring"		"-1.2 0 0"
+}
+
+entityDef fi_steyrtmp_ads
+{
+    "act_idle"          "$V_TMP_IDLE2"
+    "act_fire"          "$V_TMP_SHOOTB,$V_TMP_SHOOTB2"
+    "act_reload"        "$V_TMP_RELOADB"
+    "def_onFire"        "proj_steyrtmp"
+    "punchSpring"		"-.5 .5 -2"
 }
 
 entityDef proj_steyrtmp
@@ -49,4 +83,5 @@ entityDef proj_steyrtmp
 "hitscans"			"1"
 "spread"			"0.015 0.015"
 "fx_path"			"weapon_shotgun.tracer"
+    "offset"            "0 3 0"
 }
