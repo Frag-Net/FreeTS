@@ -1,0 +1,33 @@
+entityDef ts_player
+{
+	"inherit"			"player"
+	"weapon"			"weapon_karate,weapon_akimbocolts,weapon_steyrtmp,weapon_sawedoff"
+	"current_weapon"	"1"
+	"model"    "models/player/seal/seal.mdl"
+
+// "weapon_karate,weapon_akimbocolts,,weapon_ak47,weapon_barrettm82,weapon_benellim3,weapon_beretta,weapon_beretta_akimbo,weapon_combatknife,weapon_contenderg2,weapon_deserteagle,weapon_fiveseven,weapon_fiveseven_akimbo,weapon_glock18,weapon_glock20,weapon_hkpdw,weapon_katana,weapon_m16a4,weapon_m4a1,weapon_m60,weapon_m61grenade,weapon_mac10,weapon_miniuzi,weapon_miniuzi_akimbo,weapon_mossberg500,weapon_mp5k,weapon_mp5sd,weapon_ragingbull,weapon_rugermk1,weapon_sawedoff,weapon_sealknife,weapon_skorpion,weapon_skorpion_akimbo,weapon_socommk23,weapon_socommk23_akimbo,weapon_spas12,weapon_steyraug,weapon_steyrtmp,weapon_ump,weapon_usas12"
+
+
+	"animBackend"		"2"
+	"spine"				"Bip01 Testa"
+	"torsoStart"		"Bip01 Testa"
+	"torsoEnd"			"Bip01 R Dito mano SX12"
+	"act_idle"			"7"
+	"act_jump"			"21"
+	"act_walk_crouch"		"20"
+	"act_idle_crouch"		"51"
+	"act_run"			"16"
+	"act_walk"			"17"
+	"act_draw"			"63"
+	"act_reload"			"60"
+	"act_aim"			"39"
+	"act_attack"			"40"
+	"act_aim_crouch"			"51"
+	"act_attack_crouch"			"52"
+	"act_dieSimple"     "31,36,37,38"
+	"act_dieBackward"  "32,33"
+	"act_dieForward" "34,35"
+    "pm_walkspeed"      "230"
+    "pm_runspeed"       "320"
+
+}

@@ -1,5 +1,8 @@
 CC=fteqcc
 
 all:
-	cd client && $(MAKE)
-	cd server && $(MAKE)
+	echo "Nothing to build right now"
+
+#all:
+#	cd client && $(MAKE)
+#	cd server && $(MAKE)
