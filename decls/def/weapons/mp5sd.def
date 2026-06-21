@@ -11,9 +11,10 @@ entityDef weapon_mp5sd
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"mp5sd"
+"editor_usage"		"MP5 SD"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_mp5sd.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_mp5sd.mdl"
@@ -21,7 +22,7 @@ entityDef weapon_mp5sd
 "model_player" 	"models/p_mp5sd.mdl"
 	//"snd_precache" ("weapons/mp5sd/mp5sd-fire.wav");
 
-"inv_name"			"mp5sd"
+"inv_name"			"MP5 SD"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

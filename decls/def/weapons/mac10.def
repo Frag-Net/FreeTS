@@ -24,9 +24,10 @@ entityDef weapon_mac10
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"mac10"
+"editor_usage"		"MAC10"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_mac10.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_mac10.mdl"
@@ -39,7 +40,7 @@ entityDef weapon_mac10
 	//"snd_precache" ("weapons/mac10/mac10-fire.wav");
 	//"snd_precache" ("weapons/mac10/slideback.wav");
 
-"inv_name"			"mac10"
+"inv_name"			"MAC10"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

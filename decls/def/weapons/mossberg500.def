@@ -20,9 +20,10 @@ entityDef weapon_mossberg500
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"mossberg500"
+"editor_usage"		"Mossberg 500"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_mossberg.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_mossberg.mdl"
@@ -30,7 +31,7 @@ entityDef weapon_mossberg500
 "model_player" 	"models/p_mossberg.mdl"
 	//"snd_precache" ("weapons/mossberg/fire.wav");
 
-"inv_name"			"mossberg500"
+"inv_name"			"Mossberg 500"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

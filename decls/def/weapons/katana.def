@@ -10,9 +10,10 @@ entityDef weapon_katana
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"katana"
+"editor_usage"		"Katana"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_katana.mdl"
+	"animPrefix"		"katana"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_katana.mdl"
@@ -24,8 +25,7 @@ entityDef weapon_katana
 	//"snd_precache" ("weapons/katana/miss.wav");
 	//"snd_precache" ("weapons/katana/miss1.wav");
 
-"inv_name"			"katana"
-"inv_name"			"karate"
+"inv_name"			"Katana"
 "ammoRequired"		"0"
 "act_fire"			"$V_KATANA_SLASH1,$V_KATANA_SLASH2,$V_KATANA_SLASH3"
 "act_idle"			"$V_KATANA_IDLE"

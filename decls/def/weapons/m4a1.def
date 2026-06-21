@@ -20,9 +20,10 @@ entityDef weapon_m4a1
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"m4a1"
+"editor_usage"		"M4A1"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_m4.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_m4.mdl"
@@ -35,7 +36,7 @@ entityDef weapon_m4a1
 	//"snd_precache" ("weapons/m4/m4-fire-sil.wav");
 	//"snd_precache" ("weapons/m4/m4-fire.wav");
 
-"inv_name"			"m4a1"
+"inv_name"			"M4A1"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

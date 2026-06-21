@@ -12,9 +12,10 @@ entityDef weapon_combatknife
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"combatknife"
+"editor_usage"		"Combat Knife"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_knife.mdl"
+	"animPrefix"		"knife"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_knife.mdl"
@@ -24,7 +25,7 @@ entityDef weapon_combatknife
 	//"snd_precache" ("weapons/knife/knife_hitbody.wav");
 	//"snd_precache" ("weapons/knife/knife_miss.wav");
 
-"inv_name"			"combatknife"
+"inv_name"			"Combat Knife"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"0"
 "act_fire"			"1"

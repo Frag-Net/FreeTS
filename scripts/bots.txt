@@ -1,0 +1,42 @@
+{
+	name Agent
+	model agent
+	topcolor 0xeff
+	bottomcolor 0xff0020
+}
+{
+	name Castor
+	model castor
+	topcolor 0xff6b00
+	bottomcolor 0xff0b00
+}
+{
+	name Gordon
+	model gordon
+	topcolor 0x9200ff
+	bottomcolor 0xc800ff
+}
+{
+	name Hitman
+	model hitman
+	topcolor 0xa8ff00
+	bottomcolor 0xf3ff00
+}
+{
+	name Laurence
+	model laurence
+	topcolor 0xffaf
+	bottomcolor 0xffb600
+}
+{
+	name Merc
+	model merc
+	topcolor 0xff24
+	bottomcolor 0xff4000
+}
+{
+	name Seal
+	model seal
+	topcolor 0x8fff
+	bottomcolor 0xff0076
+}

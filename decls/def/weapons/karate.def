@@ -15,15 +15,16 @@ entityDef weapon_karate
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"karate"
+"editor_usage"		"Karate"
 "editor_rotatable"	"1"
+	"animPrefix"		"karate"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_melee.mdl"
 
 "def_fireInfo"        "fi_karate_punch"
 "def_altFireInfo"    "fi_karate_kick"
-"inv_name"			"karate"
+"inv_name"			"Karate"
 "ammoRequired"		"0"
 "act_idle"			"$V_MELEE_IDLE"
 "act_draw"          "$V_MELEE_DRAW"

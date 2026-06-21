@@ -30,9 +30,10 @@ entityDef weapon_miniuzi_akimbo
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"miniuzi_akimbo"
+"editor_usage"		"Akimbo Mini-Uzi"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_uzi.mdl"
+	"animPrefix"		"akimbo"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_uzi_akimbo.mdl"
@@ -40,7 +41,7 @@ entityDef weapon_miniuzi_akimbo
 "model_player" 	"models/p_uzi_akimbo.mdl"
 	//"models/p_uzi_akimbo_sil.mdl"
 
-"inv_name"			"miniuzi_akimbo"
+"inv_name"			"Akimbo Mini-Uzi"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

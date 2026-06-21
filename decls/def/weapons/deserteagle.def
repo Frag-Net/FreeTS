@@ -17,9 +17,10 @@ entityDef weapon_deserteagle
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"deserteagle"
+"editor_usage"		"Desert Eagle"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_desert.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_desert.mdl"
@@ -32,7 +33,7 @@ entityDef weapon_deserteagle
 	//"snd_precache" ("weapons/deagle/fire.wav");
 	//"snd_precache" ("weapons/deagle/slideback.wav");
 
-"inv_name"			"deserteagle"
+"inv_name"			"Desert Eagle"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

@@ -11,9 +11,10 @@ entityDef weapon_skorpion_akimbo
     "editor_color"        ".3 .3 1"
     "editor_mins"        "-16 -16 -16"
     "editor_maxs"        "16 16 16"
-    "editor_usage"        "skorpion_akimbo"
+    "editor_usage"        "Akimbo Skorpions"
     "editor_rotatable"    "1"
     "editor_model"     "models/w_skorpion.mdl"
+	"animPrefix"		"akimbo"
 
     "inherit" "weapon_base"
     "model_view"     "models/v_skorpion_ak.mdl"
@@ -23,7 +24,7 @@ entityDef weapon_skorpion_akimbo
     "def_altFireInfo"    "fi_skorpion_akimbo_right"
     "altAlternates"     "1"
 
-    "inv_name"            "skorpion_akimbo"
+    "inv_name"            "Akimbo Skorpions"
     "ammoType"            "ammo_shells"
     "ammoRequired"        "1"
     "ammoPerShot"        "1"

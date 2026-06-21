@@ -9,9 +9,10 @@ entityDef weapon_m61grenade
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"m61grenade"
+"editor_usage"		"M61 Grenade"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_m61.mdl"
+	"animPrefix"		"grenade"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_m61.mdl"
@@ -20,7 +21,7 @@ entityDef weapon_m61grenade
 	//"snd_precache" ("weapons/gr_pull.wav");
 	//"snd_precache" ("weapons/gr_safe.wav");
 
-"inv_name"			"m61grenade"
+"inv_name"			"M61 Grenade"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

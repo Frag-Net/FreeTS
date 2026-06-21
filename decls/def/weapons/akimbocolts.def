@@ -13,9 +13,10 @@ entityDef weapon_akimbocolts
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"akimbocolts"
+"editor_usage"		"Golden Colts"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_gold.mdl"
+	"animPrefix"		"akimbo"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_gold.mdl"
@@ -26,7 +27,7 @@ entityDef weapon_akimbocolts
 	//"snd_precache" ("weapons/gold/gold-fire.wav");
 	//"snd_precache" ("weapons/gold/sliderelease.wav");
 
-"inv_name"			"akimbocolts"
+"inv_name"			"Golden Colts"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

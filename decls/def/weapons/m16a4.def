@@ -20,9 +20,10 @@ entityDef weapon_m16a4
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"m16a4"
+"editor_usage"		"M16A4"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_m16.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_m16.mdl"
@@ -30,7 +31,7 @@ entityDef weapon_m16a4
 "model_player" 	"models/p_m16.mdl"
 	//"snd_precache" ("weapons/m16/fire.wav");
 
-"inv_name"			"m16a4"
+"inv_name"			"M16A4"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

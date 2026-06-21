@@ -15,9 +15,10 @@ entityDef weapon_benellim3
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"benellim3"
+"editor_usage"		"Benelli M3"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_m3.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_m3.mdl"
@@ -26,7 +27,7 @@ entityDef weapon_benellim3
 	//"snd_precache" ("weapons/m3/m3-pump.wav");
 	//"snd_precache" ("weapons/m3/m3-fire.wav");
 
-"inv_name"			"benellim3"
+"inv_name"			"Benelli M3"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

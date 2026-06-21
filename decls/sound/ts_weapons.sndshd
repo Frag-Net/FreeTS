@@ -1,0 +1,233 @@
+weapon_ak47.shoot
+{
+    pitch 200
+    sample "weapons/ak47/fire.wav"
+}
+
+weapon_akimbocolts.shoot
+{
+    pitch 200
+    sample "weapons/gold/gold-fire.wav"
+}
+
+weapon_barrettm82.shoot
+{
+    pitch 200
+    sample "weapons/barrett/fire.wav"
+}
+
+weapon_benellim3.shoot
+{
+    pitch 200
+    sample "weapons/m3/m3-fire.wav"
+}
+
+weapon_beretta.fire
+{
+    pitch 200
+    sample "weapons/beretta/fire.wav"
+}
+
+weapon_beretta_akimbo.shoot
+{
+    pitch 200
+    sample "weapons/beretta/fire.wav"
+}
+
+weapon_combatknife.shoot
+{
+    pitch 200
+    sample weapons/gold/gold-fire.wav
+}
+
+weapon_contenderg2.shoot
+{
+    pitch 200
+    sample "weapons/contender/fire.wav"
+}
+
+weapon_deserteagle.shoot
+{
+    pitch 200
+    sample "weapons/deagle/fire.wav"
+}
+
+weapon_fiveseven.shoot
+{
+    pitch 200
+    sample "weapons/fnh/fnh-fire.wav"
+}
+
+weapon_fiveseven_akimbo.shoot
+{
+    pitch 200
+    sample "weapons/fnh/fnh-fire.wav"
+}
+
+weapon_glock18.shoot
+{
+    pitch 200
+    sample "weapons/glock/glock-fire.wav"
+}
+
+weapon_glock20.shoot
+{
+    pitch 200
+    sample "weapons/glock22/glock22-fire.wav"
+}
+
+weapon_hkpdw.shoot
+{
+    pitch 200
+    sample "weapons/pdw/fire.wav"
+}
+
+weapon_karate.shoot
+{
+    pitch 200
+    sample weapons/gold/gold-fire.wav
+}
+
+weapon_katana.shoot
+{
+    pitch 200
+    sample weapons/gold/gold-fire.wav
+}
+
+weapon_m16a4.shoot
+{
+    pitch 200
+    sample "weapons/m16/fire.wav"
+}
+
+weapon_m4a1.shoot
+{
+    pitch 200
+    sample "weapons/m4/m4-fire.wav"
+}
+
+weapon_m60.shoot
+{
+    pitch 200
+    sample "weapons/m60/m60-fire.wav"
+}
+
+weapon_m61grenade.shoot
+{
+    pitch 200
+    sample weapons/gold/gold-fire.wav
+}
+
+weapon_mac10.shoot
+{
+    pitch 200
+    sample "weapons/mac10/mac10-fire.wav"
+}
+
+weapon_miniuzi.shoot
+{
+    pitch 200
+    sample "weapons/uzi/uzi-fire.wav"
+}
+
+weapon_miniuzi_akimbo.shoot
+{
+    pitch 200
+    sample "weapons/uzi/uzi-fire.wav"
+}
+
+weapon_mossberg500.shoot
+{
+    pitch 200
+    sample "weapons/mossberg/fire.wav"
+}
+
+weapon_mp5k.shoot
+{
+    pitch 200
+    sample "weapons/mp5k/mp5k-fire.wav"
+}
+
+weapon_mp5sd.shoot
+{
+    pitch 200
+    sample "weapons/mp5sd/mp5sd-fire.wav"
+}
+
+weapon_ragingbull.shoot
+{
+    pitch 200
+    sample "weapons/bull/fire01.wav"
+}
+
+weapon_rugermk1.shoot
+{
+    pitch 200
+    sample "weapons/ruger/fire.wav"
+}
+
+weapon_sawedoff.shoot
+{
+    pitch 200
+    sample "weapons/sawedoff/fire.wav"
+}
+
+weapon_sealknife.shoot
+{
+    pitch 200
+    sample weapons/gold/gold-fire.wav
+}
+
+weapon_skorpion.shoot
+{
+    pitch 200
+    sample "weapons/skorpion/fire.wav"
+}
+
+weapon_skorpion_akimbo.shoot
+{
+    pitch 200
+    sample "weapons/skorpion/fire.wav"
+}
+
+weapon_socommk23.shoot
+{
+    pitch 200
+    sample "weapons/mk23/mk23-fire.wav"
+}
+
+weapon_socommk23_akimbo.shoot
+{
+    pitch 200
+    sample "weapons/mk23/mk23-fire.wav"
+}
+
+weapon_spas12.shoot
+{
+    pitch 200
+    sample "weapons/spas12/spas12-fire.wav"
+}
+
+weapon_steyraug.shoot
+{
+    pitch 200
+    sample "weapons/aug/aug-fire.wav"
+}
+
+weapon_steyrtmp.shoot
+{
+    pitch 200
+    sample "weapons/tmp/fire.wav"
+}
+
+weapon_ump.shoot
+{
+    pitch 200
+    sample "weapons/ump/ump-fire.wav"
+}
+
+weapon_usas12.shoot
+{
+    pitch 200
+    sample "weapons/usas/usas-fire.wav"
+}

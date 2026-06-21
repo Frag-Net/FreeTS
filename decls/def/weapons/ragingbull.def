@@ -9,9 +9,10 @@ entityDef weapon_ragingbull
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"ragingbull"
+"editor_usage"		"Raging Bull"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_bull.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_bull.mdl"
@@ -24,7 +25,7 @@ entityDef weapon_ragingbull
 	//"snd_precache" ("weapons/bull/insert-shell.wav");
 	//"snd_precache" ("weapons/bull/shellsout.wav");
 
-"inv_name"			"ragingbull"
+"inv_name"			"Raging Bull"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

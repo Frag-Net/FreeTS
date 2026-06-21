@@ -9,9 +9,10 @@ entityDef weapon_fiveseven
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"fiveseven"
+"editor_usage"		"Five-seveN"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_fnh.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_fnh.mdl"
@@ -24,7 +25,7 @@ entityDef weapon_fiveseven
 	//"snd_precache" ("weapons/fnh/fnh-fire.wav");
 	//"snd_precache" ("weapons/fnh/sliderelease.wav");
 
-"inv_name"			"fiveseven"
+"inv_name"			"Five-seveN"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

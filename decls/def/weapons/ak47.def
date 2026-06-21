@@ -13,9 +13,10 @@ entityDef weapon_ak47
 "editor_color"        ".3 .3 1"
 "editor_mins"        "-16 -16 -16"
 "editor_maxs"        "16 16 16"
-"editor_usage"        "ak47"
+"editor_usage"        "AK47"
 "editor_rotatable"    "1"
 "editor_model"     "models/w_ak47.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view"     "models/v_ak47.mdl"
@@ -31,7 +32,7 @@ entityDef weapon_ak47
     //"snd_precache" ("weapons/ak47/fire.wav");
     //"snd_precache" ("weapons/ak47/slideback.wav");
 
-"inv_name"            "ak47"
+"inv_name"            "AK47"
 "clipSize"            "30"
 "ammoType"            "ammo_shells" //"ammo_7p62x39mm"
 "ammoRequired"        "1"

@@ -12,6 +12,7 @@ entityDef weapon_beretta
 	"editor_maxs"		"16 16 16"
 	"editor_usage"		"Beretta"
 	"editor_rotatable"	"1"
+	"animPrefix"		"onehand"
 
 	"inherit"			"weapon_base"
 	"model"				"models/w_beretta.mdl"

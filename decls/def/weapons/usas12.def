@@ -9,9 +9,10 @@ entityDef weapon_usas12
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"usas12"
+"editor_usage"		"USAS-12"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_usas.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_usas.mdl"
@@ -22,7 +23,7 @@ entityDef weapon_usas12
 	//"snd_precache" ("weapons/usas/slideback.wav");
 	//"snd_precache" ("weapons/usas/usas-fire.wav");
 
-"inv_name"			"usas12"
+"inv_name"			"USAS-12"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

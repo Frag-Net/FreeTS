@@ -10,9 +10,10 @@ entityDef weapon_barrettm82
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"barrettm82"
+"editor_usage"		"Barrett M82A1"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_m82.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_m82.mdl"
@@ -23,7 +24,7 @@ entityDef weapon_barrettm82
 	//"snd_precache" ("weapons/barrett/fire.wav");
 	//"snd_precache" ("weapons/barrett/slideback.wav");
 
-"inv_name"			"barrettm82"
+"inv_name"			"Barrett M82A1"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

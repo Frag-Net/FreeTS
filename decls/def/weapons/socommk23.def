@@ -17,9 +17,10 @@ entityDef weapon_socommk23
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"socommk23"
+"editor_usage"		"SOCOM-MK23"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_mk23.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_mk23.mdl"
@@ -32,7 +33,7 @@ entityDef weapon_socommk23
 	//"snd_precache" ("weapons/mk23/mk23-fire.wav");
 	//"snd_precache" ("weapons/mk23/sliderelease.wav");
 
-"inv_name"			"socommk23"
+"inv_name"			"SOCOM-MK23"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

@@ -10,9 +10,10 @@ entityDef weapon_m60
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"m60"
+"editor_usage"		"M60E3"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_m60.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_m60.mdl"
@@ -24,7 +25,7 @@ entityDef weapon_m60
 	//"snd_precache" ("weapons/m60/m60-fire.wav");
 	//"snd_precache" ("weapons/m60/open.wav");
 
-"inv_name"			"m60"
+"inv_name"			"M60E3"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

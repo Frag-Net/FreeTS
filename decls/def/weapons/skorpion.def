@@ -11,9 +11,10 @@ entityDef weapon_skorpion
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"skorpion"
+"editor_usage"		"Skorpion"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_skorpion.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_skorpion.mdl"
@@ -21,7 +22,7 @@ entityDef weapon_skorpion
 "model_player" 	"models/p_skorpion.mdl"
 	//"snd_precache" ("weapons/skorpion/fire.wav");
 
-"inv_name"			"skorpion"
+"inv_name"			"Skorpion"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

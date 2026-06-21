@@ -10,9 +10,10 @@ entityDef weapon_fiveseven_akimbo
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"fiveseven_akimbo"
+"editor_usage"		"Akimbo Five-seveN"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_fnh.mdl"
+	"animPrefix"		"akimbo"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_fnh_akimbo.mdl"
@@ -20,7 +21,7 @@ entityDef weapon_fiveseven_akimbo
 "model_player" 	"models/p_fnh_akimbo.mdl"
 	//"models/p_fnh_akimbo_sil.mdl"
 
-"inv_name"			"fiveseven_akimbo"
+"inv_name"			"Akimbo Five-seveN"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

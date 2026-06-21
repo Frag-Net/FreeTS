@@ -10,9 +10,10 @@ entityDef weapon_glock18
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"glock18"
+"editor_usage"		"Glock-18"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_glock18.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_glock18.mdl"
@@ -25,7 +26,7 @@ entityDef weapon_glock18
 	//"snd_precache" ("weapons/glock/glock-fire.wav");
 	//"snd_precache" ("weapons/glock/slideback.wav");
 
-"inv_name"			"glock18"
+"inv_name"			"Glock-18"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

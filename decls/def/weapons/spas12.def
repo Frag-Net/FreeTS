@@ -14,9 +14,10 @@ entityDef weapon_spas12
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"spas12"
+"editor_usage"		"SPAS-12"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_spas12.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_spas12.mdl"
@@ -25,7 +26,7 @@ entityDef weapon_spas12
 //	"snd_precache" ("weapons/spas12/spas12-fire.wav");
 	//"snd_precache" ("weapons/spas12/spas12-pump.wav");
 
-"inv_name"			"spas12"
+"inv_name"			"SPAS-12"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

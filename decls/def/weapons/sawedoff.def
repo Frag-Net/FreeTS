@@ -18,9 +18,10 @@ entityDef weapon_sawedoff
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"sawedoff"
+"editor_usage"		"Sawed-off"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_sawedoff.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_sawedoff.mdl"
@@ -35,7 +36,7 @@ entityDef weapon_sawedoff
 	//"snd_precache" ("weapons/sawedoff/shellout.wav");
 	//"snd_precache" ("weapons/sawedoff/tapspan.wav");
 
-"inv_name"			"sawedoff"
+"inv_name"			"Sawed-off"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

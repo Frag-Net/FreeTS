@@ -10,9 +10,10 @@ entityDef weapon_contenderg2
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"contenderg2"
+"editor_usage"		"Contender G2"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_contender.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_contender.mdl"
@@ -25,7 +26,7 @@ entityDef weapon_contenderg2
 	//"snd_precache" ("weapons/contender/open.wav");
 	//"snd_precache" ("weapons/contender/shellout.wav");
 
-"inv_name"			"contenderg2"
+"inv_name"			"Contender G2"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

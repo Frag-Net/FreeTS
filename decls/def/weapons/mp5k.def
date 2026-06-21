@@ -15,9 +15,10 @@ entityDef weapon_mp5k
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"mp5k"
+"editor_usage"		"MP5K"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_mp5k.mdl"
+	"animPrefix"		"onehand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_mp5k.mdl"
@@ -27,7 +28,7 @@ entityDef weapon_mp5k
 	//"snd_precache" ("weapons/mp5k/mp5k-fire-sil.wav");
 	//"snd_precache" ("weapons/mp5k/mp5k-fire.wav");
 
-"inv_name"			"mp5k"
+"inv_name"			"MP5K"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

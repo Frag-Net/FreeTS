@@ -9,9 +9,10 @@ entityDef weapon_steyraug
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"steyraug"
+"editor_usage"		"STEYR-AUG"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_aug.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_aug.mdl"
@@ -25,7 +26,7 @@ entityDef weapon_steyraug
 	//"snd_precache" ("weapons/aug/clipin.wav");
 	//"snd_precache" ("weapons/aug/clipout.wav");
 
-"inv_name"			"steyraug"
+"inv_name"			"STEYR-AUG"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

@@ -33,9 +33,10 @@ entityDef weapon_beretta_akimbo
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"beretta_akimbo"
+"editor_usage"		"Akimbo Berettas"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_berettas.mdl"
+	"animPrefix"		"akimbo"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_berettas.mdl"
@@ -46,7 +47,7 @@ entityDef weapon_beretta_akimbo
 "def_altFireInfo"    "fi_beretta_akimbo_right"
 "altAlternates"     "1"
 
-"inv_name"			"beretta_akimbo"
+"inv_name"			"Akimbo Berettas"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

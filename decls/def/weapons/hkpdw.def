@@ -10,9 +10,10 @@ entityDef weapon_hkpdw
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"hkpdw"
+"editor_usage"		"MP7-PDW"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_pdw.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_pdw.mdl"
@@ -25,7 +26,7 @@ entityDef weapon_hkpdw
 	//"snd_precache" ("weapons/pdw/fire.wav");
 	//"snd_precache" ("weapons/pdw/slideback.wav");
 
-"inv_name"			"hkpdw"
+"inv_name"			"MP7-PDW"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"

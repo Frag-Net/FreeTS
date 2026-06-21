@@ -11,9 +11,10 @@ entityDef weapon_ump
 "editor_color"		".3 .3 1"
 "editor_mins"		"-16 -16 -16"
 "editor_maxs"		"16 16 16"
-"editor_usage"		"ump"
+"editor_usage"		"UMP"
 "editor_rotatable"	"1"
 "editor_model" 	"models/w_ump.mdl"
+	"animPrefix"		"twohand"
 
 "inherit" "weapon_base"
 "model_view" 	"models/v_ump.mdl"
@@ -29,7 +30,7 @@ entityDef weapon_ump
 	//"snd_precache" ("weapons/ump/ump-fire-sil.wav");
 	//"snd_precache" ("weapons/ump/ump-fire.wav");
 
-"inv_name"			"ump"
+"inv_name"			"UMP"
 "ammoType"			"ammo_shells"
 "ammoRequired"		"1"
 "ammoPerShot"		"1"
