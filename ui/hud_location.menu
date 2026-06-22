@@ -1,0 +1,12 @@
+		itemDef
+		{
+                name "LocationName"
+				decoration
+				visible 1
+				rect 0 0 192 70
+				ownerdraw CG_PLAYER_LOCATION
+				forecolor .4 .4 .5 1
+                text "Unknown"
+                textfont 3
+                additive 1
+		}

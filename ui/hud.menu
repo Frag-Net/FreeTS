@@ -1,0 +1,162 @@
+#include "ui/menudef.h"
+
+
+{
+	assetglobaldef
+	{
+		font fonts/hudBig 16
+		smallfont fonts/hudSmall 8
+	}
+
+	menuDef
+	{
+		name "Player Info"
+		rect 0 0 640 480
+		visible 1
+
+	#include "ui/hud_powerups.menu"
+	#include "ui/hud_weapon_projectiles.menu"
+	//#include "ui/hud_weapon_melee.menu"
+
+		itemDef
+		{
+			name PlayerStance
+			rect 8 428 64 48
+			decoration
+//			ownerdraw CG_PLAYER_STANCE
+			visible 1
+                additive 1
+			background "sprites/player/stand.spr"
+			backcolor .4 .4 .5 1
+		}
+
+		itemDef
+		{
+			name Health
+			rect 104 432 32 24
+			decoration
+			visible 1
+                additive 1
+			background "sprites/player/health.spr"
+			backcolor .4 .4 .5 1
+		}
+
+		itemDef
+		{
+			name HealthBackground
+			rect 9 433 127 39
+			decoration
+			visible 1
+			additive 1
+			backcolor 0.039 0.039 0.059 0.6
+		}
+
+		itemDef
+		{
+			name HealthValue
+			rect 74 438 30 11
+			forecolor .4 .4 .5 1
+			ownerdraw CG_PLAYER_HEALTH
+			decoration
+			visible 1
+                additive 1
+			textalign 4
+			text "100"
+		}
+
+		itemDef
+		{
+			name Armor
+			rect 104 452 32 24
+			decoration
+			visible 1
+                additive 1
+			background "sprites/hud/kevlar.spr"
+			backcolor .4 .4 .5 1
+		}
+
+		itemDef
+		{
+			name ArmorValue
+			rect 74 459 30 11
+			forecolor .4 .4 .5 1
+			ownerdraw CG_PLAYER_ARMOR_VALUE
+			decoration
+                additive 1
+			visible 1
+			text "100"
+		}
+
+		itemDef
+		{
+			name PlayerSlotsBackground
+			rect 137 453 127 19
+			decoration
+			visible 1
+			additive 1
+			backcolor 0.039 0.039 0.059 0.6
+		}
+
+		itemDef
+		{
+			name PlayerSlotsLabel
+			decoration
+			visible 1
+			rect 174 453 62 12
+			forecolor 0.478 0.549 0.804 1
+			text "free slots"
+			textfont 3
+			additive 1
+		}
+
+		itemDef
+		{
+			name PlayerSlots
+			rect 147 455 18 12
+			forecolor 0.478 0.549 0.804 1
+			decoration
+			visible 1
+                additive 1
+			textalign 4
+			ownerdraw CG_PLAYER_SLOTS
+			text "81"
+		}
+	}
+
+	menuDef
+	{
+		name "Inventory Info"
+		rect 0 0 640 480
+		visible 1
+
+		itemDef
+		{
+			name PowerUpName
+			rect 8 9 80 12
+			forecolor 0.251 0.875 0.29 1
+			decoration
+			visible 1
+			textalign 4
+                additive 1
+			text "Slow-Pause"
+			ownerdraw CG_PLAYER_POWERUP_NAME
+            textfont 3
+		}
+
+		itemDef
+		{
+			name PowerUpTimer
+			rect 97 10 10 12
+			forecolor 0.251 0.875 0.29 1
+			decoration
+			visible 1
+			textalign 4
+                additive 1
+			text "3"
+			ownerdraw CG_PLAYER_POWERUP_TIMER
+            textfont 3
+		}
+
+	}
+}
+

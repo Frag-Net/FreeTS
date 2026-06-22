@@ -1,0 +1,21 @@
+	menuDef
+	{
+		name "KarateBar"
+		visible 1
+//		border 1
+//		bordersize 1
+//		bordercolor 0.039 0.039 0.059 0.6
+		rect 504 452 127 19
+
+		itemDef
+		{
+				name "KarateValue"
+				decoration
+				visible 1
+				rect 0 0 8 68
+                additive 1
+				ownerdraw CG_PLAYER_STAMINA
+				type 8
+				forecolor 0.039 0.039 0.059 0.6
+		}
+	}

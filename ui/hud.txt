@@ -1,0 +1,3 @@
+{
+	loadMenu { ui/hud.menu }
+}

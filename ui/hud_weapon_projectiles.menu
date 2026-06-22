@@ -1,0 +1,117 @@
+		itemDef
+		{
+			name WeaponNameBackground
+			rect 504 392 128 19
+			decoration
+			visible 1
+			additive 1
+			backcolor 0.082 0.094 0.137 0.6
+		}
+
+		itemDef
+		{
+			name WeaponName
+			rect 504 392 128 19
+			forecolor 0.478 0.549 0.804 1
+			decoration
+			visible 1
+			textalign 4
+                additive 1
+			text "Glock-18"
+			ownerdraw CG_PLAYER_WEAPON_NAME
+            textfont 3
+		}
+
+		itemDef
+		{
+			name WeaponAmmoNameBackground
+			rect 504 412 128 19
+			decoration
+			visible 1
+			additive 1
+			backcolor 0.039 0.039 0.059 0.6
+		}
+
+		itemDef
+		{
+			name WeaponAmmoName
+			rect 504 412 128 19
+			forecolor 0.478 0.549 0.804 1
+			decoration
+			visible 1
+                additive 1
+			textalign 4
+			ownerdraw CG_PLAYER_AMMO_NAME
+			text "9 x 19mm"
+		}
+
+		itemDef
+		{
+			name WeaponFireModeBackground
+			rect 504 432 128 19
+			decoration
+			visible 1
+			additive 1
+			backcolor 0.039 0.039 0.059 0.6
+		}
+
+		itemDef
+		{
+			name WeaponFireModeName
+			rect 504 432 128 19
+			forecolor 0.478 0.549 0.804 1
+			decoration
+			visible 1
+                additive 1
+			textalign 4
+			ownerdraw CG_PLAYER_FIRE_MODE
+			text "Full-auto"
+		}
+
+		itemDef
+		{
+			name WeaponAmmoBackground
+			rect 504 452 128 19
+			decoration
+			visible 1
+			additive 1
+			backcolor 0.039 0.039 0.059 0.6
+		}
+
+		itemDef
+		{
+			name WeaponAmmo
+			rect 599 453 32 12
+			forecolor 0.478 0.549 0.804 1
+			decoration
+			visible 1
+                additive 1
+			textalign 4
+			ownerdraw CG_PLAYER_AMMO_VALUE
+			text "100"
+		}
+
+		itemDef
+		{
+			name ClipSperator
+			rect 568 453 7 12
+			forecolor 0.039 0.039 0.059 1
+			decoration
+			visible 1
+                additive 1
+			textalign 4
+			text "/"
+		}
+
+		itemDef
+		{
+			name ClipAmmo
+			rect 519 453 32 12
+			forecolor 0.478 0.549 0.804 1
+			decoration
+			visible 1
+			textalign 4
+            additive 1
+			ownerdraw CG_PLAYER_AMMOCLIP_VALUE
+			text "100"
+		}
