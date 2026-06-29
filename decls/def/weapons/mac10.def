@@ -71,6 +71,7 @@ entityDef weapon_mac10
 "fireRate"			"0.0625f"
 "punchSpring"		"-1.55 0 0"
 "punchSpring_accuracy"	"0.005 0 0"
+"drawModeReset"     "1"
 }
 
 entityDef fi_mac10

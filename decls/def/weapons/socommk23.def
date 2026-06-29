@@ -65,6 +65,7 @@ entityDef weapon_socommk23
 "fireRate"			"0.19f"
 "punchSpring_accuracy"	"0 0 0"
 "semiAuto"          "1"
+"drawModeReset"     "1"
 }
 
 entityDef fi_socommk23

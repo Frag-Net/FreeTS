@@ -66,6 +66,7 @@ entityDef weapon_miniuzi
 "def_onFire"		"proj_miniuzi"
 "fireRate"			"0.0625f"
 "punchSpring_accuracy"	"0.005 0 0"
+"drawModeReset"     "1"
 }
 
 entityDef fi_miniuzi

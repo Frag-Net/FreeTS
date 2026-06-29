@@ -272,8 +272,9 @@ entityDef ts_player
     "act_diveEndLeft"            "$SEAL_DIVE_L_END"
     "act_diveEndBack"            "$SEAL_DIVE_B_END"
 
-    "pm_walkspeed"      "120"
-    "pm_runspeed"       "320"
+    "pm_walkspeed"      "240"
+    "pm_stamina"        "120"
+    "pm_runspeed"       "0"
 
 "def_precache" "weapon_karate"
 "def_precache" "weapon_akimbocolts"

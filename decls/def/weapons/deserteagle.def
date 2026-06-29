@@ -67,6 +67,7 @@ entityDef weapon_deserteagle
 "fireRate"			"0.35f"
 "punchSpring"		"-2.9 0 0"
 "punchSpring_accuracy"	"0 0 0"
+"drawModeReset"     "1"
 }
 
 entityDef fi_deserteagle

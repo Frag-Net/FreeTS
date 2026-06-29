@@ -26,7 +26,7 @@
 //			ownerdraw CG_PLAYER_STANCE
 			visible 1
                 additive 1
-			background "sprites/player/stand.spr"
+			sprite "sprites/player/stand.spr"
 			backcolor .4 .4 .5 1
 		}
 
@@ -37,7 +37,7 @@
 			decoration
 			visible 1
                 additive 1
-			background "sprites/player/health.spr"
+			sprite "sprites/player/health.spr"
 			backcolor .4 .4 .5 1
 		}
 
@@ -71,7 +71,7 @@
 			decoration
 			visible 1
                 additive 1
-			background "sprites/hud/kevlar.spr"
+			sprite "sprites/player/kevlar.spr"
 			backcolor .4 .4 .5 1
 		}
 

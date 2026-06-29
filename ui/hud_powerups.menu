@@ -5,8 +5,8 @@
 //			ownerdraw CG_PLAYER_POWERUP
 			decoration
 			visible 1
-                additive 1
-			background "sprites/hud/movement.spr"
+            additive 1
+			sprite "sprites/player/kungfu.spr"
 			backcolor .4 .4 .5 1
 		}
 
@@ -17,7 +17,7 @@
 //			ownerdraw CG_PLAYER_POWERUP
 			decoration
 			visible 1
-                additive 1
-			background "sprites/hud/movement.spr"
+            additive 1
+			sprite "sprites/player/movement.spr"
 			backcolor .4 .4 .5 1
 		}

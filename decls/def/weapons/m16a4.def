@@ -64,6 +64,7 @@ entityDef weapon_m16a4
 "fireRate"			"0.0625f"
 "punchSpring"		"-2.5 0 0"
 "punchSpring_accuracy"	"0 0 0"
+"drawModeReset"     "1"
 }
 
 

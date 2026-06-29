@@ -68,6 +68,7 @@ entityDef weapon_m4a1
 "fireRate"			"0.0625f"
 "punchSpring"		"-2.7 0 0"
 "punchSpring_accuracy"	"0 0 0"
+"drawModeReset"     "1"
 }
 
 entityDef fi_m4a1

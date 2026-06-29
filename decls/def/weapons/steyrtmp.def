@@ -60,6 +60,7 @@ entityDef weapon_steyrtmp
 
 "fireRate"			"0.0625f"
 "punchSpring_accuracy"	"0.01 0 0"
+"drawModeReset"     "1"
 }
 
 entityDef fi_steyrtmp
